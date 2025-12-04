@@ -1,0 +1,2875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Networks Interactive Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .export-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .export-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .tab:hover {
+            background: #e8e8e8;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .content-area {
+            display: flex;
+            height: calc(100vh - 300px);
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: #f9f9f9;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .concept-tile {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .concept-tile:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+        
+        .concept-tile.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .concept-tile.completed {
+            border-color: #4CAF50;
+        }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .concept-tile.completed .checkbox {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+        
+        .checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .concept-tile.completed .checkbox::after {
+            display: block;
+        }
+        
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+        
+        .concept-detail {
+            display: none;
+        }
+        
+        .concept-detail.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .concept-detail h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .section {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .language-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .exercise {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .resource-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .resource-link {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .resource-link:hover {
+            background: #5568d3;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: flex;
+        }
+        
+        .welcome-screen {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .welcome-screen h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .image-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+        
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Neural Networks Interactive Guide</h1>
+            <p>Comprehensive Resource for Intermediate Practitioners</p>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar">0% Complete (0/32)</div>
+                </div>
+                <button class="export-btn" onclick="exportProgress()">📊 Export Progress</button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('basics')">Basic Networks</button>
+            <button class="tab" onclick="switchTab('recurrent')">Recurrent Networks</button>
+            <button class="tab" onclick="switchTab('autoencoders')">Autoencoders</button>
+            <button class="tab" onclick="switchTab('probabilistic')">Probabilistic Models</button>
+            <button class="tab" onclick="switchTab('convolutional')">Convolutional Networks</button>
+            <button class="tab" onclick="switchTab('advanced')">Advanced Architectures</button>
+        </div>
+        
+        <div class="tab-content active" id="basics">
+            <div class="sidebar" id="basics-sidebar"></div>
+            <div class="main-content" id="basics-content">
+                <div class="welcome-screen">
+                    <h2>Welcome to Basic Networks</h2>
+                    <p>Select a concept from the sidebar to begin learning</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="recurrent">
+            <div class="sidebar" id="recurrent-sidebar"></div>
+            <div class="main-content" id="recurrent-content">
+                <div class="welcome-screen">
+                    <h2>Welcome to Recurrent Networks</h2>
+                    <p>Select a concept from the sidebar to begin learning</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="autoencoders">
+            <div class="sidebar" id="autoencoders-sidebar"></div>
+            <div class="main-content" id="autoencoders-content">
+                <div class="welcome-screen">
+                    <h2>Welcome to Autoencoders</h2>
+                    <p>Select a concept from the sidebar to begin learning</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="probabilistic">
+            <div class="sidebar" id="probabilistic-sidebar"></div>
+            <div class="main-content" id="probabilistic-content">
+                <div class="welcome-screen">
+                    <h2>Welcome to Probabilistic Models</h2>
+                    <p>Select a concept from the sidebar to begin learning</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="convolutional">
+            <div class="sidebar" id="convolutional-sidebar"></div>
+            <div class="main-content" id="convolutional-content">
+                <div class="welcome-screen">
+                    <h2>Welcome to Convolutional Networks</h2>
+                    <p>Select a concept from the sidebar to begin learning</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="advanced">
+            <div class="sidebar" id="advanced-sidebar"></div>
+            <div class="main-content" id="advanced-content">
+                <div class="welcome-screen">
+                    <h2>Welcome to Advanced Architectures</h2>
+                    <p>Select a concept from the sidebar to begin learning</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const concepts = {
+            basics: [
+                {
+                    id: 'perceptron',
+                    name: 'Perceptron (P)',
+                    problem: 'Need to classify linearly separable data with a simple binary classifier.',
+                    when: 'Use for basic binary classification tasks where data is linearly separable.',
+                    theory: 'The perceptron is the simplest neural network unit, inspired by biological neurons. It takes multiple inputs, applies weights, sums them with a bias, and passes through an activation function to produce binary output.',
+                    formula: 'output = σ(w₁x₁ + w₂x₂ + ... + wₙxₙ + b)',
+                    pythonTF: `import tensorflow as tf
+import numpy as np
+
+# Simple perceptron for binary classification
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1, activation='sigmoid', input_shape=(2,))
+])
+
+model.compile(optimizer='sgd', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Example data (AND gate)
+X = np.array([[0,0], [0,1], [1,0], [1,1]])
+y = np.array([0, 0, 0, 1])
+
+model.fit(X, y, epochs=100, verbose=0)
+print("Predictions:", model.predict(X).flatten())`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class Perceptron(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(2, 1)
+        self.sigmoid = nn.Sigmoid()
+    
+    def forward(self, x):
+        return self.sigmoid(self.linear(x))
+
+model = Perceptron()
+criterion = nn.BCELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+
+# Training loop
+X = torch.tensor([[0.,0.], [0.,1.], [1.,0.], [1.,1.]])
+y = torch.tensor([[0.], [0.], [0.], [1.]])
+
+for epoch in range(1000):
+    optimizer.zero_grad()
+    outputs = model(X)
+    loss = criterion(outputs, y)
+    loss.backward()
+    optimizer.step()`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why can a single perceptron only solve linearly separable problems?'},
+                        {type: 'code', q: 'Implement a perceptron to solve the XOR problem. Does it work? Why or why not?'},
+                        {type: 'architecture', q: 'Design a multi-layer network to solve XOR using perceptrons.'}
+                    ],
+                    resources: [
+                        {name: 'TensorFlow Tutorial', url: 'https://www.tensorflow.org/guide/keras/sequential_model'},
+                        {name: 'PyTorch Tutorial', url: 'https://pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html'}
+                    ]
+                },
+                {
+                    id: 'feedforward',
+                    name: 'Feed Forward (FF)',
+                    problem: 'Need to learn complex non-linear patterns in data without temporal dependencies.',
+                    when: 'Use for general classification and regression tasks with structured data.',
+                    theory: 'Feed-forward networks (also called Multi-Layer Perceptrons) consist of multiple layers where information flows in one direction. Hidden layers enable learning non-linear decision boundaries through activation functions.',
+                    formula: 'hₗ = σ(Wₗhₗ₋₁ + bₗ)',
+                    pythonTF: `import tensorflow as tf
+from tensorflow import keras
+
+# Multi-layer feed-forward network
+model = keras.Sequential([
+    keras.layers.Dense(64, activation='relu', input_shape=(20,)),
+    keras.layers.Dropout(0.2),
+    keras.layers.Dense(32, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Example: MNIST-like task
+# model.fit(X_train, y_train, epochs=10, validation_split=0.2)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class FeedForward(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super().__init__()
+        self.fc1 = nn.Linear(input_size, hidden_size)
+        self.fc2 = nn.Linear(hidden_size, hidden_size // 2)
+        self.fc3 = nn.Linear(hidden_size // 2, output_size)
+        self.dropout = nn.Dropout(0.2)
+    
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return F.softmax(x, dim=1)
+
+model = FeedForward(input_size=20, hidden_size=64, output_size=10)`,
+                    javascript: `// Using TensorFlow.js
+const model = tf.sequential({
+    layers: [
+        tf.layers.dense({inputShape: [20], units: 64, activation: 'relu'}),
+        tf.layers.dropout({rate: 0.2}),
+        tf.layers.dense({units: 32, activation: 'relu'}),
+        tf.layers.dense({units: 10, activation: 'softmax'})
+    ]
+});
+
+model.compile({
+    optimizer: 'adam',
+    loss: 'sparseCategoricalCrossentropy',
+    metrics: ['accuracy']
+});`,
+                    exercises: [
+                        {type: 'conceptual', q: 'What role does the activation function play in enabling non-linearity?'},
+                        {type: 'code', q: 'Build a feed-forward network to classify iris dataset with 90%+ accuracy.'},
+                        {type: 'architecture', q: 'Design a network architecture for predicting house prices with 15 input features.'}
+                    ],
+                    resources: [
+                        {name: 'Keras Guide', url: 'https://keras.io/guides/sequential_model/'},
+                        {name: 'PyTorch Examples', url: 'https://github.com/pytorch/examples'}
+                    ]
+                },
+                {
+                    id: 'rbf',
+                    name: 'Radial Basis Network (RBF)',
+                    problem: 'Need to interpolate scattered data or classify with distance-based decision boundaries.',
+                    when: 'Use for function approximation, time series prediction, and control systems where local learning is beneficial.',
+                    theory: 'RBF networks use radial basis functions (typically Gaussian) as activation functions. Each hidden neuron computes the distance from input to a center point, making them excellent for interpolation and local approximation.',
+                    formula: 'φ(x) = exp(-γ||x - c||²)',
+                    pythonTF: `import tensorflow as tf
+import numpy as np
+
+class RBFLayer(tf.keras.layers.Layer):
+    def __init__(self, units, gamma=1.0):
+        super().__init__()
+        self.units = units
+        self.gamma = gamma
+    
+    def build(self, input_shape):
+        self.centers = self.add_weight(
+            shape=(self.units, input_shape[-1]),
+            initializer='uniform',
+            trainable=True
+        )
+    
+    def call(self, inputs):
+        # Compute euclidean distance
+        diff = tf.expand_dims(inputs, axis=1) - self.centers
+        l2 = tf.reduce_sum(tf.pow(diff, 2), axis=-1)
+        return tf.exp(-self.gamma * l2)
+
+# Build RBF network
+model = tf.keras.Sequential([
+    RBFLayer(10, gamma=0.5),
+    tf.keras.layers.Dense(1)
+])`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class RBF(nn.Module):
+    def __init__(self, in_features, num_centers, out_features):
+        super().__init__()
+        self.in_features = in_features
+        self.num_centers = num_centers
+        self.out_features = out_features
+        
+        self.centers = nn.Parameter(torch.randn(num_centers, in_features))
+        self.gamma = nn.Parameter(torch.ones(1))
+        self.linear = nn.Linear(num_centers, out_features)
+    
+    def forward(self, x):
+        # x: (batch, in_features)
+        # centers: (num_centers, in_features)
+        diff = x.unsqueeze(1) - self.centers  # (batch, num_centers, in_features)
+        l2 = torch.sum(diff ** 2, dim=-1)  # (batch, num_centers)
+        rbf = torch.exp(-self.gamma * l2)
+        return self.linear(rbf)
+
+model = RBF(in_features=2, num_centers=10, out_features=1)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'How do RBF networks differ from standard feed-forward networks in terms of decision boundaries?'},
+                        {type: 'code', q: 'Implement an RBF network for 2D function approximation and visualize the learned function.'},
+                        {type: 'architecture', q: 'When would you choose an RBF network over a standard MLP?'}
+                    ],
+                    resources: [
+                        {name: 'RBF Networks Explained', url: 'https://towardsdatascience.com/radial-basis-functions-neural-networks-all-we-need-to-know-9a88cc053448'}
+                    ]
+                },
+                {
+                    id: 'dff',
+                    name: 'Deep Feed Forward (DFF)',
+                    problem: 'Need to learn hierarchical feature representations for complex tasks.',
+                    when: 'Use for tasks requiring deep feature abstraction like image classification, NLP, or complex pattern recognition.',
+                    theory: 'Deep feed-forward networks have many hidden layers (typically 5+), enabling hierarchical feature learning. Lower layers learn simple features, while deeper layers combine them into complex abstractions. Requires careful initialization and techniques like batch normalization.',
+                    pythonTF: `import tensorflow as tf
+
+# Deep architecture with residual connections
+def build_deep_network():
+    inputs = tf.keras.Input(shape=(784,))
+    
+    x = tf.keras.layers.Dense(512, activation='relu')(inputs)
+    x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.Dropout(0.3)(x)
+    
+    # Deep layers with skip connections
+    for units in [256, 128, 64]:
+        residual = x
+        x = tf.keras.layers.Dense(units, activation='relu')(x)
+        x = tf.keras.layers.BatchNormalization()(x)
+        x = tf.keras.layers.Dropout(0.2)(x)
+        
+        # Add skip connection if dimensions match
+        if residual.shape[-1] == units:
+            x = tf.keras.layers.Add()([x, residual])
+    
+    outputs = tf.keras.layers.Dense(10, activation='softmax')(x)
+    
+    model = tf.keras.Model(inputs=inputs, outputs=outputs)
+    return model
+
+model = build_deep_network()
+model.compile(optimizer='adam', loss='categorical_crossentropy')`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class DeepFeedForward(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.ModuleList([
+            nn.Linear(784, 512),
+            nn.Linear(512, 256),
+            nn.Linear(256, 128),
+            nn.Linear(128, 64),
+            nn.Linear(64, 10)
+        ])
+        
+        self.batch_norms = nn.ModuleList([
+            nn.BatchNorm1d(512),
+            nn.BatchNorm1d(256),
+            nn.BatchNorm1d(128),
+            nn.BatchNorm1d(64)
+        ])
+        
+        self.dropout = nn.Dropout(0.3)
+    
+    def forward(self, x):
+        for i in range(len(self.layers) - 1):
+            x = self.layers[i](x)
+            x = self.batch_norms[i](x)
+            x = torch.relu(x)
+            x = self.dropout(x)
+        
+        x = self.layers[-1](x)
+        return torch.softmax(x, dim=1)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why do deep networks require batch normalization and careful initialization?'},
+                        {type: 'code', q: 'Build a 10-layer network and compare training with/without batch normalization.'},
+                        {type: 'architecture', q: 'Design a deep network for sentiment analysis with word embeddings as input.'}
+                    ],
+                    resources: [
+                        {name: 'Deep Learning Book', url: 'https://www.deeplearningbook.org/'}
+                    ]
+                }
+            ],
+            recurrent: [
+                {
+                    id: 'rnn',
+                    name: 'Recurrent Neural Network (RNN)',
+                    problem: 'Need to process sequential data where order and temporal dependencies matter.',
+                    when: 'Use for time series, text sequences, speech, or any data with temporal structure.',
+                    theory: 'RNNs maintain hidden state that persists across time steps, allowing the network to remember previous inputs. The same weights are applied at each time step, making them effective for variable-length sequences.',
+                    formula: 'hₜ = tanh(Wₕₕhₜ₋₁ + Wₓₕxₜ + bₕ)',
+                    pythonTF: `import tensorflow as tf
+
+# Simple RNN for sequence classification
+model = tf.keras.Sequential([
+    tf.keras.layers.SimpleRNN(64, return_sequences=True, input_shape=(None, 10)),
+    tf.keras.layers.SimpleRNN(32),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Example: sentiment analysis on sequences
+# X_train shape: (samples, timesteps, features)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class SimpleRNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super().__init__()
+        self.hidden_size = hidden_size
+        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        # x shape: (batch, seq_len, input_size)
+        h0 = torch.zeros(1, x.size(0), self.hidden_size)
+        out, hn = self.rnn(x, h0)
+        # Take last time step
+        out = self.fc(hn.squeeze(0))
+        return torch.sigmoid(out)
+
+model = SimpleRNN(input_size=10, hidden_size=64, output_size=1)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Explain the vanishing gradient problem in RNNs. Why does it occur?'},
+                        {type: 'code', q: 'Build an RNN to predict the next value in a sine wave time series.'},
+                        {type: 'architecture', q: 'Design an RNN architecture for multi-step ahead forecasting.'}
+                    ],
+                    resources: [
+                        {name: 'Understanding RNNs', url: 'https://colah.github.io/posts/2015-08-Understanding-LSTMs/'},
+                        {name: 'Keras RNN Guide', url: 'https://www.tensorflow.org/guide/keras/rnn'}
+                    ]
+                },
+                {
+                    id: 'lstm',
+                    name: 'Long Short-Term Memory (LSTM)',
+                    problem: 'RNNs struggle with long-term dependencies due to vanishing gradients.',
+                    when: 'Use when you need to capture long-range dependencies in sequences (language modeling, long time series).',
+                    theory: 'LSTMs use gating mechanisms (forget, input, output gates) to control information flow. The cell state acts as a conveyor belt, allowing gradients to flow unchanged, solving the vanishing gradient problem.',
+                    formula: 'fₜ = σ(Wf·[hₜ₋₁, xₜ] + bf), iₜ = σ(Wi·[hₜ₋₁, xₜ] + bi), Cₜ = fₜ * Cₜ₋₁ + iₜ * tanh(Wc·[hₜ₋₁, xₜ] + bc)',
+                    pythonTF: `import tensorflow as tf
+
+# Bidirectional LSTM for sequence classification
+model = tf.keras.Sequential([
+    tf.keras.layers.Bidirectional(
+        tf.keras.layers.LSTM(64, return_sequences=True),
+        input_shape=(None, 50)  # variable length sequences
+    ),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(0.001),
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class LSTMClassifier(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, output_size):
+        super().__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        self.lstm = nn.LSTM(
+            input_size, 
+            hidden_size, 
+            num_layers, 
+            batch_first=True,
+            dropout=0.5 if num_layers > 1 else 0,
+            bidirectional=True
+        )
+        
+        self.fc = nn.Linear(hidden_size * 2, output_size)  # *2 for bidirectional
+        self.dropout = nn.Dropout(0.5)
+    
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_size)
+        c0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_size)
+        
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.dropout(out[:, -1, :])  # Last time step
+        out = self.fc(out)
+        return torch.sigmoid(out)
+
+model = LSTMClassifier(input_size=50, hidden_size=64, num_layers=2, output_size=1)`,
+                    javascript: `// TensorFlow.js LSTM
+const model = tf.sequential({
+    layers: [
+        tf.layers.lstm({units: 64, returnSequences: true, inputShape: [null, 50]}),
+        tf.layers.dropout({rate: 0.5}),
+        tf.layers.lstm({units: 32}),
+        tf.layers.dense({units: 1, activation: 'sigmoid'})
+    ]
+});`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Explain how the forget gate helps LSTMs maintain long-term memory.'},
+                        {type: 'code', q: 'Build an LSTM to generate text character-by-character from Shakespeare.'},
+                        {type: 'architecture', q: 'Design a stacked LSTM architecture for stock price prediction with multiple features.'}
+                    ],
+                    resources: [
+                        {name: 'LSTM Tutorial', url: 'https://colah.github.io/posts/2015-08-Understanding-LSTMs/'},
+                        {name: 'Keras LSTM Guide', url: 'https://www.tensorflow.org/api_docs/python/tf/keras/layers/LSTM'}
+                    ]
+                },
+                {
+                    id: 'gru',
+                    name: 'Gated Recurrent Unit (GRU)',
+                    problem: 'LSTMs are computationally expensive with many parameters.',
+                    when: 'Use when you need LSTM-like performance but with fewer parameters and faster training.',
+                    theory: 'GRUs simplify LSTM architecture by combining forget and input gates into a single update gate, and merging cell state with hidden state. This reduces parameters while maintaining similar performance for many tasks.',
+                    formula: 'zₜ = σ(Wz·[hₜ₋₁, xₜ]), rₜ = σ(Wr·[hₜ₋₁, xₜ]), h̃ₜ = tanh(W·[rₜ * hₜ₋₁, xₜ]), hₜ = (1-zₜ) * hₜ₋₁ + zₜ * h̃ₜ',
+                    pythonTF: `import tensorflow as tf
+
+# GRU model for sequence-to-sequence
+model = tf.keras.Sequential([
+    tf.keras.layers.GRU(128, return_sequences=True, input_shape=(None, 100)),
+    tf.keras.layers.Dropout(0.3),
+    tf.keras.layers.GRU(64),
+    tf.keras.layers.Dense(50, activation='relu'),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class GRUModel(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, output_size):
+        super().__init__()
+        self.gru = nn.GRU(
+            input_size,
+            hidden_size,
+            num_layers,
+            batch_first=True,
+            dropout=0.3 if num_layers > 1 else 0
+        )
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        out, _ = self.gru(x)
+        out = self.fc(out[:, -1, :])
+        return out
+
+model = GRUModel(input_size=100, hidden_size=128, num_layers=2, output_size=10)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Compare GRU vs LSTM: when would you choose one over the other?'},
+                        {type: 'code', q: 'Benchmark GRU vs LSTM on the same task. Compare speed and accuracy.'},
+                        {type: 'architecture', q: 'Design a GRU-based encoder-decoder for machine translation.'}
+                    ],
+                    resources: [
+                        {name: 'GRU Paper', url: 'https://arxiv.org/abs/1406.1078'},
+                        {name: 'GRU vs LSTM', url: 'https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21'}
+                    ]
+                },
+                {
+                    id: 'esn',
+                    name: 'Echo State Network (ESN)',
+                    problem: 'Training RNNs is slow and requires backpropagation through time.',
+                    when: 'Use for fast training on temporal tasks where reservoir computing is appropriate.',
+                    theory: 'ESNs belong to reservoir computing. The recurrent layer (reservoir) has fixed random weights, only output weights are trained. This makes training extremely fast (linear regression) while maintaining temporal dynamics.',
+                    pythonTF: `import numpy as np
+import tensorflow as tf
+
+class EchoStateNetwork:
+    def __init__(self, n_inputs, n_reservoir, n_outputs, spectral_radius=0.9):
+        self.n_reservoir = n_reservoir
+        
+        # Fixed random reservoir weights
+        self.W_in = np.random.randn(n_reservoir, n_inputs) * 0.1
+        self.W_res = np.random.randn(n_reservoir, n_reservoir)
+        
+        # Scale to desired spectral radius
+        radius = np.max(np.abs(np.linalg.eigvals(self.W_res)))
+        self.W_res *= spectral_radius / radius
+        
+        self.W_out = None
+        self.state = np.zeros(n_reservoir)
+    
+    def _update(self, u):
+        self.state = np.tanh(
+            self.W_in @ u + self.W_res @ self.state
+        )
+        return self.state
+    
+    def fit(self, X, y, alpha=1e-6):
+        # Collect states
+        states = []
+        self.state = np.zeros(self.n_reservoir)
+        
+        for x_t in X:
+            state = self._update(x_t)
+            states.append(state)
+        
+        states = np.array(states)
+        
+        # Ridge regression to train output weights
+        self.W_out = np.linalg.solve(
+            states.T @ states + alpha * np.eye(self.n_reservoir),
+            states.T @ y
+        )
+    
+    def predict(self, X):
+        states = []
+        self.state = np.zeros(self.n_reservoir)
+        
+        for x_t in X:
+            state = self._update(x_t)
+            states.append(state)
+        
+        return np.array(states) @ self.W_out
+
+# Usage
+esn = EchoStateNetwork(n_inputs=10, n_reservoir=500, n_outputs=1)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class ESN(nn.Module):
+    def __init__(self, input_size, reservoir_size, output_size, spectral_radius=0.9):
+        super().__init__()
+        self.reservoir_size = reservoir_size
+        
+        # Fixed reservoir weights
+        self.W_in = nn.Parameter(
+            torch.randn(reservoir_size, input_size) * 0.1,
+            requires_grad=False
+        )
+        
+        W_res = torch.randn(reservoir_size, reservoir_size)
+        eigenvalues = torch.linalg.eigvals(W_res)
+        radius = torch.max(torch.abs(eigenvalues)).real
+        W_res = W_res * spectral_radius / radius
+        
+        self.W_res = nn.Parameter(W_res, requires_grad=False)
+        
+        # Only output layer is trainable
+        self.readout = nn.Linear(reservoir_size, output_size)
+    
+    def forward(self, x):
+        batch_size, seq_len, _ = x.size()
+        state = torch.zeros(batch_size, self.reservoir_size)
+        
+        outputs = []
+        for t in range(seq_len):
+            state = torch.tanh(
+                x[:, t, :] @ self.W_in.t() + state @ self.W_res.t()
+            )
+            outputs.append(state)
+        
+        states = torch.stack(outputs, dim=1)
+        return self.readout(states)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why are ESNs so much faster to train than traditional RNNs?'},
+                        {type: 'code', q: 'Implement an ESN for time series forecasting and compare training time with LSTM.'},
+                        {type: 'architecture', q: 'What are the limitations of ESN compared to trained RNNs?'}
+                    ],
+                    resources: [
+                        {name: 'ESN Tutorial', url: 'http://www.scholarpedia.org/article/Echo_state_network'}
+                    ]
+                }
+            ],
+            autoencoders: [
+                {
+                    id: 'autoencoder',
+                    name: 'Auto Encoder (AE)',
+                    problem: 'Need to learn efficient data representations or reduce dimensionality in an unsupervised manner.',
+                    when: 'Use for dimensionality reduction, feature learning, denoising, or anomaly detection.',
+                    theory: 'Autoencoders learn to compress input data into a lower-dimensional latent space (encoder) and reconstruct it (decoder). The bottleneck forces the network to learn meaningful representations.',
+                    formula: 'z = encoder(x), x̂ = decoder(z), Loss = ||x - x̂||²',
+                    pythonTF: `import tensorflow as tf
+
+# Standard autoencoder
+input_dim = 784
+encoding_dim = 32
+
+encoder_input = tf.keras.Input(shape=(input_dim,))
+encoded = tf.keras.layers.Dense(128, activation='relu')(encoder_input)
+encoded = tf.keras.layers.Dense(64, activation='relu')(encoded)
+encoded = tf.keras.layers.Dense(encoding_dim, activation='relu')(encoded)
+
+decoded = tf.keras.layers.Dense(64, activation='relu')(encoded)
+decoded = tf.keras.layers.Dense(128, activation='relu')(decoded)
+decoded = tf.keras.layers.Dense(input_dim, activation='sigmoid')(decoded)
+
+autoencoder = tf.keras.Model(encoder_input, decoded)
+encoder = tf.keras.Model(encoder_input, encoded)
+
+autoencoder.compile(optimizer='adam', loss='mse')
+
+# Train on data
+# autoencoder.fit(X_train, X_train, epochs=50, batch_size=256)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class Autoencoder(nn.Module):
+    def __init__(self, input_dim, encoding_dim):
+        super().__init__()
+        
+        # Encoder
+        self.encoder = nn.Sequential(
+            nn.Linear(input_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, encoding_dim),
+            nn.ReLU()
+        )
+        
+        # Decoder
+        self.decoder = nn.Sequential(
+            nn.Linear(encoding_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, 128),
+            nn.ReLU(),
+            nn.Linear(128, input_dim),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, x):
+        encoded = self.encoder(x)
+        decoded = self.decoder(encoded)
+        return decoded
+    
+    def encode(self, x):
+        return self.encoder(x)
+
+model = Autoencoder(input_dim=784, encoding_dim=32)
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters())`,
+                    exercises: [
+                        {type: 'conceptual', q: 'How does the bottleneck size affect the quality of reconstruction vs compression?'},
+                        {type: 'code', q: 'Build an autoencoder for MNIST and visualize the learned latent space.'},
+                        {type: 'architecture', q: 'Design an autoencoder-based anomaly detection system for credit card fraud.'}
+                    ],
+                    resources: [
+                        {name: 'Autoencoder Tutorial', url: 'https://www.tensorflow.org/tutorials/generative/autoencoder'},
+                        {name: 'Building Autoencoders', url: 'https://blog.keras.io/building-autoencoders-in-keras.html'}
+                    ]
+                },
+                {
+                    id: 'vae',
+                    name: 'Variational AE (VAE)',
+                    problem: 'Standard autoencoders learn arbitrary latent spaces that are not smooth or generative.',
+                    when: 'Use when you need to generate new samples or want a probabilistic latent space.',
+                    theory: 'VAEs learn a probability distribution over the latent space rather than fixed encodings. They use reparameterization trick to enable backpropagation through sampling. The loss includes reconstruction loss plus KL divergence to regularize the latent space.',
+                    formula: 'L = E[log p(x|z)] - KL(q(z|x)||p(z))',
+                    pythonTF: `import tensorflow as tf
+
+class Sampling(tf.keras.layers.Layer):
+    def call(self, inputs):
+        z_mean, z_log_var = inputs
+        batch = tf.shape(z_mean)[0]
+        dim = tf.shape(z_mean)[1]
+        epsilon = tf.random.normal(shape=(batch, dim))
+        return z_mean + tf.exp(0.5 * z_log_var) * epsilon
+
+# Encoder
+latent_dim = 2
+encoder_inputs = tf.keras.Input(shape=(784,))
+x = tf.keras.layers.Dense(256, activation='relu')(encoder_inputs)
+x = tf.keras.layers.Dense(128, activation='relu')(x)
+z_mean = tf.keras.layers.Dense(latent_dim)(x)
+z_log_var = tf.keras.layers.Dense(latent_dim)(x)
+z = Sampling()([z_mean, z_log_var])
+encoder = tf.keras.Model(encoder_inputs, [z_mean, z_log_var, z])
+
+# Decoder
+latent_inputs = tf.keras.Input(shape=(latent_dim,))
+x = tf.keras.layers.Dense(128, activation='relu')(latent_inputs)
+x = tf.keras.layers.Dense(256, activation='relu')(x)
+decoder_outputs = tf.keras.layers.Dense(784, activation='sigmoid')(x)
+decoder = tf.keras.Model(latent_inputs, decoder_outputs)
+
+# VAE
+class VAE(tf.keras.Model):
+    def __init__(self, encoder, decoder):
+        super().__init__()
+        self.encoder = encoder
+        self.decoder = decoder
+    
+    def call(self, inputs):
+        z_mean, z_log_var, z = self.encoder(inputs)
+        reconstructed = self.decoder(z)
+        
+        # KL divergence loss
+        kl_loss = -0.5 * tf.reduce_mean(
+            z_log_var - tf.square(z_mean) - tf.exp(z_log_var) + 1
+        )
+        self.add_loss(kl_loss)
+        
+        return reconstructed
+
+vae = VAE(encoder, decoder)
+vae.compile(optimizer='adam', loss='mse')`,
+                    pythonPT: `import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class VAE(nn.Module):
+    def __init__(self, input_dim, latent_dim):
+        super().__init__()
+        
+        # Encoder
+        self.fc1 = nn.Linear(input_dim, 256)
+        self.fc2 = nn.Linear(256, 128)
+        self.fc_mean = nn.Linear(128, latent_dim)
+        self.fc_logvar = nn.Linear(128, latent_dim)
+        
+        # Decoder
+        self.fc3 = nn.Linear(latent_dim, 128)
+        self.fc4 = nn.Linear(128, 256)
+        self.fc5 = nn.Linear(256, input_dim)
+    
+    def encode(self, x):
+        h = F.relu(self.fc1(x))
+        h = F.relu(self.fc2(h))
+        return self.fc_mean(h), self.fc_logvar(h)
+    
+    def reparameterize(self, mu, logvar):
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+        return mu + eps * std
+    
+    def decode(self, z):
+        h = F.relu(self.fc3(z))
+        h = F.relu(self.fc4(h))
+        return torch.sigmoid(self.fc5(h))
+    
+    def forward(self, x):
+        mu, logvar = self.encode(x)
+        z = self.reparameterize(mu, logvar)
+        return self.decode(z), mu, logvar
+
+def vae_loss(recon_x, x, mu, logvar):
+    BCE = F.binary_cross_entropy(recon_x, x, reduction='sum')
+    KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+    return BCE + KLD`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Explain the reparameterization trick and why it is necessary for VAEs.'},
+                        {type: 'code', q: 'Build a VAE and generate new face images by sampling from the latent space.'},
+                        {type: 'architecture', q: 'How would you modify a VAE for conditional generation (e.g., generating specific digit classes)?'}
+                    ],
+                    resources: [
+                        {name: 'VAE Tutorial', url: 'https://arxiv.org/abs/1906.02691'},
+                        {name: 'Understanding VAEs', url: 'https://towardsdatascience.com/understanding-variational-autoencoders-vaes-f70510919f73'}
+                    ]
+                },
+                {
+                    id: 'dae',
+                    name: 'Denoising AE (DAE)',
+                    problem: 'Need robust feature learning and ability to recover corrupted data.',
+                    when: 'Use for learning robust representations, denoising images, or pre-training deep networks.',
+                    theory: 'DAEs are trained to reconstruct clean data from corrupted inputs. By learning to denoise, they capture robust features and underlying data structure. Corruption can be Gaussian noise, masking, or salt-and-pepper noise.',
+                    pythonTF: `import tensorflow as tf
+import numpy as np
+
+def add_noise(images, noise_factor=0.3):
+    noisy_images = images + noise_factor * tf.random.normal(shape=images.shape)
+    noisy_images = tf.clip_by_value(noisy_images, 0., 1.)
+    return noisy_images
+
+# Denoising Autoencoder
+model = tf.keras.Sequential([
+    tf.keras.layers.Input(shape=(28, 28, 1)),
+    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+    tf.keras.layers.MaxPooling2D((2, 2), padding='same'),
+    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+    tf.keras.layers.UpSampling2D((2, 2)),
+    tf.keras.layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')
+])
+
+model.compile(optimizer='adam', loss='mse')
+
+# Training
+# noisy_train = add_noise(X_train)
+# model.fit(noisy_train, X_train, epochs=50)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class DenoisingAutoencoder(nn.Module):
+    def __init__(self):
+        super().__init__()
+        
+        # Encoder
+        self.encoder = nn.Sequential(
+            nn.Conv2d(1, 32, 3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            nn.Conv2d(32, 64, 3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2)
+        )
+        
+        # Decoder
+        self.decoder = nn.Sequential(
+            nn.ConvTranspose2d(64, 32, 2, stride=2),
+            nn.ReLU(),
+            nn.ConvTranspose2d(32, 1, 2, stride=2),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
+
+def add_noise(images, noise_factor=0.3):
+    noisy = images + noise_factor * torch.randn_like(images)
+    return torch.clamp(noisy, 0., 1.)
+
+model = DenoisingAutoencoder()`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why does denoising help learn better features than standard autoencoders?'},
+                        {type: 'code', q: 'Build a DAE to remove noise from natural images and compare different noise types.'},
+                        {type: 'architecture', q: 'Design a DAE for audio denoising. What architecture choices would you make?'}
+                    ],
+                    resources: [
+                        {name: 'Denoising Autoencoders', url: 'https://www.cs.toronto.edu/~larocheh/publications/icml-2008-denoising-autoencoders.pdf'}
+                    ]
+                },
+                {
+                    id: 'sae',
+                    name: 'Sparse AE (SAE)',
+                    problem: 'Standard autoencoders may learn trivial identity mappings or redundant features.',
+                    when: 'Use when you want to learn overcomplete representations with sparsity constraints.',
+                    theory: 'SAEs add a sparsity penalty to the loss function, encouraging most hidden units to be inactive. This leads to learning of specialized, interpretable features and prevents overfitting even with large hidden layers.',
+                    formula: 'L = ||x - x̂||² + λΣ|h|',
+                    pythonTF: `import tensorflow as tf
+
+class SparseActivityRegularizer(tf.keras.regularizers.Regularizer):
+    def __init__(self, l1=0.01):
+        self.l1 = l1
+    
+    def __call__(self, x):
+        return self.l1 * tf.reduce_sum(tf.abs(x))
+
+# Sparse Autoencoder
+input_dim = 784
+hidden_dim = 1000  # Overcomplete
+
+encoder_input = tf.keras.Input(shape=(input_dim,))
+encoded = tf.keras.layers.Dense(
+    hidden_dim,
+    activation='relu',
+    activity_regularizer=SparseActivityRegularizer(l1=1e-5)
+)(encoder_input)
+
+decoded = tf.keras.layers.Dense(input_dim, activation='sigmoid')(encoded)
+
+autoencoder = tf.keras.Model(encoder_input, decoded)
+autoencoder.compile(optimizer='adam', loss='mse')`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class SparseAutoencoder(nn.Module):
+    def __init__(self, input_dim, hidden_dim, sparsity=0.05):
+        super().__init__()
+        self.sparsity = sparsity
+        
+        self.encoder = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU()
+        )
+        
+        self.decoder = nn.Sequential(
+            nn.Linear(hidden_dim, input_dim),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, x):
+        encoded = self.encoder(x)
+        decoded = self.decoder(encoded)
+        return decoded, encoded
+    
+    def sparse_loss(self, activations):
+        # KL divergence for sparsity
+        avg_activation = torch.mean(activations, dim=0)
+        sparsity_loss = torch.sum(
+            self.sparsity * torch.log(self.sparsity / avg_activation) +
+            (1 - self.sparsity) * torch.log((1 - self.sparsity) / (1 - avg_activation))
+        )
+        return sparsity_loss`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why can sparse autoencoders learn interpretable features?'},
+                        {type: 'code', q: 'Build a sparse autoencoder and visualize learned features as images.'},
+                        {type: 'architecture', q: 'Compare L1 vs KL divergence sparsity penalties. When would you use each?'}
+                    ],
+                    resources: [
+                        {name: 'Sparse Autoencoders', url: 'https://web.stanford.edu/class/cs294a/sparseAutoencoder.pdf'}
+                    ]
+                }
+            ],
+            probabilistic: [
+                {
+                    id: 'markov',
+                    name: 'Markov Chain (MC)',
+                    problem: 'Need to model systems where future states depend only on current state.',
+                    when: 'Use for sequence modeling, text generation, or any Markovian process.',
+                    theory: 'Markov chains model state transitions with the Markov property: P(s_t+1 | s_t, ..., s_1) = P(s_t+1 | s_t). Neural implementations can learn transition probabilities from data.',
+                    pythonTF: `import numpy as np
+
+class MarkovChain:
+    def __init__(self, states):
+        self.states = states
+        self.transition_matrix = {}
+        
+    def fit(self, sequences):
+        # Count transitions
+        transitions = {}
+        for seq in sequences:
+            for i in range(len(seq) - 1):
+                current, next_state = seq[i], seq[i+1]
+                if current not in transitions:
+                    transitions[current] = {}
+                transitions[current][next_state] = transitions[current].get(next_state, 0) + 1
+        
+        # Convert to probabilities
+        for state in transitions:
+            total = sum(transitions[state].values())
+            self.transition_matrix[state] = {
+                next_state: count / total 
+                for next_state, count in transitions[state].items()
+            }
+    
+    def predict_next(self, current_state):
+        if current_state not in self.transition_matrix:
+            return None
+        
+        states = list(self.transition_matrix[current_state].keys())
+        probs = list(self.transition_matrix[current_state].values())
+        return np.random.choice(states, p=probs)
+    
+    def generate_sequence(self, start_state, length=10):
+        sequence = [start_state]
+        current = start_state
+        
+        for _ in range(length - 1):
+            next_state = self.predict_next(current)
+            if next_state is None:
+                break
+            sequence.append(next_state)
+            current = next_state
+        
+        return sequence
+
+# Example: Text generation
+# mc = MarkovChain(states=['word1', 'word2', ...])
+# mc.fit(text_sequences)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class NeuralMarkovChain(nn.Module):
+    """Neural network that learns transition probabilities"""
+    def __init__(self, num_states, embedding_dim=64):
+        super().__init__()
+        self.embedding = nn.Embedding(num_states, embedding_dim)
+        self.fc = nn.Sequential(
+            nn.Linear(embedding_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, num_states)
+        )
+    
+    def forward(self, current_state):
+        # current_state: (batch_size,)
+        x = self.embedding(current_state)
+        logits = self.fc(x)
+        return torch.softmax(logits, dim=-1)
+
+model = NeuralMarkovChain(num_states=1000)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'What are the limitations of the Markov assumption in real-world sequences?'},
+                        {type: 'code', q: 'Build a character-level Markov chain for text generation and compare with bigrams.'},
+                        {type: 'architecture', q: 'How would you extend a Markov chain to capture longer-range dependencies?'}
+                    ],
+                    resources: [
+                        {name: 'Markov Chains Tutorial', url: 'https://setosa.io/ev/markov-chains/'}
+                    ]
+                },
+                {
+                    id: 'hopfield',
+                    name: 'Hopfield Network (HN)',
+                    problem: 'Need associative memory or pattern completion from partial/noisy inputs.',
+                    when: 'Use for content-addressable memory, error correction, or optimization problems.',
+                    theory: 'Hopfield networks are recurrent networks with symmetric weights that converge to stable states (attractors). They can store patterns and retrieve them from partial information. Energy function ensures convergence.',
+                    formula: 'E = -½Σᵢⱼ wᵢⱼsᵢsⱼ',
+                    pythonTF: `import numpy as np
+
+class HopfieldNetwork:
+    def __init__(self, num_neurons):
+        self.num_neurons = num_neurons
+        self.weights = np.zeros((num_neurons, num_neurons))
+    
+    def train(self, patterns):
+        """Hebbian learning: store patterns"""
+        # patterns: list of binary vectors {-1, 1}
+        self.weights = np.zeros((self.num_neurons, self.num_neurons))
+        
+        for pattern in patterns:
+            pattern = pattern.reshape(-1, 1)
+            self.weights += pattern @ pattern.T
+        
+        # Zero diagonal (no self-connections)
+        np.fill_diagonal(self.weights, 0)
+        self.weights /= len(patterns)
+    
+    def recall(self, pattern, max_iter=100):
+        """Retrieve pattern from partial/noisy input"""
+        state = pattern.copy()
+        
+        for _ in range(max_iter):
+            prev_state = state.copy()
+            
+            # Asynchronous update
+            for i in range(self.num_neurons):
+                activation = np.dot(self.weights[i], state)
+                state[i] = 1 if activation >= 0 else -1
+            
+            if np.array_equal(state, prev_state):
+                break
+        
+        return state
+    
+    def energy(self, state):
+        """Calculate energy of current state"""
+        return -0.5 * state @ self.weights @ state
+
+# Example
+hn = HopfieldNetwork(num_neurons=100)
+# Store patterns
+patterns = [pattern1, pattern2, pattern3]
+hn.train(patterns)
+# Recall from noisy input
+recovered = hn.recall(noisy_pattern)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class ModernHopfield(nn.Module):
+    """Modern continuous Hopfield network"""
+    def __init__(self, hidden_size, num_patterns):
+        super().__init__()
+        self.patterns = nn.Parameter(torch.randn(num_patterns, hidden_size))
+        self.beta = nn.Parameter(torch.ones(1))
+    
+    def forward(self, x):
+        # x: (batch, hidden_size)
+        # Compute similarity with all stored patterns
+        similarity = self.beta * (x @ self.patterns.T)  # (batch, num_patterns)
+        attention = torch.softmax(similarity, dim=-1)
+        
+        # Retrieve weighted combination of patterns
+        retrieved = attention @ self.patterns  # (batch, hidden_size)
+        return retrieved
+
+model = ModernHopfield(hidden_size=256, num_patterns=10)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Explain the concept of energy in Hopfield networks and why it guarantees convergence.'},
+                        {type: 'code', q: 'Build a Hopfield network to store and recall digit patterns. Test with noisy inputs.'},
+                        {type: 'architecture', q: 'What is the storage capacity of a Hopfield network? How does it scale?'}
+                    ],
+                    resources: [
+                        {name: 'Hopfield Networks', url: 'https://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf'},
+                        {name: 'Modern Hopfield', url: 'https://arxiv.org/abs/2008.02217'}
+                    ]
+                },
+                {
+                    id: 'boltzmann',
+                    name: 'Boltzmann Machine (BM)',
+                    problem: 'Need to learn probability distributions over binary data.',
+                    when: 'Use for unsupervised learning, collaborative filtering, or as building blocks for deep networks.',
+                    theory: 'Boltzmann machines are stochastic recurrent networks that learn probability distributions using energy-based models. Training uses contrastive divergence. Restricted BMs (RBM) have no intra-layer connections for tractability.',
+                    formula: 'P(v, h) = exp(-E(v,h)) / Z',
+                    pythonTF: `import tensorflow as tf
+import numpy as np
+
+class RBM:
+    def __init__(self, num_visible, num_hidden, learning_rate=0.01):
+        self.num_visible = num_visible
+        self.num_hidden = num_hidden
+        self.lr = learning_rate
+        
+        # Initialize weights
+        self.W = tf.Variable(
+            tf.random.normal([num_visible, num_hidden], stddev=0.01)
+        )
+        self.vb = tf.Variable(tf.zeros([num_visible]))
+        self.hb = tf.Variable(tf.zeros([num_hidden]))
+    
+    def sample_hidden(self, v):
+        """Sample h given v"""
+        activation = tf.matmul(v, self.W) + self.hb
+        prob_h = tf.nn.sigmoid(activation)
+        return prob_h, tf.cast(tf.random.uniform(tf.shape(prob_h)) < prob_h, tf.float32)
+    
+    def sample_visible(self, h):
+        """Sample v given h"""
+        activation = tf.matmul(h, tf.transpose(self.W)) + self.vb
+        prob_v = tf.nn.sigmoid(activation)
+        return prob_v, tf.cast(tf.random.uniform(tf.shape(prob_v)) < prob_v, tf.float32)
+    
+    def contrastive_divergence(self, v0, k=1):
+        """CD-k algorithm"""
+        # Positive phase
+        ph0, h0 = self.sample_hidden(v0)
+        
+        # Negative phase (k-step Gibbs sampling)
+        h = h0
+        for _ in range(k):
+            pv, v = self.sample_visible(h)
+            ph, h = self.sample_hidden(v)
+        
+        # Update weights
+        positive_grad = tf.matmul(tf.transpose(v0), ph0)
+        negative_grad = tf.matmul(tf.transpose(v), ph)
+        
+        self.W.assign_add(self.lr * (positive_grad - negative_grad) / tf.cast(tf.shape(v0)[0], tf.float32))
+        self.vb.assign_add(self.lr * tf.reduce_mean(v0 - v, axis=0))
+        self.hb.assign_add(self.lr * tf.reduce_mean(ph0 - ph, axis=0))
+
+rbm = RBM(num_visible=784, num_hidden=256)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class RBM(nn.Module):
+    def __init__(self, num_visible, num_hidden):
+        super().__init__()
+        self.W = nn.Parameter(torch.randn(num_hidden, num_visible) * 0.01)
+        self.v_bias = nn.Parameter(torch.zeros(num_visible))
+        self.h_bias = nn.Parameter(torch.zeros(num_hidden))
+    
+    def sample_h(self, v):
+        activation = F.linear(v, self.W, self.h_bias)
+        prob_h = torch.sigmoid(activation)
+        return prob_h, torch.bernoulli(prob_h)
+    
+    def sample_v(self, h):
+        activation = F.linear(h, self.W.t(), self.v_bias)
+        prob_v = torch.sigmoid(activation)
+        return prob_v, torch.bernoulli(prob_v)
+    
+    def forward(self, v, k=1):
+        """Contrastive Divergence"""
+        ph, h = self.sample_h(v)
+        
+        # Gibbs sampling
+        for _ in range(k):
+            pv, v_sample = self.sample_v(h)
+            ph, h = self.sample_h(v_sample)
+        
+        return v, v_sample, ph
+
+model = RBM(num_visible=784, num_hidden=256)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Explain contrastive divergence and why it approximates maximum likelihood.'},
+                        {type: 'code', q: 'Train an RBM on MNIST and visualize learned features.'},
+                        {type: 'architecture', q: 'How would you stack RBMs to create a deep belief network?'}
+                    ],
+                    resources: [
+                        {name: 'RBM Tutorial', url: 'https://www.cs.toronto.edu/~hinton/absps/guideTR.pdf'}
+                    ]
+                },
+                {
+                    id: 'dbn',
+                    name: 'Deep Belief Network (DBN)',
+                    problem: 'Need deep generative models that can be trained layer-by-layer.',
+                    when: 'Use for unsupervised pre-training, generation, or when labeled data is scarce.',
+                    theory: 'DBNs stack multiple RBMs, training greedily layer-by-layer. Top layers form an associative memory, lower layers learn feature hierarchies. Can be fine-tuned with backpropagation for supervised tasks.',
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class DBN(nn.Module):
+    def __init__(self, layer_sizes):
+        super().__init__()
+        self.rbm_layers = nn.ModuleList()
+        
+        # Create RBM for each layer pair
+        for i in range(len(layer_sizes) - 1):
+            rbm = RBM(layer_sizes[i], layer_sizes[i+1])
+            self.rbm_layers.append(rbm)
+    
+    def pretrain(self, data, epochs=10, k=1):
+        """Greedy layer-wise pretraining"""
+        current_input = data
+        
+        for i, rbm in enumerate(self.rbm_layers):
+            print(f"Pre-training layer {i+1}")
+            
+            for epoch in range(epochs):
+                for batch in current_input:
+                    # Train RBM with CD-k
+                    _, _, ph = rbm(batch, k=k)
+                
+            # Use hidden probabilities as input for next layer
+            with torch.no_grad():
+                ph, _ = rbm.sample_h(current_input)
+                current_input = ph
+    
+    def forward(self, x):
+        """Forward pass through all layers"""
+        h = x
+        for rbm in self.rbm_layers:
+            ph, h = rbm.sample_h(h)
+        return h
+
+# Create DBN
+dbn = DBN(layer_sizes=[784, 500, 250, 100])`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why was layer-wise pretraining important before modern initialization methods?'},
+                        {type: 'code', q: 'Build and pretrain a DBN, then fine-tune for classification.'},
+                        {type: 'architecture', q: 'Compare DBN pretraining vs random initialization on a small dataset.'}
+                    ],
+                    resources: [
+                        {name: 'DBN Paper', url: 'https://www.cs.toronto.edu/~hinton/absps/fastnc.pdf'}
+                    ]
+                },
+                {
+                    id: 'rbm',
+                    name: 'Restricted BM (RBM)',
+                    problem: 'Full Boltzmann machines are intractable due to connections between all units.',
+                    when: 'Use for collaborative filtering, dimensionality reduction, or feature learning.',
+                    theory: 'RBMs restrict connections to be bipartite (visible ↔ hidden only). This enables efficient inference and learning through Gibbs sampling. Forms building block for DBNs.',
+                    pythonTF: `# See Boltzmann Machine implementation above
+# RBM is the practical implementation used
+# Key restriction: no visible-visible or hidden-hidden connections`,
+                    pythonPT: `# RBM implementation shown in Boltzmann Machine section
+# Key properties:
+# - Bipartite graph structure
+# - Conditional independence: P(h|v) = ∏P(hᵢ|v)
+# - Enables efficient Gibbs sampling`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why does the restriction to bipartite connections make training tractable?'},
+                        {type: 'code', q: 'Implement an RBM for collaborative filtering (movie recommendations).'},
+                        {type: 'architecture', q: 'Design a conditional RBM for class-conditional generation.'}
+                    ],
+                    resources: [
+                        {name: 'RBM Guide', url: 'https://www.cs.toronto.edu/~hinton/absps/guideTR.pdf'}
+                    ]
+                }
+            ],
+            convolutional: [
+                {
+                    id: 'dcn',
+                    name: 'Deep Convolutional Network (DCN)',
+                    problem: 'Need to process images with spatial hierarchy and translation invariance.',
+                    when: 'Use for image classification, object detection, or any grid-like data.',
+                    theory: 'CNNs use convolutional layers that share weights across spatial locations, learning local patterns. Pooling provides translation invariance. Deep stacking learns hierarchical features from edges to complex objects.',
+                    formula: 'y[i,j] = Σₘ Σₙ w[m,n] × x[i+m, j+n]',
+                    pythonTF: `import tensorflow as tf
+
+# Deep CNN for image classification
+model = tf.keras.Sequential([
+    # Block 1
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(224,224,3)),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D((2,2)),
+    tf.keras.layers.Dropout(0.25),
+    
+    # Block 2
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D((2,2)),
+    tf.keras.layers.Dropout(0.25),
+    
+    # Block 3
+    tf.keras.layers.Conv2D(128, (3,3), activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Conv2D(128, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D((2,2)),
+    tf.keras.layers.Dropout(0.25),
+    
+    # Classifier
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(512, activation='relu'),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class DeepCNN(nn.Module):
+    def __init__(self, num_classes=10):
+        super().__init__()
+        
+        self.features = nn.Sequential(
+            # Block 1
+            nn.Conv2d(3, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.Conv2d(32, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout(0.25),
+            
+            # Block 2
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout(0.25),
+            
+            # Block 3
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout(0.25)
+        )
+        
+        self.classifier = nn.Sequential(
+            nn.Linear(128 * 28 * 28, 512),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, num_classes)
+        )
+    
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
+        return x`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why do CNNs work better than fully connected networks for images?'},
+                        {type: 'code', q: 'Build a CNN for CIFAR-10 and achieve >80% accuracy.'},
+                        {type: 'architecture', q: 'Design a CNN for medical image segmentation.'}
+                    ],
+                    resources: [
+                        {name: 'CNN Guide', url: 'https://cs231n.github.io/convolutional-networks/'},
+                        {name: 'TensorFlow CNN', url: 'https://www.tensorflow.org/tutorials/images/cnn'}
+                    ]
+                },
+                {
+                    id: 'dn',
+                    name: 'Deconvolutional Network (DN)',
+                    problem: 'Need to upsample or generate images from low-resolution representations.',
+                    when: 'Use for image generation, super-resolution, or semantic segmentation.',
+                    theory: 'Deconvolution (transposed convolution) performs learned upsampling. Unlike simple interpolation, it learns to fill in details. Often used in decoder parts of autoencoders or segmentation networks.',
+                    pythonTF: `import tensorflow as tf
+
+# Deconvolutional decoder
+decoder = tf.keras.Sequential([
+    tf.keras.layers.Dense(7*7*256, input_shape=(100,)),
+    tf.keras.layers.Reshape((7, 7, 256)),
+    
+    # Deconv layers
+    tf.keras.layers.Conv2DTranspose(128, (5,5), strides=(1,1), padding='same', activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    
+    tf.keras.layers.Conv2DTranspose(64, (5,5), strides=(2,2), padding='same', activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    
+    tf.keras.layers.Conv2DTranspose(32, (5,5), strides=(2,2), padding='same', activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    
+    tf.keras.layers.Conv2DTranspose(1, (5,5), strides=(1,1), padding='same', activation='sigmoid')
+])`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class DeconvNet(nn.Module):
+    def __init__(self, latent_dim=100):
+        super().__init__()
+        
+        self.decoder = nn.Sequential(
+            # Dense to reshape
+            nn.Linear(latent_dim, 7*7*256),
+            
+            # Deconv blocks - note: these are actually implemented
+            nn.Unflatten(1, (256, 7, 7)),
+            
+            nn.ConvTranspose2d(256, 128, 5, stride=1, padding=2),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            
+            nn.ConvTranspose2d(128, 64, 5, stride=2, padding=2, output_padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            
+            nn.ConvTranspose2d(64, 32, 5, stride=2, padding=2, output_padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            
+            nn.ConvTranspose2d(32, 1, 5, stride=1, padding=2),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, z):
+        return self.decoder(z)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Explain the checkerboard artifacts problem in deconvolution. How can you avoid it?'},
+                        {type: 'code', q: 'Build a deconvolutional generator for MNIST digit generation.'},
+                        {type: 'architecture', q: 'Design an encoder-decoder with skip connections for image-to-image translation.'}
+                    ],
+                    resources: [
+                        {name: 'Deconvolution Guide', url: 'https://distill.pub/2016/deconv-checkerboard/'}
+                    ]
+                },
+                {
+                    id: 'dcign',
+                    name: 'Deep Convolutional Inverse Graphics Network (DCIGN)',
+                    problem: 'Need to disentangle scene properties (pose, lighting, shape) from images.',
+                    when: 'Use for learning interpretable representations or graphics code inference.',
+                    theory: 'DCIGNs learn to map images to interpretable graphics codes (pose, lighting, etc.) that can be rendered back. Uses encoder-decoder architecture with explicit disentanglement losses.',
+                    pythonTF: `import tensorflow as tf
+
+class DCIGN(tf.keras.Model):
+    def __init__(self, latent_dim=200):
+        super().__init__()
+        
+        # Encoder
+        self.encoder = tf.keras.Sequential([
+            tf.keras.layers.Conv2D(96, 5, strides=2, padding='same', activation='relu'),
+            tf.keras.layers.Conv2D(128, 5, strides=2, padding='same', activation='relu'),
+            tf.keras.layers.Conv2D(256, 5, strides=2, padding='same', activation='relu'),
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(latent_dim)
+        ])
+        
+        # Decoder
+        self.decoder = tf.keras.Sequential([
+            tf.keras.layers.Dense(4*4*256, activation='relu'),
+            tf.keras.layers.Reshape((4, 4, 256)),
+            tf.keras.layers.Conv2DTranspose(128, 5, strides=2, padding='same', activation='relu'),
+            tf.keras.layers.Conv2DTranspose(96, 5, strides=2, padding='same', activation='relu'),
+            tf.keras.layers.Conv2DTranspose(3, 5, strides=2, padding='same', activation='sigmoid')
+        ])
+    
+    def call(self, inputs):
+        latent = self.encoder(inputs)
+        reconstructed = self.decoder(latent)
+        return reconstructed, latent
+
+model = DCIGN()`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class DCIGN(nn.Module):
+    def __init__(self, latent_dim=200):
+        super().__init__()
+        
+        # Encoder
+        self.encoder = nn.Sequential(
+            nn.Conv2d(3, 96, 5, stride=2, padding=2),
+            nn.ReLU(),
+            nn.Conv2d(96, 128, 5, stride=2, padding=2),
+            nn.ReLU(),
+            nn.Conv2d(128, 256, 5, stride=2, padding=2),
+            nn.ReLU(),
+            nn.Flatten(),
+            nn.Linear(256 * 4 * 4, latent_dim)
+        )
+        
+        # Decoder
+        self.decoder = nn.Sequential(
+            nn.Linear(latent_dim, 256 * 4 * 4),
+            nn.ReLU(),
+            nn.Unflatten(1, (256, 4, 4)),
+            nn.ConvTranspose2d(256, 128, 5, stride=2, padding=2, output_padding=1),
+            nn.ReLU(),
+            nn.ConvTranspose2d(128, 96, 5, stride=2, padding=2, output_padding=1),
+            nn.ReLU(),
+            nn.ConvTranspose2d(96, 3, 5, stride=2, padding=2, output_padding=1),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, x):
+        latent = self.encoder(x)
+        reconstructed = self.decoder(latent)
+        return reconstructed, latent`,
+                    exercises: [
+                        {type: 'conceptual', q: 'How does DCIGN achieve disentanglement of scene properties?'},
+                        {type: 'code', q: 'Build a DCIGN and test if you can independently manipulate pose and lighting.'},
+                        {type: 'architecture', q: 'Design losses to encourage better disentanglement in the latent space.'}
+                    ],
+                    resources: [
+                        {name: 'DCIGN Paper', url: 'https://arxiv.org/abs/1503.03167'}
+                    ]
+                }
+            ],
+            advanced: [
+                {
+                    id: 'gan',
+                    name: 'Generative Adversarial Network (GAN)',
+                    problem: 'Need to generate realistic samples without explicit likelihood modeling.',
+                    when: 'Use for image generation, data augmentation, or style transfer.',
+                    theory: 'GANs train two networks in competition: Generator creates fake samples, Discriminator distinguishes real from fake. Nash equilibrium produces realistic generations. Training can be unstable.',
+                    formula: 'min_G max_D E[log D(x)] + E[log(1 - D(G(z)))]',
+                    pythonTF: `import tensorflow as tf
+
+# Generator
+def build_generator(latent_dim=100):
+    model = tf.keras.Sequential([
+        tf.keras.layers.Dense(7*7*256, input_shape=(latent_dim,)),
+        tf.keras.layers.Reshape((7, 7, 256)),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.LeakyReLU(0.2),
+        
+        tf.keras.layers.Conv2DTranspose(128, 5, strides=1, padding='same'),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.LeakyReLU(0.2),
+        
+        tf.keras.layers.Conv2DTranspose(64, 5, strides=2, padding='same'),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.LeakyReLU(0.2),
+        
+        tf.keras.layers.Conv2DTranspose(1, 5, strides=2, padding='same', activation='tanh')
+    ])
+    return model
+
+# Discriminator
+def build_discriminator():
+    model = tf.keras.Sequential([
+        tf.keras.layers.Conv2D(64, 5, strides=2, padding='same', input_shape=(28,28,1)),
+        tf.keras.layers.LeakyReLU(0.2),
+        tf.keras.layers.Dropout(0.3),
+        
+        tf.keras.layers.Conv2D(128, 5, strides=2, padding='same'),
+        tf.keras.layers.LeakyReLU(0.2),
+        tf.keras.layers.Dropout(0.3),
+        
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+    return model
+
+generator = build_generator()
+discriminator = build_discriminator()`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class Generator(nn.Module):
+    def __init__(self, latent_dim=100):
+        super().__init__()
+        self.model = nn.Sequential(
+            nn.Linear(latent_dim, 7*7*256),
+            nn.Unflatten(1, (256, 7, 7)),
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.2),
+            
+            nn.ConvTranspose2d(256, 128, 5, stride=1, padding=2),
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(0.2),
+            
+            nn.ConvTranspose2d(128, 64, 5, stride=2, padding=2, output_padding=1),
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(0.2),
+            
+            nn.ConvTranspose2d(64, 1, 5, stride=2, padding=2, output_padding=1),
+            nn.Tanh()
+        )
+    
+    def forward(self, z):
+        return self.model(z)
+
+class Discriminator(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = nn.Sequential(
+            nn.Conv2d(1, 64, 5, stride=2, padding=2),
+            nn.LeakyReLU(0.2),
+            nn.Dropout(0.3),
+            
+            nn.Conv2d(64, 128, 5, stride=2, padding=2),
+            nn.LeakyReLU(0.2),
+            nn.Dropout(0.3),
+            
+            nn.Flatten(),
+            nn.Linear(128 * 7 * 7, 1),
+            nn.Sigmoid()
+        )
+    
+    def forward(self, x):
+        return self.model(x)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Explain mode collapse in GANs and strategies to prevent it.'},
+                        {type: 'code', q: 'Build a DCGAN for MNIST and track discriminator/generator losses.'},
+                        {type: 'architecture', q: 'Design a conditional GAN for generating specific digit classes.'}
+                    ],
+                    resources: [
+                        {name: 'GAN Paper', url: 'https://arxiv.org/abs/1406.2661'},
+                        {name: 'GAN Tutorial', url: 'https://www.tensorflow.org/tutorials/generative/dcgan'}
+                    ]
+                },
+                {
+                    id: 'lsm',
+                    name: 'Liquid State Machine (LSM)',
+                    problem: 'Need real-time processing of continuous time-series with biological plausibility.',
+                    when: 'Use for signal processing, robotics control, or neuromorphic computing.',
+                    theory: 'LSMs use recurrent spiking neural networks as a reservoir that transforms inputs into high-dimensional spatiotemporal patterns. Only readout layer is trained, similar to Echo State Networks but with spiking neurons.',
+                    pythonTF: `import numpy as np
+
+class LiquidStateMachine:
+    def __init__(self, n_inputs, n_reservoir, n_outputs):
+        self.n_reservoir = n_reservoir
+        
+        # Input weights
+        self.W_in = np.random.randn(n_reservoir, n_inputs) * 0.1
+        
+        # Reservoir (random recurrent connections)
+        self.W_res = np.random.randn(n_reservoir, n_reservoir) * 0.5
+        self.W_res *= (np.random.rand(n_reservoir, n_reservoir) < 0.1)  # Sparse
+        
+        # Readout weights (trained)
+        self.W_out = None
+        
+        # Neuron states
+        self.membrane_potential = np.zeros(n_reservoir)
+        self.threshold = 1.0
+        self.decay = 0.9
+    
+    def _step(self, input_signal):
+        # Leaky integrate-and-fire neurons
+        input_current = self.W_in @ input_signal
+        recurrent_current = self.W_res @ (self.membrane_potential > 0)
+        
+        self.membrane_potential = self.decay * self.membrane_potential + input_current + recurrent_current
+        
+        # Spiking
+        spikes = (self.membrane_potential > self.threshold).astype(float)
+        self.membrane_potential[spikes > 0] = 0  # Reset
+        
+        return spikes
+    
+    def process_sequence(self, inputs):
+        states = []
+        self.membrane_potential = np.zeros(self.n_reservoir)
+        
+        for inp in inputs:
+            spikes = self._step(inp)
+            states.append(spikes)
+        
+        return np.array(states)
+    
+    def train_readout(self, X, y):
+        # Collect reservoir states
+        all_states = []
+        for seq in X:
+            states = self.process_sequence(seq)
+            all_states.append(states[-1])  # Use final state
+        
+        states_matrix = np.array(all_states)
+        
+        # Linear regression
+        self.W_out = np.linalg.lstsq(states_matrix, y, rcond=None)[0]
+    
+    def predict(self, X):
+        states = self.process_sequence(X)
+        return states[-1] @ self.W_out
+
+lsm = LiquidStateMachine(n_inputs=10, n_reservoir=1000, n_outputs=2)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class SpikingNeuron(nn.Module):
+    def __init__(self, threshold=1.0, decay=0.9):
+        super().__init__()
+        self.threshold = threshold
+        self.decay = decay
+        self.membrane = None
+    
+    def forward(self, x):
+        if self.membrane is None:
+            self.membrane = torch.zeros_like(x)
+        
+        self.membrane = self.decay * self.membrane + x
+        spikes = (self.membrane > self.threshold).float()
+        self.membrane = self.membrane * (1 - spikes)  # Reset
+        
+        return spikes
+    
+    def reset(self):
+        self.membrane = None
+
+class LSM(nn.Module):
+    def __init__(self, input_size, reservoir_size, output_size):
+        super().__init__()
+        
+        # Fixed reservoir
+        self.W_in = nn.Parameter(torch.randn(reservoir_size, input_size) * 0.1, requires_grad=False)
+        
+        W_res = torch.randn(reservoir_size, reservoir_size) * 0.5
+        mask = (torch.rand(reservoir_size, reservoir_size) < 0.1).float()
+        self.W_res = nn.Parameter(W_res * mask, requires_grad=False)
+        
+        self.spiking = SpikingNeuron()
+        self.readout = nn.Linear(reservoir_size, output_size)
+    
+    def forward(self, x):
+        # x: (batch, seq_len, input_size)
+        self.spiking.reset()
+        
+        outputs = []
+        for t in range(x.size(1)):
+            inp = x[:, t, :]
+            current = inp @ self.W_in.t()
+            
+            if len(outputs) > 0:
+                current += outputs[-1] @ self.W_res.t()
+            
+            spikes = self.spiking(current)
+            outputs.append(spikes)
+        
+        final_state = outputs[-1]
+        return self.readout(final_state)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'How do LSMs differ from traditional RNNs in computation and learning?'},
+                        {type: 'code', q: 'Implement an LSM for spoken digit recognition and compare with standard RNN.'},
+                        {type: 'architecture', q: 'Design an LSM-based system for real-time gesture recognition.'}
+                    ],
+                    resources: [
+                        {name: 'LSM Paper', url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2886932/'}
+                    ]
+                },
+                {
+                    id: 'elm',
+                    name: 'Extreme Learning Machine (ELM)',
+                    problem: 'Neural network training is slow due to iterative gradient descent.',
+                    when: 'Use when you need very fast training for regression/classification.',
+                    theory: 'ELMs use random hidden layer weights (never trained) and solve for output weights analytically using least squares. Training is extremely fast but requires more neurons than gradient-based methods.',
+                    pythonTF: `import numpy as np
+
+class ELM:
+    def __init__(self, n_inputs, n_hidden, n_outputs, activation='sigmoid'):
+        self.n_hidden = n_hidden
+        
+        # Random weights (never trained)
+        self.W_input = np.random.randn(n_inputs, n_hidden)
+        self.bias = np.random.randn(n_hidden)
+        
+        self.W_output = None
+        self.activation = activation
+    
+    def _activate(self, x):
+        if self.activation == 'sigmoid':
+            return 1 / (1 + np.exp(-x))
+        elif self.activation == 'relu':
+            return np.maximum(0, x)
+        return np.tanh(x)
+    
+    def fit(self, X, y, C=1.0):
+        # Compute hidden layer output
+        H = self._activate(X @ self.W_input + self.bias)
+        
+        # Analytical solution with regularization
+        if H.shape[0] <= self.n_hidden:
+            # More features than samples
+            self.W_output = H.T @ np.linalg.inv(
+                H @ H.T + np.eye(H.shape[0]) / C
+            ) @ y
+        else:
+            # More samples than features
+            self.W_output = np.linalg.inv(
+                H.T @ H + np.eye(self.n_hidden) / C
+            ) @ H.T @ y
+    
+    def predict(self, X):
+        H = self._activate(X @ self.W_input + self.bias)
+        return H @ self.W_output
+
+# Example usage
+elm = ELM(n_inputs=20, n_hidden=1000, n_outputs=10)
+# Training is single step
+# elm.fit(X_train, y_train)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class ELM(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super().__init__()
+        
+        # Random hidden layer (frozen)
+        self.hidden = nn.Linear(input_size, hidden_size)
+        for param in self.hidden.parameters():
+            param.requires_grad = False
+        
+        # Output layer (solved analytically)
+        self.output = nn.Linear(hidden_size, output_size, bias=False)
+    
+    def fit(self, X, y, C=1.0):
+        with torch.no_grad():
+            # Compute hidden representations
+            H = torch.relu(self.hidden(X))
+            
+            # Analytical solution
+            H_t = H.t()
+            if H.size(0) <= H.size(1):
+                weights = H_t @ torch.inverse(
+                    H @ H_t + torch.eye(H.size(0)) / C
+                ) @ y
+            else:
+                weights = torch.inverse(
+                    H_t @ H + torch.eye(H.size(1)) / C
+                ) @ H_t @ y
+            
+            self.output.weight.data = weights.t()
+    
+    def forward(self, x):
+        h = torch.relu(self.hidden(x))
+        return self.output(h)
+
+model = ELM(input_size=20, hidden_size=1000, output_size=10)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why can ELMs train so quickly? What are the tradeoffs?'},
+                        {type: 'code', q: 'Compare ELM vs standard MLP on speed and accuracy for classification.'},
+                        {type: 'architecture', q: 'When would you choose ELM over deep learning approaches?'}
+                    ],
+                    resources: [
+                        {name: 'ELM Tutorial', url: 'https://www.ntu.edu.sg/home/egbhuang/'}
+                    ]
+                },
+                {
+                    id: 'kohonen',
+                    name: 'Kohonen Network (KN)',
+                    problem: 'Need unsupervised clustering and dimensionality reduction preserving topology.',
+                    when: 'Use for data visualization, clustering, or feature mapping.',
+                    theory: 'Self-Organizing Maps (SOMs) create low-dimensional representations preserving topological relationships. Competitive learning: winner neuron and neighbors update to match input. Creates organized feature maps.',
+                    formula: 'w_i(t+1) = w_i(t) + η(t)h(i,winner)(x - w_i(t))',
+                    pythonTF: `import numpy as np
+
+class SOM:
+    def __init__(self, grid_size, input_dim, learning_rate=0.5, sigma=1.0):
+        self.grid_size = grid_size
+        self.input_dim = input_dim
+        self.lr = learning_rate
+        self.sigma = sigma
+        
+        # Initialize random weights
+        self.weights = np.random.rand(grid_size[0], grid_size[1], input_dim)
+        
+        # Create coordinate grid
+        self.coordinates = np.array([
+            [[i, j] for j in range(grid_size[1])]
+            for i in range(grid_size[0])
+        ])
+    
+    def _find_bmu(self, x):
+        """Find Best Matching Unit"""
+        distances = np.linalg.norm(self.weights - x, axis=2)
+        return np.unravel_index(np.argmin(distances), distances.shape)
+    
+    def _neighborhood(self, bmu, iteration, max_iter):
+        """Calculate neighborhood function"""
+        sigma_t = self.sigma * np.exp(-iteration / max_iter)
+        lr_t = self.lr * np.exp(-iteration / max_iter)
+        
+        distances = np.linalg.norm(
+            self.coordinates - np.array(bmu), axis=2
+        )
+        
+        influence = np.exp(-(distances ** 2) / (2 * sigma_t ** 2))
+        return influence, lr_t
+    
+    def train(self, data, num_iterations):
+        for iteration in range(num_iterations):
+            for x in data:
+                bmu = self._find_bmu(x)
+                influence, lr = self._neighborhood(bmu, iteration, num_iterations)
+                
+                # Update weights
+                for i in range(self.grid_size[0]):
+                    for j in range(self.grid_size[1]):
+                        self.weights[i, j] += (
+                            lr * influence[i, j] * (x - self.weights[i, j])
+                        )
+    
+    def predict(self, x):
+        """Map input to grid position"""
+        return self._find_bmu(x)
+
+som = SOM(grid_size=(10, 10), input_dim=3)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class KohonenSOM(nn.Module):
+    def __init__(self, input_dim, map_size=(10, 10)):
+        super().__init__()
+        self.map_size = map_size
+        self.input_dim = input_dim
+        
+        # Initialize weights
+        self.weights = nn.Parameter(
+            torch.randn(map_size[0], map_size[1], input_dim)
+        )
+        
+        # Grid coordinates
+        x = torch.arange(map_size[0]).float()
+        y = torch.arange(map_size[1]).float()
+        self.grid_x, self.grid_y = torch.meshgrid(x, y, indexing='ij')
+    
+    def find_bmu(self, x):
+        # x: (batch, input_dim)
+        diff = self.weights.unsqueeze(0) - x.view(-1, 1, 1, self.input_dim)
+        distances = torch.sum(diff ** 2, dim=-1)
+        
+        flat_idx = torch.argmin(distances.view(x.size(0), -1), dim=1)
+        bmu_x = flat_idx // self.map_size[1]
+        bmu_y = flat_idx % self.map_size[1]
+        
+        return bmu_x, bmu_y
+    
+    def forward(self, x):
+        return self.find_bmu(x)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'How does the neighborhood function preserve topology in SOMs?'},
+                        {type: 'code', q: 'Build a SOM to visualize high-dimensional data in 2D.'},
+                        {type: 'architecture', q: 'Design a hierarchical SOM for document clustering.'}
+                    ],
+                    resources: [
+                        {name: 'SOM Tutorial', url: 'http://www.ai-junkie.com/ann/som/som1.html'}
+                    ]
+                },
+                {
+                    id: 'svm',
+                    name: 'Support Vector Machine (SVM)',
+                    problem: 'Need maximum-margin classification with kernel trick for non-linear boundaries.',
+                    when: 'Use for binary classification, especially with high-dimensional data.',
+                    theory: 'SVMs find the hyperplane that maximizes margin between classes. Kernel trick enables non-linear boundaries without explicit feature transformation. Only support vectors affect the decision boundary.',
+                    formula: 'f(x) = sign(Σ αᵢyᵢK(xᵢ, x) + b)',
+                    pythonTF: `# SVMs are not typically implemented in TensorFlow
+# Use scikit-learn instead
+from sklearn import svm
+import numpy as np
+
+# Linear SVM
+linear_svm = svm.SVC(kernel='linear', C=1.0)
+
+# RBF kernel SVM
+rbf_svm = svm.SVC(kernel='rbf', gamma='scale', C=1.0)
+
+# Polynomial kernel
+poly_svm = svm.SVC(kernel='poly', degree=3, C=1.0)
+
+# Training
+# linear_svm.fit(X_train, y_train)
+# predictions = linear_svm.predict(X_test)
+
+# For multi-class
+multiclass_svm = svm.SVC(decision_function_shape='ovr')`,
+                    pythonPT: `# PyTorch implementation for educational purposes
+import torch
+import torch.nn as nn
+
+class SVMLoss(nn.Module):
+    def __init__(self, C=1.0):
+        super().__init__()
+        self.C = C
+    
+    def forward(self, outputs, targets):
+        # Hinge loss
+        hinge = torch.clamp(1 - targets * outputs, min=0)
+        return torch.mean(hinge)
+
+class LinearSVM(nn.Module):
+    def __init__(self, input_dim):
+        super().__init__()
+        self.linear = nn.Linear(input_dim, 1, bias=True)
+    
+    def forward(self, x):
+        return self.linear(x).squeeze()
+
+# Usage
+model = LinearSVM(input_dim=20)
+criterion = SVMLoss(C=1.0)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)`,
+                    rCode: `# R implementation using e1071 package
+library(e1071)
+
+# Train SVM
+svm_model <- svm(Species ~ ., data = iris, 
+                 kernel = "radial", 
+                 cost = 1, 
+                 gamma = 0.1)
+
+# Predictions
+predictions <- predict(svm_model, newdata = test_data)
+
+# Tune hyperparameters
+tuned <- tune.svm(Species ~ ., data = iris,
+                  gamma = 10^(-6:-1),
+                  cost = 10^(1:2))`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Explain the kernel trick and why it enables non-linear classification without explicit feature mapping.'},
+                        {type: 'code', q: 'Compare linear, polynomial, and RBF kernels on a non-linearly separable dataset.'},
+                        {type: 'architecture', q: 'When would you use SVM instead of deep learning?'}
+                    ],
+                    resources: [
+                        {name: 'SVM Tutorial', url: 'https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf'},
+                        {name: 'Sklearn SVM', url: 'https://scikit-learn.org/stable/modules/svm.html'}
+                    ]
+                },
+                {
+                    id: 'ntm',
+                    name: 'Neural Turing Machine (NTM)',
+                    problem: 'Standard networks lack external memory for complex algorithmic tasks.',
+                    when: 'Use for tasks requiring working memory, like sorting, copying, or algorithmic learning.',
+                    theory: 'NTMs augment neural networks with external memory that can be read/written using attention mechanisms. Controller network outputs attention weights for memory addressing. Fully differentiable.',
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class NTMMemory:
+    def __init__(self, memory_size, memory_dim):
+        self.memory = torch.zeros(memory_size, memory_dim)
+    
+    def read(self, weights):
+        # weights: (memory_size,)
+        return torch.sum(weights.unsqueeze(1) * self.memory, dim=0)
+    
+    def write(self, weights, erase_vector, add_vector):
+        # Erase then add
+        self.memory = self.memory * (1 - weights.unsqueeze(1) * erase_vector.unsqueeze(0))
+        self.memory = self.memory + weights.unsqueeze(1) * add_vector.unsqueeze(0)
+
+class NTMController(nn.Module):
+    def __init__(self, input_size, hidden_size, memory_size, memory_dim):
+        super().__init__()
+        
+        self.memory_size = memory_size
+        self.memory_dim = memory_dim
+        
+        self.lstm = nn.LSTM(input_size + memory_dim, hidden_size)
+        
+        # Read head
+        self.read_key = nn.Linear(hidden_size, memory_dim)
+        self.read_strength = nn.Linear(hidden_size, 1)
+        
+        # Write head
+        self.write_key = nn.Linear(hidden_size, memory_dim)
+        self.write_strength = nn.Linear(hidden_size, 1)
+        self.erase_vector = nn.Linear(hidden_size, memory_dim)
+        self.add_vector = nn.Linear(hidden_size, memory_dim)
+    
+    def content_addressing(self, key, strength, memory):
+        # Cosine similarity
+        key_norm = key / (torch.norm(key) + 1e-8)
+        mem_norm = memory / (torch.norm(memory, dim=1, keepdim=True) + 1e-8)
+        
+        similarity = torch.matmul(mem_norm, key_norm)
+        weights = torch.softmax(strength * similarity, dim=0)
+        return weights
+
+class NTM(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size, memory_size=128, memory_dim=20):
+        super().__init__()
+        
+        self.controller = NTMController(input_size, hidden_size, memory_size, memory_dim)
+        self.fc_out = nn.Linear(hidden_size + memory_dim, output_size)
+        self.memory = NTMMemory(memory_size, memory_dim)
+    
+    def forward(self, x):
+        # Simplified NTM forward pass
+        # Full implementation requires attention mechanisms
+        pass
+
+model = NTM(input_size=10, hidden_size=100, output_size=10)`,
+                    exercises: [
+                        {type: 'conceptual', q: 'How does differentiable memory access enable learning of algorithms?'},
+                        {type: 'code', q: 'Implement a simplified NTM and train it on a copy task.'},
+                        {type: 'architecture', q: 'Compare NTM with standard LSTM on algorithmic tasks.'}
+                    ],
+                    resources: [
+                        {name: 'NTM Paper', url: 'https://arxiv.org/abs/1410.5401'},
+                        {name: 'NTM Implementation', url: 'https://github.com/loudinthecloud/pytorch-ntm'}
+                    ]
+                },
+                {
+                    id: 'drn',
+                    name: 'Deep Residual Network (DRN)',
+                    problem: 'Very deep networks suffer from vanishing gradients and degradation.',
+                    when: 'Use when you need very deep networks (50+ layers) for complex tasks.',
+                    theory: 'ResNets use skip connections that allow gradients to flow directly through layers. Instead of learning H(x), layers learn residual F(x) = H(x) - x. This enables training of 100+ layer networks.',
+                    formula: 'y = F(x, {Wᵢ}) + x',
+                    pythonTF: `import tensorflow as tf
+
+def residual_block(x, filters, kernel_size=3):
+    shortcut = x
+    
+    # First conv
+    x = tf.keras.layers.Conv2D(filters, kernel_size, padding='same')(x)
+    x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.ReLU()(x)
+    
+    # Second conv
+    x = tf.keras.layers.Conv2D(filters, kernel_size, padding='same')(x)
+    x = tf.keras.layers.BatchNormalization()(x)
+    
+    # Match dimensions if needed
+    if shortcut.shape[-1] != filters:
+        shortcut = tf.keras.layers.Conv2D(filters, 1)(shortcut)
+    
+    # Skip connection
+    x = tf.keras.layers.Add()([x, shortcut])
+    x = tf.keras.layers.ReLU()(x)
+    
+    return x
+
+def build_resnet(input_shape, num_classes):
+    inputs = tf.keras.Input(shape=input_shape)
+    
+    x = tf.keras.layers.Conv2D(64, 7, strides=2, padding='same')(inputs)
+    x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.ReLU()(x)
+    x = tf.keras.layers.MaxPooling2D(3, strides=2, padding='same')(x)
+    
+    # Residual blocks
+    for filters in [64, 128, 256, 512]:
+        for _ in range(3):
+            x = residual_block(x, filters)
+    
+    x = tf.keras.layers.GlobalAveragePooling2D()(x)
+    outputs = tf.keras.layers.Dense(num_classes, activation='softmax')(x)
+    
+    return tf.keras.Model(inputs, outputs)
+
+model = build_resnet((224, 224, 3), 1000)`,
+                    pythonPT: `import torch
+import torch.nn as nn
+
+class ResidualBlock(nn.Module):
+    def __init__(self, in_channels, out_channels, stride=1):
+        super().__init__()
+        
+        self.conv1 = nn.Conv2d(in_channels, out_channels, 3, stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, 3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+        
+        # Shortcut connection
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_channels != out_channels:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_channels, out_channels, 1, stride=stride, bias=False),
+                nn.BatchNorm2d(out_channels)
+            )
+    
+    def forward(self, x):
+        residual = x
+        
+        out = torch.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(residual)
+        out = torch.relu(out)
+        
+        return out
+
+class ResNet(nn.Module):
+    def __init__(self, block, num_blocks, num_classes=1000):
+        super().__init__()
+        self.in_channels = 64
+        
+        self.conv1 = nn.Conv2d(3, 64, 7, stride=2, padding=3, bias=False)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.maxpool = nn.MaxPool2d(3, stride=2, padding=1)
+        
+        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
+        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
+        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
+        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
+        
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.fc = nn.Linear(512, num_classes)
+    
+    def _make_layer(self, block, out_channels, num_blocks, stride):
+        layers = []
+        layers.append(block(self.in_channels, out_channels, stride))
+        self.in_channels = out_channels
+        
+        for _ in range(1, num_blocks):
+            layers.append(block(out_channels, out_channels))
+        
+        return nn.Sequential(*layers)
+    
+    def forward(self, x):
+        x = torch.relu(self.bn1(self.conv1(x)))
+        x = self.maxpool(x)
+        
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
+        
+        return x
+
+# ResNet-50
+model = ResNet(ResidualBlock, [3, 4, 6, 3])`,
+                    exercises: [
+                        {type: 'conceptual', q: 'Why do skip connections solve the degradation problem in very deep networks?'},
+                        {type: 'code', q: 'Build a ResNet-18 and compare training convergence with a plain deep network.'},
+                        {type: 'architecture', q: 'Design a residual network for time series forecasting.'}
+                    ],
+                    resources: [
+                        {name: 'ResNet Paper', url: 'https://arxiv.org/abs/1512.03385'},
+                        {name: 'ResNet Tutorial', url: 'https://www.tensorflow.org/tutorials/images/transfer_learning'}
+                    ]
+                }
+            ]
+        };
+
+        // State management
+        let completedConcepts = JSON.parse(localStorage.getItem('completedConcepts')) || {};
+        let currentTab = 'basics';
+        let currentConcept = null;
+
+        // Initialize app
+        function init() {
+            renderAllSidebars();
+            updateProgress();
+        }
+
+        function renderAllSidebars() {
+            Object.keys(concepts).forEach(category => {
+                const sidebar = document.getElementById(`${category}-sidebar`);
+                const content = document.getElementById(`${category}-content`);
+                
+                sidebar.innerHTML = '';
+                content.innerHTML = '<div class="welcome-screen"><h2>Welcome to ' + 
+                    category.charAt(0).toUpperCase() + category.slice(1) + 
+                    '</h2><p>Select a concept from the sidebar to begin learning</p></div>';
+                
+                concepts[category].forEach(concept => {
+                    const tile = createConceptTile(concept, category);
+                    sidebar.appendChild(tile);
+                    
+                    const detail = createConceptDetail(concept);
+                    content.appendChild(detail);
+                });
+            });
+        }
+
+        function createConceptTile(concept, category) {
+            const tile = document.createElement('div');
+            tile.className = 'concept-tile';
+            if (completedConcepts[concept.id]) {
+                tile.classList.add('completed');
+            }
+            
+            tile.innerHTML = `
+                <div class="checkbox"></div>
+                <span>${concept.name}</span>
+            `;
+            
+            tile.addEventListener('click', (e) => {
+                if (e.target.closest('.checkbox')) {
+                    toggleComplete(concept.id);
+                } else {
+                    showConcept(concept.id, category);
+                }
+            });
+            
+            return tile;
+        }
+
+        function createConceptDetail(concept) {
+            const detail = document.createElement('div');
+            detail.className = 'concept-detail';
+            detail.id = `detail-${concept.id}`;
+            
+            let html = `<h2>${concept.name}</h2>`;
+            
+            // Problem & When to Use
+            html += `
+                <div class="section">
+                    <h3>🎯 Problem This Solves</h3>
+                    <p>${concept.problem}</p>
+                    <h3>💡 When to Use</h3>
+                    <p>${concept.when}</p>
+                </div>
+            `;
+            
+            // Theory
+            html += `
+                <div class="section">
+                    <h3>📚 Theory & Explanation</h3>
+                    <p>${concept.theory}</p>
+                    ${concept.formula ? `<p><strong>Formula:</strong> <code>${concept.formula}</code></p>` : ''}
+                </div>
+            `;
+            
+            // Code Examples
+            if (concept.pythonTF) {
+                html += `
+                    <div class="section">
+                        <h3>💻 Python Implementation (TensorFlow)</h3>
+                        <span class="language-tag">Python + TensorFlow</span>
+                        <pre class="code-block">${escapeHtml(concept.pythonTF)}</pre>
+                    </div>
+                `;
+            }
+            
+            if (concept.pythonPT) {
+                html += `
+                    <div class="section">
+                        <h3>💻 Python Implementation (PyTorch)</h3>
+                        <span class="language-tag">Python + PyTorch</span>
+                        <pre class="code-block">${escapeHtml(concept.pythonPT)}</pre>
+                    </div>
+                `;
+            }
+            
+            if (concept.javascript) {
+                html += `
+                    <div class="section">
+                        <h3>💻 JavaScript Implementation</h3>
+                        <span class="language-tag">JavaScript</span>
+                        <pre class="code-block">${escapeHtml(concept.javascript)}</pre>
+                    </div>
+                `;
+            }
+            
+            if (concept.rCode) {
+                html += `
+                    <div class="section">
+                        <h3>💻 R Implementation</h3>
+                        <span class="language-tag">R</span>
+                        <pre class="code-block">${escapeHtml(concept.rCode)}</pre>
+                    </div>
+                `;
+            }
+            
+            // Exercises
+            if (concept.exercises) {
+                html += `<div class="section"><h3>🎓 Practice Exercises</h3>`;
+                concept.exercises.forEach((ex, idx) => {
+                    const types = {
+                        conceptual: '🤔 Conceptual',
+                        code: '💻 Coding Challenge',
+                        architecture: '🏗️ Architecture Design'
+                    };
+                    html += `<div class="exercise"><strong>${types[ex.type]}:</strong> ${ex.q}</div>`;
+                });
+                html += `</div>`;
+            }
+            
+            // Resources
+            if (concept.resources) {
+                html += `
+                    <div class="section">
+                        <h3>🔗 Additional Resources</h3>
+                        <div class="resource-links">
+                `;
+                concept.resources.forEach(res => {
+                    html += `<a href="${res.url}" target="_blank" class="resource-link">${res.name}</a>`;
+                });
+                html += `</div></div>`;
+            }
+            
+            detail.innerHTML = html;
+            return detail;
+        }
+
+        function showConcept(conceptId, category) {
+            // Update sidebar
+            const sidebar = document.getElementById(`${category}-sidebar`);
+            sidebar.querySelectorAll('.concept-tile').forEach(tile => {
+                tile.classList.remove('active');
+            });
+            
+            const activeTile = Array.from(sidebar.children).find(tile => 
+                tile.textContent.includes(concepts[category].find(c => c.id === conceptId).name)
+            );
+            if (activeTile) activeTile.classList.add('active');
+            
+            // Update content
+            const content = document.getElementById(`${category}-content`);
+            content.querySelectorAll('.concept-detail').forEach(detail => {
+                detail.classList.remove('active');
+            });
+            
+            const detail = document.getElementById(`detail-${conceptId}`);
+            if (detail) detail.classList.add('active');
+            
+            currentConcept = conceptId;
+        }
+
+        function toggleComplete(conceptId) {
+            completedConcepts[conceptId] = !completedConcepts[conceptId];
+            localStorage.setItem('completedConcepts', JSON.stringify(completedConcepts));
+            
+            // Update all sidebars
+            Object.keys(concepts).forEach(category => {
+                const sidebar = document.getElementById(`${category}-sidebar`);
+                const tiles = sidebar.querySelectorAll('.concept-tile');
+                
+                concepts[category].forEach((concept, idx) => {
+                    if (concept.id === conceptId) {
+                        if (completedConcepts[conceptId]) {
+                            tiles[idx].classList.add('completed');
+                        } else {
+                            tiles[idx].classList.remove('completed');
+                        }
+                    }
+                });
+            });
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            let totalConcepts = 0;
+            let completedCount = 0;
+            
+            Object.values(concepts).forEach(category => {
+                totalConcepts += category.length;
+            });
+            
+            Object.values(completedConcepts).forEach(completed => {
+                if (completed) completedCount++;
+            });
+            
+            const percentage = Math.round((completedCount / totalConcepts) * 100);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = `${percentage}% Complete (${completedCount}/${totalConcepts})`;
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function exportProgress() {
+            let report = 'Neural Networks Learning Progress Report\n';
+            report += '=' .repeat(50) + '\n\n';
+            
+            let totalConcepts = 0;
+            let completedCount = 0;
+            
+            Object.entries(concepts).forEach(([category, conceptList]) => {
+                report += `${category.toUpperCase()}\n`;
+                report += '-'.repeat(50) + '\n';
+                
+                conceptList.forEach(concept => {
+                    const status = completedConcepts[concept.id] ? '✓' : '○';
+                    report += `${status} ${concept.name}\n`;
+                    totalConcepts++;
+                    if (completedConcepts[concept.id]) completedCount++;
+                });
+                
+                report += '\n';
+            });
+            
+            const percentage = Math.round((completedCount / totalConcepts) * 100);
+            report += `Overall Progress: ${completedCount}/${totalConcepts} (${percentage}%)\n`;
+            report += `Generated: ${new Date().toLocaleString()}\n`;
+            
+            // Download as text file
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `neural-networks-progress-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

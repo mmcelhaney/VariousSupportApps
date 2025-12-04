@@ -1,0 +1,23 @@
+The llm_selector_offline.html handles like a dream. I would like to augment it a little. I would like to add 9 more categories: "Create Images","Create Videos", "Mixed Scenarios", "Voice/Audio", "Productivity", "Coding", "Automation", "Employment", "Browsers" and a text box for entering a rough idea of what is being done. I want the tool to still suggest the best tools given input, still provide links to the tools in the final reccomendation. Still use vanilla JavaScript and html. Also make the tool as code efficient and short as possible. Export reference data into a sqlite database if needed. Keep the same colors and functionalities.
+
+Convert the reference doc into a .sql file. Also add these other the other tools like Canva, Runway, Synthesia, Google Veo, OpenAI Sora, Kling AI, Eleven Labs, Github Copilot, Notion AI, Krisp, Altered, Jupyter AI, Dreamina, lucyedit.ai, akuma.ai, animebuilder.ai, grok, Higgsfield faceswap, Zapier, Make, n8n, ImageKit.io, Jack And Jill, SimpleApply.io, Typeless, Fellou, Sonic-3, Creati AI, ChatGPT Atlas, Perplexity Comet, Character AI, Pi, DaVinci, Video Leap, Veo 3.1 Canvas, CapCut, Shotcut, RecCloud, and Murf AI. And everytime a product name is used hyperlink it to it's main web site.
+
+Add filtering by platform, include icons and logos, sync with external APIs for real-time pricing and availability. And create tool
+
+The SQLite database should have the following tables
+CREATE TABLE tools (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  category TEXT,
+  best_for TEXT,
+  pricing TEXT,
+  signup_url TEXT,
+  strengths TEXT,
+  use_cases TEXT
+);
+
+CREATE TABLE scores (
+  task_type TEXT,
+  tool_id TEXT,
+  score REAL
+);

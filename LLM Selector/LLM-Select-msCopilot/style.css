@@ -1,0 +1,29 @@
+body {
+  font-family: sans-serif;
+  background: #f9f9f9;
+  padding: 20px;
+  color: #333;
+}
+h1 {
+  color: #444;
+}
+.filters select, .filters textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+}
+button {
+  margin-right: 10px;
+  padding: 8px 12px;
+}
+.tool {
+  background: #fff;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+.logo {
+  width: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}

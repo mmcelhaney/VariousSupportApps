@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Tech Trends Learning Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4CAF50;
+            height: 100%;
+            border-radius: 15px;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            min-width: 80px;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            background: #f5f5f5;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab.active {
+            background: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+
+        .tab.completed {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .tab-content {
+            padding: 40px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .concept-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .concept-title {
+            font-size: 2em;
+            color: #2196F3;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .completion-info {
+            width: 100%;
+            font-size: 0.9em;
+            color: #4CAF50;
+            font-style: italic;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .description {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .description h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .description h4 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .description ul {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+
+        .description li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .resources {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .resource-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .resource-card:hover {
+            border-color: #2196F3;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+        }
+
+        .resource-card h3 {
+            color: #2196F3;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resource-link {
+            display: block;
+            padding: 8px 0;
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .resource-link:hover {
+            color: #2196F3;
+            text-decoration: underline;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 40px;
+            max-width: 900px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .view-details-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .view-details-btn:hover {
+            background: #1976D2;
+        }
+
+        .infographic-section {
+            background: #f5f5f5;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .infographic-section h2 {
+            color: #2196F3;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .infographic-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .infographic-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .infographic-btn:hover {
+            background: #1976D2;
+        }
+
+        .infographic-img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .prompt-section {
+            background: #2196F3;
+            color: white;
+            padding: 30px 40px;
+        }
+
+        .prompt-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .prompt-text {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .icon {
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .concept-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .tab {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 2026 Tech Trends Learning Hub</h1>
+            <p>Master the 8 Technologies That Will Define the Future</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0% Complete</div>
+            </div>
+        </div>
+
+        <div class="tabs" id="tabs"></div>
+
+        <div id="tabContents"></div>
+
+        <div class="infographic-section">
+            <h2>📊 Reference Infographic</h2>
+            <div class="infographic-actions">
+                <button class="infographic-btn" onclick="viewInfographic()">👁️ View Infographic</button>
+                <button class="infographic-btn" onclick="downloadInfographic()">⬇️ Download Infographic</button>
+            </div>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='1200' viewBox='0 0 800 1200'%3E%3Crect width='800' height='1200' fill='%232196F3'/%3E%3Ctext x='400' y='100' font-family='Arial' font-size='48' font-weight='bold' fill='white' text-anchor='middle'%3E8 Tech Trends That Will%3C/text%3E%3Ctext x='400' y='160' font-family='Arial' font-size='48' font-weight='bold' fill='white' text-anchor='middle'%3ELeave You Behind in 2026%3C/text%3E%3Ctext x='50' y='250' font-family='Arial' font-size='24' font-weight='bold' fill='white'%3E1. AI Automation%3C/text%3E%3Ctext x='50' y='350' font-family='Arial' font-size='24' font-weight='bold' fill='white'%3E2. Smart Personalization%3C/text%3E%3Ctext x='50' y='450' font-family='Arial' font-size='24' font-weight='bold' fill='white'%3E3. Cybersecurity Upgrades%3C/text%3E%3Ctext x='50' y='550' font-family='Arial' font-size='24' font-weight='bold' fill='white'%3E4. AR %26 VR Integration%3C/text%3E%3Ctext x='50' y='650' font-family='Arial' font-size='24' font-weight='bold' fill='white'%3E5. Quantum Computing%3C/text%3E%3Ctext x='50' y='750' font-family='Arial' font-size='24' font-weight='bold' fill='white'%3E6. Smart Workspaces%3C/text%3E%3Ctext x='50' y='850' font-family='Arial' font-size='24' font-weight='bold' fill='white'%3E7. Edge Computing%3C/text%3E%3Ctext x='50' y='950' font-family='Arial' font-size='24' font-weight='bold' fill='white'%3E8. Autonomous Tech%3C/text%3E%3C/svg%3E" alt="Tech Trends Infographic" class="infographic-img" id="infographicImg">
+            <p style="margin-top: 15px; color: #666; font-size: 0.9em;">Original infographic showing all 8 tech trends for 2026</p>
+        </div>
+
+        <div class="prompt-section">
+            <h3>📝 Original Prompt</h3>
+            <div class="prompt-text">Generate an HTML app with JavaScript that provides actionable and clickable guides to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete. Before generating app, ask interactive questions, waiting for answers, to improve the quality of the app. Include the graphic at the end and this prompt.</div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const techTrends = [
+            {
+                id: 'ai-automation',
+                title: 'AI Automation',
+                description: 'AI will handle repetitive work, boost output, and help businesses operate faster and smarter. AI frees your team from busywork so they can focus on high-value tasks.',
+                benefits: ['Faster workflows', 'Lower errors', 'Higher productivity', 'Better decision-making'],
+                resources: {
+                    tutorials: [
+                        { title: 'Introduction to AI Automation', url: 'https://www.coursera.org/learn/ai-for-everyone' },
+                        { title: 'Microsoft AI Learning Paths', url: 'https://learn.microsoft.com/en-us/training/browse/?terms=AI' },
+                        { title: 'Google AI Hub', url: 'https://ai.google/education/' }
+                    ],
+                    code: [
+                        { title: 'Python AI Automation Examples', url: 'https://github.com/topics/ai-automation' },
+                        { title: 'TensorFlow Tutorials', url: 'https://www.tensorflow.org/tutorials' },
+                        { title: 'Hugging Face Transformers', url: 'https://huggingface.co/docs/transformers/index' }
+                    ],
+                    videos: [
+                        { title: 'AI Automation for Business', url: 'https://www.youtube.com/results?search_query=ai+automation+tutorial' },
+                        { title: 'Building AI Workflows', url: 'https://www.youtube.com/results?search_query=ai+workflow+automation' }
+                    ],
+                    docs: [
+                        { title: 'OpenAI Documentation', url: 'https://platform.openai.com/docs' },
+                        { title: 'AWS AI Services', url: 'https://aws.amazon.com/machine-learning/' }
+                    ]
+                }
+            },
+            {
+                id: 'smart-personalization',
+                title: 'Smart Personalization',
+                description: 'AI personalizes every interaction using real-time user behavior, creating highly relevant, engaging, and meaningful digital experiences that feel tailored to each individual.',
+                benefits: ['Enhanced user engagement', 'Better customer satisfaction', 'Increased conversion rates', 'Real-time adaptation'],
+                resources: {
+                    tutorials: [
+                        { title: 'Personalization Algorithms', url: 'https://www.udacity.com/course/recommendation-systems--ud277' },
+                        { title: 'Machine Learning for Personalization', url: 'https://developers.google.com/machine-learning/recommendation' },
+                        { title: 'Building Recommendation Systems', url: 'https://www.coursera.org/learn/recommender-systems' }
+                    ],
+                    code: [
+                        { title: 'Personalization Algorithms GitHub', url: 'https://github.com/topics/personalization' },
+                        { title: 'Scikit-learn Recommendation', url: 'https://scikit-learn.org/stable/' },
+                        { title: 'Apache Spark MLlib', url: 'https://spark.apache.org/mllib/' }
+                    ],
+                    videos: [
+                        { title: 'Building Personalized Experiences', url: 'https://www.youtube.com/results?search_query=ai+personalization+tutorial' }
+                    ],
+                    docs: [
+                        { title: 'Amazon Personalize', url: 'https://aws.amazon.com/personalize/' },
+                        { title: 'Google Recommendations AI', url: 'https://cloud.google.com/recommendations' }
+                    ]
+                }
+            },
+            {
+                id: 'cybersecurity',
+                title: 'Cybersecurity Upgrades',
+                description: 'Rising digital threats make advanced security essential. AI security and real-time protection safeguard businesses against evolving cyber attacks.',
+                benefits: ['AI-powered threat detection', 'Real-time protection', 'Proactive security measures', 'Automated response systems'],
+                resources: {
+                    tutorials: [
+                        { title: 'Cybersecurity Fundamentals', url: 'https://www.coursera.org/specializations/cyber-security' },
+                        { title: 'SANS Cyber Security Training', url: 'https://www.sans.org/cyber-security-courses/' },
+                        { title: 'Cybersecurity for Business', url: 'https://www.cybrary.it/' }
+                    ],
+                    code: [
+                        { title: 'Security Tools on GitHub', url: 'https://github.com/topics/cybersecurity' },
+                        { title: 'OWASP Projects', url: 'https://owasp.org/projects/' },
+                        { title: 'Security Scripts Collection', url: 'https://github.com/topics/security-tools' }
+                    ],
+                    videos: [
+                        { title: 'AI in Cybersecurity', url: 'https://www.youtube.com/results?search_query=ai+cybersecurity' }
+                    ],
+                    docs: [
+                        { title: 'NIST Cybersecurity Framework', url: 'https://www.nist.gov/cyberframework' },
+                        { title: 'Microsoft Security Documentation', url: 'https://learn.microsoft.com/en-us/security/' }
+                    ]
+                }
+            },
+            {
+                id: 'ar-vr',
+                title: 'AR & VR Integration',
+                description: 'Immersive experiences will transform training, shopping, learning, and remote collaboration by creating deeper engagement and more interactive, realistic digital interactions.',
+                benefits: ['Enhanced training experiences', 'Virtual shopping', 'Remote collaboration', 'Interactive learning'],
+                resources: {
+                    tutorials: [
+                        { title: 'Unity VR Development', url: 'https://learn.unity.com/course/introduction-to-vr' },
+                        { title: 'Meta Quest Development', url: 'https://developer.oculus.com/documentation/' },
+                        { title: 'AR Development with ARKit', url: 'https://developer.apple.com/augmented-reality/' }
+                    ],
+                    code: [
+                        { title: 'A-Frame VR Framework', url: 'https://aframe.io/' },
+                        { title: 'Three.js for 3D/VR', url: 'https://threejs.org/' },
+                        { title: 'WebXR Examples', url: 'https://github.com/immersive-web/webxr-samples' }
+                    ],
+                    videos: [
+                        { title: 'VR Development Tutorial', url: 'https://www.youtube.com/results?search_query=vr+development+tutorial' }
+                    ],
+                    docs: [
+                        { title: 'WebXR Device API', url: 'https://immersive-web.github.io/webxr/' },
+                        { title: 'Unity XR Documentation', url: 'https://docs.unity3d.com/Manual/XR.html' }
+                    ]
+                }
+            },
+            {
+                id: 'quantum-computing',
+                title: 'Quantum Computing',
+                description: 'Quantum computing delivers extreme processing speed, solving complex problems instantly and opening breakthrough innovation opportunities across industries.',
+                benefits: ['Unimaginable processing speed', 'Breakthrough research acceleration', 'Complex problem solving', 'Revolutionary computing power'],
+                resources: {
+                    tutorials: [
+                        { title: 'IBM Quantum Learning', url: 'https://learning.quantum.ibm.com/' },
+                        { title: 'Microsoft Quantum Katas', url: 'https://quantum.microsoft.com/en-us/experience/quantum-katas' },
+                        { title: 'MIT Quantum Computing Course', url: 'https://ocw.mit.edu/courses/physics/' }
+                    ],
+                    code: [
+                        { title: 'Qiskit (IBM)', url: 'https://qiskit.org/' },
+                        { title: 'Cirq (Google)', url: 'https://quantumai.google/cirq' },
+                        { title: 'Q# (Microsoft)', url: 'https://azure.microsoft.com/en-us/products/quantum/' }
+                    ],
+                    videos: [
+                        { title: 'Quantum Computing Explained', url: 'https://www.youtube.com/results?search_query=quantum+computing+explained' }
+                    ],
+                    docs: [
+                        { title: 'IBM Quantum Documentation', url: 'https://docs.quantum.ibm.com/' },
+                        { title: 'Azure Quantum Docs', url: 'https://learn.microsoft.com/en-us/azure/quantum/' }
+                    ]
+                }
+            },
+            {
+                id: 'smart-workspaces',
+                title: 'Smart Workspaces',
+                description: 'IoT-powered offices improve efficiency through automation, monitoring, and real-time insights with connected systems and smarter decisions.',
+                benefits: ['Automated office management', 'Real-time monitoring', 'Energy efficiency', 'Enhanced productivity'],
+                resources: {
+                    tutorials: [
+                        { title: 'IoT for Smart Buildings', url: 'https://www.coursera.org/learn/iot-applications' },
+                        { title: 'Smart Office Solutions', url: 'https://www.udemy.com/topic/internet-of-things/' },
+                        { title: 'Building Automation Systems', url: 'https://www.iotforall.com/smart-building-technology' }
+                    ],
+                    code: [
+                        { title: 'IoT Projects on GitHub', url: 'https://github.com/topics/iot' },
+                        { title: 'Arduino IoT Cloud', url: 'https://create.arduino.cc/iot/' },
+                        { title: 'Home Assistant', url: 'https://www.home-assistant.io/' }
+                    ],
+                    videos: [
+                        { title: 'Smart Workspace Technology', url: 'https://www.youtube.com/results?search_query=smart+workspace+iot' }
+                    ],
+                    docs: [
+                        { title: 'AWS IoT Documentation', url: 'https://docs.aws.amazon.com/iot/' },
+                        { title: 'Azure IoT Hub', url: 'https://learn.microsoft.com/en-us/azure/iot-hub/' }
+                    ]
+                }
+            },
+            {
+                id: 'edge-computing',
+                title: 'Edge Computing',
+                description: 'Reduces server load and improves real-time processing. Enhances user experience with quicker, more reliable responses.',
+                benefits: ['Reduced latency', 'Lower bandwidth usage', 'Improved reliability', 'Real-time processing'],
+                resources: {
+                    tutorials: [
+                        { title: 'Edge Computing Fundamentals', url: 'https://www.edx.org/learn/edge-computing' },
+                        { title: 'AWS Edge Computing', url: 'https://aws.amazon.com/edge/' },
+                        { title: 'Introduction to Edge AI', url: 'https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/' }
+                    ],
+                    code: [
+                        { title: 'Edge Computing Projects', url: 'https://github.com/topics/edge-computing' },
+                        { title: 'TensorFlow Lite', url: 'https://www.tensorflow.org/lite' },
+                        { title: 'OpenCV for Edge', url: 'https://opencv.org/' }
+                    ],
+                    videos: [
+                        { title: 'Edge Computing Explained', url: 'https://www.youtube.com/results?search_query=edge+computing+tutorial' }
+                    ],
+                    docs: [
+                        { title: 'Azure IoT Edge', url: 'https://learn.microsoft.com/en-us/azure/iot-edge/' },
+                        { title: 'Google Distributed Cloud', url: 'https://cloud.google.com/distributed-cloud' }
+                    ]
+                }
+            },
+            {
+                id: 'autonomous-tech',
+                title: 'Autonomous Tech',
+                description: 'Machines operate independently, reducing human involvement daily. Automated systems speed up business operations effortlessly with smart vehicles, self-running tools, and intelligent automation.',
+                benefits: ['Reduced human intervention', 'Faster operations', 'Improved accuracy', 'Enhanced safety'],
+                resources: {
+                    tutorials: [
+                        { title: 'Self-Driving Car Engineer', url: 'https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd0013' },
+                        { title: 'Autonomous Systems Course', url: 'https://www.coursera.org/learn/robotics-flight' },
+                        { title: 'ROS for Robotics', url: 'https://www.ros.org/blog/getting-started/' }
+                    ],
+                    code: [
+                        { title: 'Autonomous Driving Projects', url: 'https://github.com/topics/autonomous-driving' },
+                        { title: 'Apollo Auto Platform', url: 'https://github.com/ApolloAuto/apollo' },
+                        { title: 'Robot Operating System', url: 'https://github.com/ros' }
+                    ],
+                    videos: [
+                        { title: 'Autonomous Vehicles Explained', url: 'https://www.youtube.com/results?search_query=autonomous+vehicles+tutorial' }
+                    ],
+                    docs: [
+                        { title: 'NVIDIA DRIVE Documentation', url: 'https://developer.nvidia.com/drive' },
+                        { title: 'ROS Documentation', url: 'https://docs.ros.org/' }
+                    ]
+                }
+            }
+        ];
+
+        let completedTrends = {};
+
+        function init() {
+            try {
+                completedTrends = JSON.parse(localStorage.getItem('completedTrends')) || {};
+            } catch (e) {
+                completedTrends = {};
+            }
+            renderTabs();
+            renderTabContents();
+            updateProgress();
+        }
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('tabs');
+            tabsContainer.innerHTML = '';
+            techTrends.forEach((trend, index) => {
+                const tab = document.createElement('div');
+                tab.className = `tab ${index === 0 ? 'active' : ''} ${completedTrends[trend.id] ? 'completed' : ''}`;
+                tab.innerHTML = trend.title;
+                tab.onclick = () => switchTab(trend.id, index);
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        function renderTabContents() {
+            const container = document.getElementById('tabContents');
+            container.innerHTML = '';
+            techTrends.forEach((trend, index) => {
+                const content = document.createElement('div');
+                content.className = `tab-content ${index === 0 ? 'active' : ''}`;
+                content.id = `content-${trend.id}`;
+                
+                let completionHtml = '';
+                if (completedTrends[trend.id]) {
+                    const date = new Date(completedTrends[trend.id]).toLocaleString();
+                    completionHtml = `<div class="completion-info">✅ Completed on ${date}</div>`;
+                }
+
+                content.innerHTML = `
+                    <div class="concept-header">
+                        <h2 class="concept-title">${trend.title}</h2>
+                        <div class="checkbox-container">
+                            <input type="checkbox" class="checkbox" id="check-${trend.id}" 
+                                ${completedTrends[trend.id] ? 'checked' : ''}>
+                            <label for="check-${trend.id}">Mark as Complete</label>
+                        </div>
+                        ${completionHtml}
+                    </div>
+                    <div class="description">
+                        <h3>📖 Description</h3>
+                        <p>${trend.description}</p>
+                        <h4>Key Benefits:</h4>
+                        <ul>
+                            ${trend.benefits.map(b => `<li>${b}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <button class="view-details-btn">📚 View All Resources</button>
+                `;
+                
+                content.querySelector('.checkbox').addEventListener('change', () => toggleComplete(trend.id));
+                content.querySelector('.view-details-btn').addEventListener('click', () => openModal(trend.id));
+                
+                container.appendChild(content);
+            });
+        }
+
+        function switchTab(trendId, index) {
+            document.querySelectorAll('.tab').forEach((tab, i) => {
+                tab.classList.remove('active');
+                if (i === index) tab.classList.add('active');
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`content-${trendId}`).classList.add('active');
+        }
+
+        function toggleComplete(trendId) {
+            if (completedTrends[trendId]) {
+                delete completedTrends[trendId];
+            } else {
+                completedTrends[trendId] = new Date().toISOString();
+            }
+            localStorage.setItem('completedTrends', JSON.stringify(completedTrends));
+            updateProgress();
+            updateCompletionUI(trendId);
+        }
+
+        function updateCompletionUI(trendId) {
+            const tabs = document.querySelectorAll('.tab');
+            const index = techTrends.findIndex(t => t.id === trendId);
+            if (completedTrends[trendId]) {
+                tabs[index].classList.add('completed');
+                const content = document.getElementById(`content-${trendId}`);
+                const header = content.querySelector('.concept-header');
+                let completionInfo = content.querySelector('.completion-info');
+                if (!completionInfo) {
+                    completionInfo = document.createElement('div');
+                    completionInfo.className = 'completion-info';
+                    header.appendChild(completionInfo);
+                }
+                const date = new Date(completedTrends[trendId]).toLocaleString();
+                completionInfo.innerHTML = `✅ Completed on ${date}`;
+            } else {
+                tabs[index].classList.remove('completed');
+                const completionInfo = document.querySelector(`#content-${trendId} .completion-info`);
+                if (completionInfo) completionInfo.remove();
+            }
+        }
+
+        function updateProgress() {
+            const completed = Object.keys(completedTrends).length;
+            const total = techTrends.length;
+            const percentage = Math.round((completed / total) * 100);
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = `${percentage}% Complete (${completed}/${total})`;
+        }
+
+        function openModal(trendId) {
+            const trend = techTrends.find(t => t.id === trendId);
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.innerHTML = `
+                <h2 style="color: #2196F3; margin-bottom: 20px;">${trend.title} - Resources</h2>
+                <div class="resources">
+                    <div class="resource-card">
+                        <h3><span class="icon">📚</span> Tutorials & Courses</h3>
+                        ${trend.resources.tutorials.map(r => 
+                            `<a href="${r.url}" target="_blank" class="resource-link">→ ${r.title}</a>`
+                        ).join('')}
+                    </div>
+                    <div class="resource-card">
+                        <h3><span class="icon">💻</span> Code Examples</h3>
+                        ${trend.resources.code.map(r => 
+                            `<a href="${r.url}" target="_blank" class="resource-link">→ ${r.title}</a>`
+                        ).join('')}
+                    </div>
+                    <div class="resource-card">
+                        <h3><span class="icon">🎥</span> Video Tutorials</h3>
+                        ${trend.resources.videos.map(r => 
+                            `<a href="${r.url}" target="_blank" class="resource-link">→ ${r.title}</a>`
+                        ).join('')}
+                    </div>
+                    <div class="resource-card">
+                        <h3><span class="icon">📖</span> Documentation</h3>
+                        ${trend.resources.docs.map(r => 
+                            `<a href="${r.url}" target="_blank" class="resource-link">→ ${r.title}</a>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function viewInfographic() {
+            window.open(document.getElementById('infographicImg').src, '_blank');
+        }
+
+        function downloadInfographic() {
+            const link = document.createElement('a');
+            link.href = document.getElementById('infographicImg').src;
+            link.download = '2026-tech-trends-infographic.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.onclick = (e) => {
+            const modal = document.getElementById('modal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 11 Free AI Courses - Learn AI Skills from World's Top Experts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        h1 .highlight {
+            background-color: #FFC107;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            font-weight: 300;
+            margin-top: 15px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .category {
+            margin-bottom: 50px;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #1565C0 0%, #1976D2 100%);
+            color: white;
+            padding: 15px 25px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-icon {
+            margin-right: 15px;
+            font-size: 1.3em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+        
+        td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        tbody tr:hover {
+            background-color: #e3f2fd;
+            transform: scale(1.01);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .id-cell {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #1565C0;
+            width: 60px;
+            text-align: center;
+        }
+        
+        .course-cell {
+            font-weight: 600;
+            color: #333;
+            width: 30%;
+        }
+        
+        .description-cell {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .url-cell {
+            width: 120px;
+            text-align: center;
+        }
+        
+        .btn-link {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+            color: #000;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .btn-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #FFD54F 0%, #FFA726 100%);
+        }
+        
+        .image-section {
+            text-align: center;
+            padding: 40px;
+            background-color: #f5f5f5;
+            margin: 40px 0;
+            border-radius: 8px;
+        }
+        
+        .image-section h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        
+        .prompt-section {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 40px;
+            border-left: 5px solid #FFC107;
+        }
+        
+        .prompt-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .prompt-text {
+            font-style: italic;
+            color: #555;
+            line-height: 1.8;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        footer {
+            background-color: #263238;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+        
+        footer a {
+            color: #FFC107;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+            
+            .course-cell {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TOP 11 <span class="highlight">FREE AI COURSES</span></h1>
+            <p class="subtitle">Learn Core AI Skills from the World's Top Experts for Free</p>
+        </header>
+        
+        <div class="content">
+            <div class="category">
+                <div class="category-header">
+                    <span class="category-icon">🎓</span>
+                    Beginner AI Courses
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>COURSE</th>
+                            <th>DESCRIPTION</th>
+                            <th>LINK</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="id-cell">1</td>
+                            <td class="course-cell">Google - Intro to Generative AI</td>
+                            <td class="description-cell">Learn how generative AI models create text, images, and ideas.</td>
+                            <td class="url-cell"><a href="https://www.cloudskillsboost.google/paths/118" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                        <tr>
+                            <td class="id-cell">2</td>
+                            <td class="course-cell">Microsoft - Introduction to AI</td>
+                            <td class="description-cell">Covers core AI principles, neural networks, and deep learning.</td>
+                            <td class="url-cell"><a href="https://microsoft.github.io/AI-For-Beginners/" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                        <tr>
+                            <td class="id-cell">3</td>
+                            <td class="course-cell">OpenAI - Academy Resources</td>
+                            <td class="description-cell">Hands-on lessons on GPT models, prompting & AI applications.</td>
+                            <td class="url-cell"><a href="https://academy.openai.com/" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="category">
+                <div class="category-header">
+                    <span class="category-icon">💬</span>
+                    AI Prompting Courses
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>COURSE</th>
+                            <th>DESCRIPTION</th>
+                            <th>LINK</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="id-cell">4</td>
+                            <td class="course-cell">AWS - Foundation Of Prompt Engineering</td>
+                            <td class="description-cell">Teaches prompt design techniques for AWS-based AI tools.</td>
+                            <td class="url-cell"><a href="https://skillbuilder.aws/learn/VF6H4SZ1BU/foundations-of-prompt-engineering" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                        <tr>
+                            <td class="id-cell">5</td>
+                            <td class="course-cell">Vanderbilt Prompt Engineering for ChatGPT</td>
+                            <td class="description-cell">Explains structured prompting to generate clear, reliable outputs.</td>
+                            <td class="url-cell"><a href="https://www.coursera.org/learn/prompt-engineering" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="category">
+                <div class="category-header">
+                    <span class="category-icon">🔧</span>
+                    Building AI Courses
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>COURSE</th>
+                            <th>DESCRIPTION</th>
+                            <th>LINK</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="id-cell">6</td>
+                            <td class="course-cell">Google Cloud × DeepLearning AI - LLMOps</td>
+                            <td class="description-cell">Guides you through building, deploying, managing LLM apps.</td>
+                            <td class="url-cell"><a href="https://www.deeplearning.ai/short-courses/llmops/" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                        <tr>
+                            <td class="id-cell">7</td>
+                            <td class="course-cell">OpenAI - A Practical Guide to Building Agents</td>
+                            <td class="description-cell">Shows how to design and deploy AI agents for real-world tasks.</td>
+                            <td class="url-cell"><a href="https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                        <tr>
+                            <td class="id-cell">8</td>
+                            <td class="course-cell">Coursera - Retrieval Augmented Generation</td>
+                            <td class="description-cell">Explains how to design RAG systems for better AI accuracy.</td>
+                            <td class="url-cell"><a href="https://www.coursera.org/learn/retrieval-augmented-generation-rag" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="category">
+                <div class="category-header">
+                    <span class="category-icon">⭐</span>
+                    AI Essentials Courses
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>COURSE</th>
+                            <th>DESCRIPTION</th>
+                            <th>LINK</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="id-cell">9</td>
+                            <td class="course-cell">Harvard - CS50 Introduction to AI with Python</td>
+                            <td class="description-cell">Learn AI fundamentals through hands-on Python projects.</td>
+                            <td class="url-cell"><a href="https://cs50.harvard.edu/ai/" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                        <tr>
+                            <td class="id-cell">10</td>
+                            <td class="course-cell">Google - Intro to Responsible AI</td>
+                            <td class="description-cell">Covers key principles for building safe and ethical AI systems.</td>
+                            <td class="url-cell"><a href="https://www.cloudskillsboost.google/course_templates/554" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                        <tr>
+                            <td class="id-cell">11</td>
+                            <td class="course-cell">Google - AI Essential Courses</td>
+                            <td class="description-cell">Practical training on using AI tools in everyday work and projects.</td>
+                            <td class="url-cell"><a href="https://grow.google/ai/" target="_blank" class="btn-link">Visit</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="image-section">
+                <h3>Original Graphic</h3>
+                <img src='20251109_213634.jpg' width='960' height='1200' alt="Top 11 Free AI Courses Original Graphic">
+            </div>
+
+            <div class="prompt-section">
+                <h3>📝 Prompt that generated this document:</h3>
+                <p class="prompt-text">
+                    Turn the graphic into a document with a table that has four columns, "ID", "COURSE", "DESCRIPTION", and "URL"; make the URL hyperlinked, embed the graphic at the end of the table; and put this prompt at the end of the document under heading "Prompt that generated this document:"
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Created by Claude AI | Data sourced from <a href="https://FreeGuides.cc" target="_blank">FreeGuides.cc</a></p>
+            <p>© 2025 - All course links are the property of their respective providers</p>
+        </footer>
+    </div>
+</body>
+</html>

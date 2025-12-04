@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Selector - Find Your Perfect AI Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .bg-light {
+            background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%);
+            min-height: 100vh;
+        }
+        
+        .bg-dark {
+            background: #111827;
+            min-height: 100vh;
+            color: #e5e7eb;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .card-dark {
+            background: #1f2937;
+            color: white;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #7c3aed;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #6d28d9;
+        }
+        
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+        
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .btn-dark {
+            background: #374151;
+            color: white;
+        }
+        
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-green { background: #10b981; color: white; }
+        .btn-purple { background: #8b5cf6; color: white; }
+        .btn-indigo { background: #6366f1; color: white; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #7c3aed;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .question-subtitle {
+            color: #7c3aed;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .question-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 24px;
+        }
+        
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 2px solid #e5e7eb;
+            background: #f9fafb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option-btn:hover {
+            background: #f3e8ff;
+            border-color: #a78bfa;
+        }
+        
+        .option-label {
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .keyword-tag {
+            font-size: 12px;
+            padding: 4px 8px;
+            background: white;
+            border-radius: 12px;
+            color: #6b7280;
+        }
+        
+        .result-card {
+            padding: 24px;
+            border-radius: 12px;
+            border: 2px solid;
+            margin-bottom: 24px;
+        }
+        
+        .result-pink { background: #fce7f3; border-color: #f9a8d4; }
+        .result-orange { background: #fed7aa; border-color: #fdba74; }
+        .result-gray { background: #f3f4f6; border-color: #d1d5db; }
+        .result-blue { background: #dbeafe; border-color: #93c5fd; }
+        
+        .icon-large { font-size: 48px; }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+        
+        .score-box {
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .score-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #7c3aed;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+        
+        .link {
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        
+        .alert-blue {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+        }
+        
+        .alert-purple {
+            background: #f3e8ff;
+            border: 1px solid #c4b5fd;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 20px;
+            }
+            .question-title {
+                font-size: 24px;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Simple State Management
+        let state = {
+            currentStep: 0,
+            answers: {},
+            showResult: false,
+            showScores: false,
+            showComparison: false,
+            darkMode: false,
+            customUseCase: '',
+            showCustomInput: false
+        };
+
+        const questions = [
+            {
+                id: 'task_type',
+                question: "What's your primary task type?",
+                subtitle: "Define the Objective: What is the outcome or deliverable?",
+                options: [
+                    { value: 'writing', label: 'Writing & Content Creation', keywords: ['creative', 'content', 'articles'] },
+                    { value: 'research', label: 'Research & Fact-Checking', keywords: ['research', 'verification', 'citations'] },
+                    { value: 'coding', label: 'Coding & Development', keywords: ['coding', 'debugging', 'scripts'] },
+                    { value: 'analysis', label: 'Data Analysis & Documents', keywords: ['analysis', 'reports', 'documents'] },
+                    { value: 'collaboration', label: 'Team Collaboration', keywords: ['collaboration', 'team', 'workspace'] },
+                    { value: 'trends', label: 'Tracking Trends', keywords: ['trends', 'real-time', 'social'] }
+                ]
+            },
+            {
+                id: 'document_length',
+                question: "How long are your documents?",
+                subtitle: "Understand the Domain: Context window requirements",
+                options: [
+                    { value: 'short', label: 'Short (under 5 pages)' },
+                    { value: 'medium', label: 'Medium (5-50 pages)' },
+                    { value: 'long', label: 'Long (50-200+ pages)' },
+                    { value: 'mixed', label: 'Mixed lengths' }
+                ],
+                condition: (ans) => ans.task_type !== 'trends'
+            },
+            {
+                id: 'accuracy_level',
+                question: "How critical is factual accuracy?",
+                subtitle: "Set Constraints: Reliability requirements",
+                options: [
+                    { value: 'critical', label: 'Critical - Must have citations' },
+                    { value: 'high', label: 'High - Accuracy important' },
+                    { value: 'moderate', label: 'Moderate - Some flexibility' },
+                    { value: 'low', label: 'Low - Speed prioritized' }
+                ]
+            },
+            {
+                id: 'budget',
+                question: "What's your budget?",
+                subtitle: "Set Constraints: Cost requirements",
+                options: [
+                    { value: 'free', label: 'Free tier only' },
+                    { value: 'budget', label: 'Budget ($10-20/mo)' },
+                    { value: 'standard', label: 'Standard ($20-50/mo)' },
+                    { value: 'unlimited', label: 'No constraints' }
+                ]
+            },
+            {
+                id: 'integration_needs',
+                question: "Need integrations?",
+                subtitle: "Choose the Right Format: Ecosystem requirements",
+                options: [
+                    { value: 'google', label: 'Google Workspace' },
+                    { value: 'web', label: 'Web browsing & real-time' },
+                    { value: 'files', label: 'File uploads (images, PDFs)' },
+                    { value: 'none', label: 'No - Standalone is fine' }
+                ]
+            },
+            {
+                id: 'output_style',
+                question: "Preferred writing style?",
+                subtitle: "Anticipate ambiguities: Tone and format",
+                options: [
+                    { value: 'formal', label: 'Formal & Professional' },
+                    { value: 'balanced', label: 'Balanced & Natural' },
+                    { value: 'casual', label: 'Casual & Conversational' },
+                    { value: 'punchy', label: 'Punchy & Viral-worthy' }
+                ]
+            }
+        ];
+
+        const llmInfo = {
+            chatgpt: {
+                name: 'ChatGPT',
+                icon: '🌀',
+                strengths: ['Multimodal capabilities', 'Advanced reasoning', 'Custom GPTs', 'Long-term projects'],
+                bestFor: 'Creative content, coding, and everyday productivity',
+                pricing: 'Free tier available, Plus $20/month',
+                signupUrl: 'https://chat.openai.com',
+                useCases: ['Writing blog posts', 'Debugging code', 'Creating presentations', 'Brainstorming']
+            },
+            claude: {
+                name: 'Claude',
+                icon: '✦',
+                strengths: ['200K+ token context', 'Complex text analysis', 'Balanced tone', 'Ethical reasoning'],
+                bestFor: 'Deep reading and comprehension',
+                pricing: 'Free tier available, Pro $20/month',
+                signupUrl: 'https://claude.ai',
+                useCases: ['Analyzing contracts', 'Research papers', 'Legal review', 'Technical writing']
+            },
+            perplexity: {
+                name: 'Perplexity',
+                icon: '◈',
+                strengths: ['Always cites sources', 'Real-time web data', 'Research summarization', 'Quick answers'],
+                bestFor: 'Verified research and fact-checking',
+                pricing: 'Free tier available, Pro $20/month',
+                signupUrl: 'https://perplexity.ai',
+                useCases: ['Academic research', 'Market analysis', 'News summaries', 'Documentation']
+            },
+            grok: {
+                name: 'Grok',
+                icon: '⦿',
+                strengths: ['Real-time social media', 'Punchy humor', 'Breaking events', 'Viral content'],
+                bestFor: 'Real-time trends and pop culture',
+                pricing: 'With X Premium ($8-16/month)',
+                signupUrl: 'https://x.com',
+                useCases: ['Trending topics', 'Social media content', 'News monitoring', 'Sentiment analysis']
+            },
+            gemini: {
+                name: 'Gemini',
+                icon: '◆',
+                strengths: ['Google Workspace integration', 'Real-time search', 'Team collaboration', 'Seamless workflows'],
+                bestFor: 'Google Workspace integration',
+                pricing: 'Free tier available, Advanced $20/month',
+                signupUrl: 'https://gemini.google.com',
+                useCases: ['Google Docs', 'Sheet analysis', 'Email drafting', 'Calendar management']
+            }
+        };
+
+        function getFilteredQuestions() {
+            return questions.filter(q => !q.condition || q.condition(state.answers));
+        }
+
+        function calculateScores() {
+            let scores = { chatgpt: 0, claude: 0, perplexity: 0, grok: 0, gemini: 0 };
+
+            const taskMap = {
+                writing: { chatgpt: 9, claude: 7.5, grok: 6 },
+                research: { perplexity: 9, claude: 7.5, gemini: 4.5 },
+                coding: { chatgpt: 9, claude: 7.5 },
+                analysis: { claude: 9, gemini: 7.5, chatgpt: 4.5 },
+                collaboration: { gemini: 9, chatgpt: 4.5 },
+                trends: { grok: 9, perplexity: 7.5, gemini: 4.5 }
+            };
+            
+            if (state.answers.task_type && taskMap[state.answers.task_type]) {
+                Object.entries(taskMap[state.answers.task_type]).forEach(([llm, score]) => {
+                    scores[llm] += score;
+                });
+            }
+
+            if (state.answers.document_length === 'long') {
+                scores.claude += 7.5;
+                scores.gemini += 5;
+            } else if (state.answers.document_length === 'short') {
+                scores.grok += 5;
+                scores.chatgpt += 3.75;
+            }
+
+            if (state.answers.accuracy_level === 'critical') {
+                scores.perplexity += 9;
+                scores.claude += 7.5;
+            } else if (state.answers.accuracy_level === 'low') {
+                scores.grok += 6;
+                scores.chatgpt += 4.5;
+            }
+
+            const budgetMap = {
+                free: { grok: 8, gemini: 8, chatgpt: 4 },
+                budget: { chatgpt: 10, gemini: 8, claude: 6 },
+                standard: { claude: 10, chatgpt: 8, perplexity: 8 },
+                unlimited: { claude: 8, chatgpt: 8, perplexity: 8 }
+            };
+            
+            if (state.answers.budget && budgetMap[state.answers.budget]) {
+                Object.entries(budgetMap[state.answers.budget]).forEach(([llm, score]) => {
+                    scores[llm] += score;
+                });
+            }
+
+            const integrationMap = {
+                google: { gemini: 18.75 },
+                web: { perplexity: 18.75, grok: 15.625, gemini: 9.375 },
+                files: { chatgpt: 15.625, claude: 15.625, gemini: 12.5 }
+            };
+            
+            if (state.answers.integration_needs && integrationMap[state.answers.integration_needs]) {
+                Object.entries(integrationMap[state.answers.integration_needs]).forEach(([llm, score]) => {
+                    scores[llm] += score;
+                });
+            }
+
+            if (state.answers.output_style === 'punchy') {
+                scores.grok += 3.75;
+            } else if (state.answers.output_style === 'formal') {
+                scores.claude += 3;
+                scores.perplexity += 2.25;
+            }
+
+            return scores;
+        }
+
+        function getRecommendations() {
+            const scores = calculateScores();
+            return Object.entries(scores)
+                .sort(([, a], [, b]) => b - a)
+                .map(([llm]) => ({ ...llmInfo[llm], score: scores[llm], id: llm }));
+        }
+
+        function handleAnswer(value) {
+            const filteredQuestions = getFilteredQuestions();
+            state.answers[filteredQuestions[state.currentStep].id] = value;
+            
+            const nextQuestions = questions.filter(q => !q.condition || q.condition(state.answers));
+            
+            if (state.currentStep < nextQuestions.length - 1) {
+                state.currentStep++;
+            } else {
+                state.showResult = true;
+            }
+            render();
+        }
+
+        function reset() {
+            state = {
+                currentStep: 0,
+                answers: {},
+                showResult: false,
+                showScores: false,
+                showComparison: false,
+                darkMode: state.darkMode,
+                customUseCase: '',
+                showCustomInput: false
+            };
+            render();
+        }
+
+        function exportResults() {
+            const recommendations = getRecommendations();
+            const primary = recommendations[0];
+            
+            let content = `LLM RECOMMENDATION REPORT\nGenerated: ${new Date().toLocaleDateString()}\n\n`;
+            content += `TOP RECOMMENDATION: ${primary.name}\n`;
+            content += `Best for: ${primary.bestFor}\n`;
+            content += `Pricing: ${primary.pricing}\n\n`;
+            content += `Key Strengths:\n`;
+            primary.strengths.forEach(s => content += `  - ${s}\n`);
+            
+            if (state.customUseCase) {
+                content += `\nYour Use Case: ${state.customUseCase}\n`;
+            }
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'llm-recommendation.txt';
+            a.click();
+        }
+
+        function renderQuestions() {
+            const filteredQuestions = getFilteredQuestions();
+            const currentQ = filteredQuestions[state.currentStep];
+            const progress = ((state.currentStep + 1) / filteredQuestions.length) * 100;
+
+            return `
+                <div class="container">
+                    <div class="card ${state.darkMode ? 'card-dark' : ''}">
+                        <div class="header">
+                            <h1 class="title">LLM Selector</h1>
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <button class="btn ${state.darkMode ? 'btn-dark' : 'btn-secondary'}" onclick="state.darkMode = !state.darkMode; render()">
+                                    ${state.darkMode ? '☀️' : '🌙'}
+                                </button>
+                                <span>${state.currentStep + 1} of ${filteredQuestions.length}</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        
+                        ${!state.showCustomInput ? `
+                            <div>
+                                <p class="question-subtitle">${currentQ.subtitle}</p>
+                                <h2 class="question-title">${currentQ.question}</h2>
+                                <div>
+                                    ${currentQ.options.map(opt => `
+                                        <button class="option-btn" onclick="handleAnswer('${opt.value}')">
+                                            <div class="option-label">
+                                                <span>${opt.label}</span>
+                                                <span>→</span>
+                                            </div>
+                                            ${opt.keywords ? `
+                                                <div class="keywords">
+                                                    ${opt.keywords.map(k => `<span class="keyword-tag">${k}</span>`).join('')}
+                                                </div>
+                                            ` : ''}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 24px;">
+                                    ${state.currentStep > 0 ? `
+                                        <button class="btn btn-secondary" onclick="state.currentStep--; render()">← Previous</button>
+                                    ` : '<div></div>'}
+                                    <button class="link" onclick="state.showCustomInput = true; render()">+ Add Custom Use Case</button>
+                                </div>
+                            </div>
+                        ` : `
+                            <div>
+                                <h2 class="question-title">Describe Your Use Case</h2>
+                                <textarea placeholder="E.g., I need to analyze legal contracts daily..." onchange="state.customUseCase = this.value">${state.customUseCase}</textarea>
+                                <div style="display: flex; gap: 12px; margin-top: 16px;">
+                                    <button class="btn btn-secondary" onclick="state.showCustomInput = false; render()">Back</button>
+                                    <button class="btn btn-primary" onclick="state.showCustomInput = false; if (state.currentStep === ${filteredQuestions.length - 1}) state.showResult = true; render()">
+                                        ${state.customUseCase ? 'Save & Continue' : 'Skip'}
+                                    </button>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderResults() {
+            const recommendations = getRecommendations();
+            const primary = recommendations[0];
+            const alternatives = recommendations.slice(1, 3);
+            const scores = calculateScores();
+
+            const colorMap = {
+                chatgpt: 'result-pink',
+                claude: 'result-orange',
+                perplexity: 'result-gray',
+                grok: 'result-gray',
+                gemini: 'result-blue'
+            };
+
+            return `
+                <div class="container">
+                    <div class="card ${state.darkMode ? 'card-dark' : ''}">
+                        <div class="header">
+                            <h1 class="title">
+                                <span>✨</span>
+                                Your Perfect LLM Match
+                            </h1>
+                            <div class="btn-group">
+                                <button class="btn ${state.darkMode ? 'btn-dark' : 'btn-secondary'}" onclick="state.darkMode = !state.darkMode; render()">
+                                    ${state.darkMode ? '☀️' : '🌙'}
+                                </button>
+                                <button class="btn btn-blue" onclick="state.showScores = !state.showScores; render()">
+                                    ${state.showScores ? 'Hide' : 'Show'} Scores
+                                </button>
+                                <button class="btn btn-green" onclick="state.showComparison = !state.showComparison; render()">
+                                    Compare
+                                </button>
+                                <button class="btn btn-indigo" onclick="exportResults()">
+                                    Export
+                                </button>
+                                <button class="btn ${state.darkMode ? 'btn-dark' : 'btn-secondary'}" onclick="reset()">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        ${state.showScores ? `
+                            <div class="alert alert-blue" style="margin-bottom: 24px;">
+                                <h3 style="margin-bottom: 16px; font-weight: bold;">Detailed Scoring</h3>
+                                <div class="score-grid">
+                                    ${Object.entries(scores).sort(([,a], [,b]) => b - a).map(([llm, score]) => `
+                                        <div class="score-box">
+                                            <div style="font-weight: 600; text-transform: capitalize; margin-bottom: 4px;">${llm}</div>
+                                            <div class="score-number">${score.toFixed(1)}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${state.showComparison ? `
+                            <div style="margin-bottom: 24px; overflow-x: auto;">
+                                <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 16px;">Side-by-Side Comparison</h3>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Feature</th>
+                                            ${recommendations.slice(0, 3).map(r => `<th>${r.icon} ${r.name}</th>`).join('')}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Best For</strong></td>
+                                            ${recommendations.slice(0, 3).map(r => `<td>${r.bestFor}</td>`).join('')}
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Pricing</strong></td>
+                                            ${recommendations.slice(0, 3).map(r => `<td>${r.pricing}</td>`).join('')}
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Score</strong></td>
+                                            ${recommendations.slice(0, 3).map(r => `<td><strong style="color: #7c3aed;">${r.score.toFixed(1)}</strong></td>`).join('')}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        ` : `
+                            <div class="result-card ${colorMap[primary.id]}">
+                                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                                    <span class="icon-large">${primary.icon}</span>
+                                    <div>
+                                        <h2 style="font-size: 24px; font-weight: bold;">Top: ${primary.name}</h2>
+                                        <p style="font-size: 14px; opacity: 0.8;">Best match for you</p>
+                                    </div>
+                                </div>
+                                <p style="margin-bottom: 12px;"><strong>Best for:</strong> ${primary.bestFor}</p>
+                                <p style="margin-bottom: 12px; font-size: 14px;"><strong>Pricing:</strong> ${primary.pricing}</p>
+                                <a href="${primary.signupUrl}" target="_blank" class="btn btn-primary" style="display: inline-block; margin-bottom: 16px;">Sign Up →</a>
+                                <div style="margin-bottom: 12px;">
+                                    <p style="font-weight: 600; margin-bottom: 8px;">Key Strengths:</p>
+                                    <ul style="list-style: none;">
+                                        ${primary.strengths.map(s => `<li style="margin-bottom: 4px;">✓ ${s}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p style="font-weight: 600; margin-bottom: 8px;">Use Cases:</p>
+                                    <ul style="list-style: none;">
+                                        ${primary.useCases.map(u => `<li style="margin-bottom: 4px; font-size: 14px;">• ${u}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 16px;">Alternatives:</h3>
+                            <div class="grid-2">
+                                ${alternatives.map(alt => `
+                                    <div class="result-card ${colorMap[alt.id]}">
+                                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                            <span style="font-size: 32px;">${alt.icon}</span>
+                                            <h3 style="font-size: 18px; font-weight: bold;">${alt.name}</h3>
+                                        </div>
+                                        <p style="font-size: 14px; margin-bottom: 8px;"><strong>Best for:</strong> ${alt.bestFor}</p>
+                                        <p style="font-size: 12px; margin-bottom: 12px;">${alt.pricing}</p>
+                                        <a href="${alt.signupUrl}" target="_blank" class="btn btn-secondary" style="display: inline-block; font-size: 12px; margin-bottom: 12px;">Learn More →</a>
+                                        <ul style="list-style: none; font-size: 14px;">
+                                            ${alt.strengths.slice(0, 2).map(s => `<li style="margin-bottom: 4px;">• ${s}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+
+                        <div class="alert alert-blue" style="margin-top: 24px;">
+                            <p style="font-size: 14px;">
+                                <strong>Pro Tip:</strong> Use ${primary.name} for your main work, and ${alternatives[0].name} when you need ${alternatives[0].bestFor.toLowerCase()}.
+                            </p>
+                        </div>
+
+                        ${state.customUseCase ? `
+                            <div class="alert alert-purple" style="margin-top: 16px;">
+                                <p style="font-weight: 600; margin-bottom: 8px;">Your Custom Use Case:</p>
+                                <p style="font-size: 14px; font-style: italic;">${state.customUseCase}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            const bgClass = state.darkMode ? 'bg-dark' : 'bg-light';
+            
+            if (state.showResult) {
+                app.innerHTML = `<div class="${bgClass}">${renderResults()}</div>`;
+            } else {
+                app.innerHTML = `<div class="${bgClass}">${renderQuestions()}</div>`;
+            }
+        }
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>

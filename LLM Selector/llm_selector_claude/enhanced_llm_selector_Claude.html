@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tool Selector - Find Your Perfect Match</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .bg-light { background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%); min-height: 100vh; }
+        .bg-dark { background: #111827; min-height: 100vh; color: #e5e7eb; }
+        .card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card-dark { background: #1f2937; color: white; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+        .title { font-size: 28px; font-weight: bold; display: flex; align-items: center; gap: 12px; }
+        .btn { padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .btn-primary { background: #7c3aed; color: white; }
+        .btn-primary:hover { background: #6d28d9; }
+        .btn-secondary { background: #e5e7eb; color: #111827; }
+        .btn-secondary:hover { background: #d1d5db; }
+        .btn-dark { background: #374151; color: white; }
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-green { background: #10b981; color: white; }
+        .btn-purple { background: #8b5cf6; color: white; }
+        .btn-indigo { background: #6366f1; color: white; }
+        .progress-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; margin-bottom: 24px; }
+        .progress-fill { height: 100%; background: #7c3aed; border-radius: 4px; transition: width 0.3s; }
+        .question-subtitle { color: #7c3aed; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .question-title { font-size: 32px; font-weight: bold; margin-bottom: 24px; }
+        .option-btn { width: 100%; text-align: left; padding: 16px; margin-bottom: 12px; border: 2px solid #e5e7eb; background: #f9fafb; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+        .option-btn:hover { background: #f3e8ff; border-color: #a78bfa; }
+        .option-label { font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+        .keywords { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .keyword-tag { font-size: 12px; padding: 4px 8px; background: white; border-radius: 12px; color: #6b7280; }
+        .result-card { padding: 24px; border-radius: 12px; border: 2px solid; margin-bottom: 24px; }
+        .result-pink { background: #fce7f3; border-color: #f9a8d4; }
+        .result-orange { background: #fed7aa; border-color: #fdba74; }
+        .result-gray { background: #f3f4f6; border-color: #d1d5db; }
+        .result-blue { background: #dbeafe; border-color: #93c5fd; }
+        .icon-large { font-size: 48px; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+        .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .score-box { padding: 16px; background: white; border-radius: 8px; }
+        .score-number { font-size: 24px; font-weight: bold; color: #7c3aed; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f9fafb; font-weight: 600; }
+        .link { color: #7c3aed; text-decoration: none; cursor: pointer; }
+        .link:hover { text-decoration: underline; }
+        .hidden { display: none; }
+        textarea, input[type="text"] { width: 100%; padding: 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-family: inherit; font-size: 14px; min-height: 120px; resize: vertical; }
+        input[type="text"] { min-height: auto; }
+        .alert { padding: 16px; border-radius: 8px; margin-top: 16px; }
+        .alert-blue { background: #dbeafe; border: 1px solid #93c5fd; }
+        .alert-purple { background: #f3e8ff; border: 1px solid #c4b5fd; }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .filter-btn { padding: 8px 16px; border: 2px solid #e5e7eb; background: white; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+        .filter-btn.active { background: #7c3aed; color: white; border-color: #7c3aed; }
+        .tool-icon { font-size: 24px; margin-right: 8px; }
+        .platform-badge { display: inline-block; padding: 2px 8px; background: #e5e7eb; border-radius: 12px; font-size: 11px; margin-right: 4px; margin-top: 4px; }
+        @media (max-width: 768px) {
+            .title { font-size: 20px; }
+            .question-title { font-size: 24px; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const DB = {
+            tools: [
+                {id:'chatgpt',name:'ChatGPT',category:'chat',bestFor:'Creative content, coding, and everyday productivity',pricing:'Free tier available, Plus $20/month',signupUrl:'https://chat.openai.com',strengths:['Multimodal capabilities','Advanced reasoning','Custom GPTs','Long-term projects'],useCases:['Writing blog posts','Debugging code','Creating presentations','Brainstorming'],icon:'🌀',platform:['web','mobile','desktop']},
+                {id:'claude',name:'Claude',category:'chat',bestFor:'Deep reading and comprehension',pricing:'Free tier available, Pro $20/month',signupUrl:'https://claude.ai',strengths:['200K+ token context','Complex text analysis','Balanced tone','Ethical reasoning'],useCases:['Analyzing contracts','Research papers','Legal review','Technical writing'],icon:'✦',platform:['web','mobile','desktop']},
+                {id:'perplexity',name:'Perplexity',category:'chat',bestFor:'Verified research and fact-checking',pricing:'Free tier available, Pro $20/month',signupUrl:'https://perplexity.ai',strengths:['Always cites sources','Real-time web data','Research summarization','Quick answers'],useCases:['Academic research','Market analysis','News summaries','Documentation'],icon:'◈',platform:['web','mobile']},
+                {id:'grok',name:'Grok',category:'chat',bestFor:'Real-time trends and pop culture',pricing:'With X Premium ($8-16/month)',signupUrl:'https://x.com',strengths:['Real-time social media','Punchy humor','Breaking events','Viral content'],useCases:['Trending topics','Social media content','News monitoring','Sentiment analysis'],icon:'⦿',platform:['web','mobile']},
+                {id:'gemini',name:'Gemini',category:'chat',bestFor:'Google Workspace integration',pricing:'Free tier available, Advanced $20/month',signupUrl:'https://gemini.google.com',strengths:['Google Workspace integration','Real-time search','Team collaboration','Seamless workflows'],useCases:['Google Docs','Sheet analysis','Email drafting','Calendar management'],icon:'◆',platform:['web','mobile']},
+                {id:'midjourney',name:'Midjourney',category:'images',bestFor:'Hyper-realistic and artistic visuals',pricing:'From $10/month',signupUrl:'https://midjourney.com',strengths:['Hyper-realistic output','Artistic control','High resolution','Unique aesthetic'],useCases:['Artistic visuals','Design work','Marketing assets','Concept art'],icon:'🎨',platform:['discord']},
+                {id:'dalle3',name:'DALL-E 3',category:'images',bestFor:'Text rendering and prompt understanding',pricing:'Included with ChatGPT Plus $20/month',signupUrl:'https://chat.openai.com',strengths:['Precise text-to-image','Complex prompts','Text rendering','Vision-to-visual'],useCases:['Product mockups','Marketing content','Illustrations','Creative concepts'],icon:'🖼️',platform:['web']},
+                {id:'firefly',name:'Adobe Firefly',category:'images',bestFor:'Professional commercial use',pricing:'Included in Adobe Creative Cloud',signupUrl:'https://firefly.adobe.com',strengths:['Licensed training data','Commercial safety','Photoshop integration','Generative Fill'],useCases:['Professional editing','Commercial projects','Brand assets','Advanced manipulation'],icon:'🔥',platform:['web','adobe']},
+                {id:'canva_magic',name:'Canva Magic Media',category:'images',bestFor:'Social media and marketing design',pricing:'Free; paid from $12.99/month',signupUrl:'https://canva.com',strengths:['Integrated design platform','User-friendly','Quick graphics','Template library'],useCases:['Social media','Presentations','Marketing materials','Quick designs'],icon:'✨',platform:['web','mobile']},
+                {id:'sora',name:'OpenAI Sora',category:'videos',bestFor:'Cinematic realism and storytelling',pricing:'Not yet widely available',signupUrl:'https://openai.com/sora',strengths:['Cinematic quality','Long coherent scenes','Realistic movements','Stunning visuals'],useCases:['Cinematic content','Storytelling','High-quality videos','Creative production'],icon:'🎬',platform:['api']},
+                {id:'veo',name:'Google Veo',category:'videos',bestFor:'Creative production with 4K resolution',pricing:'Google AI Studio access',signupUrl:'https://deepmind.google/technologies/veo/',strengths:['Advanced camera controls','4K resolution','Photorealistic','Natural physics'],useCases:['Professional videos','Creative control','Cinematic production','High-res content'],icon:'📹',platform:['web']},
+                {id:'runway',name:'Runway ML',category:'videos',bestFor:'Full editing workflow',pricing:'Free plan; Pro from $15/month',signupUrl:'https://runwayml.com',strengths:['Text-to-video','Image-to-video','Motion Brush','Inpainting','Full editing suite'],useCases:['Video editing','AI effects','Motion graphics','Creative production'],icon:'🏃',platform:['web']},
+                {id:'synthesia',name:'Synthesia',category:'videos',bestFor:'Training and explainer videos with AI avatars',pricing:'Starts at $22/month',signupUrl:'https://synthesia.io',strengths:['AI avatars','Multilingual','No-code','Professional quality','Script-to-video'],useCases:['Training videos','Corporate content','Explainers','Multilingual videos'],icon:'👤',platform:['web']},
+                {id:'capcut',name:'CapCut',category:'videos',bestFor:'Mobile-first video editing',pricing:'Free with Pro options',signupUrl:'https://capcut.com',strengths:['Mobile editing','Templates','Effects','Easy to use','TikTok integration'],useCases:['Social media','Mobile editing','Quick edits','TikTok content'],icon:'✂️',platform:['mobile','desktop']},
+                {id:'elevenlabs',name:'ElevenLabs',category:'voice',bestFor:'Overall realism and voice cloning',pricing:'Free plan; paid from $5/month',signupUrl:'https://elevenlabs.io',strengths:['Highly realistic voices','Voice cloning','Emotional control','Natural-sounding'],useCases:['Voiceovers','Audiobooks','Content creation','Voice cloning'],icon:'🎙️',platform:['web','api']},
+                {id:'murf',name:'Murf AI',category:'voice',bestFor:'Voiceovers with emphasis control',pricing:'Free plan; paid from $19/month',signupUrl:'https://murf.ai',strengths:['Wide voice range','Emphasis control','Video integration','Professional quality'],useCases:['Voiceovers','Presentations','E-learning','Marketing videos'],icon:'🗣️',platform:['web']},
+                {id:'notion',name:'Notion AI',category:'productivity',bestFor:'Note-taking with AI assistance',pricing:'Free; Plus $10/month, AI add-on $8/user/month',signupUrl:'https://notion.so',strengths:['Note organization','AI writing','Summarization','Knowledge management'],useCases:['Documentation','Project management','Knowledge base','Team collaboration'],icon:'📝',platform:['web','mobile','desktop']},
+                {id:'github_copilot',name:'GitHub Copilot',category:'coding',bestFor:'AI pair programming',pricing:'Individual $10/month, Business $19/user/month',signupUrl:'https://github.com/features/copilot',strengths:['Code completion','IDE integration','Context-aware','Multi-language'],useCases:['Code writing','Debugging','Learning','Productivity'],icon:'🤖',platform:['ide']},
+                {id:'zapier',name:'Zapier',category:'automation',bestFor:'Workflow automation',pricing:'Free; paid from $19.99/month',signupUrl:'https://zapier.com',strengths:['App integration','No-code','5000+ apps','Automation workflows'],useCases:['App automation','Workflow automation','Integration','Productivity'],icon:'⚡',platform:['web']},
+                {id:'make',name:'Make',category:'automation',bestFor:'Visual automation platform',pricing:'Free; paid from $9/month',signupUrl:'https://make.com',strengths:['Visual builder','Complex workflows','API integration','Powerful automation'],useCases:['Complex automation','API workflows','Data processing','Integration'],icon:'🔧',platform:['web']},
+                {id:'simpleapply',name:'SimpleApply.io',category:'employment',bestFor:'Automated job applications',pricing:'Pricing varies',signupUrl:'https://simpleapply.io',strengths:['Auto applications','Job matching','Time-saving','Multiple platforms'],useCases:['Job search','Applications','Career hunting','Time efficiency'],icon:'💼',platform:['web']},
+                {id:'grammarly',name:'Grammarly',category:'browser',bestFor:'Writing enhancement',pricing:'Free; Premium from $12/month',signupUrl:'https://grammarly.com',strengths:['Grammar fixes','Tone','Rewrites','Real-time help'],useCases:['Writing','Emails','Documents','Communication'],icon:'✏️',platform:['browser','web','desktop']},
+                {id:'jasper',name:'Jasper AI',category:'mixed',bestFor:'Marketing content at scale',pricing:'From $39/month per seat',signupUrl:'https://jasper.ai',strengths:['50+ templates','Brand tone','SEO','Team collaboration'],useCases:['Marketing','Blog posts','Ads','Social content'],icon:'✍️',platform:['web']}
+            ],
+            scores: {
+                writing: {chatgpt:9,claude:7.5,grok:6,gemini:5,jasper:7,grammarly:6},
+                research: {perplexity:9,claude:7.5,gemini:4.5,chatgpt:4},
+                coding: {chatgpt:9,claude:7.5,github_copilot:9,gemini:5},
+                analysis: {claude:9,gemini:7.5,chatgpt:4.5,perplexity:6},
+                collaboration: {gemini:9,chatgpt:4.5,notion:7},
+                trends: {grok:9,perplexity:7.5,gemini:4.5},
+                images: {midjourney:9,dalle3:8,firefly:8,canva_magic:6},
+                videos: {sora:9,veo:8.5,runway:8,synthesia:7,capcut:6},
+                voice: {elevenlabs:9,murf:7.5},
+                productivity: {notion:8,gemini:7},
+                automation: {zapier:9,make:8.5},
+                employment: {simpleapply:7},
+                browser: {grammarly:8},
+                mixed: {chatgpt:8,claude:7.5,jasper:7}
+            }
+        };
+
+        let state = {
+            step: 0,
+            answers: {},
+            result: false,
+            scores: false,
+            compare: false,
+            dark: false,
+            custom: '',
+            customInput: false,
+            filter: {category:'all',platform:'all'}
+        };
+
+        const questions = [
+            {id:'task',q:"What's your primary task?",sub:"Define your main objective",opts:[
+                {v:'writing',l:'Writing & Content',k:['creative','content','articles']},
+                {v:'research',l:'Research & Analysis',k:['research','verification','citations']},
+                {v:'coding',l:'Coding & Development',k:['coding','debugging','scripts']},
+                {v:'images',l:'Create Images',k:['art','visuals','graphics']},
+                {v:'videos',l:'Create Videos',k:['video','editing','motion']},
+                {v:'voice',l:'Voice/Audio',k:['voice','audio','speech']},
+                {v:'productivity',l:'Productivity',k:['notes','tasks','workflow']},
+                {v:'automation',l:'Automation',k:['workflows','integration','zapier']},
+                {v:'employment',l:'Job Search',k:['resume','applications','career']},
+                {v:'browser',l:'Browser Tools',k:['extensions','web','browser']},
+                {v:'mixed',l:'Mixed Scenarios',k:['multiple','various','combo']}
+            ]},
+            {id:'budget',q:"What's your budget?",sub:"Set cost constraints",opts:[
+                {v:'free',l:'Free tier only'},
+                {v:'budget',l:'Budget ($10-20/mo)'},
+                {v:'standard',l:'Standard ($20-50/mo)'},
+                {v:'unlimited',l:'No constraints'}
+            ]},
+            {id:'platform',q:"Platform preference?",sub:"Where will you use it?",opts:[
+                {v:'web',l:'Web browser'},
+                {v:'mobile',l:'Mobile app'},
+                {v:'desktop',l:'Desktop app'},
+                {v:'any',l:'Any platform'}
+            ]},
+            {id:'priority',q:"Top priority?",sub:"Most important factor",opts:[
+                {v:'quality',l:'Best quality'},
+                {v:'speed',l:'Speed & efficiency'},
+                {v:'ease',l:'Ease of use'},
+                {v:'features',l:'Advanced features'}
+            ]}
+        ];
+
+        function calc() {
+            const s = {};
+            DB.tools.forEach(t => s[t.id] = 0);
+            const task = state.answers.task;
+            if (task && DB.scores[task]) {
+                Object.entries(DB.scores[task]).forEach(([id, sc]) => s[id] += sc);
+            }
+            const budgetMap = {
+                free: {chatgpt:4,gemini:8,grok:8,perplexity:4},
+                budget: {chatgpt:10,gemini:8,claude:6},
+                standard: {claude:10,chatgpt:8,perplexity:8},
+                unlimited: {claude:8,chatgpt:8,perplexity:8}
+            };
+            if (state.answers.budget && budgetMap[state.answers.budget]) {
+                Object.entries(budgetMap[state.answers.budget]).forEach(([id, sc]) => s[id] += sc);
+            }
+            const pf = state.answers.platform;
+            if (pf && pf !== 'any') {
+                DB.tools.forEach(t => {
+                    if (t.platform.includes(pf)) s[t.id] += 5;
+                });
+            }
+            if (state.answers.priority === 'quality') {
+                s.claude += 3; s.midjourney += 3;
+            } else if (state.answers.priority === 'speed') {
+                s.chatgpt += 3; s.grok += 3;
+            }
+            return s;
+        }
+
+        function getRecs() {
+            const scores = calc();
+            return DB.tools.map(t => ({...t, score: scores[t.id] || 0}))
+                .filter(t => {
+                    if (state.filter.category !== 'all' && t.category !== state.filter.category) return false;
+                    if (state.filter.platform !== 'all' && !t.platform.includes(state.filter.platform)) return false;
+                    return true;
+                })
+                .sort((a, b) => b.score - a.score);
+        }
+
+        function answer(v) {
+            questions[state.step].id && (state.answers[questions[state.step].id] = v);
+            state.step < questions.length - 1 ? state.step++ : state.result = true;
+            render();
+        }
+
+        function reset() {
+            state = {step:0,answers:{},result:false,scores:false,compare:false,dark:state.dark,custom:'',customInput:false,filter:{category:'all',platform:'all'}};
+            render();
+        }
+
+        function exportRes() {
+            const recs = getRecs();
+            const top = recs[0];
+            let txt = `AI TOOL RECOMMENDATION\nGenerated: ${new Date().toLocaleDateString()}\n\nTOP: ${top.name}\nBest for: ${top.bestFor}\nPricing: ${top.pricing}\nURL: ${top.signupUrl}\n\nStrengths:\n${top.strengths.map(s => `  - ${s}`).join('\n')}`;
+            if (state.custom) txt += `\n\nYour Use Case: ${state.custom}`;
+            const blob = new Blob([txt], {type: 'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'ai-tool-recommendation.txt';
+            a.click();
+        }
+
+        function renderQ() {
+            const q = questions[state.step];
+            const prog = ((state.step + 1) / questions.length) * 100;
+            return `
+                <div class="container">
+                    <div class="card ${state.dark ? 'card-dark' : ''}">
+                        <div class="header">
+                            <h1 class="title">🤖 AI Tool Selector</h1>
+                            <div style="display:flex;align-items:center;gap:16px;">
+                                <button class="btn ${state.dark ? 'btn-dark' : 'btn-secondary'}" onclick="state.dark=!state.dark;render()">${state.dark ? '☀️' : '🌙'}</button>
+                                <span>${state.step + 1} of ${questions.length}</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
+                        ${!state.customInput ? `
+                            <div>
+                                <p class="question-subtitle">${q.sub}</p>
+                                <h2 class="question-title">${q.q}</h2>
+                                <div>
+                                    ${q.opts.map(o => `
+                                        <button class="option-btn" onclick="answer('${o.v}')">
+                                            <div class="option-label"><span>${o.l}</span><span>→</span></div>
+                                            ${o.k ? `<div class="keywords">${o.k.map(k => `<span class="keyword-tag">${k}</span>`).join('')}</div>` : ''}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                                <div style="display:flex;justify-content:space-between;margin-top:24px;">
+                                    ${state.step > 0 ? `<button class="btn btn-secondary" onclick="state.step--;render()">← Previous</button>` : '<div></div>'}
+                                    <a class="link" onclick="state.customInput=true;render()">+ Add Use Case</a>
+                                </div>
+                            </div>
+                        ` : `
+                            <div>
+                                <h2 class="question-title">Describe Your Use Case</h2>
+                                <textarea placeholder="E.g., I need to create marketing videos with AI voices..." onchange="state.custom=this.value">${state.custom}</textarea>
+                                <div style="display:flex;gap:12px;margin-top:16px;">
+                                    <button class="btn btn-secondary" onclick="state.customInput=false;render()">Back</button>
+                                    <button class="btn btn-primary" onclick="state.customInput=false;if(state.step===${questions.length-1})state.result=true;render()">${state.custom ? 'Save & Continue' : 'Skip'}</button>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRes() {
+            const recs = getRecs();
+            const top = recs[0];
+            const alts = recs.slice(1, 4);
+            const colors = {chat:'result-pink',images:'result-orange',videos:'result-blue',voice:'result-gray',productivity:'result-blue',coding:'result-gray',automation:'result-purple',employment:'result-blue',browser:'result-gray',mixed:'result-pink'};
+            const cats = [...new Set(DB.tools.map(t => t.category))];
+            const plats = ['web','mobile','desktop','browser','api','ide'];
+            return `
+                <div class="container">
+                    <div class="card ${state.dark ? 'card-dark' : ''}">
+                        <div class="header">
+                            <h1 class="title"><span>✨</span>Your Perfect Match</h1>
+                            <div class="btn-group">
+                                <button class="btn ${state.dark ? 'btn-dark' : 'btn-secondary'}" onclick="state.dark=!state.dark;render()">${state.dark ? '☀️' : '🌙'}</button>
+                                <button class="btn btn-blue" onclick="state.scores=!state.scores;render()">${state.scores ? 'Hide' : 'Show'} Scores</button>
+                                <button class="btn btn-green" onclick="state.compare=!state.compare;render()">Compare</button>
+                                <button class="btn btn-indigo" onclick="exportRes()">Export</button>
+                                <button class="btn ${state.dark ? 'btn-dark' : 'btn-secondary'}" onclick="reset()">Reset</button>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:16px;">
+                            <div style="font-weight:600;margin-bottom:8px;">Filter:</div>
+                            <div class="filter-group">
+                                <button class="filter-btn ${state.filter.category==='all'?'active':''}" onclick="state.filter.category='all';render()">All</button>
+                                ${cats.map(c => `<button class="filter-btn ${state.filter.category===c?'active':''}" onclick="state.filter.category='${c}';render()">${c}</button>`).join('')}
+                            </div>
+                            <div class="filter-group">
+                                <button class="filter-btn ${state.filter.platform==='all'?'active':''}" onclick="state.filter.platform='all';render()">All Platforms</button>
+                                ${plats.map(p => `<button class="filter-btn ${state.filter.platform===p?'active':''}" onclick="state.filter.platform='${p}';render()">${p}</button>`).join('')}
+                            </div>
+                        </div>
+
+                        ${state.scores ? `
+                            <div class="alert alert-blue" style="margin-bottom:24px;">
+                                <h3 style="margin-bottom:16px;font-weight:bold;">Detailed Scoring</h3>
+                                <div class="grid-3">
+                                    ${recs.slice(0,9).map(r => `
+                                        <div class="score-box">
+                                            <div style="font-weight:600;margin-bottom:4px;">${r.icon} ${r.name}</div>
+                                            <div class="score-number">${r.score.toFixed(1)}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${state.compare ? `
+                            <div style="margin-bottom:24px;overflow-x:auto;">
+                                <h3 style="font-size:20px;font-weight:bold;margin-bottom:16px;">Comparison</h3>
+                                <table>
+                                    <thead><tr><th>Tool</th><th>Best For</th><th>Pricing</th><th>Score</th></tr></thead>
+                                    <tbody>
+                                        ${recs.slice(0,5).map(r => `
+                                            <tr>
+                                                <td><strong>${r.icon} <a href="${r.signupUrl}" target="_blank" class="link">${r.name}</a></strong></td>
+                                                <td>${r.bestFor}</td>
+                                                <td>${r.pricing}</td>
+                                                <td><strong style="color:#7c3aed;">${r.score.toFixed(1)}</strong></td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ` : `
+                            <div class="result-card ${colors[top.category] || 'result-gray'}">
+                                <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                                    <span class="icon-large">${top.icon}</span>
+                                    <div>
+                                        <h2 style="font-size:24px;font-weight:bold;">Top: <a href="${top.signupUrl}" target="_blank" class="link">${top.name}</a></h2>
+                                        <p style="font-size:14px;opacity:0.8;">Best match for you</p>
+                                    </div>
+                                </div>
+                                <p style="margin-bottom:12px;"><strong>Best for:</strong> ${top.bestFor}</p>
+                                <p style="margin-bottom:12px;font-size:14px;"><strong>Pricing:</strong> ${top.pricing}</p>
+                                <div style="margin-bottom:12px;">
+                                    ${top.platform.map(p => `<span class="platform-badge">${p}</span>`).join('')}
+                                </div>
+                                <a href="${top.signupUrl}" target="_blank" class="btn btn-primary" style="display:inline-block;margin-bottom:16px;">Sign Up →</a>
+                                <div style="margin-bottom:12px;">
+                                    <p style="font-weight:600;margin-bottom:8px;">Key Strengths:</p>
+                                    <ul style="list-style:none;">
+                                        ${top.strengths.map(s => `<li style="margin-bottom:4px;">✓ ${s}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p style="font-weight:600;margin-bottom:8px;">Use Cases:</p>
+                                    <ul style="list-style:none;">
+                                        ${top.useCases.map(u => `<li style="margin-bottom:4px;font-size:14px;">• ${u}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h3 style="font-size:20px;font-weight:bold;margin-bottom:16px;">Alternatives:</h3>
+                            <div class="grid-2">
+                                ${alts.map(a => `
+                                    <div class="result-card ${colors[a.category] || 'result-gray'}">
+                                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                                            <span style="font-size:32px;">${a.icon}</span>
+                                            <h3 style="font-size:18px;font-weight:bold;"><a href="${a.signupUrl}" target="_blank" class="link">${a.name}</a></h3>
+                                        </div>
+                                        <p style="font-size:14px;margin-bottom:8px;"><strong>Best for:</strong> ${a.bestFor}</p>
+                                        <p style="font-size:12px;margin-bottom:12px;">${a.pricing}</p>
+                                        <div style="margin-bottom:12px;">
+                                            ${a.platform.map(p => `<span class="platform-badge">${p}</span>`).join('')}
+                                        </div>
+                                        <a href="${a.signupUrl}" target="_blank" class="btn btn-secondary" style="display:inline-block;font-size:12px;margin-bottom:12px;">Learn More →</a>
+                                        <ul style="list-style:none;font-size:14px;">
+                                            ${a.strengths.slice(0,2).map(s => `<li style="margin-bottom:4px;">• ${s}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+
+                        <div class="alert alert-blue" style="margin-top:24px;">
+                            <p style="font-size:14px;">
+                                <strong>Pro Tip:</strong> Use <a href="${top.signupUrl}" target="_blank" class="link">${top.name}</a> for your main work${alts.length > 0 ? `, and <a href="${alts[0].signupUrl}" target="_blank" class="link">${alts[0].name}</a> when you need ${alts[0].bestFor.toLowerCase()}` : ''}.
+                            </p>
+                        </div>
+
+                        ${state.custom ? `
+                            <div class="alert alert-purple" style="margin-top:16px;">
+                                <p style="font-weight:600;margin-bottom:8px;">Your Custom Use Case:</p>
+                                <p style="font-size:14px;font-style:italic;">${state.custom}</p>
+                            </div>
+                        ` : ''}
+
+                        <div style="margin-top:24px;padding:16px;background:#f9fafb;border-radius:8px;">
+                            <h4 style="font-weight:600;margin-bottom:12px;">All Recommended Tools:</h4>
+                            <div class="grid-3">
+                                ${recs.slice(0, 12).map(r => `
+                                    <div style="padding:12px;background:white;border-radius:8px;">
+                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                                            <span class="tool-icon">${r.icon}</span>
+                                            <strong style="font-size:14px;"><a href="${r.signupUrl}" target="_blank" class="link">${r.name}</a></strong>
+                                        </div>
+                                        <p style="font-size:12px;color:#6b7280;">${r.category} • Score: ${r.score.toFixed(1)}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function render() {
+            document.getElementById('app').innerHTML = `<div class="${state.dark ? 'bg-dark' : 'bg-light'}">${state.result ? renderRes() : renderQ()}</div>`;
+        }
+
+        render();
+    </script>
+</body>
+</html>

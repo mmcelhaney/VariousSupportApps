@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Ecosystem Skills Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .progress-summary {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .progress-item {
+            text-align: center;
+        }
+
+        .progress-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .progress-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .skill-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+            border: 3px solid transparent;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+        }
+
+        .skill-card.completed {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #f5fff6 0%, #ffffff 100%);
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .skill-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-wrapper {
+            position: relative;
+            width: 30px;
+            height: 30px;
+        }
+
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            appearance: none;
+            border: 3px solid #ddd;
+            border-radius: 6px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .checkbox:checked {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .skill-combo {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .resources {
+            margin-top: 15px;
+        }
+
+        .resource-section {
+            margin-bottom: 12px;
+        }
+
+        .resource-label {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .resource-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .resource-link {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .resource-link:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .reference-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .reference-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .reference-image {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .prompt-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .prompt-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .prompt-text {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐍 The Python Ecosystem</h1>
+            <p class="subtitle">Skills Every Developer Should Master</p>
+        </header>
+
+        <div class="progress-summary">
+            <div class="progress-item">
+                <div class="progress-number" id="completedCount">0</div>
+                <div class="progress-label">Completed</div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-number" id="totalCount">19</div>
+                <div class="progress-label">Total Skills</div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-number" id="percentComplete">0%</div>
+                <div class="progress-label">Progress</div>
+            </div>
+        </div>
+
+        <div class="skills-grid" id="skillsGrid"></div>
+
+        <div class="reference-section">
+            <h2>📚 Original Reference</h2>
+            <img src="20251115_211343.jpg" viewBox='0 0 800 1000'%3E%3Crect fill='%23c8d6b9' width='800' height='1000'/%3E%3Ctext x='400' y='80' font-family='Arial,sans-serif' font-size='32' font-weight='bold' fill='%23fff' text-anchor='middle'%3ETHE PYTHON ECOSYSTEM%3C/text%3E%3Ctext x='400' y='115' font-family='Arial,sans-serif' font-size='18' fill='%23fff' text-anchor='middle'%3ESKILLS EVERY DEVELOPER SHOULD MASTER%3C/text%3E%3Ctext x='400' y='500' font-family='Arial,sans-serif' font-size='16' fill='%23666' text-anchor='middle'%3E[Original infographic showing Python + various libraries]%3C/text%3E%3Ctext x='400' y='530' font-family='Arial,sans-serif' font-size='14' fill='%23888' text-anchor='middle'%3EPandas • BeautifulSoup • Scikit-learn • OpenCV%3C/text%3E%3Ctext x='400' y='555' font-family='Arial,sans-serif' font-size='14' fill='%23888' text-anchor='middle'%3EPyTorch • TensorFlow • NLTK • FastAPI • Flask%3C/text%3E%3Ctext x='400' y='580' font-family='Arial,sans-serif' font-size='14' fill='%23888' text-anchor='middle'%3EStreamlit • Airflow • PySpark • Kivy • Boto3%3C/text%3E%3Ctext x='400' y='605' font-family='Arial,sans-serif' font-size='14' fill='%23888' text-anchor='middle'%3ENumPy • Matplotlib • LangChain • Selenium%3C/text%3E%3C/svg%3E" alt="Python Ecosystem Skills" class="reference-image">
+            
+            <div class="prompt-section">
+                <h3>💡 About This Tracker</h3>
+                <p class="prompt-text">
+                    This interactive tracker was designed to help intermediate Python developers master the essential tools and frameworks in the Python ecosystem. Each skill card provides curated resources including official documentation, hands-on tutorials, video courses, and project-based learning opportunities. Check off skills as you complete them, and your progress will be automatically saved in your browser.
+                </p>
+            </div>
+
+            <div class="prompt-section">
+                <h3>📋 Original Prompt</h3>
+                <p class="prompt-text">
+                    <strong>User Request:</strong> "Generate an HTML app with JavaScript that provides actionable and clickable guides to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete. Before generating app, ask interactive questions, waiting for answers one at a time, to improve the quality of the app. Include the graphic at the end and this prompt."
+                </p>
+                <p class="prompt-text" style="margin-top: 10px;">
+                    <strong>Specifications gathered:</strong>
+                </p>
+                <ul style="margin-top: 10px; padding-left: 20px; color: #666; line-height: 1.8;">
+                    <li><strong>Skill Level:</strong> Intermediate</li>
+                    <li><strong>Resource Types:</strong> Mix of everything (documentation, tutorials, videos, projects)</li>
+                    <li><strong>Progress Tracking:</strong> Simple checkmarks (completed/not completed)</li>
+                    <li><strong>Data Persistence:</strong> Save progress in the app (localStorage)</li>
+                    <li><strong>Layout:</strong> Grid layout with tiles</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const skills = [
+            {
+                id: 'pandas',
+                title: 'Data Analysis',
+                combo: 'Python + Pandas',
+                resources: {
+                    docs: [
+                        { name: 'Pandas Docs', url: 'https://pandas.pydata.org/docs/' },
+                        { name: 'Getting Started', url: 'https://pandas.pydata.org/docs/getting_started/index.html' }
+                    ],
+                    tutorials: [
+                        { name: 'Real Python Pandas', url: 'https://realpython.com/pandas-python-explore-dataset/' },
+                        { name: 'Kaggle Learn', url: 'https://www.kaggle.com/learn/pandas' }
+                    ],
+                    videos: [
+                        { name: 'Corey Schafer Series', url: 'https://www.youtube.com/watch?v=ZyhVh-qRZPA' }
+                    ],
+                    projects: [
+                        { name: 'Data Analysis Projects', url: 'https://github.com/topics/pandas-data-analysis' }
+                    ]
+                }
+            },
+            {
+                id: 'beautifulsoup',
+                title: 'Web Scraping',
+                combo: 'Python + BeautifulSoup',
+                resources: {
+                    docs: [
+                        { name: 'BS4 Docs', url: 'https://www.crummy.com/software/BeautifulSoup/bs4/doc/' }
+                    ],
+                    tutorials: [
+                        { name: 'Real Python Scraping', url: 'https://realpython.com/beautiful-soup-web-scraper-python/' },
+                        { name: 'Scrapy Tutorial', url: 'https://docs.scrapy.org/en/latest/intro/tutorial.html' }
+                    ],
+                    videos: [
+                        { name: 'Web Scraping Course', url: 'https://www.youtube.com/watch?v=XVv6mJpFOb0' }
+                    ],
+                    projects: [
+                        { name: 'Scraping Projects', url: 'https://github.com/topics/web-scraping-python' }
+                    ]
+                }
+            },
+            {
+                id: 'scikit-learn',
+                title: 'Machine Learning',
+                combo: 'Python + Scikit-learn',
+                resources: {
+                    docs: [
+                        { name: 'Scikit-learn Docs', url: 'https://scikit-learn.org/stable/' }
+                    ],
+                    tutorials: [
+                        { name: 'ML Tutorial', url: 'https://scikit-learn.org/stable/tutorial/index.html' },
+                        { name: 'Real Python ML', url: 'https://realpython.com/learning-paths/machine-learning-python/' }
+                    ],
+                    videos: [
+                        { name: 'StatQuest ML', url: 'https://www.youtube.com/c/joshstarmer' },
+                        { name: 'Sentdex ML Series', url: 'https://www.youtube.com/watch?v=OGxgnH8y2NM' }
+                    ],
+                    projects: [
+                        { name: 'ML Projects', url: 'https://github.com/topics/machine-learning-projects' }
+                    ]
+                }
+            },
+            {
+                id: 'opencv',
+                title: 'Computer Vision',
+                combo: 'Python + OpenCV',
+                resources: {
+                    docs: [
+                        { name: 'OpenCV Docs', url: 'https://docs.opencv.org/4.x/' }
+                    ],
+                    tutorials: [
+                        { name: 'OpenCV Tutorial', url: 'https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html' },
+                        { name: 'PyImageSearch', url: 'https://pyimagesearch.com/start-here/' }
+                    ],
+                    videos: [
+                        { name: 'OpenCV Course', url: 'https://www.youtube.com/watch?v=oXlwWbU8l2o' }
+                    ],
+                    projects: [
+                        { name: 'CV Projects', url: 'https://github.com/topics/opencv-python' }
+                    ]
+                }
+            },
+            {
+                id: 'pytorch',
+                title: 'Deep Learning',
+                combo: 'Python + PyTorch',
+                resources: {
+                    docs: [
+                        { name: 'PyTorch Docs', url: 'https://pytorch.org/docs/stable/index.html' }
+                    ],
+                    tutorials: [
+                        { name: 'PyTorch Tutorials', url: 'https://pytorch.org/tutorials/' },
+                        { name: 'Deep Learning Course', url: 'https://www.fast.ai/' }
+                    ],
+                    videos: [
+                        { name: 'PyTorch for Beginners', url: 'https://www.youtube.com/watch?v=Z_ikDlimN6A' }
+                    ],
+                    projects: [
+                        { name: 'PyTorch Projects', url: 'https://github.com/topics/pytorch-tutorial' }
+                    ]
+                }
+            },
+            {
+                id: 'nltk',
+                title: 'NLP',
+                combo: 'Python + NLTK',
+                resources: {
+                    docs: [
+                        { name: 'NLTK Docs', url: 'https://www.nltk.org/' },
+                        { name: 'spaCy Docs', url: 'https://spacy.io/' }
+                    ],
+                    tutorials: [
+                        { name: 'NLTK Book', url: 'https://www.nltk.org/book/' },
+                        { name: 'Real Python NLP', url: 'https://realpython.com/nltk-nlp-python/' }
+                    ],
+                    videos: [
+                        { name: 'NLP Course', url: 'https://www.youtube.com/watch?v=X2vAabgKiuM' }
+                    ],
+                    projects: [
+                        { name: 'NLP Projects', url: 'https://github.com/topics/nlp-python' }
+                    ]
+                }
+            },
+            {
+                id: 'tensorflow',
+                title: 'Deep Learning',
+                combo: 'Python + TensorFlow',
+                resources: {
+                    docs: [
+                        { name: 'TensorFlow Docs', url: 'https://www.tensorflow.org/api_docs' }
+                    ],
+                    tutorials: [
+                        { name: 'TF Tutorials', url: 'https://www.tensorflow.org/tutorials' },
+                        { name: 'Keras Guide', url: 'https://keras.io/guides/' }
+                    ],
+                    videos: [
+                        { name: 'TensorFlow Course', url: 'https://www.youtube.com/watch?v=tPYj3fFJGjk' }
+                    ],
+                    projects: [
+                        { name: 'TF Projects', url: 'https://github.com/topics/tensorflow-projects' }
+                    ]
+                }
+            },
+            {
+                id: 'streamlit',
+                title: 'ML App Deployment',
+                combo: 'Python + Streamlit',
+                resources: {
+                    docs: [
+                        { name: 'Streamlit Docs', url: 'https://docs.streamlit.io/' }
+                    ],
+                    tutorials: [
+                        { name: 'Getting Started', url: 'https://docs.streamlit.io/get-started' },
+                        { name: 'Build Apps', url: 'https://docs.streamlit.io/develop/tutorials' }
+                    ],
+                    videos: [
+                        { name: 'Streamlit Tutorial', url: 'https://www.youtube.com/watch?v=JwSS70SZdyM' }
+                    ],
+                    projects: [
+                        { name: 'Streamlit Gallery', url: 'https://streamlit.io/gallery' }
+                    ]
+                }
+            },
+            {
+                id: 'fastapi',
+                title: 'APIs',
+                combo: 'Python + FastAPI',
+                resources: {
+                    docs: [
+                        { name: 'FastAPI Docs', url: 'https://fastapi.tiangolo.com/' }
+                    ],
+                    tutorials: [
+                        { name: 'FastAPI Tutorial', url: 'https://fastapi.tiangolo.com/tutorial/' },
+                        { name: 'Real Python FastAPI', url: 'https://realpython.com/fastapi-python-web-apis/' }
+                    ],
+                    videos: [
+                        { name: 'FastAPI Course', url: 'https://www.youtube.com/watch?v=0sOvCWFmrtA' }
+                    ],
+                    projects: [
+                        { name: 'API Projects', url: 'https://github.com/topics/fastapi-projects' }
+                    ]
+                }
+            },
+            {
+                id: 'airflow',
+                title: 'Workflow Automation',
+                combo: 'Python + Apache Airflow',
+                resources: {
+                    docs: [
+                        { name: 'Airflow Docs', url: 'https://airflow.apache.org/docs/' }
+                    ],
+                    tutorials: [
+                        { name: 'Airflow Tutorial', url: 'https://airflow.apache.org/docs/apache-airflow/stable/tutorial/index.html' }
+                    ],
+                    videos: [
+                        { name: 'Airflow Course', url: 'https://www.youtube.com/watch?v=AHMm1wfGuHE' }
+                    ],
+                    projects: [
+                        { name: 'Airflow Examples', url: 'https://github.com/apache/airflow/tree/main/airflow/example_dags' }
+                    ]
+                }
+            },
+            {
+                id: 'flask',
+                title: 'Full-Stack Web Dev',
+                combo: 'Python + Flask',
+                resources: {
+                    docs: [
+                        { name: 'Flask Docs', url: 'https://flask.palletsprojects.com/' }
+                    ],
+                    tutorials: [
+                        { name: 'Flask Mega-Tutorial', url: 'https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world' },
+                        { name: 'Real Python Flask', url: 'https://realpython.com/tutorials/flask/' }
+                    ],
+                    videos: [
+                        { name: 'Flask Course', url: 'https://www.youtube.com/watch?v=Z1RJmh_OqeA' }
+                    ],
+                    projects: [
+                        { name: 'Flask Projects', url: 'https://github.com/topics/flask-application' }
+                    ]
+                }
+            },
+            {
+                id: 'pyspark',
+                title: 'Big Data Processing',
+                combo: 'Python + PySpark',
+                resources: {
+                    docs: [
+                        { name: 'PySpark Docs', url: 'https://spark.apache.org/docs/latest/api/python/' }
+                    ],
+                    tutorials: [
+                        { name: 'PySpark Tutorial', url: 'https://spark.apache.org/docs/latest/api/python/getting_started/index.html' },
+                        { name: 'Databricks Learning', url: 'https://www.databricks.com/learn' }
+                    ],
+                    videos: [
+                        { name: 'PySpark Course', url: 'https://www.youtube.com/watch?v=_C8kWso4ne4' }
+                    ],
+                    projects: [
+                        { name: 'Spark Projects', url: 'https://github.com/topics/pyspark-examples' }
+                    ]
+                }
+            },
+            {
+                id: 'django',
+                title: 'Lightweight Web Dev',
+                combo: 'Python + Django',
+                resources: {
+                    docs: [
+                        { name: 'Django Docs', url: 'https://docs.djangoproject.com/' }
+                    ],
+                    tutorials: [
+                        { name: 'Django Tutorial', url: 'https://docs.djangoproject.com/en/stable/intro/tutorial01/' },
+                        { name: 'Django for Beginners', url: 'https://djangoforbeginners.com/' }
+                    ],
+                    videos: [
+                        { name: 'Django Course', url: 'https://www.youtube.com/watch?v=F5mRW0jo-U4' }
+                    ],
+                    projects: [
+                        { name: 'Django Projects', url: 'https://github.com/topics/django-application' }
+                    ]
+                }
+            },
+            {
+                id: 'kivy',
+                title: 'Desktop App Development',
+                combo: 'Python + Kivy',
+                resources: {
+                    docs: [
+                        { name: 'Kivy Docs', url: 'https://kivy.org/doc/stable/' },
+                        { name: 'PyQt5 Docs', url: 'https://www.riverbankcomputing.com/static/Docs/PyQt5/' }
+                    ],
+                    tutorials: [
+                        { name: 'Kivy Tutorial', url: 'https://kivy.org/doc/stable/tutorials/index.html' },
+                        { name: 'Real Python GUI', url: 'https://realpython.com/python-gui-tkinter/' }
+                    ],
+                    videos: [
+                        { name: 'Kivy Course', url: 'https://www.youtube.com/watch?v=F7UKmK9eQLY' }
+                    ],
+                    projects: [
+                        { name: 'GUI Projects', url: 'https://github.com/topics/python-gui' }
+                    ]
+                }
+            },
+            {
+                id: 'numpy',
+                title: 'Scientific Computing',
+                combo: 'Python + NumPy',
+                resources: {
+                    docs: [
+                        { name: 'NumPy Docs', url: 'https://numpy.org/doc/stable/' }
+                    ],
+                    tutorials: [
+                        { name: 'NumPy Tutorial', url: 'https://numpy.org/doc/stable/user/quickstart.html' },
+                        { name: 'SciPy Lectures', url: 'https://scipy-lectures.org/' }
+                    ],
+                    videos: [
+                        { name: 'NumPy Course', url: 'https://www.youtube.com/watch?v=QUT1VHiLmmI' }
+                    ],
+                    projects: [
+                        { name: 'NumPy Examples', url: 'https://github.com/rougier/numpy-100' }
+                    ]
+                }
+            },
+            {
+                id: 'boto3',
+                title: 'AWS Automation',
+                combo: 'Python + Boto3',
+                resources: {
+                    docs: [
+                        { name: 'Boto3 Docs', url: 'https://boto3.amazonaws.com/v1/documentation/api/latest/index.html' }
+                    ],
+                    tutorials: [
+                        { name: 'AWS SDK Tutorial', url: 'https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html' },
+                        { name: 'Real Python AWS', url: 'https://realpython.com/python-boto3-aws-s3/' }
+                    ],
+                    videos: [
+                        { name: 'Boto3 Course', url: 'https://www.youtube.com/watch?v=s7j-D81jKeo' }
+                    ],
+                    projects: [
+                        { name: 'AWS Automation', url: 'https://github.com/topics/boto3-python' }
+                    ]
+                }
+            },
+            {
+                id: 'matplotlib',
+                title: 'Visualization',
+                combo: 'Python + Matplotlib',
+                resources: {
+                    docs: [
+                        { name: 'Matplotlib Docs', url: 'https://matplotlib.org/stable/index.html' },
+                        { name: 'Seaborn Docs', url: 'https://seaborn.pydata.org/' }
+                    ],
+                    tutorials: [
+                        { name: 'Matplotlib Tutorial', url: 'https://matplotlib.org/stable/tutorials/index.html' },
+                        { name: 'Python Graph Gallery', url: 'https://www.python-graph-gallery.com/' }
+                    ],
+                    videos: [
+                        { name: 'Matplotlib Course', url: 'https://www.youtube.com/watch?v=3Xc3CA655Y4' }
+                    ],
+                    projects: [
+                        { name: 'Viz Projects', url: 'https://github.com/topics/data-visualization-python' }
+                    ]
+                }
+            },
+            {
+                id: 'langchain',
+                title: 'AI Agents',
+                combo: 'Python + LangChain',
+                resources: {
+                    docs: [
+                        { name: 'LangChain Docs', url: 'https://python.langchain.com/docs/get_started/introduction' }
+                    ],
+                    tutorials: [
+                        { name: 'LangChain Tutorial', url: 'https://python.langchain.com/docs/tutorials/' },
+                        { name: 'Building Agents', url: 'https://python.langchain.com/docs/how_to/#agents' }
+                    ],
+                    videos: [
+                        { name: 'LangChain Course', url: 'https://www.youtube.com/watch?v=lG7Uxts9SXs' }
+                    ],
+                    projects: [
+                        { name: 'LangChain Projects', url: 'https://github.com/topics/langchain' }
+                    ]
+                }
+            },
+            {
+                id: 'selenium',
+                title: 'Web Automation',
+                combo: 'Python + Selenium',
+                resources: {
+                    docs: [
+                        { name: 'Selenium Docs', url: 'https://www.selenium.dev/documentation/' }
+                    ],
+                    tutorials: [
+                        { name: 'Selenium Tutorial', url: 'https://selenium-python.readthedocs.io/' },
+                        { name: 'Real Python Selenium', url: 'https://realpython.com/modern-web-automation-with-python-and-selenium/' }
+                    ],
+                    videos: [
+                        { name: 'Selenium Course', url: 'https://www.youtube.com/watch?v=j7VZsCCnptM' }
+                    ],
+                    projects: [
+                        { name: 'Automation Projects', url: 'https://github.com/topics/selenium-python' }
+                    ]
+                }
+            }
+        ];
+
+        function loadProgress() {
+            const saved = localStorage.getItem('pythonSkillsProgress');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveProgress(progress) {
+            localStorage.setItem('pythonSkillsProgress', JSON.stringify(progress));
+        }
+
+        function updateProgressSummary() {
+            const progress = loadProgress();
+            const completed = Object.values(progress).filter(v => v).length;
+            const total = skills.length;
+            const percent = Math.round((completed / total) * 100);
+
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('percentComplete').textContent = percent + '%';
+        }
+
+        function toggleSkill(skillId) {
+            const progress = loadProgress();
+            progress[skillId] = !progress[skillId];
+            saveProgress(progress);
+            renderSkills();
+            updateProgressSummary();
+        }
+
+        function createResourceLinks(resources) {
+            let html = '<div class="resources">';
+            
+            if (resources.docs) {
+                html += '<div class="resource-section">';
+                html += '<span class="resource-label">📚 Documentation</span>';
+                html += '<div class="resource-links">';
+                resources.docs.forEach(link => {
+                    html += `<a href="${link.url}" target="_blank" class="resource-link">${link.name}</a>`;
+                });
+                html += '</div></div>';
+            }
+
+            if (resources.tutorials) {
+                html += '<div class="resource-section">';
+                html += '<span class="resource-label">📝 Tutorials</span>';
+                html += '<div class="resource-links">';
+                resources.tutorials.forEach(link => {
+                    html += `<a href="${link.url}" target="_blank" class="resource-link">${link.name}</a>`;
+                });
+                html += '</div></div>';
+            }
+
+            if (resources.videos) {
+                html += '<div class="resource-section">';
+                html += '<span class="resource-label">🎥 Videos</span>';
+                html += '<div class="resource-links">';
+                resources.videos.forEach(link => {
+                    html += `<a href="${link.url}" target="_blank" class="resource-link">${link.name}</a>`;
+                });
+                html += '</div></div>';
+            }
+
+            if (resources.projects) {
+                html += '<div class="resource-section">';
+                html += '<span class="resource-label">🚀 Projects</span>';
+                html += '<div class="resource-links">';
+                resources.projects.forEach(link => {
+                    html += `<a href="${link.url}" target="_blank" class="resource-link">${link.name}</a>`;
+                });
+                html += '</div></div>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderSkills() {
+            const progress = loadProgress();
+            const grid = document.getElementById('skillsGrid');
+            
+            grid.innerHTML = skills.map(skill => {
+                const isCompleted = progress[skill.id] || false;
+                return `
+                    <div class="skill-card ${isCompleted ? 'completed' : ''}" id="card-${skill.id}">
+                        <div class="skill-header">
+                            <div class="skill-title">
+                                ${skill.title}
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" 
+                                       class="checkbox" 
+                                       id="check-${skill.id}"
+                                       ${isCompleted ? 'checked' : ''}
+                                       onchange="toggleSkill('${skill.id}')">
+                            </div>
+                        </div>
+                        <div class="skill-combo">${skill.combo}</div>
+                        ${createResourceLinks(skill.resources)}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize
+        renderSkills();
+        updateProgressSummary();
+    </script>
+</body>
+</html>

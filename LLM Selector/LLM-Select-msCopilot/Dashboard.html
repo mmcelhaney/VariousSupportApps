@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Tool Selector Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>🧠 AI Tool Selector</h1>
+
+  <div class="filters">
+    <select id="category"></select>
+    <select id="platform"></select>
+    <textarea id="task" placeholder="Describe your task..."></textarea>
+    <button onclick="suggest()">Suggest Tools</button>
+    <button onclick="exportCSV()">Export CSV</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script src="tools.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+import React, { useState } from 'react';
+import { ChevronRight, RotateCcw, Sparkles } from 'lucide-react';
+
+const LLMSelector = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [showResult, setShowResult] = useState(false);
+
+  const questions = [
+    {
+      id: 'task_type',
+      question: "What's your primary task type?",
+      subtitle: "Define the Objective: What is the outcome or deliverable?",
+      options: [
+        { value: 'writing', label: 'Writing & Content Creation', keywords: ['creative', 'content', 'articles', 'emails', 'copy'] },
+        { value: 'research', label: 'Research & Fact-Checking', keywords: ['research', 'verification', 'citations', 'accuracy'] },
+        { value: 'coding', label: 'Coding & Development', keywords: ['coding', 'debugging', 'scripts', 'development'] },
+        { value: 'analysis', label: 'Data Analysis & Documents', keywords: ['analysis', 'reports', 'documents', 'summarize'] },
+        { value: 'collaboration', label: 'Team Collaboration & Workflow', keywords: ['collaboration', 'team', 'workspace', 'integration'] },
+        { value: 'trends', label: 'Tracking Trends & Real-time Info', keywords: ['trends', 'real-time', 'social', 'current'] }
+      ]
+    },
+    {
+      id: 'document_length',
+      question: "How long are the documents you'll work with?",
+      subtitle: "Understand the Domain: Context window requirements",
+      options: [
+        { value: 'short', label: 'Short (< 5 pages / emails / posts)' },
+        { value: 'medium', label: 'Medium (5-50 pages / articles)' },
+        { value: 'long', label: 'Long (50-200+ pages / reports / contracts)' },
+        { value: 'mixed', label: 'Mixed lengths' }
+      ]
+    },
+    {
+      id: 'accuracy_level',
+      question: "How critical is factual accuracy?",
+      subtitle: "Set Constraints: Reliability requirements",
+      options: [
+        { value: 'critical', label: 'Critical - Must have citations and verification' },
+        { value: 'high', label: 'High - Accuracy important but some flexibility' },
+        { value: 'moderate', label: 'Moderate - Creative flexibility acceptable' },
+        { value: 'low', label: 'Low - Speed and creativity prioritized' }
+      ]
+    },
+    {
+      id: 'integration_needs',
+      question: "Do you need integration with other tools?",
+      subtitle: "Choose the Right Format: Ecosystem requirements",
+      options: [
+        { value: 'google', label: 'Yes - Google Workspace (Docs, Sheets, Drive)' },
+        { value: 'web', label: 'Yes - Web browsing and real-time data' },
+        { value: 'files', label: 'Yes - File uploads (images, PDFs, etc.)' },
+        { value: 'none', label: 'No - Standalone AI is fine' }
+      ]
+    },
+    {
+      id: 'output_style',
+      question: "What writing style do you prefer?",
+      subtitle: "Anticipate ambiguities: Tone and format",
+      options: [
+        { value: 'formal', label: 'Formal & Professional' },
+        { value: 'balanced', label: 'Balanced & Natural' },
+        { value: 'casual', label: 'Casual & Conversational' },
+        { value: 'punchy', label: 'Punchy & Viral-worthy' }
+      ]
+    }
+  ];
+
+  const handleAnswer = (value) => {
+    const newAnswers = { ...answers, [questions[currentStep].id]: value };
+    setAnswers(newAnswers);
+    
+    if (currentStep < questions.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setShowResult(true);
+    }
+  };
+
+  const calculateRecommendation = () => {
+    let scores = {
+      chatgpt: 0,
+      claude: 0,
+      perplexity: 0,
+      grok: 0,
+      gemini: 0
+    };
+
+    // Task type scoring
+    const taskMap = {
+      writing: { chatgpt: 3, claude: 2, grok: 2 },
+      research: { perplexity: 3, claude: 2, gemini: 1 },
+      coding: { chatgpt: 3, claude: 2 },
+      analysis: { claude: 3, gemini: 2, chatgpt: 1 },
+      collaboration: { gemini: 3, chatgpt: 1 },
+      trends: { grok: 3, perplexity: 2, gemini: 1 }
+    };
+    Object.entries(taskMap[answers.task_type] || {}).forEach(([llm, score]) => {
+      scores[llm] += score;
+    });
+
+    // Document length scoring
+    if (answers.document_length === 'long') {
+      scores.claude += 3;
+      scores.gemini += 2;
+    } else if (answers.document_length === 'short') {
+      scores.grok += 2;
+      scores.chatgpt += 1;
+    }
+
+    // Accuracy scoring
+    if (answers.accuracy_level === 'critical') {
+      scores.perplexity += 3;
+      scores.claude += 2;
+    } else if (answers.accuracy_level === 'low') {
+      scores.grok += 2;
+      scores.chatgpt += 1;
+    }
+
+    // Integration scoring
+    const integrationMap = {
+      google: { gemini: 3 },
+      web: { perplexity: 3, grok: 2, gemini: 1 },
+      files: { chatgpt: 2, claude: 2, gemini: 2 }
+    };
+    Object.entries(integrationMap[answers.integration_needs] || {}).forEach(([llm, score]) => {
+      scores[llm] += score;
+    });
+
+    // Style scoring
+    if (answers.output_style === 'punchy') {
+      scores.grok += 2;
+    } else if (answers.output_style === 'formal') {
+      scores.claude += 2;
+      scores.perplexity += 1;
+    }
+
+    return scores;
+  };
+
+  const getRecommendations = () => {
+    const scores = calculateRecommendation();
+    const sorted = Object.entries(scores)
+      .sort(([, a], [, b]) => b - a)
+      .map(([llm]) => llm);
+
+    const llmInfo = {
+      chatgpt: {
+        name: 'ChatGPT',
+        color: 'bg-pink-100 border-pink-300',
+        icon: '🌀',
+        strengths: ['Multimodal capabilities', 'Advanced reasoning', 'Custom GPTs', 'Long-term projects'],
+        bestFor: 'Creative content, coding, and everyday productivity workflows'
+      },
+      claude: {
+        name: 'Claude',
+        color: 'bg-orange-100 border-orange-300',
+        icon: '✦',
+        strengths: ['Exceptional with long documents (200K+ tokens)', 'Complex text analysis', 'Balanced tone', 'Ethical reasoning'],
+        bestFor: 'Deep reading, comprehension, and ethical reasoning'
+      },
+      perplexity: {
+        name: 'Perplexity',
+        color: 'bg-gray-100 border-gray-400',
+        icon: '◈',
+        strengths: ['Always cites sources', 'Real-time web-based data', 'Research summarization', 'Quick reliable answers'],
+        bestFor: 'Verified research, fact-checking, and summarized knowledge'
+      },
+      grok: {
+        name: 'Grok',
+        color: 'bg-gray-800 text-white border-gray-600',
+        icon: '⦿',
+        strengths: ['Real-time social media updates', 'Punchy humor', 'Breaking events', 'Viral content creation'],
+        bestFor: 'Real-time trends, pop culture, and candid insights'
+      },
+      gemini: {
+        name: 'Gemini',
+        color: 'bg-blue-100 border-blue-300',
+        icon: '◆',
+        strengths: ['Deep Google Workspace integration', 'Real-time search', 'Team-based work', 'Seamless workflows'],
+        bestFor: 'Integration with Google Workspace and real-time data access'
+      }
+    };
+
+    return sorted.map(llm => ({
+      ...llmInfo[llm],
+      score: scores[llm]
+    }));
+  };
+
+  const reset = () => {
+    setCurrentStep(0);
+    setAnswers({});
+    setShowResult(false);
+  };
+
+  if (showResult) {
+    const recommendations = getRecommendations();
+    const primary = recommendations[0];
+    const alternatives = recommendations.slice(1, 3);
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-xl p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                <Sparkles className="text-purple-600" />
+                Your Perfect LLM Match
+              </h1>
+              <button
+                onClick={reset}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+              >
+                <RotateCcw size={16} />
+                Start Over
+              </button>
+            </div>
+
+            <div className={`${primary.color} border-2 rounded-xl p-6 mb-6`}>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-4xl">{primary.icon}</span>
+                <div>
+                  <h2 className="text-2xl font-bold">Top Recommendation: {primary.name}</h2>
+                  <p className="text-sm opacity-80">Best match for your needs</p>
+                </div>
+              </div>
+              <p className="text-lg mb-4"><strong>Best for:</strong> {primary.bestFor}</p>
+              <div>
+                <p className="font-semibold mb-2">Key Strengths:</p>
+                <ul className="space-y-1">
+                  {primary.strengths.map((strength, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-green-600 mt-1">✓</span>
+                      <span>{strength}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <h3 className="text-xl font-bold mb-4">Alternative Options:</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {alternatives.map((alt, idx) => (
+                <div key={idx} className={`${alt.color} border rounded-xl p-4`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-2xl">{alt.icon}</span>
+                    <h3 className="text-lg font-bold">{alt.name}</h3>
+                  </div>
+                  <p className="text-sm mb-2"><strong>Best for:</strong> {alt.bestFor}</p>
+                  <ul className="text-sm space-y-1">
+                    {alt.strengths.slice(0, 2).map((strength, i) => (
+                      <li key={i} className="flex items-start gap-1">
+                        <span className="text-green-600">•</span>
+                        <span>{strength}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-sm text-gray-700">
+                <strong>Pro Tip:</strong> Consider using multiple LLMs for different tasks. For example, use {primary.name} for your primary workflow, and {alternatives[0].name} when you need {alternatives[0].bestFor.toLowerCase()}.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const progress = ((currentStep + 1) / questions.length) * 100;
+  const currentQ = questions[currentStep];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl font-bold text-gray-800">
+                LLM Selector - Protocol-Based
+              </h1>
+              <span className="text-sm text-gray-600">
+                Question {currentStep + 1} of {questions.length}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-purple-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <p className="text-sm text-purple-600 font-semibold mb-2">
+              {currentQ.subtitle}
+            </p>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">
+              {currentQ.question}
+            </h2>
+
+            <div className="space-y-3">
+              {currentQ.options.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => handleAnswer(option.value)}
+                  className="w-full p-4 text-left bg-gray-50 hover:bg-purple-50 border-2 border-gray-200 hover:border-purple-400 rounded-xl transition-all group"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-medium text-gray-800">
+                      {option.label}
+                    </span>
+                    <ChevronRight className="text-gray-400 group-hover:text-purple-600 transition-colors" />
+                  </div>
+                  {option.keywords && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {option.keywords.map((keyword, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs px-2 py-1 bg-white rounded-full text-gray-600"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {currentStep > 0 && (
+            <button
+              onClick={() => setCurrentStep(currentStep - 1)}
+              className="text-gray-600 hover:text-gray-800 text-sm"
+            >
+              ← Previous Question
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LLMSelector;

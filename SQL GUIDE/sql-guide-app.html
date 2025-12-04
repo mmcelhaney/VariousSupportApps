@@ -1,0 +1,2256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive SQL Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-layout {
+            display: flex;
+        }
+
+        .side-nav {
+            width: 220px;
+            background: #2d3748;
+            color: white;
+            padding: 20px 0;
+            min-height: 600px;
+        }
+
+        .side-nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .side-nav-item:hover {
+            background: #4a5568;
+            border-left-color: #667eea;
+        }
+
+        .side-nav-item.active {
+            background: #4a5568;
+            border-left-color: #667eea;
+            font-weight: bold;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-tabs {
+            display: flex;
+            overflow-x: auto;
+            background: #f8f9fa;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab {
+            padding: 20px 30px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: -3px;
+        }
+
+        .tab:hover {
+            background: #e2e8f0;
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+        }
+
+        .content {
+            padding: 40px;
+            min-height: 600px;
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-filter {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            color: #2d3748;
+            font-weight: bold;
+        }
+
+        .card-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-ddl { background: #fef3c7; color: #92400e; }
+        .badge-dml { background: #dbeafe; color: #1e40af; }
+        .badge-dcl { background: #fce7f3; color: #9f1239; }
+        .badge-tcl { background: #d1fae5; color: #065f46; }
+        .badge-beginner { background: #d1fae5; color: #065f46; }
+        .badge-intermediate { background: #fef3c7; color: #92400e; }
+        .badge-advanced { background: #fecaca; color: #991b1b; }
+
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .card.expanded .card-content {
+            max-height: 3000px;
+        }
+
+        .expand-icon {
+            font-size: 1.5em;
+            transition: transform 0.3s;
+        }
+
+        .card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .copy-btn:hover {
+            background: #5568d3;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .project-checkbox {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .project-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-right: 40px;
+        }
+
+        .project-links {
+            margin-top: 15px;
+        }
+
+        .project-link {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .project-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .query-tester {
+            display: grid;
+            gap: 20px;
+        }
+
+        .query-input {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .query-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .result-box {
+            padding: 20px;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .error-box {
+            border-left-color: #f56565;
+            background: #fff5f5;
+        }
+
+        .success-box {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .flavor-section {
+            margin-bottom: 40px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .flavor-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .flavor-content {
+            padding: 25px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: #f7fafc;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .gallery-caption {
+            padding: 15px;
+            background: #f7fafc;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .settings-panel {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .settings-row {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        select {
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .visualization-container {
+            margin: 30px 0;
+            padding: 30px;
+            background: #f7fafc;
+            border-radius: 15px;
+        }
+
+        .execution-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .flow-step:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .flow-step.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .flow-step.active .step-number {
+            background: white;
+            color: #667eea;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .step-description {
+            opacity: 0.8;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .data-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .split-view {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .split-panel {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .split-panel h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .file-upload {
+            margin: 20px 0;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload label {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload label:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #667eea;
+            background: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            background: #f7fafc;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .side-nav {
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                padding: 0;
+            }
+
+            .side-nav-item {
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 4px solid transparent;
+            }
+
+            .side-nav-item.active {
+                border-left: none;
+                border-bottom-color: #667eea;
+            }
+            
+            .split-view {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗃️ Interactive SQL Guide</h1>
+            <p>Your comprehensive resource for mastering SQL - from basics to advanced concepts</p>
+        </header>
+
+        <div class="main-layout">
+            <div class="side-nav" id="sideNav">
+                <div class="side-nav-item active" data-section="main">📚 Learning Hub</div>
+                <div class="side-nav-item" data-section="settings">⚙️ Settings</div>
+            </div>
+
+            <div class="content-area">
+                <div class="top-tabs" id="topTabs">
+                    <div class="tab active" data-tab="definitions">Definitions</div>
+                    <div class="tab" data-tab="examples">Example Queries</div>
+                    <div class="tab" data-tab="structure">Query Structure</div>
+                    <div class="tab" data-tab="tester">Test A Query</div>
+                    <div class="tab" data-tab="flavors">SQL Flavors</div>
+                    <div class="tab" data-tab="projects">Projects</div>
+                    <div class="tab" data-tab="references">References</div>
+                </div>
+
+                <div class="content">
+                    <!-- DEFINITIONS TAB -->
+                    <div class="tab-content active" id="definitions">
+                        <h2>SQL Definitions & Commands</h2>
+                        <p style="margin-bottom: 30px; color: #4a5568;">Explore SQL commands organized by category. Click on any card to expand and learn more.</p>
+                        
+                        <div class="search-filter">
+                            <input type="text" class="search-box" placeholder="Search commands..." id="defSearch">
+                            <button class="filter-btn active" data-category="all">All</button>
+                            <button class="filter-btn" data-category="DDL">DDL</button>
+                            <button class="filter-btn" data-category="DML">DML</button>
+                            <button class="filter-btn" data-category="DCL">DCL</button>
+                            <button class="filter-btn" data-category="TCL">TCL</button>
+                        </div>
+
+                        <div id="definitionsContent"></div>
+                    </div>
+
+                    <!-- EXAMPLE QUERIES TAB -->
+                    <div class="tab-content" id="examples">
+                        <h2>Example Queries</h2>
+                        <p style="margin-bottom: 30px; color: #4a5568;">Learn from practical examples organized by difficulty and concept.</p>
+                        
+                        <div class="search-filter">
+                            <input type="text" class="search-box" placeholder="Search examples..." id="exampleSearch">
+                            <button class="filter-btn active" data-level="all">All Levels</button>
+                            <button class="filter-btn" data-level="beginner">Beginner</button>
+                            <button class="filter-btn" data-level="intermediate">Intermediate</button>
+                            <button class="filter-btn" data-level="advanced">Advanced</button>
+                        </div>
+
+                        <div id="examplesContent"></div>
+                    </div>
+
+                    <!-- QUERY STRUCTURE TAB -->
+                    <div class="tab-content" id="structure">
+                        <h2>SQL Query Structure & Execution</h2>
+                        <p style="margin-bottom: 30px; color: #4a5568;">Understand how SQL queries are structured and executed.</p>
+
+                        <!-- Section 1: Animated Visualization -->
+                        <div class="visualization-container">
+                            <h3 style="color: #667eea; margin-bottom: 20px;">1️⃣ Execution Order Animation</h3>
+                            <button class="btn btn-primary" onclick="animateExecution()">▶️ Start Animation</button>
+                            <div class="execution-flow" id="executionFlow"></div>
+                        </div>
+
+                        <!-- Section 2: Interactive Clauses -->
+                        <div class="visualization-container">
+                            <h3 style="color: #667eea; margin-bottom: 20px;">2️⃣ Interactive Query Clauses</h3>
+                            <p style="margin-bottom: 15px;">Click on each clause to learn what it does:</p>
+                            <div id="interactiveClauses"></div>
+                        </div>
+
+                        <!-- Section 3: Logical vs Execution Order -->
+                        <div class="visualization-container">
+                            <h3 style="color: #667eea; margin-bottom: 20px;">3️⃣ Logical Order vs Execution Order</h3>
+                            <div class="split-view">
+                                <div class="split-panel">
+                                    <h3>📝 How You Write It (Logical Order)</h3>
+                                    <div id="logicalOrder"></div>
+                                </div>
+                                <div class="split-panel">
+                                    <h3>⚙️ How Database Executes It</h3>
+                                    <div id="executionOrder"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Data Transformation -->
+                        <div class="visualization-container">
+                            <h3 style="color: #667eea; margin-bottom: 20px;">4️⃣ Data Transformation at Each Step</h3>
+                            <p style="margin-bottom: 15px;">See how data changes through query execution:</p>
+                            <button class="btn btn-secondary" onclick="stepThroughQuery(-1)">◀️ Previous</button>
+                            <button class="btn btn-primary" onclick="stepThroughQuery(1)">Next Step ▶️</button>
+                            <div id="dataTransformation"></div>
+                        </div>
+                    </div>
+
+                    <!-- TEST A QUERY TAB -->
+                    <div class="tab-content" id="tester">
+                        <h2>Test A Query</h2>
+                        <p style="margin-bottom: 30px; color: #4a5568;">Test your SQL queries and get instant feedback on syntax and structure.</p>
+
+                        <div class="query-tester">
+                            <div class="settings-row">
+                                <label><strong>SQL Flavor:</strong></label>
+                                <select id="sqlFlavor">
+                                    <option value="auto">Auto-Detect</option>
+                                    <option value="mysql">MySQL</option>
+                                    <option value="postgresql">PostgreSQL</option>
+                                    <option value="sqlserver">SQL Server (T-SQL)</option>
+                                    <option value="oracle">Oracle</option>
+                                    <option value="sqlite">SQLite</option>
+                                    <option value="mariadb">MariaDB</option>
+                                    <option value="access">MS Access</option>
+                                </select>
+                            </div>
+
+                            <textarea class="query-input" id="queryInput" placeholder="Enter your SQL query here...
+
+Example: SELECT * FROM employees WHERE salary > 50000;"></textarea>
+
+                            <div class="file-upload">
+                                <label for="testData">📁 Upload Test Data (CSV)</label>
+                                <input type="file" id="testData" accept=".csv">
+                                <span id="fileName" style="margin-left: 15px; color: #4a5568;"></span>
+                            </div>
+
+                            <div style="display: flex; gap: 15px;">
+                                <button class="btn btn-primary" onclick="validateQuery()">✓ Validate Syntax</button>
+                                <button class="btn btn-secondary" onclick="simulateQuery()">▶️ Simulate Execution</button>
+                            </div>
+
+                            <div id="queryResult"></div>
+                        </div>
+                    </div>
+
+                    <!-- SQL FLAVORS TAB -->
+                    <div class="tab-content" id="flavors">
+                        <h2>SQL Flavors & Dialects</h2>
+                        <p style="margin-bottom: 30px; color: #4a5568;">Learn the key differences between SQL implementations across different database systems.</p>
+                        <div id="flavorsContent"></div>
+                    </div>
+
+                    <!-- PROJECTS TAB -->
+                    <div class="tab-content" id="projects">
+                        <h2>SQL Project Ideas</h2>
+                        <p style="margin-bottom: 30px; color: #4a5568;">Practice your SQL skills with real-world project ideas. Check off completed projects!</p>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <button class="btn btn-danger" onclick="resetProjects()">🔄 Reset All Progress</button>
+                        </div>
+
+                        <div class="project-grid" id="projectsContent"></div>
+                    </div>
+
+                    <!-- REFERENCES TAB -->
+                    <div class="tab-content" id="references">
+                        <h2>Reference Materials</h2>
+                        <p style="margin-bottom: 30px; color: #4a5568;">Visual guides and cheat sheets for quick reference. Click any image to view full size.</p>
+                        
+                        <div class="gallery" id="galleryContent"></div>
+
+                        <div style="margin-top: 40px; padding: 30px; background: #f7fafc; border-radius: 15px;">
+                            <h3 style="color: #667eea; margin-bottom: 15px;">About This App</h3>
+                            <p style="line-height: 1.6; color: #4a5568;">
+                                This interactive SQL Guide was created to help developers, analysts, and database administrators master SQL across different platforms and use cases. 
+                                The app covers everything from basic commands to advanced concepts, with practical examples, real-world projects, and comprehensive reference materials.
+                            </p>
+                            <p style="margin-top: 15px; line-height: 1.6; color: #4a5568;">
+                                <strong>Target Audience:</strong> Mixed user base including data analysts, backend developers, database administrators, and SQL learners at intermediate level.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- SETTINGS SECTION -->
+                    <div class="tab-content" id="settings">
+                        <h2>Settings & Preferences</h2>
+                        <p style="margin-bottom: 30px; color: #4a5568;">Manage your preferences and app data.</p>
+
+                        <div class="settings-panel">
+                            <div class="settings-row">
+                                <div>
+                                    <h3>Default SQL Flavor</h3>
+                                    <p style="color: #718096;">Choose your preferred SQL dialect</p>
+                                </div>
+                                <select id="defaultFlavor">
+                                    <option value="mysql">MySQL</option>
+                                    <option value="postgresql">PostgreSQL</option>
+                                    <option value="sqlserver">SQL Server</option>
+                                    <option value="oracle">Oracle</option>
+                                    <option value="sqlite">SQLite</option>
+                                    <option value="mariadb">MariaDB</option>
+                                </select>
+                            </div>
+
+                            <div class="settings-row">
+                                <div>
+                                    <h3>Export Preferences</h3>
+                                    <p style="color: #718096;">Download your settings and progress</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="exportPreferences()">📥 Export</button>
+                            </div>
+
+                            <div class="settings-row">
+                                <div>
+                                    <h3>Import Preferences</h3>
+                                    <p style="color: #718096;">Restore previously saved settings</p>
+                                </div>
+                                <input type="file" id="importFile" accept=".json" style="display: none;">
+                                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📤 Import</button>
+                            </div>
+
+                            <div class="settings-row">
+                                <div>
+                                    <h3>Reset All Preferences</h3>
+                                    <p style="color: #718096;">Clear all saved data and settings</p>
+                                </div>
+                                <button class="btn btn-danger" onclick="resetAllPreferences()">🔄 Reset Everything</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for full-size image viewing -->
+    <div class="modal" id="imageModal" onclick="closeModalIfOutside(event)">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="Full size image">
+        </div>
+    </div>
+
+    <script>
+        // ===== DATA STRUCTURES =====
+        const sqlCommands = {
+            DDL: [
+                {
+                    name: "CREATE",
+                    syntax: "CREATE TABLE table_name (\n  column1 datatype CONSTRAINT,\n  column2 datatype CONSTRAINT,\n  ...\n);",
+                    description: "Creates a new table, view, index, or database object.",
+                    example: "CREATE TABLE Employees (\n  ID INT PRIMARY KEY,\n  Name VARCHAR(50),\n  Salary DECIMAL(10,2)\n);",
+                    useCases: ["Creating new database tables", "Defining table structure", "Setting up initial schema"],
+                    related: ["ALTER", "DROP", "TRUNCATE"]
+                },
+                {
+                    name: "ALTER",
+                    syntax: "ALTER TABLE table_name\n  ADD column_name datatype;",
+                    description: "Modifies an existing database object structure.",
+                    example: "ALTER TABLE Employees\n  ADD Email VARCHAR(100);",
+                    useCases: ["Adding new columns", "Modifying column data types", "Adding constraints"],
+                    related: ["CREATE", "DROP"]
+                },
+                {
+                    name: "DROP",
+                    syntax: "DROP TABLE table_name;",
+                    description: "Permanently deletes a table or database object.",
+                    example: "DROP TABLE OldEmployees;",
+                    useCases: ["Removing obsolete tables", "Cleaning up database", "Deleting test objects"],
+                    related: ["CREATE", "TRUNCATE"]
+                },
+                {
+                    name: "TRUNCATE",
+                    syntax: "TRUNCATE TABLE table_name;",
+                    description: "Removes all rows from a table without logging individual row deletions.",
+                    example: "TRUNCATE TABLE TempData;",
+                    useCases: ["Quickly clearing table data", "Resetting tables", "Better performance than DELETE"],
+                    related: ["DELETE", "DROP"]
+                }
+            ],
+            DML: [
+                {
+                    name: "SELECT",
+                    syntax: "SELECT column1, column2\nFROM table_name\nWHERE condition;",
+                    description: "Retrieves data from one or more tables.",
+                    example: "SELECT Name, Salary\nFROM Employees\nWHERE Department = 'IT';",
+                    useCases: ["Querying database", "Retrieving specific records", "Data analysis"],
+                    related: ["FROM", "WHERE", "JOIN"]
+                },
+                {
+                    name: "INSERT",
+                    syntax: "INSERT INTO table_name (column1, column2)\nVALUES (value1, value2);",
+                    description: "Adds new rows of data to a table.",
+                    example: "INSERT INTO Employees (ID, Name, Salary)\nVALUES (101, 'John Doe', 55000);",
+                    useCases: ["Adding new records", "Bulk data insertion", "Importing data"],
+                    related: ["UPDATE", "DELETE"]
+                },
+                {
+                    name: "UPDATE",
+                    syntax: "UPDATE table_name\nSET column1 = value1\nWHERE condition;",
+                    description: "Modifies existing data in a table.",
+                    example: "UPDATE Employees\nSET Salary = 60000\nWHERE ID = 101;",
+                    useCases: ["Modifying existing records", "Bulk updates", "Data correction"],
+                    related: ["INSERT", "DELETE"]
+                },
+                {
+                    name: "DELETE",
+                    syntax: "DELETE FROM table_name\nWHERE condition;",
+                    description: "Removes rows from a table based on a condition.",
+                    example: "DELETE FROM Employees\nWHERE ID = 101;",
+                    useCases: ["Removing specific records", "Data cleanup", "Archiving old data"],
+                    related: ["TRUNCATE", "DROP"]
+                }
+            ],
+            DCL: [
+                {
+                    name: "GRANT",
+                    syntax: "GRANT privilege_name\nON object_name\nTO user_name;",
+                    description: "Gives specific privileges to users or roles.",
+                    example: "GRANT SELECT, INSERT\nON Employees\nTO analyst_user;",
+                    useCases: ["Managing user permissions", "Security configuration", "Access control"],
+                    related: ["REVOKE"]
+                },
+                {
+                    name: "REVOKE",
+                    syntax: "REVOKE privilege_name\nON object_name\nFROM user_name;",
+                    description: "Removes previously granted privileges from users.",
+                    example: "REVOKE INSERT\nON Employees\nFROM analyst_user;",
+                    useCases: ["Restricting access", "Security management", "Privilege cleanup"],
+                    related: ["GRANT"]
+                }
+            ],
+            TCL: [
+                {
+                    name: "COMMIT",
+                    syntax: "COMMIT;",
+                    description: "Saves all changes made in the current transaction.",
+                    example: "BEGIN TRANSACTION;\nUPDATE Accounts SET Balance = Balance - 100;\nCOMMIT;",
+                    useCases: ["Finalizing transactions", "Ensuring data consistency", "Saving changes"],
+                    related: ["ROLLBACK", "SAVEPOINT"]
+                },
+                {
+                    name: "ROLLBACK",
+                    syntax: "ROLLBACK;",
+                    description: "Undoes changes made in the current transaction.",
+                    example: "BEGIN TRANSACTION;\nDELETE FROM Orders WHERE ID = 50;\nROLLBACK;",
+                    useCases: ["Reverting errors", "Transaction recovery", "Testing changes"],
+                    related: ["COMMIT", "SAVEPOINT"]
+                },
+                {
+                    name: "SAVEPOINT",
+                    syntax: "SAVEPOINT savepoint_name;",
+                    description: "Creates a point within a transaction to which you can rollback.",
+                    example: "SAVEPOINT before_update;\nUPDATE Employees SET Salary = Salary * 1.1;",
+                    useCases: ["Partial rollbacks", "Complex transactions", "Transaction checkpoints"],
+                    related: ["COMMIT", "ROLLBACK"]
+                }
+            ]
+        };
+
+        const storedProcedures = {
+            name: "Stored Procedures",
+            description: "A stored procedure is a prepared SQL code that you can save and reuse. It's like a function in programming.",
+            createSyntax: `CREATE PROCEDURE procedure_name
+    @param1 datatype,
+    @param2 datatype
+AS
+BEGIN
+    -- SQL statements here
+END;`,
+            createExample: `CREATE PROCEDURE GetEmployeesByDept
+    @DeptName VARCHAR(50)
+AS
+BEGIN
+    SELECT * FROM Employees 
+    WHERE Department = @DeptName;
+END;`,
+            callSyntax: "EXEC procedure_name @param1 = value1, @param2 = value2;",
+            callExample: "EXEC GetEmployeesByDept @DeptName = 'IT';",
+            useCases: [
+                "Encapsulating complex business logic",
+                "Improving performance through precompilation",
+                "Enhancing security by controlling data access",
+                "Code reusability across applications"
+            ]
+        };
+
+        const exampleQueries = [
+            {
+                level: "beginner",
+                concept: "Basic SELECT",
+                title: "Retrieve All Employees",
+                query: "SELECT * FROM Employees;",
+                inputData: "Employees table with columns: ID, Name, Department, Salary",
+                expectedOutput: "All rows from Employees table",
+                explanation: [
+                    "SELECT * means select all columns",
+                    "FROM specifies the table to query",
+                    "No WHERE clause means all rows are returned"
+                ],
+                challenge: "Modify to select only Name and Salary columns"
+            },
+            {
+                level: "beginner",
+                concept: "WHERE Clause",
+                title: "Filter with WHERE Clause",
+                query: "SELECT Name, Salary\nFROM Employees\nWHERE Salary > 50000;",
+                inputData: "Employees: (1, 'Alice', 'IT', 60000), (2, 'Bob', 'HR', 45000), (3, 'Carol', 'IT', 70000)",
+                expectedOutput: "Name: Alice, Salary: 60000 | Name: Carol, Salary: 70000",
+                explanation: [
+                    "WHERE filters rows based on conditions",
+                    "Only employees with Salary > 50000 are returned",
+                    "Comparison operators: >, <, =, >=, <=, <>"
+                ],
+                challenge: "Add Department = 'IT' as an additional condition using AND"
+            },
+            {
+                level: "intermediate",
+                concept: "JOINs",
+                title: "INNER JOIN Two Tables",
+                query: `SELECT E.Name, D.DeptName 
+FROM Employees E 
+INNER JOIN Departments D 
+  ON E.DeptID = D.ID;`,
+                inputData: "Employees: (1, 'Alice', 10) | Departments: (10, 'IT'), (20, 'HR')",
+                expectedOutput: "Name: Alice, DeptName: IT",
+                explanation: [
+                    "INNER JOIN returns only matching rows from both tables",
+                    "ON specifies the join condition",
+                    "Table aliases (E, D) make queries more readable"
+                ],
+                challenge: "Change to LEFT JOIN and observe the difference"
+            },
+            {
+                level: "intermediate",
+                concept: "GROUP BY",
+                title: "GROUP BY with COUNT",
+                query: `SELECT Department, COUNT(*) as EmpCount 
+FROM Employees 
+GROUP BY Department;`,
+                inputData: "Employees with departments: IT, IT, HR, IT, Sales",
+                expectedOutput: "IT: 3, HR: 1, Sales: 1",
+                explanation: [
+                    "COUNT(*) counts rows in each group",
+                    "GROUP BY creates groups based on Department",
+                    "Each unique department value creates one output row"
+                ],
+                challenge: "Add HAVING clause to show only departments with more than 2 employees"
+            },
+            {
+                level: "advanced",
+                concept: "Window Functions",
+                title: "RANK Employees by Salary",
+                query: `SELECT Name, Salary, Department,
+  RANK() OVER (
+    PARTITION BY Department 
+    ORDER BY Salary DESC
+  ) as Rank
+FROM Employees;`,
+                inputData: "Employees with Name, Salary, Department",
+                expectedOutput: "Each employee ranked within their department by salary",
+                explanation: [
+                    "RANK() assigns rank numbers based on ORDER BY",
+                    "PARTITION BY creates separate ranking per department",
+                    "Window functions don't reduce row count like GROUP BY"
+                ],
+                challenge: "Replace RANK() with ROW_NUMBER() and observe differences with ties"
+            },
+            {
+                level: "advanced",
+                concept: "Subqueries",
+                title: "Correlated Subquery",
+                query: `SELECT Name, Salary 
+FROM Employees E1
+WHERE Salary > (
+  SELECT AVG(Salary) 
+  FROM Employees E2 
+  WHERE E2.Department = E1.Department
+);`,
+                inputData: "Employees with varying salaries across departments",
+                expectedOutput: "Employees earning above their department's average",
+                explanation: [
+                    "Subquery executes once for each outer row",
+                    "Correlated subquery references outer query (E1.Department)",
+                    "Useful for row-by-row comparisons"
+                ],
+                challenge: "Rewrite using a JOIN with a derived table instead of correlated subquery"
+            }
+        ];
+
+        const projects = [
+            {
+                title: "LMS (Library Management System)",
+                description: "Track books, members, loans, and returns",
+                links: [
+                    { text: "Schema Design", url: "https://www.geeksforgeeks.org/library-management-system-sql/" },
+                    { text: "Sample Queries", url: "https://github.com/topics/library-management-system-sql" },
+                    { text: "Tutorial", url: "https://www.sqlshack.com/learn-sql-database-design/" }
+                ]
+            },
+            {
+                title: "EMS (Employee Management System)",
+                description: "Manage employees, departments, salaries, and attendance",
+                links: [
+                    { text: "ERD Diagram", url: "https://www.vertabelo.com/blog/hr-database-model/" },
+                    { text: "SQL Scripts", url: "https://github.com/topics/employee-management-system" },
+                    { text: "Project Guide", url: "https://www.sqlservertutorial.net/sql-server-sample-database/" }
+                ]
+            },
+            {
+                title: "SMS (Student Management System)",
+                description: "Track students, courses, grades, and enrollments",
+                links: [
+                    { text: "Database Schema", url: "https://www.geeksforgeeks.org/sql-university-database/" },
+                    { text: "Sample Project", url: "https://github.com/topics/student-management-system-sql" },
+                    { text: "Tutorial Series", url: "https://www.sqlcourse.com/" }
+                ]
+            },
+            {
+                title: "HMS (Hospital Management System)",
+                description: "Manage patients, doctors, appointments, and medical records",
+                links: [
+                    { text: "Schema Design", url: "https://www.vertabelo.com/blog/hospital-database-model/" },
+                    { text: "GitHub Examples", url: "https://github.com/topics/hospital-management-system" },
+                    { text: "SQL Queries", url: "https://www.sqlshack.com/healthcare-database-design/" }
+                ]
+            },
+            {
+                title: "RMS (Rental Management System)",
+                description: "Track properties, tenants, leases, and payments",
+                links: [
+                    { text: "Database Design", url: "https://www.databasestar.com/rental-database/" },
+                    { text: "Sample Scripts", url: "https://github.com/topics/rental-management" },
+                    { text: "Project Tutorial", url: "https://www.sqlservertutorial.net/" }
+                ]
+            },
+            {
+                title: "HBS (Hostel Booking System)",
+                description: "Manage rooms, bookings, guests, and availability",
+                links: [
+                    { text: "Schema Example", url: "https://www.vertabelo.com/blog/hotel-database-model/" },
+                    { text: "SQL Scripts", url: "https://github.com/topics/hotel-management-system" },
+                    { text: "Tutorial", url: "https://www.geeksforgeeks.org/hotel-management-system-database-design/" }
+                ]
+            },
+            {
+                title: "RMS (Restaurant Management System)",
+                description: "Handle menu, orders, inventory, and billing",
+                links: [
+                    { text: "Database Design", url: "https://www.databasestar.com/restaurant-database/" },
+                    { text: "GitHub Repos", url: "https://github.com/topics/restaurant-management-system" },
+                    { text: "Project Guide", url: "https://www.vertabelo.com/blog/restaurant-database-model/" }
+                ]
+            },
+            {
+                title: "E-commerce Analytics",
+                description: "Analyze sales data, customer behavior, and product performance",
+                links: [
+                    { text: "Sample Database", url: "https://www.sqlservertutorial.net/sql-server-sample-database/" },
+                    { text: "Analytics Queries", url: "https://mode.com/sql-tutorial/" },
+                    { text: "Project Ideas", url: "https://www.datacamp.com/tutorial/sql-projects" }
+                ]
+            },
+            {
+                title: "School Database",
+                description: "Complete school system with students, teachers, classes, and grades",
+                links: [
+                    { text: "Schema Design", url: "https://www.geeksforgeeks.org/sql-university-database/" },
+                    { text: "Sample Data", url: "https://github.com/topics/school-database" },
+                    { text: "Tutorial", url: "https://www.mysqltutorial.org/mysql-sample-database.aspx" }
+                ]
+            },
+            {
+                title: "University Database",
+                description: "Manage departments, faculty, courses, and student records",
+                links: [
+                    { text: "ERD Example", url: "https://www.vertabelo.com/blog/university-database-model/" },
+                    { text: "SQL Scripts", url: "https://github.com/topics/university-database" },
+                    { text: "Project Guide", url: "https://www.geeksforgeeks.org/sql-university-database/" }
+                ]
+            },
+            {
+                title: "IMS (Inventory Management System)",
+                description: "Track products, stock levels, suppliers, and orders",
+                links: [
+                    { text: "Database Schema", url: "https://www.databasestar.com/inventory-database/" },
+                    { text: "Sample Queries", url: "https://github.com/topics/inventory-management-system" },
+                    { text: "Tutorial", url: "https://www.vertabelo.com/blog/inventory-database-design/" }
+                ]
+            },
+            {
+                title: "TAS (Travel Agency System)",
+                description: "Manage bookings, customers, destinations, and itineraries",
+                links: [
+                    { text: "Schema Design", url: "https://www.vertabelo.com/blog/travel-agency-database/" },
+                    { text: "GitHub Examples", url: "https://github.com/topics/travel-agency-system" },
+                    { text: "SQL Tutorial", url: "https://www.sqlshack.com/" }
+                ]
+            },
+            {
+                title: "LCS (Library Catalog System)",
+                description: "Catalog books, authors, publishers, and search functionality",
+                links: [
+                    { text: "Database Model", url: "https://www.databasestar.com/library-database/" },
+                    { text: "Sample Scripts", url: "https://github.com/topics/library-catalog" },
+                    { text: "Project Tutorial", url: "https://www.geeksforgeeks.org/library-management-system-sql/" }
+                ]
+            },
+            {
+                title: "FCM (Fitness Club Management)",
+                description: "Track members, trainers, classes, and memberships",
+                links: [
+                    { text: "Schema Example", url: "https://www.vertabelo.com/blog/gym-database-model/" },
+                    { text: "GitHub Repos", url: "https://github.com/topics/gym-management-system" },
+                    { text: "SQL Queries", url: "https://www.sqlshack.com/" }
+                ]
+            }
+        ];
+
+        const sqlFlavors = [
+            {
+                name: "MySQL",
+                description: "Open-source relational database management system, widely used for web applications",
+                unsupported: ["FULL OUTER JOIN (use UNION instead)", "INTERSECT, EXCEPT (use IN/NOT IN)", "Sequences (use AUTO_INCREMENT)"],
+                syntaxDiff: [
+                    { feature: "Limit Results", syntax: "LIMIT n" },
+                    { feature: "String Concatenation", syntax: "CONCAT(str1, str2) or CONCAT_WS()" },
+                    { feature: "Current Date", syntax: "NOW() or CURRENT_TIMESTAMP" },
+                    { feature: "Auto Increment", syntax: "AUTO_INCREMENT" }
+                ],
+                dataTypes: [
+                    "TINYINT, SMALLINT, MEDIUMINT, INT, BIGINT",
+                    "VARCHAR(n), TEXT, MEDIUMTEXT, LONGTEXT",
+                    "DATE, TIME, DATETIME, TIMESTAMP",
+                    "ENUM, SET (MySQL specific)"
+                ],
+                functions: [
+                    "String: CONCAT(), SUBSTRING(), LENGTH(), TRIM()",
+                    "Date: NOW(), DATE_FORMAT(), DATEDIFF()",
+                    "Aggregate: GROUP_CONCAT() - MySQL specific"
+                ]
+            },
+            {
+                name: "PostgreSQL",
+                description: "Advanced open-source database with strong SQL standards compliance",
+                unsupported: ["TOP keyword (use LIMIT)", "IDENTITY (use SERIAL or GENERATED)", "Square brackets for identifiers"],
+                syntaxDiff: [
+                    { feature: "Limit Results", syntax: "LIMIT n OFFSET m" },
+                    { feature: "String Concatenation", syntax: "|| or CONCAT()" },
+                    { feature: "Current Date", syntax: "CURRENT_TIMESTAMP or NOW()" },
+                    { feature: "Auto Increment", syntax: "SERIAL or GENERATED ALWAYS AS IDENTITY" }
+                ],
+                dataTypes: [
+                    "SMALLINT, INTEGER, BIGINT, NUMERIC",
+                    "VARCHAR(n), TEXT, CHAR(n)",
+                    "DATE, TIME, TIMESTAMP, INTERVAL",
+                    "ARRAY, JSON, JSONB, UUID (PostgreSQL specific)"
+                ],
+                functions: [
+                    "String: || operator, CONCAT(), SUBSTRING(), LENGTH()",
+                    "Date: NOW(), CURRENT_DATE, AGE(), EXTRACT()",
+                    "JSON: json_agg(), jsonb_set(), jsonb_extract_path()"
+                ]
+            },
+            {
+                name: "SQL Server (T-SQL)",
+                description: "Microsoft's enterprise database with T-SQL extensions",
+                unsupported: ["LIMIT (use TOP or OFFSET/FETCH)", "|| for concatenation", "SHOW commands"],
+                syntaxDiff: [
+                    { feature: "Limit Results", syntax: "TOP n or OFFSET n ROWS FETCH NEXT m ROWS ONLY" },
+                    { feature: "String Concatenation", syntax: "+ operator or CONCAT()" },
+                    { feature: "Current Date", syntax: "GETDATE() or SYSDATETIME()" },
+                    { feature: "Auto Increment", syntax: "IDENTITY(start, increment)" }
+                ],
+                dataTypes: [
+                    "TINYINT, SMALLINT, INT, BIGINT, DECIMAL",
+                    "VARCHAR(n), NVARCHAR(n), TEXT, NTEXT",
+                    "DATE, TIME, DATETIME, DATETIME2, DATETIMEOFFSET",
+                    "UNIQUEIDENTIFIER, XML, HIERARCHYID (SQL Server specific)"
+                ],
+                functions: [
+                    "String: + operator, CONCAT(), SUBSTRING(), LEN(), CHARINDEX()",
+                    "Date: GETDATE(), DATEADD(), DATEDIFF(), FORMAT()",
+                    "Conversion: CAST(), CONVERT(), TRY_CAST()"
+                ]
+            },
+            {
+                name: "Oracle",
+                description: "Enterprise-grade database with extensive features and PL/SQL",
+                unsupported: ["LIMIT (use ROWNUM or FETCH)", "TOP keyword", "AUTO_INCREMENT (use SEQUENCE)"],
+                syntaxDiff: [
+                    { feature: "Limit Results", syntax: "ROWNUM <= n or FETCH FIRST n ROWS ONLY" },
+                    { feature: "String Concatenation", syntax: "|| operator or CONCAT()" },
+                    { feature: "Current Date", syntax: "SYSDATE or CURRENT_TIMESTAMP" },
+                    { feature: "Auto Increment", syntax: "SEQUENCE + TRIGGER" }
+                ],
+                dataTypes: [
+                    "NUMBER(p,s), INTEGER, FLOAT",
+                    "VARCHAR2(n), CHAR(n), CLOB, NCLOB",
+                    "DATE, TIMESTAMP, INTERVAL",
+                    "BLOB, RAW, LONG RAW"
+                ],
+                functions: [
+                    "String: || operator, CONCAT(), SUBSTR(), LENGTH(), INSTR()",
+                    "Date: SYSDATE, ADD_MONTHS(), MONTHS_BETWEEN(), TO_DATE()",
+                    "Conversion: TO_CHAR(), TO_NUMBER(), TO_DATE()"
+                ]
+            },
+            {
+                name: "SQLite",
+                description: "Lightweight, file-based database perfect for embedded applications",
+                unsupported: ["RIGHT JOIN, FULL OUTER JOIN", "ALTER TABLE (limited)", "Stored Procedures"],
+                syntaxDiff: [
+                    { feature: "Limit Results", syntax: "LIMIT n OFFSET m" },
+                    { feature: "String Concatenation", syntax: "|| operator" },
+                    { feature: "Current Date", syntax: "datetime('now') or date('now')" },
+                    { feature: "Auto Increment", syntax: "AUTOINCREMENT (with INTEGER PRIMARY KEY)" }
+                ],
+                dataTypes: [
+                    "INTEGER, REAL, TEXT, BLOB",
+                    "NULL (SQLite uses dynamic typing)",
+                    "DATE stored as TEXT, REAL, or INTEGER",
+                    "No separate BOOLEAN (use INTEGER 0/1)"
+                ],
+                functions: [
+                    "String: || operator, substr(), length(), trim()",
+                    "Date: date(), time(), datetime(), julianday()",
+                    "Aggregate: group_concat(), total()"
+                ]
+            },
+            {
+                name: "MariaDB",
+                description: "MySQL fork with enhanced features and performance",
+                unsupported: ["Same as MySQL with some extensions", "Some Oracle compatibility features"],
+                syntaxDiff: [
+                    { feature: "Limit Results", syntax: "LIMIT n (same as MySQL)" },
+                    { feature: "String Concatenation", syntax: "CONCAT() or CONCAT_WS()" },
+                    { feature: "Current Date", syntax: "NOW() or CURRENT_TIMESTAMP" },
+                    { feature: "Auto Increment", syntax: "AUTO_INCREMENT" }
+                ],
+                dataTypes: [
+                    "Same as MySQL: INT, VARCHAR, TEXT, etc.",
+                    "Additional: UUID (from MariaDB 10.7)",
+                    "JSON (native support from 10.2)",
+                    "INET6 for IPv6 addresses"
+                ],
+                functions: [
+                    "String: CONCAT(), SUBSTRING(), LENGTH() (MySQL compatible)",
+                    "Date: NOW(), DATE_FORMAT(), DATEDIFF()",
+                    "Window Functions: ROW_NUMBER(), RANK() (from 10.2)"
+                ]
+            },
+            {
+                name: "MS Access",
+                description: "Desktop database system with SQL support through Jet/ACE engine",
+                unsupported: ["LIMIT (use TOP)", "CASE expression in older versions", "Common Table Expressions (CTE)"],
+                syntaxDiff: [
+                    { feature: "Limit Results", syntax: "TOP n" },
+                    { feature: "String Concatenation", syntax: "& operator or + operator" },
+                    { feature: "Current Date", syntax: "Date() or Now()" },
+                    { feature: "Auto Increment", syntax: "AUTOINCREMENT or IDENTITY" }
+                ],
+                dataTypes: [
+                    "Short (INTEGER), Long (LONG INTEGER), Single, Double",
+                    "TEXT, MEMO, HYPERLINK",
+                    "DATE/TIME (combined type)",
+                    "CURRENCY, YESNO (Boolean)"
+                ],
+                functions: [
+                    "String: & operator, Left(), Right(), Mid(), Len()",
+                    "Date: Date(), Now(), DateAdd(), DateDiff()",
+                    "Aggregate: DSum(), DCount(), DAvg()"
+                ]
+            }
+        ];
+
+        const referenceImages = [
+            { title: "SQL Query Logical Order", description: "Visual flowchart of SQL query execution" },
+            { title: "SQL Quick Reference Guide", description: "Comprehensive SQL command reference" },
+            { title: "SQL Project Ideas", description: "Real-world SQL project suggestions" },
+            { title: "SQL Query Execution Order", description: "Step-by-step execution flow" },
+            { title: "SQL vs Python Pandas", description: "Comparison of SQL and Pandas operations" },
+            { title: "Window Functions Queries", description: "Top 10 window function examples" },
+            { title: "SQL Cheat Sheet", description: "Quick reference for SQL syntax" }
+        ];
+
+        // ===== GLOBAL STATE =====
+        let currentAnimationStep = 0;
+        window.completedProjects = [];
+        window.currentTransformationStep = 0;
+
+        // ===== INITIALIZATION =====
+        function loadPreferences() {
+            const saved = localStorage.getItem('sqlGuidePrefs');
+            if (saved) {
+                try {
+                    const prefs = JSON.parse(saved);
+                    if (prefs.defaultFlavor) {
+                        document.getElementById('defaultFlavor').value = prefs.defaultFlavor;
+                        document.getElementById('sqlFlavor').value = prefs.defaultFlavor;
+                    }
+                    if (prefs.completedProjects) {
+                        window.completedProjects = prefs.completedProjects;
+                    }
+                } catch (e) {
+                    console.error('Error loading preferences:', e);
+                }
+            }
+        }
+
+        function savePreferences() {
+            const prefs = {
+                defaultFlavor: document.getElementById('defaultFlavor').value,
+                completedProjects: window.completedProjects || []
+            };
+            localStorage.setItem('sqlGuidePrefs', JSON.stringify(prefs));
+        }
+
+        function exportPreferences() {
+            const prefs = {
+                defaultFlavor: document.getElementById('defaultFlavor').value,
+                completedProjects: window.completedProjects || [],
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(prefs, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sql-guide-preferences.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetAllPreferences() {
+            if (confirm('Are you sure you want to reset all preferences and progress? This cannot be undone.')) {
+                localStorage.removeItem('sqlGuidePrefs');
+                window.completedProjects = [];
+                document.getElementById('defaultFlavor').value = 'mysql';
+                document.getElementById('sqlFlavor').value = 'auto';
+                renderProjects();
+                alert('All preferences have been reset.');
+            }
+        }
+
+        // ===== NAVIGATION =====
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.side-nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const section = this.dataset.section;
+                
+                document.querySelectorAll('.side-nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (section === 'settings') {
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById('settings').classList.add('active');
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                } else {
+                    document.getElementById('settings').classList.remove('active');
+                    const firstActiveTab = document.querySelector('.tab.active');
+                    if (firstActiveTab) {
+                        const tabName = firstActiveTab.dataset.tab;
+                        document.getElementById(tabName).classList.add('active');
+                    } else {
+                        document.querySelector('.tab').click();
+                    }
+                }
+            });
+        });
+
+        // ===== RENDER DEFINITIONS =====
+        function renderDefinitions() {
+            const container = document.getElementById('definitionsContent');
+            let html = '';
+
+            html += `
+                <div class="card" data-category="stored" data-name="stored procedures" onclick="toggleCard(this)">
+                    <div class="card-header">
+                        <div>
+                            <span class="card-title">📦 ${storedProcedures.name}</span>
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <p style="margin-bottom: 15px;"><strong>Description:</strong> ${storedProcedures.description}</p>
+                        
+                        <h4 style="color: #667eea; margin-top: 20px;">Creating a Stored Procedure:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(event, this)">Copy</button>
+                            <pre>${storedProcedures.createSyntax}</pre>
+                        </div>
+                        
+                        <h4 style="color: #667eea; margin-top: 20px;">Example:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(event, this)">Copy</button>
+                            <pre>${storedProcedures.createExample}</pre>
+                        </div>
+                        
+                        <h4 style="color: #667eea; margin-top: 20px;">Calling a Stored Procedure:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(event, this)">Copy</button>
+                            <pre>${storedProcedures.callExample}</pre>
+                        </div>
+                        
+                        <h4 style="color: #667eea; margin-top: 20px;">Common Use Cases:</h4>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            ${storedProcedures.useCases.map(uc => `<li style="margin: 5px 0;">${uc}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            Object.keys(sqlCommands).forEach(category => {
+                sqlCommands[category].forEach(cmd => {
+                    html += `
+                        <div class="card" data-category="${category}" data-name="${cmd.name.toLowerCase()}" onclick="toggleCard(this)">
+                            <div class="card-header">
+                                <div>
+                                    <span class="card-title">${cmd.name}</span>
+                                    <span class="card-badge badge-${category.toLowerCase()}">${category}</span>
+                                </div>
+                                <span class="expand-icon">▼</span>
+                            </div>
+                            <div class="card-content">
+                                <p style="margin-bottom: 15px;"><strong>Description:</strong> ${cmd.description}</p>
+                                
+                                <h4 style="color: #667eea;">Syntax:</h4>
+                                <div class="code-block">
+                                    <button class="copy-btn" onclick="copyCode(event, this)">Copy</button>
+                                    <pre>${cmd.syntax}</pre>
+                                </div>
+                                
+                                <h4 style="color: #667eea; margin-top: 15px;">Example:</h4>
+                                <div class="code-block">
+                                    <button class="copy-btn" onclick="copyCode(event, this)">Copy</button>
+                                    <pre>${cmd.example}</pre>
+                                </div>
+                                
+                                <h4 style="color: #667eea; margin-top: 15px;">Common Use Cases:</h4>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    ${cmd.useCases.map(uc => `<li style="margin: 5px 0;">${uc}</li>`).join('')}
+                                </ul>
+                                
+                                <h4 style="color: #667eea; margin-top: 15px;">Related Commands:</h4>
+                                <p style="margin-top: 5px;">${cmd.related.join(', ')}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+
+            container.innerHTML = html;
+        }
+
+        function filterDefinitions() {
+            const searchTerm = document.getElementById('defSearch').value.toLowerCase();
+            const activeBtn = document.querySelector('#definitions .filter-btn.active');
+            const category = activeBtn ? activeBtn.dataset.category : 'all';
+            const cards = document.querySelectorAll('#definitionsContent .card');
+
+            cards.forEach(card => {
+                const name = card.dataset.name || '';
+                const cardCategory = card.dataset.category || '';
+                const matchesSearch = name.includes(searchTerm) || searchTerm === '';
+                const matchesCategory = category === 'all' || cardCategory === category;
+
+                card.style.display = (matchesSearch && matchesCategory) ? 'block' : 'none';
+            });
+        }
+
+        document.getElementById('defSearch').addEventListener('input', filterDefinitions);
+        document.querySelectorAll('#definitions .filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#definitions .filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                filterDefinitions();
+            });
+        });
+
+        // ===== RENDER EXAMPLES =====
+        function renderExamples() {
+            const container = document.getElementById('examplesContent');
+            let html = '';
+
+            exampleQueries.forEach((example, idx) => {
+                html += `
+                    <div class="card" data-level="${example.level}" data-concept="${example.concept.toLowerCase()}" onclick="toggleCard(this)">
+                        <div class="card-header">
+                            <div>
+                                <span class="card-title">${example.title}</span>
+                                <span class="card-badge badge-${example.level}">${example.level.toUpperCase()}</span>
+                            </div>
+                            <span class="expand-icon">▼</span>
+                        </div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 15px;"><strong>Concept:</strong> ${example.concept}</p>
+                            
+                            <h4 style="color: #667eea;">Query:</h4>
+                            <div class="code-block">
+                                <button class="copy-btn" onclick="copyCode(event, this)">Copy</button>
+                                <pre>${example.query}</pre>
+                            </div>
+                            
+                            <h4 style="color: #667eea; margin-top: 15px;">Sample Input Data:</h4>
+                            <p style="background: #f7fafc; padding: 10px; border-radius: 5px;">${example.inputData}</p>
+                            
+                            <h4 style="color: #667eea; margin-top: 15px;">Expected Output:</h4>
+                            <p style="background: #f7fafc; padding: 10px; border-radius: 5px;">${example.expectedOutput}</p>
+                            
+                            <h4 style="color: #667eea; margin-top: 15px;">Step-by-Step Explanation:</h4>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                ${example.explanation.map(step => `<li style="margin: 8px 0;">${step}</li>`).join('')}
+                            </ol>
+                            
+                            <h4 style="color: #667eea; margin-top: 15px;">💡 Try It Yourself:</h4>
+                            <p style="background: #fff3cd; padding: 10px; border-radius: 5px; border-left: 4px solid #ffc107;">${example.challenge}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function filterExamples() {
+            const searchTerm = document.getElementById('exampleSearch').value.toLowerCase();
+            const activeBtn = document.querySelector('#examples .filter-btn.active');
+            const level = activeBtn ? activeBtn.dataset.level : 'all';
+            const cards = document.querySelectorAll('#examplesContent .card');
+
+            cards.forEach(card => {
+                const concept = card.dataset.concept || '';
+                const cardLevel = card.dataset.level || '';
+                const matchesSearch = concept.includes(searchTerm) || searchTerm === '';
+                const matchesLevel = level === 'all' || cardLevel === level;
+
+                card.style.display = (matchesSearch && matchesLevel) ? 'block' : 'none';
+            });
+        }
+
+        document.getElementById('exampleSearch').addEventListener('input', filterExamples);
+        document.querySelectorAll('#examples .filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#examples .filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                filterExamples();
+            });
+        });
+
+        // ===== RENDER QUERY STRUCTURE =====
+        function renderQueryStructure() {
+            renderExecutionFlow();
+            renderInteractiveClauses();
+            renderLogicalVsExecution();
+            renderDataTransformation();
+        }
+
+        function renderExecutionFlow() {
+            const steps = [
+                { num: 1, title: "FROM", desc: "Identify and load the source tables" },
+                { num: 2, title: "JOIN", desc: "Combine rows from multiple tables based on conditions" },
+                { num: 3, title: "WHERE", desc: "Filter rows based on conditions" },
+                { num: 4, title: "GROUP BY", desc: "Group rows with same values" },
+                { num: 5, title: "HAVING", desc: "Filter groups based on aggregate conditions" },
+                { num: 6, title: "SELECT", desc: "Choose which columns to display" },
+                { num: 7, title: "DISTINCT", desc: "Remove duplicate rows" },
+                { num: 8, title: "ORDER BY", desc: "Sort the result set" },
+                { num: 9, title: "LIMIT/OFFSET", desc: "Restrict number of rows returned" }
+            ];
+
+            let html = steps.map(step => `
+                <div class="flow-step" data-step="${step.num}">
+                    <div class="step-number">${step.num}</div>
+                    <div class="step-content">
+                        <div class="step-title">${step.title}</div>
+                        <div class="step-description">${step.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('executionFlow').innerHTML = html;
+        }
+
+        function animateExecution() {
+            const steps = document.querySelectorAll('.flow-step');
+            steps.forEach(s => s.classList.remove('active'));
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i > 0) steps[i - 1].classList.remove('active');
+                if (i < steps.length) {
+                    steps[i].classList.add('active');
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        steps.forEach(s => s.classList.remove('active'));
+                    }, 1000);
+                }
+            }, 800);
+        }
+
+        function renderInteractiveClauses() {
+            const clauses = [
+                { name: "SELECT", desc: "Specifies which columns to retrieve from the database" },
+                { name: "FROM", desc: "Identifies the table(s) from which to retrieve data" },
+                { name: "WHERE", desc: "Filters rows based on specified conditions" },
+                { name: "GROUP BY", desc: "Groups rows sharing a property for aggregate functions" },
+                { name: "HAVING", desc: "Filters groups created by GROUP BY clause" },
+                { name: "ORDER BY", desc: "Sorts the result set by one or more columns" },
+                { name: "LIMIT", desc: "Restricts the number of rows returned" }
+            ];
+
+            let html = '<div class="execution-flow">';
+            clauses.forEach(clause => {
+                html += `
+                    <div class="flow-step" onclick="this.classList.toggle('active')">
+                        <div class="step-content">
+                            <div class="step-title">${clause.name}</div>
+                            <div class="step-description">${clause.desc}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+
+            document.getElementById('interactiveClauses').innerHTML = html;
+        }
+
+        function renderLogicalVsExecution() {
+            document.getElementById('logicalOrder').innerHTML = `
+                <div class="code-block">
+                    <pre style="color: #68d391;">SELECT column_name
+FROM table_name
+WHERE condition
+GROUP BY column
+HAVING condition
+ORDER BY column
+LIMIT count;</pre>
+                </div>
+                <p style="margin-top: 15px; color: #4a5568;">This is how we naturally write SQL queries - starting with what we want to SELECT.</p>
+            `;
+
+            document.getElementById('executionOrder').innerHTML = `
+                <div class="code-block">
+                    <pre style="color: #f6ad55;">1. FROM table_name
+2. WHERE condition
+3. GROUP BY column
+4. HAVING condition
+5. SELECT column_name
+6. ORDER BY column
+7. LIMIT count</pre>
+                </div>
+                <p style="margin-top: 15px; color: #4a5568;">This is the order the database engine actually processes the query - starting with FROM to identify data sources.</p>
+            `;
+        }
+
+        function renderDataTransformation() {
+            window.dataTransformations = [
+                {
+                    step: "Initial Data (FROM)",
+                    data: [
+                        ["ID", "Name", "Dept", "Salary"],
+                        [1, "Alice", "IT", 60000],
+                        [2, "Bob", "HR", 45000],
+                        [3, "Carol", "IT", 70000],
+                        [4, "Dave", "HR", 50000]
+                    ]
+                },
+                {
+                    step: "After WHERE (Salary > 50000)",
+                    data: [
+                        ["ID", "Name", "Dept", "Salary"],
+                        [1, "Alice", "IT", 60000],
+                        [3, "Carol", "IT", 70000]
+                    ]
+                },
+                {
+                    step: "After GROUP BY Dept",
+                    data: [
+                        ["Dept", "AVG(Salary)"],
+                        ["IT", 65000]
+                    ]
+                },
+                {
+                    step: "After ORDER BY AVG(Salary) DESC",
+                    data: [
+                        ["Dept", "AVG(Salary)"],
+                        ["IT", 65000]
+                    ]
+                }
+            ];
+
+            window.currentTransformationStep = 0;
+            renderTransformationStep();
+        }
+
+        function renderTransformationStep() {
+            const step = window.dataTransformations[window.currentTransformationStep];
+            let html = `
+                <div style="margin: 20px 0;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">Step ${window.currentTransformationStep + 1} of ${window.dataTransformations.length}: ${step.step}</h4>
+                    <table class="data-table">
+            `;
+
+            step.data.forEach((row, idx) => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += idx === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</table></div>';
+            document.getElementById('dataTransformation').innerHTML = html;
+        }
+
+        function stepThroughQuery(direction) {
+            window.currentTransformationStep += direction;
+            if (window.currentTransformationStep < 0) {
+                window.currentTransformationStep = window.dataTransformations.length - 1;
+            } else if (window.currentTransformationStep >= window.dataTransformations.length) {
+                window.currentTransformationStep = 0;
+            }
+            renderTransformationStep();
+        }
+
+        // ===== QUERY TESTER =====
+        document.getElementById('testData').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || '';
+            document.getElementById('fileName').textContent = fileName ? `Selected: ${fileName}` : '';
+        });
+
+        function validateQuery() {
+            const query = document.getElementById('queryInput').value.trim();
+            const flavor = document.getElementById('sqlFlavor').value;
+            const resultDiv = document.getElementById('queryResult');
+
+            if (!query) {
+                resultDiv.innerHTML = '<div class="result-box error-box">⚠️ Please enter a SQL query to validate.</div>';
+                return;
+            }
+
+            let detectedFlavor = flavor;
+            if (flavor === 'auto') {
+                detectedFlavor = detectSQLFlavor(query);
+            }
+
+            const validation = validateSQLSyntax(query, detectedFlavor);
+
+            if (validation.valid) {
+                resultDiv.innerHTML = `
+                    <div class="result-box success-box">
+                        <h3 style="color: #22c55e; margin-bottom: 10px;">✓ Query is Valid!</h3>
+                        <p><strong>Detected Flavor:</strong> ${detectedFlavor.toUpperCase()}</p>
+                        <p style="margin-top: 10px;"><strong>Query Type:</strong> ${validation.type}</p>
+                        <p style="margin-top: 10px;">${validation.message}</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="result-box error-box">
+                        <h3 style="color: #ef4444; margin-bottom: 10px;">✗ Syntax Error</h3>
+                        <p><strong>Issue:</strong> ${validation.error}</p>
+                        <p style="margin-top: 10px;"><strong>Explanation:</strong> ${validation.explanation}</p>
+                        <p style="margin-top: 10px;"><strong>Suggestion:</strong> ${validation.suggestion}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function detectSQLFlavor(query) {
+            const upper = query.toUpperCase();
+            
+            if (upper.includes('TOP ') && upper.includes('SELECT')) return 'sqlserver';
+            if (upper.includes('ROWNUM') || upper.includes('SYSDATE')) return 'oracle';
+            if (upper.includes('LIMIT') && upper.includes('OFFSET')) return 'postgresql';
+            if (upper.includes('AUTOINCREMENT')) return 'sqlite';
+            if (upper.includes('LIMIT')) return 'mysql';
+            
+            return 'mysql';
+        }
+
+        function validateSQLSyntax(query, flavor) {
+            const upper = query.toUpperCase().trim();
+            
+            if (!upper) {
+                return { valid: false, error: "Empty query", explanation: "No SQL statement provided", suggestion: "Enter a valid SQL query" };
+            }
+
+            let queryType = 'UNKNOWN';
+            if (upper.startsWith('SELECT')) queryType = 'SELECT';
+            else if (upper.startsWith('INSERT')) queryType = 'INSERT';
+            else if (upper.startsWith('UPDATE')) queryType = 'UPDATE';
+            else if (upper.startsWith('DELETE')) queryType = 'DELETE';
+            else if (upper.startsWith('CREATE')) queryType = 'CREATE';
+            else if (upper.startsWith('ALTER')) queryType = 'ALTER';
+            else if (upper.startsWith('DROP')) queryType = 'DROP';
+
+            if (queryType === 'SELECT') {
+                if (!upper.includes('FROM')) {
+                    return { 
+                        valid: false, 
+                        error: "Missing FROM clause", 
+                        explanation: "SELECT queries must specify which table to retrieve data from",
+                        suggestion: "Add a FROM clause: SELECT columns FROM table_name" 
+                    };
+                }
+
+                const openParen = (query.match(/\(/g) || []).length;
+                const closeParen = (query.match(/\)/g) || []).length;
+                if (openParen !== closeParen) {
+                    return {
+                        valid: false,
+                        error: "Unmatched parentheses",
+                        explanation: "The number of opening and closing parentheses don't match",
+                        suggestion: `You have ${openParen} opening and ${closeParen} closing parentheses. Make sure they're balanced.`
+                    };
+                }
+
+                if (flavor === 'sqlite' && upper.includes('RIGHT JOIN')) {
+                    return {
+                        valid: false,
+                        error: "RIGHT JOIN not supported",
+                        explanation: "SQLite doesn't support RIGHT JOIN",
+                        suggestion: "Use LEFT JOIN with reversed table order instead"
+                    };
+                }
+
+                if (flavor === 'oracle' && upper.includes('LIMIT')) {
+                    return {
+                        valid: false,
+                        error: "LIMIT not supported in Oracle",
+                        explanation: "Oracle uses ROWNUM or FETCH FIRST syntax instead of LIMIT",
+                        suggestion: "Use: WHERE ROWNUM <= n or FETCH FIRST n ROWS ONLY"
+                    };
+                }
+
+                if ((flavor === 'mysql' || flavor === 'postgresql') && /TOP\s+\d+/.test(upper)) {
+                    return {
+                        valid: false,
+                        error: "TOP keyword not supported",
+                        explanation: `${flavor.toUpperCase()} uses LIMIT instead of TOP`,
+                        suggestion: "Use: LIMIT n instead of TOP n"
+                    };
+                }
+            }
+
+            if (queryType === 'INSERT') {
+                if (!upper.includes('INTO')) {
+                    return {
+                        valid: false,
+                        error: "Missing INTO keyword",
+                        explanation: "INSERT statements require INTO to specify the target table",
+                        suggestion: "Use: INSERT INTO table_name ..."
+                    };
+                }
+                if (!upper.includes('VALUES') && !upper.includes('SELECT')) {
+                    return {
+                        valid: false,
+                        error: "Missing VALUES or SELECT",
+                        explanation: "INSERT must specify data using VALUES clause or SELECT statement",
+                        suggestion: "Add VALUES (...) or use INSERT INTO ... SELECT ..."
+                    };
+                }
+            }
+
+            if (queryType === 'UPDATE') {
+                if (!upper.includes('SET')) {
+                    return {
+                        valid: false,
+                        error: "Missing SET clause",
+                        explanation: "UPDATE statements require SET to specify which columns to modify",
+                        suggestion: "Add SET column1 = value1, ..."
+                    };
+                }
+                if (!upper.includes('WHERE')) {
+                    return {
+                        valid: true,
+                        type: queryType,
+                        message: "⚠️ Warning: UPDATE without WHERE will modify ALL rows. Consider adding a WHERE clause to limit the scope."
+                    };
+                }
+            }
+
+            if (queryType === 'DELETE') {
+                if (!upper.includes('FROM')) {
+                    return {
+                        valid: false,
+                        error: "Missing FROM clause",
+                        explanation: "DELETE statements must specify which table to delete from",
+                        suggestion: "Use: DELETE FROM table_name WHERE ..."
+                    };
+                }
+                if (!upper.includes('WHERE')) {
+                    return {
+                        valid: true,
+                        type: queryType,
+                        message: "⚠️ Warning: DELETE without WHERE will remove ALL rows. Consider adding a WHERE clause."
+                    };
+                }
+            }
+
+            return {
+                valid: true,
+                type: queryType,
+                message: `Your ${queryType} query appears to be syntactically correct for ${flavor.toUpperCase()}.`
+            };
+        }
+
+        function simulateQuery() {
+            const query = document.getElementById('queryInput').value.trim();
+            const fileInput = document.getElementById('testData');
+            const resultDiv = document.getElementById('queryResult');
+
+            if (!query) {
+                resultDiv.innerHTML = '<div class="result-box error-box">⚠️ Please enter a SQL query first.</div>';
+                return;
+            }
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                resultDiv.innerHTML = '<div class="result-box error-box">⚠️ Please upload a CSV file with test data to simulate query execution.</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="result-box">⏳ Simulating query execution with your test data...</div>';
+
+            setTimeout(() => {
+                resultDiv.innerHTML = `
+                    <div class="result-box success-box">
+                        <h3 style="color: #22c55e;">✓ Simulation Complete</h3>
+                        <p style="margin-top: 10px;">Query execution simulation would run here with your uploaded CSV data.</p>
+                        <p style="margin-top: 10px;"><em>Note: Full query execution requires a backend SQL engine. This feature validates syntax and structure.</em></p>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // ===== RENDER SQL FLAVORS =====
+        function renderFlavors() {
+            const container = document.getElementById('flavorsContent');
+            let html = '';
+
+            sqlFlavors.forEach(flavor => {
+                html += `
+                    <div class="flavor-section">
+                        <div class="flavor-header">${flavor.name}</div>
+                        <div class="flavor-content">
+                            <p style="margin-bottom: 20px; font-size: 1.1em;">${flavor.description}</p>
+                            
+                            <h3 style="color: #667eea; margin-top: 25px;">🚫 Unsupported Features / Common Gotchas</h3>
+                            <ul style="margin: 15px 0 15px 20px;">
+                                ${flavor.unsupported.map(item => `<li style="margin: 8px 0;">${item}</li>`).join('')}
+                            </ul>
+                            
+                            <h3 style="color: #667eea; margin-top: 25px;">📝 Syntax Differences</h3>
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Syntax in ${flavor.name}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${flavor.syntaxDiff.map(diff => `
+                                        <tr>
+                                            <td><strong>${diff.feature}</strong></td>
+                                            <td><code>${diff.syntax}</code></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            
+                            <h3 style="color: #667eea; margin-top: 25px;">📊 Data Types</h3>
+                            <ul style="margin: 15px 0 15px 20px;">
+                                ${flavor.dataTypes.map(type => `<li style="margin: 8px 0;"><code>${type}</code></li>`).join('')}
+                            </ul>
+                            
+                            <h3 style="color: #667eea; margin-top: 25px;">🔧 Common Functions</h3>
+                            <ul style="margin: 15px 0 15px 20px;">
+                                ${flavor.functions.map(func => `<li style="margin: 8px 0;">${func}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ===== RENDER PROJECTS =====
+        function renderProjects() {
+            const container = document.getElementById('projectsContent');
+            let html = '';
+
+            projects.forEach((project, idx) => {
+                const isCompleted = window.completedProjects.includes(idx);
+                html += `
+                    <div class="project-card">
+                        <input type="checkbox" class="project-checkbox" 
+                               ${isCompleted ? 'checked' : ''} 
+                               onchange="toggleProject(${idx}, this.checked)">
+                        <div class="project-title">${project.title}</div>
+                        <p style="margin-top: 10px; opacity: 0.9;">${project.description}</p>
+                        <div class="project-links">
+                            ${project.links.map(link => 
+                                `<a href="${link.url}" target="_blank" class="project-link">${link.text}</a>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleProject(idx, checked) {
+            if (checked) {
+                if (!window.completedProjects.includes(idx)) {
+                    window.completedProjects.push(idx);
+                }
+            } else {
+                window.completedProjects = window.completedProjects.filter(i => i !== idx);
+            }
+            savePre
