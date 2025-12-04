@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 10 Free AI Courses</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f5f0 0%, #e8e8d8 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .highlight {
+            background: #f4e04d;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #34495e;
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        th.notes-header {
+            width: 200px;
+        }
+        
+        th.difficulty-header {
+            width: 120px;
+        }
+        
+        th.platform-header {
+            width: 150px;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        tbody tr.completed {
+            background-color: #d4edda;
+        }
+        
+        .icon-cell {
+            text-align: center;
+            width: 80px;
+        }
+        
+        .icon-cell img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+        
+        .id-cell {
+            width: 60px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .name-cell {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .url-cell a {
+            color: #3498db;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        
+        .url-cell a:hover {
+            text-decoration: underline;
+        }
+        
+        .checkbox-cell {
+            text-align: center;
+            width: 80px;
+        }
+        
+        .notes-cell {
+            width: 200px;
+        }
+        
+        .notes-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+            font-size: 0.9em;
+            resize: vertical;
+            min-height: 40px;
+        }
+        
+        .notes-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+        
+        .difficulty-cell {
+            width: 120px;
+        }
+        
+        .difficulty-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+            font-size: 0.9em;
+            cursor: pointer;
+            background: white;
+        }
+        
+        .difficulty-select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+        
+        .difficulty-select option[value="easy"] {
+            color: #27ae60;
+        }
+        
+        .difficulty-select option[value="medium"] {
+            color: #f39c12;
+        }
+        
+        .difficulty-select option[value="hard"] {
+            color: #e74c3c;
+        }
+        
+        .difficulty-select.easy {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .difficulty-select.medium {
+            color: #f39c12;
+            font-weight: 600;
+        }
+        
+        .difficulty-select.hard {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .platform-cell {
+            width: 150px;
+            font-weight: 500;
+            color: #34495e;
+        }
+        
+        .platform-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .footer p {
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        
+        .footer .creator {
+            background: #f4e04d;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .stats {
+            text-align: center;
+            padding: 20px;
+            background: #ecf0f1;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        
+        .stats-top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .last-updated {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 30px;
+            background: #d5d8dc;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 20px 0 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .filter-btn.active {
+            background: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+        }
+        
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .reset-btn:hover {
+            background: #c0392b;
+        }
+        
+        .reset-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .print-btn {
+            background: #16a085;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .print-btn:hover {
+            background: #138d75;
+        }
+        
+        .print-btn:active {
+            transform: scale(0.98);
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .filter-buttons,
+            .reset-btn,
+            .print-btn {
+                display: none !important;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .progress-bar-wrapper {
+                border: 1px solid #333;
+            }
+            
+            tbody tr {
+                page-break-inside: avoid;
+            }
+            
+            a {
+                color: #000;
+                text-decoration: underline;
+            }
+            
+            .notes-input {
+                border: 1px solid #999;
+                background: white;
+            }
+        }
+        
+        tbody tr.hidden {
+            display: none;
+        }
+        
+        .celebration-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .celebration-modal.show {
+            display: flex;
+        }
+        
+        .celebration-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: scaleIn 0.5s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .celebration-emoji {
+            font-size: 80px;
+            animation: bounce 1s ease infinite;
+            display: inline-block;
+        }
+        
+        .celebration-title {
+            font-size: 2.5em;
+            color: #27ae60;
+            margin: 20px 0 10px 0;
+            font-weight: bold;
+        }
+        
+        .celebration-message {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .celebration-close {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .celebration-close:hover {
+            background: #2980b9;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f39c12;
+            position: absolute;
+            animation: confetti-fall 3s linear;
+            z-index: 999;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px 5px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Top 10 <span class="highlight">Free AI Courses</span></h1>
+        </div>
+        
+        <div class="stats">
+            <div class="stats-top">
+                <span><span id="completedCount">0</span> of 10 courses completed</span>
+                <button class="reset-btn" onclick="resetProgress()">Reset Progress</button>
+                <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+            </div>
+            <div class="last-updated" id="lastUpdated"></div>
+            <div class="progress-container">
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar" id="progressBar">0%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterCourses('all')">Show All</button>
+            <button class="filter-btn" onclick="filterCourses('completed')">Show Completed</button>
+            <button class="filter-btn" onclick="filterCourses('incomplete')">Show Incomplete</button>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Icon</th>
+                    <th>Name</th>
+                    <th class="platform-header">Platform</th>
+                    <th>URL</th>
+                    <th class="difficulty-header">Difficulty</th>
+                    <th class="notes-header">Notes</th>
+                    <th>Done?</th>
+                </tr>
+            </thead>
+            <tbody id="courseTable">
+                <!-- Courses will be dynamically inserted here -->
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            <p>Follow <span class="creator">Luis Rodriques</span> for more insights on AI and Technology</p>
+        </div>
+    </div>
+    
+    <!-- Celebration Modal -->
+    <div class="celebration-modal" id="celebrationModal">
+        <div class="celebration-content">
+            <div class="celebration-emoji">🎉</div>
+            <h2 class="celebration-title">Congratulations!</h2>
+            <p class="celebration-message">You've completed all 10 AI courses! You're now ready to conquer the AI world!</p>
+            <button class="celebration-close" onclick="closeCelebration()">Awesome!</button>
+        </div>
+    </div>
+
+    <script>
+        const courses = [
+            {
+                id: 1,
+                name: "Harvard - Introduction to AI with Python",
+                platform: "edX",
+                url: "https://www.edx.org/learn/artificial-intelligence/harvard-university-cs50-s-introduction-to-artificial-intelligence-with-python",
+                icon: "https://logo.clearbit.com/harvard.edu"
+            },
+            {
+                id: 2,
+                name: "AI For Beginners",
+                platform: "Microsoft",
+                url: "https://microsoft.github.io/AI-For-Beginners/",
+                icon: "https://logo.clearbit.com/microsoft.com"
+            },
+            {
+                id: 3,
+                name: "Google AI Courses",
+                platform: "Google",
+                url: "https://www.cloudskillsboost.google/paths/118",
+                icon: "https://logo.clearbit.com/google.com"
+            },
+            {
+                id: 4,
+                name: "DeepLearning - Generative AI for Everyone",
+                platform: "DeepLearning.AI",
+                url: "https://www.deeplearning.ai/courses/generative-ai-for-everyone/",
+                icon: "https://logo.clearbit.com/deeplearning.ai"
+            },
+            {
+                id: 5,
+                name: "LinkedIn - Generative AI Courses",
+                platform: "LinkedIn",
+                url: "https://www.linkedin.com/learning/topics/generative-ai",
+                icon: "https://logo.clearbit.com/linkedin.com"
+            },
+            {
+                id: 6,
+                name: "Vanderbilt - ChatGPT Prompt Engineering",
+                platform: "Coursera",
+                url: "https://www.coursera.org/learn/prompt-engineering",
+                icon: "https://logo.clearbit.com/vanderbilt.edu"
+            },
+            {
+                id: 7,
+                name: "OpenAI - Prompt Engineering for Devs",
+                platform: "DeepLearning.AI",
+                url: "https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/",
+                icon: "https://logo.clearbit.com/openai.com"
+            },
+            {
+                id: 8,
+                name: "edX - AI Applications and Prompt Engineering",
+                platform: "edX",
+                url: "https://www.edx.org/learn/computer-programming/edx-ai-applications-and-prompt-engineering",
+                icon: "https://logo.clearbit.com/edx.org"
+            },
+            {
+                id: 9,
+                name: "AWS - Foundations of Prompt Engineering",
+                platform: "AWS",
+                url: "https://skillbuilder.aws/learn/VF6H4SZ1BU/foundations-of-prompt-engineering",
+                icon: "https://logo.clearbit.com/aws.amazon.com"
+            },
+            {
+                id: 10,
+                name: "UC Davis - Big Data, AI, and Ethics",
+                platform: "Coursera",
+                url: "https://www.coursera.org/learn/big-data-ai-ethics",
+                icon: "https://logo.clearbit.com/ucdavis.edu"
+            }
+        ];
+
+        function loadCompletionState() {
+            const saved = {};
+            courses.forEach(course => {
+                const state = localStorage.getItem(`course_${course.id}`);
+                saved[course.id] = state === 'true';
+            });
+            return saved;
+        }
+
+        function loadNotes() {
+            const notes = {};
+            courses.forEach(course => {
+                const note = localStorage.getItem(`course_${course.id}_note`);
+                notes[course.id] = note || '';
+            });
+            return notes;
+        }
+
+        function loadDifficulty() {
+            const difficulties = {};
+            courses.forEach(course => {
+                const difficulty = localStorage.getItem(`course_${course.id}_difficulty`);
+                difficulties[course.id] = difficulty || '';
+            });
+            return difficulties;
+        }
+
+        function saveCompletionState(courseId, isCompleted) {
+            localStorage.setItem(`course_${courseId}`, isCompleted);
+        }
+
+        function saveNote(courseId, noteText) {
+            localStorage.setItem(`course_${courseId}_note`, noteText);
+            updateLastModified();
+        }
+
+        function saveDifficulty(courseId, difficulty) {
+            localStorage.setItem(`course_${courseId}_difficulty`, difficulty);
+            updateLastModified();
+        }
+
+        function updateLastModified() {
+            const now = new Date();
+            const timestamp = now.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+            localStorage.setItem('last_updated', now.toISOString());
+            displayLastUpdated();
+        }
+
+        function displayLastUpdated() {
+            const lastUpdatedISO = localStorage.getItem('last_updated');
+            const lastUpdatedElement = document.getElementById('lastUpdated');
+            
+            if (lastUpdatedISO) {
+                const date = new Date(lastUpdatedISO);
+                const formatted = date.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                lastUpdatedElement.textContent = `Last updated: ${formatted}`;
+            } else {
+                lastUpdatedElement.textContent = '';
+            }
+        }
+
+        function updateStats() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const percentage = (completed / courses.length) * 100;
+            
+            document.getElementById('completedCount').textContent = completed;
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = Math.round(percentage) + '%';
+            
+            // Check if all courses are completed
+            if (completed === courses.length && !localStorage.getItem('celebration_shown')) {
+                setTimeout(() => {
+                    showCelebration();
+                    localStorage.setItem('celebration_shown', 'true');
+                }, 500);
+            }
+            
+            // Reset celebration flag if not all completed
+            if (completed < courses.length) {
+                localStorage.removeItem('celebration_shown');
+            }
+        }
+
+        function showCelebration() {
+            const modal = document.getElementById('celebrationModal');
+            modal.classList.add('show');
+            createConfetti();
+        }
+
+        function closeCelebration() {
+            const modal = document.getElementById('celebrationModal');
+            modal.classList.remove('show');
+        }
+
+        function createConfetti() {
+            const colors = ['#f39c12', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f1c40f'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                // Clear all localStorage items for courses
+                courses.forEach(course => {
+                    localStorage.removeItem(`course_${course.id}`);
+                    localStorage.removeItem(`course_${course.id}_note`);
+                    localStorage.removeItem(`course_${course.id}_difficulty`);
+                });
+                localStorage.removeItem('last_updated');
+                localStorage.removeItem('celebration_shown');
+                
+                // Uncheck all checkboxes and remove completed styling
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.closest('tr').classList.remove('completed');
+                });
+                
+                // Clear all notes
+                document.querySelectorAll('.notes-input').forEach(textarea => {
+                    textarea.value = '';
+                });
+                
+                // Reset all difficulty selects
+                document.querySelectorAll('.difficulty-select').forEach(select => {
+                    select.value = '';
+                    select.className = 'difficulty-select';
+                });
+                
+                // Update stats and timestamp
+                updateStats();
+                displayLastUpdated();
+            }
+        }
+
+        function filterCourses(filter) {
+            const rows = document.querySelectorAll('#courseTable tr');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter rows
+            rows.forEach(row => {
+                const checkbox = row.querySelector('input[type="checkbox"]');
+                const isCompleted = checkbox.checked;
+                
+                if (filter === 'all') {
+                    row.classList.remove('hidden');
+                } else if (filter === 'completed') {
+                    row.classList.toggle('hidden', !isCompleted);
+                } else if (filter === 'incomplete') {
+                    row.classList.toggle('hidden', isCompleted);
+                }
+            });
+        }
+
+        function renderCourses() {
+            const tbody = document.getElementById('courseTable');
+            const completionState = loadCompletionState();
+            const notes = loadNotes();
+            const difficulties = loadDifficulty();
+            
+            courses.forEach(course => {
+                const row = document.createElement('tr');
+                const isCompleted = completionState[course.id] || false;
+                const difficulty = difficulties[course.id] || '';
+                
+                if (isCompleted) {
+                    row.classList.add('completed');
+                }
+                
+                row.innerHTML = `
+                    <td class="id-cell">${course.id}</td>
+                    <td class="icon-cell">
+                        <img src="${course.icon}" alt="${course.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2250%22 height=%2250%22><rect width=%2250%22 height=%2250%22 fill=%22%23ddd%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22%23999%22>${course.id}</text></svg>'">
+                    </td>
+                    <td class="name-cell">${course.name}</td>
+                    <td class="platform-cell">
+                        <span class="platform-badge">${course.platform}</span>
+                    </td>
+                    <td class="url-cell">
+                        <a href="${course.url}" target="_blank" rel="noopener noreferrer">${course.url}</a>
+                    </td>
+                    <td class="difficulty-cell">
+                        <select class="difficulty-select ${difficulty}" data-course-id="${course.id}">
+                            <option value="">Not Set</option>
+                            <option value="easy" ${difficulty === 'easy' ? 'selected' : ''}>Easy</option>
+                            <option value="medium" ${difficulty === 'medium' ? 'selected' : ''}>Medium</option>
+                            <option value="hard" ${difficulty === 'hard' ? 'selected' : ''}>Hard</option>
+                        </select>
+                    </td>
+                    <td class="notes-cell">
+                        <textarea class="notes-input" 
+                                  data-course-id="${course.id}" 
+                                  placeholder="Add notes...">${notes[course.id]}</textarea>
+                    </td>
+                    <td class="checkbox-cell">
+                        <input type="checkbox" 
+                               data-course-id="${course.id}" 
+                               ${isCompleted ? 'checked' : ''}>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Add event listeners to checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const courseId = this.getAttribute('data-course-id');
+                    const row = this.closest('tr');
+                    
+                    if (this.checked) {
+                        row.classList.add('completed');
+                    } else {
+                        row.classList.remove('completed');
+                    }
+                    
+                    saveCompletionState(courseId, this.checked);
+                    updateLastModified();
+                    updateStats();
+                    
+                    // Reapply current filter
+                    const activeFilter = document.querySelector('.filter-btn.active');
+                    if (activeFilter && activeFilter.textContent.includes('Completed')) {
+                        filterCourses('completed');
+                    } else if (activeFilter && activeFilter.textContent.includes('Incomplete')) {
+                        filterCourses('incomplete');
+                    }
+                });
+            });
+            
+            // Add event listeners to notes textareas
+            document.querySelectorAll('.notes-input').forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    const courseId = this.getAttribute('data-course-id');
+                    saveNote(courseId, this.value);
+                });
+            });
+            
+            // Add event listeners to difficulty selects
+            document.querySelectorAll('.difficulty-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const courseId = this.getAttribute('data-course-id');
+                    const difficulty = this.value;
+                    
+                    // Update select color class
+                    this.className = 'difficulty-select ' + difficulty;
+                    
+                    saveDifficulty(courseId, difficulty);
+                });
+            });
+            
+            updateStats();
+            displayLastUpdated();
+        }
+
+        // Initialize the table when the page loads
+        renderCourses();
+    </script>
+</body>
+</html>

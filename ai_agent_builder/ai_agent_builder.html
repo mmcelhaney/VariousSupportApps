@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Builder Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            font-size: 1em;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .input-section textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .input-section textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .agent-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .agent-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .agent-card h3 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .agent-card p {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .integration {
+            display: inline-block;
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 5px 12px;
+            border-radius: 5px;
+            margin: 5px 5px 5px 0;
+            font-size: 0.9em;
+        }
+
+        .use-case {
+            display: inline-block;
+            background: #f0e7ff;
+            color: #6b21a8;
+            padding: 5px 12px;
+            border-radius: 5px;
+            margin: 5px 5px 5px 0;
+            font-size: 0.9em;
+        }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .framework-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .framework-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .framework-card h4 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .framework-card p {
+            color: #6c757d;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .stages-section {
+            margin-top: 30px;
+        }
+
+        .stage {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .stage h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+
+        .steps {
+            display: grid;
+            gap: 15px;
+        }
+
+        .step {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .step h4 {
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .step ul {
+            margin-left: 20px;
+            color: #6c757d;
+        }
+
+        .step li {
+            margin-bottom: 5px;
+        }
+
+        .tools {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .tools strong {
+            color: #667eea;
+        }
+
+        .question-section {
+            background: #fff9e6;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-section h4 {
+            color: #cc8800;
+            margin-bottom: 15px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .question input, .question select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .prompt-output {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .link-button {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 5px 5px 5px 0;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .link-button:hover {
+            background: #218838;
+        }
+
+        .recommended-badge {
+            display: inline-block;
+            background: #ffd700;
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Agent Builder Guide</h1>
+            <p>Find the perfect agent framework and build your AI solution</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('recommend')">🎯 Agent Recommender</button>
+            <button class="tab" onclick="showTab('frameworks')">📚 All Frameworks</button>
+            <button class="tab" onclick="showTab('stages')">🔄 Development Stages</button>
+            <button class="tab" onclick="showTab('steps')">📋 Build from Scratch</button>
+        </div>
+
+        <div class="content">
+            <!-- Agent Recommender Tab -->
+            <div id="recommend" class="tab-content active">
+                <div class="input-section">
+                    <label for="jobDescription">Describe Your Use Case or Job:</label>
+                    <textarea id="jobDescription" placeholder="E.g., I need an agent to automate customer support tickets, search our knowledge base, and respond to users via Slack..."></textarea>
+                    <button class="btn" onclick="recommendAgent()">🔍 Find Best Agent</button>
+                </div>
+
+                <div id="recommendations" class="results"></div>
+                <div id="questionSection"></div>
+                <div id="promptOutput"></div>
+            </div>
+
+            <!-- All Frameworks Tab -->
+            <div id="frameworks" class="tab-content">
+                <h2 style="margin-bottom: 20px;">Top AI Agent Frameworks in 2025</h2>
+                <div class="framework-grid" id="frameworkGrid"></div>
+            </div>
+
+            <!-- Development Stages Tab -->
+            <div id="stages" class="tab-content">
+                <h2 style="margin-bottom: 20px;">6 Stages of AI Agent Development</h2>
+                <div class="stages-section" id="stagesSection"></div>
+            </div>
+
+            <!-- Build from Scratch Tab -->
+            <div id="steps" class="tab-content">
+                <h2 style="margin-bottom: 20px;">Build AI Agents from Scratch - 9 Steps</h2>
+                <div class="stages-section" id="buildSteps"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const frameworks = [
+            {
+                name: "LangGraph",
+                description: "Graph-based agent framework designed for building long-running, stateful, multi-actor workflows",
+                integrations: ["APIs", "Tools", "Memory"],
+                useCases: ["Complex workflows", "State management", "Multi-step tasks"],
+                links: {
+                    docs: "https://langchain-ai.github.io/langgraph/",
+                    github: "https://github.com/langchain-ai/langgraph",
+                    tutorial: "https://python.langchain.com/docs/langgraph"
+                }
+            },
+            {
+                name: "Zapier AI Agents",
+                description: "AI-powered automation on top of Zapier's app ecosystem—great for triggering actions across 6,000+ integrations",
+                integrations: ["6000+ apps", "Webhooks", "APIs"],
+                useCases: ["Workflow automation", "App integration", "Trigger-based actions"],
+                links: {
+                    docs: "https://actions.zapier.com/docs/",
+                    website: "https://zapier.com/ai",
+                    tutorial: "https://zapier.com/blog/ai-agent/"
+                }
+            },
+            {
+                name: "OpenAgents",
+                description: "Open ecosystem for connecting LLMs with tools, memory, and browsing—ideal for research agents",
+                integrations: ["Tools", "Browser", "Memory"],
+                useCases: ["Research", "Web browsing", "Tool use"],
+                links: {
+                    docs: "https://docs.openagents.com/",
+                    github: "https://github.com/xlang-ai/OpenAgents",
+                    demo: "https://openagents.com/"
+                }
+            },
+            {
+                name: "LangChain",
+                description: "Modular framework to build context-aware, multi-turn conversational agents using LLMs and custom tools",
+                integrations: ["LLMs", "Tools", "Memory", "RAG"],
+                useCases: ["Conversational AI", "RAG systems", "Custom tools"],
+                links: {
+                    docs: "https://python.langchain.com/docs/",
+                    github: "https://github.com/langchain-ai/langchain",
+                    tutorial: "https://python.langchain.com/docs/tutorials/"
+                }
+            },
+            {
+                name: "AgentGPT",
+                description: "Web-based interface to create and deploy autonomous GPT agents for goal-driven tasks",
+                integrations: ["OpenAI", "Browser", "APIs"],
+                useCases: ["Autonomous tasks", "Goal execution", "Web deployment"],
+                links: {
+                    website: "https://agentgpt.reworkd.ai/",
+                    github: "https://github.com/reworkd/AgentGPT",
+                    docs: "https://docs.reworkd.ai/"
+                }
+            },
+            {
+                name: "SuperAgent",
+                description: "Open-source framework to rapidly prototype AI agents with background task handling and API routing",
+                integrations: ["APIs", "Background tasks", "Queue"],
+                useCases: ["API agents", "Task queues", "Async processing"],
+                links: {
+                    github: "https://github.com/superagent-ai/superagent",
+                    docs: "https://docs.superagent.sh/",
+                    website: "https://www.superagent.sh/"
+                }
+            },
+            {
+                name: "FlowiseAI",
+                description: "Drag-and-drop tool for building LangChain pipelines with visual flow management",
+                integrations: ["LangChain", "Visual builder", "Flows"],
+                useCases: ["No-code building", "Visual workflows", "Rapid prototyping"],
+                links: {
+                    github: "https://github.com/FlowiseAI/Flowise",
+                    docs: "https://docs.flowiseai.com/",
+                    website: "https://flowiseai.com/"
+                }
+            },
+            {
+                name: "CrewAI",
+                description: "Ideal for building collaborative multi-agent systems with clear role-based task delegation",
+                integrations: ["Multi-agent", "Role assignment", "Collaboration"],
+                useCases: ["Team workflows", "Role delegation", "Complex projects"],
+                links: {
+                    github: "https://github.com/joaomdmoura/crewAI",
+                    docs: "https://docs.crewai.com/",
+                    examples: "https://github.com/joaomdmoura/crewAI-examples"
+                }
+            },
+            {
+                name: "AutoGPT",
+                description: "Experimental framework enabling GPT models to achieve goals by thinking, planning, and executing tasks autonomously",
+                integrations: ["GPT-4", "Tools", "Memory", "File system"],
+                useCases: ["Autonomous execution", "Goal achievement", "Self-directed tasks"],
+                links: {
+                    github: "https://github.com/Significant-Gravitas/AutoGPT",
+                    docs: "https://docs.agpt.co/",
+                    website: "https://agpt.co/"
+                }
+            },
+            {
+                name: "LlamaIndex",
+                description: "Powerful for indexing and querying large datasets—great for retrieval-augmented generation (RAG) agents",
+                integrations: ["Data sources", "RAG", "Query"],
+                useCases: ["Data indexing", "RAG", "Document Q&A"],
+                links: {
+                    docs: "https://docs.llamaindex.ai/",
+                    github: "https://github.com/run-llama/llama_index",
+                    tutorial: "https://docs.llamaindex.ai/en/stable/getting_started/starter_example.html"
+                }
+            },
+            {
+                name: "Make.com",
+                description: "Visual automation builder that supports connecting AI APIs and complex logic—great for no-coders",
+                integrations: ["1000+ apps", "APIs", "Webhooks"],
+                useCases: ["No-code automation", "API integration", "Workflow builder"],
+                links: {
+                    website: "https://www.make.com/",
+                    docs: "https://www.make.com/en/help/getting-started",
+                    templates: "https://www.make.com/en/templates"
+                }
+            },
+            {
+                name: "n8n",
+                description: "Low-code workflow automation tool that connects to hundreds of APIs for task-driven agents",
+                integrations: ["APIs", "Webhooks", "Database"],
+                useCases: ["Workflow automation", "API workflows", "Self-hosted"],
+                links: {
+                    website: "https://n8n.io/",
+                    github: "https://github.com/n8n-io/n8n",
+                    docs: "https://docs.n8n.io/"
+                }
+            },
+            {
+                name: "AG2 (formerly AutoGen)",
+                description: "Next-gen, adaptable platform designed for real-world agent workflows with robust API integrations",
+                integrations: ["APIs", "Multi-agent", "Real-world"],
+                useCases: ["Production agents", "API integration", "Enterprise"],
+                links: {
+                    github: "https://github.com/ag2ai/ag2",
+                    docs: "https://docs.ag2.ai/",
+                    website: "https://ag2.ai/"
+                }
+            },
+            {
+                name: "Botpress",
+                description: "Visual, no-code platform for building multi-channel support and built-in NLP for enterprise-ready conversational agents",
+                integrations: ["Multi-channel", "NLP", "Chatbots"],
+                useCases: ["Customer support", "Chatbots", "Enterprise NLP"],
+                links: {
+                    website: "https://botpress.com/",
+                    docs: "https://botpress.com/docs",
+                    github: "https://github.com/botpress/botpress"
+                }
+            },
+            {
+                name: "Phidata",
+                description: "Focused on data-centric workflows for analytics, reporting, and dashboard-related use cases",
+                integrations: ["Analytics", "Reporting", "Data"],
+                useCases: ["Data analysis", "Reporting", "Dashboards"],
+                links: {
+                    github: "https://github.com/phidatahq/phidata",
+                    docs: "https://docs.phidata.com/",
+                    website: "https://www.phidata.com/"
+                }
+            }
+        ];
+
+        const stages = [
+            {
+                stage: "Planning",
+                steps: [
+                    {
+                        title: "Draft Business Needs",
+                        description: "Identify the business problem and expected outcomes"
+                    },
+                    {
+                        title: "Define Agent Objectives",
+                        description: "Set clear goals and KPIs for the agent"
+                    },
+                    {
+                        title: "Resource Allocation",
+                        description: "Plan budget, team, and infrastructure needs"
+                    },
+                    {
+                        title: "Risk + Ethics Review",
+                        description: "Assess potential risks and ethical considerations"
+                    }
+                ]
+            },
+            {
+                stage: "Design",
+                steps: [
+                    {
+                        title: "Design Guardrails",
+                        description: "Set boundaries for agent behavior and decision-making"
+                    },
+                    {
+                        title: "Grounding with Context",
+                        description: "Define knowledge sources and context for the agent"
+                    },
+                    {
+                        title: "Select a Model",
+                        description: "Choose appropriate LLM based on requirements"
+                    },
+                    {
+                        title: "Choose a Framework",
+                        description: "Pick the right agent framework (LangChain, CrewAI, etc.)"
+                    }
+                ]
+            },
+            {
+                stage: "Development",
+                steps: [
+                    {
+                        title: "Build the Agent Logic",
+                        description: "Implement core reasoning and decision-making logic"
+                    },
+                    {
+                        title: "Integrate the Models",
+                        description: "Connect LLMs and other AI models to the agent"
+                    },
+                    {
+                        title: "Fine-tune Models (if required)",
+                        description: "Customize models with domain-specific data"
+                    },
+                    {
+                        title: "Document Setup",
+                        description: "Create comprehensive technical documentation"
+                    }
+                ]
+            },
+            {
+                stage: "Testing",
+                steps: [
+                    {
+                        title: "Test Edge Cases",
+                        description: "Verify agent behavior in unusual scenarios"
+                    },
+                    {
+                        title: "Conduct User Experience Tests",
+                        description: "Ensure the agent provides good UX"
+                    },
+                    {
+                        title: "Perform Integration Tests",
+                        description: "Test all system integrations and APIs"
+                    },
+                    {
+                        title: "Evaluate Performance",
+                        description: "Measure speed, accuracy, and resource usage"
+                    }
+                ]
+            },
+            {
+                stage: "Deployment",
+                steps: [
+                    {
+                        title: "Launch Agent",
+                        description: "Deploy to production environment"
+                    },
+                    {
+                        title: "Make sure Guardrails are Working",
+                        description: "Verify safety measures are active"
+                    },
+                    {
+                        title: "Observability",
+                        description: "Set up monitoring and logging systems"
+                    },
+                    {
+                        title: "Compliance Validation",
+                        description: "Ensure regulatory and policy compliance"
+                    }
+                ]
+            },
+            {
+                stage: "Maintenance",
+                steps: [
+                    {
+                        title: "Act upon User Feedback",
+                        description: "Continuously improve based on user input"
+                    },
+                    {
+                        title: "Optimize Operations",
+                        description: "Improve efficiency and reduce costs"
+                    },
+                    {
+                        title: "Monitor Agent Objectives",
+                        description: "Track KPIs and adjust as needed"
+                    }
+                ]
+            }
+        ];
+
+        const buildFromScratch = [
+            {
+                title: "Define Your Use Case",
+                description: "Clearly outline the specific tasks your AI agent should perform",
+                tools: ["Miro", "Notion", "Taskade"],
+                details: [
+                    "Identify the core problem",
+                    "Define expected outputs",
+                    "Determine interaction types"
+                ]
+            },
+            {
+                title: "Choose the Right LLM",
+                description: "Select the best-suited Large Language Model",
+                tools: ["OpenAI GPT-4", "Claude", "Google Gemini", "Llama 2"],
+                details: [
+                    "Consider accuracy requirements",
+                    "Evaluate speed vs. quality tradeoffs",
+                    "Check context window limits"
+                ]
+            },
+            {
+                title: "Data Collection & Preparation",
+                description: "Gather and organize relevant datasets",
+                tools: ["Pandas", "Airbyte", "Excel", "Databricks"],
+                details: [
+                    "Ensure data quality",
+                    "Proper formatting and cleaning",
+                    "Structure data appropriately"
+                ]
+            },
+            {
+                title: "Data Embedding & Vectorization",
+                description: "Convert data into numerical vectors for semantic search",
+                tools: ["Pinecone", "Weaviate", "Chroma"],
+                details: [
+                    "Create embeddings for efficient search",
+                    "Set up vector databases",
+                    "Enable RAG systems"
+                ]
+            },
+            {
+                title: "Choose the Appropriate LLM",
+                description: "Pick the model that aligns with your requirements",
+                tools: ["Azure OpenAI", "Google VertexAI", "AWS Bedrock"],
+                details: [
+                    "Evaluate accuracy needs",
+                    "Consider speed requirements",
+                    "Check context retention"
+                ]
+            },
+            {
+                title: "Prompt Engineering",
+                description: "Create clear, concise, and effective prompts",
+                tools: ["Prompt Perfect", "PromptLayer", "LangChain"],
+                details: [
+                    "Guide AI responses",
+                    "Enhance performance",
+                    "Iterate and refine prompts"
+                ]
+            },
+            {
+                title: "Fine-Tuning the Model (Optional)",
+                description: "Fine-tune with domain-specific information",
+                tools: ["OpenAI Fine-Tuning API", "Hugging Face Transformers", "LoRA"],
+                details: [
+                    "Improve context accuracy",
+                    "Enhance domain expertise",
+                    "Optimize for specific tasks"
+                ]
+            },
+            {
+                title: "Develop & Deploy the Interface",
+                description: "Build a user-friendly interface for seamless interaction",
+                tools: ["Streamlit", "Gradio", "React", "Bubble.io", "Vercel"],
+                details: [
+                    "Focus on simplicity",
+                    "Ensure smooth access",
+                    "Consider ease of use"
+                ]
+            },
+            {
+                title: "Model Deployment",
+                description: "Deploy your AI agent on reliable, scalable platforms",
+                tools: ["AWS SageMaker", "Azure AI Studio", "Vercel", "Docker", "Kubernetes"],
+                details: [
+                    "Ensure reliability",
+                    "Enable quick response times",
+                    "Provide stability"
+                ]
+            },
+            {
+                title: "Integrate RAG (Retrieval-Augmented Generation)",
+                description: "Enhance capabilities by integrating retrieval systems",
+                tools: ["LangChain", "LlamaIndex", "Pinecone", "Weaviate"],
+                details: [
+                    "Provide real-time contextual responses",
+                    "Access external databases",
+                    "Improve accuracy"
+                ]
+            },
+            {
+                title: "Testing & Validation",
+                description: "Evaluate performance using relevant metrics",
+                tools: ["Postman", "PyTest", "Jupyter Notebooks", "MLflow"],
+                details: [
+                    "Test accuracy",
+                    "Measure response time",
+                    "Check user satisfaction"
+                ]
+            },
+            {
+                title: "Continuous Monitoring & Feedback",
+                description: "Monitor performance and gather user feedback",
+                tools: ["Mixpanel", "Google Analytics", "Grafana", "Datadog"],
+                details: [
+                    "Track performance metrics",
+                    "Identify areas for improvement",
+                    "Use analytics for growth"
+                ]
+            },
+            {
+                title: "Iterative Improvements",
+                description: "Continuously update, retrain, and refine",
+                tools: ["Hugging Face Datasets", "OpenAI Assistants API", "Jira", "Airtable"],
+                details: [
+                    "Maintain accuracy",
+                    "Ensure relevance",
+                    "Improve usability"
+                ]
+            }
+        ];
+
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function recommendAgent() {
+            const jobDesc = document.getElementById('jobDescription').value.toLowerCase();
+            const resultsDiv = document.getElementById('recommendations');
+            
+            if (!jobDesc.trim()) {
+                resultsDiv.innerHTML = '<div class="agent-card"><p>Please describe your use case.</p></div>';
+                return;
+            }
+
+            const recommendations = [];
+            
+            // Keyword-based matching
+            if (jobDesc.includes('workflow') || jobDesc.includes('automation') || jobDesc.includes('zapier')) {
+                recommendations.push(frameworks.find(f => f.name === 'Zapier AI Agents'));
+                recommendations.push(frameworks.find(f => f.name === 'n8n'));
+            }
+            if (jobDesc.includes('multi-agent') || jobDesc.includes('team') || jobDesc.includes('collaboration')) {
+                recommendations.push(frameworks.find(f => f.name === 'CrewAI'));
+            }
+            if (jobDesc.includes('graph') || jobDesc.includes('state') || jobDesc.includes('complex')) {
+                recommendations.push(frameworks.find(f => f.name === 'LangGraph'));
+            }
+            if (jobDesc.includes('data') || jobDesc.includes('rag') || jobDesc.includes('search') || jobDesc.includes('knowledge')) {
+                recommendations.push(frameworks.find(f => f.name === 'LlamaIndex'));
+            }
+            if (jobDesc.includes('chatbot') || jobDesc.includes('conversation') || jobDesc.includes('support')) {
+                recommendations.push(frameworks.find(f => f.name === 'Botpress'));
+                recommendations.push(frameworks.find(f => f.name === 'LangChain'));
+            }
+            if (jobDesc.includes('no-code') || jobDesc.includes('visual') || jobDesc.includes('drag')) {
+                recommendations.push(frameworks.find(f => f.name === 'FlowiseAI'));
+                recommendations.push(frameworks.find(f => f.name === 'Make.com'));
+            }
+            if (jobDesc.includes('autonomous') || jobDesc.includes('self-directed') || jobDesc.includes('goal')) {
+                recommendations.push(frameworks.find(f => f.name === 'AutoGPT'));
+                recommendations.push(frameworks.find(f => f.name === 'AgentGPT'));
+            }
+            if (jobDesc.includes('research') || jobDesc.includes('browse') || jobDesc.includes('web')) {
+                recommendations.push(frameworks.find(f => f.name === 'OpenAgents'));
+            }
+            if (jobDesc.includes('api') || jobDesc.includes('integration') || jobDesc.includes('backend')) {
+                recommendations.push(frameworks.find(f => f.name === 'SuperAgent'));
+                recommendations.push(frameworks.find(f => f.name === 'AG2 (formerly AutoGen)'));
+            }
+            if (jobDesc.includes('analytics') || jobDesc.includes('report') || jobDesc.includes('dashboard')) {
+                recommendations.push(frameworks.find(f => f.name === 'Phidata'));
+            }
+
+            // Remove duplicates
+            const uniqueRecs = [...new Set(recommendations)].filter(r => r);
+
+            // If no specific matches, provide general recommendations
+            if (uniqueRecs.length === 0) {
+                uniqueRecs.push(frameworks.find(f => f.name === 'LangChain'));
+                uniqueRecs.push(frameworks.find(f => f.name === 'CrewAI'));
+            }
+
+            // Display recommendations
+            let html = '<h3>🎯 Recommended Frameworks for Your Use Case:</h3>';
+            uniqueRecs.slice(0, 3).forEach((agent, index) => {
+                html += `
+                    <div class="agent-card">
+                        <h3>${index === 0 ? '⭐ ' : ''}${agent.name}${index === 0 ? '<span class="recommended-badge">BEST MATCH</span>' : ''}</h3>
+                        <p>${agent.description}</p>
+                        <div>
+                            <strong>Integrations:</strong><br>
+                            ${agent.integrations.map(int => `<span class="integration">${int}</span>`).join('')}
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <strong>Use Cases:</strong><br>
+                            ${agent.useCases.map(uc => `<span class="use-case">${uc}</span>`).join('')}
+                        </div>
+                        <div style="margin-top: 15px;">
+                            ${agent.links.docs ? `<a href="${agent.links.docs}" target="_blank" class="link-button">📚 Documentation</a>` : ''}
+                            ${agent.links.github ? `<a href="${agent.links.github}" target="_blank" class="link-button">💻 GitHub</a>` : ''}
+                            ${agent.links.tutorial ? `<a href="${agent.links.tutorial}" target="_blank" class="link-button">🎓 Tutorial</a>` : ''}
+                            ${agent.links.website ? `<a href="${agent.links.website}" target="_blank" class="link-button">🌐 Website</a>` : ''}
+                            ${agent.links.examples ? `<a href="${agent.links.examples}" target="_blank" class="link-button">📝 Examples</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            resultsDiv.innerHTML = html;
+
+            // Show questions
+            showQuestions(uniqueRecs[0]);
+        }
+
+        function showQuestions(primaryAgent) {
+            const questionDiv = document.getElementById('questionSection');
+            
+            const html = `
+                <div class="question-section">
+                    <h4>💡 Let's refine your implementation plan</h4>
+                    <div class="question">
+                        <label>1. What's your team's technical expertise level?</label>
+                        <select id="expertise">
+                            <option value="beginner">Beginner (No-code preferred)</option>
+                            <option value="intermediate">Intermediate (Some coding)</option>
+                            <option value="advanced">Advanced (Full stack development)</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label>2. Expected request volume per day?</label>
+                        <input type="text" id="volume" placeholder="e.g., 1000 requests/day">
+                    </div>
+                    <div class="question">
+                        <label>3. Do you need real-time responses or batch processing?</label>
+                        <select id="responseType">
+                            <option value="realtime">Real-time</option>
+                            <option value="batch">Batch processing</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label>4. What's your deployment preference?</label>
+                        <select id="deployment">
+                            <option value="cloud">Cloud (AWS, Azure, GCP)</option>
+                            <option value="saas">SaaS Platform</option>
+                            <option value="onprem">On-premises</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="question">
+                        <label>5. Budget range for development and operations?</label>
+                        <input type="text" id="budget" placeholder="e.g., $5000-$10000">
+                    </div>
+                    <button class="btn" onclick="generatePrompt()">✨ Generate Implementation Plan</button>
+                </div>
+            `;
+            
+            questionDiv.innerHTML = html;
+        }
+
+        function generatePrompt() {
+            const jobDesc = document.getElementById('jobDescription').value;
+            const expertise = document.getElementById('expertise').value;
+            const volume = document.getElementById('volume').value;
+            const responseType = document.getElementById('responseType').value;
+            const deployment = document.getElementById('deployment').value;
+            const budget = document.getElementById('budget').value;
+
+            const prompt = `
+===========================================
+AI AGENT IMPLEMENTATION PLAN
+===========================================
+
+USE CASE:
+${jobDesc}
+
+REQUIREMENTS:
+- Technical Expertise: ${expertise}
+- Expected Volume: ${volume}
+- Response Type: ${responseType}
+- Deployment: ${deployment}
+- Budget: ${budget}
+
+IMPLEMENTATION ROADMAP:
+
+Phase 1: Planning & Design (Week 1-2)
+• Define specific agent objectives and success metrics
+• Map out user interaction flows
+• Design guardrails and safety measures
+• Select appropriate LLM and framework
+
+Phase 2: Development (Week 3-6)
+• Set up development environment
+• Implement core agent logic
+• Integrate LLM and tools
+• Build data pipelines and RAG if needed
+• Create prompt templates
+
+Phase 3: Testing (Week 7-8)
+• Unit testing of individual components
+• Integration testing with external services
+• User acceptance testing
+• Performance and load testing
+• Edge case validation
+
+Phase 4: Deployment (Week 9-10)
+• Set up production environment
+• Configure monitoring and logging
+• Implement security measures
+• Deploy with gradual rollout
+• Documentation and training
+
+Phase 5: Monitoring & Optimization (Ongoing)
+• Track KPIs and user feedback
+• Optimize prompts and workflows
+• Fine-tune models if needed
+• Scale infrastructure as needed
+
+RECOMMENDED TOOLS & SERVICES:
+See the frameworks recommended above for specific implementation details.
+
+NEXT STEPS:
+1. Review the recommended frameworks
+2. Set up a proof-of-concept with the primary recommendation
+3. Gather sample data and test cases
+4. Build a minimal viable agent
+5. Iterate based on testing and feedback
+            `;
+
+            document.getElementById('promptOutput').innerHTML = `
+                <h3>📋 Your Custom Implementation Plan</h3>
+                <div class="prompt-output">${prompt}</div>
+                <button class="btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+            `;
+        }
+
+        function copyToClipboard() {
+            const text = document.querySelector('.prompt-output').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Implementation plan copied to clipboard!');
+            });
+        }
+
+        // Initialize frameworks grid
+        function initFrameworks() {
+            const grid = document.getElementById('frameworkGrid');
+            let html = '';
+            
+            frameworks.forEach(framework => {
+                html += `
+                    <div class="framework-card">
+                        <h4>${framework.name}</h4>
+                        <p>${framework.description}</p>
+                        <div style="margin-top: 10px;">
+                            ${framework.integrations.slice(0, 3).map(int => `<span class="integration">${int}</span>`).join('')}
+                        </div>
+                        <div style="margin-top: 15px;">
+                            ${framework.links.docs ? `<a href="${framework.links.docs}" target="_blank" class="link-button">📚 Docs</a>` : ''}
+                            ${framework.links.github ? `<a href="${framework.links.github}" target="_blank" class="link-button">💻 GitHub</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+        }
+
+        // Initialize stages
+        function initStages() {
+            const section = document.getElementById('stagesSection');
+            let html = '';
+            
+            stages.forEach((stage, idx) => {
+                html += `
+                    <div class="stage">
+                        <h3>Stage ${idx + 1}: ${stage.stage}</h3>
+                        <div class="steps">
+                            ${stage.steps.map(step => `
+                                <div class="step">
+                                    <h4>📌 ${step.title}</h4>
+                                    <p>${step.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            section.innerHTML = html;
+        }
+
+        // Initialize build from scratch steps
+        function initBuildSteps() {
+            const section = document.getElementById('buildSteps');
+            let html = '';
+            
+            buildFromScratch.forEach((step, idx) => {
+                html += `
+                    <div class="stage">
+                        <h3>Step ${idx + 1}: ${step.title}</h3>
+                        <p>${step.description}</p>
+                        <ul>
+                            ${step.details.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                        <div class="tools">
+                            <strong>Recommended Tools:</strong> ${step.tools.join(', ')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            section.innerHTML = html;
+        }
+
+        // Initialize on page load
+        initFrameworks();
+        initStages();
+        initBuildSteps();
+    </script>
+</body>
+</html>

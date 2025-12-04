@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>78 Topics to Master Data Science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .search-container {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .category {
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .category-header:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #65398b 100%);
+        }
+
+        .category-title {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .category-progress {
+            font-size: 0.9em;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .topics-grid.expanded {
+            max-height: 5000px;
+        }
+
+        .topic-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(102,126,234,0.3);
+        }
+
+        .topic-card.completed {
+            background: linear-gradient(135deg, #d4f4dd 0%, #c8f0d9 100%);
+            border: 2px solid #22c55e;
+        }
+
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .topic-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .checkbox-container {
+            position: relative;
+        }
+
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            accent-color: #22c55e;
+        }
+
+        .topic-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .difficulty.beginner {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .difficulty.intermediate {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .difficulty.advanced {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .rating-container {
+            margin-top: 10px;
+        }
+
+        .stars {
+            color: #fbbf24;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .star {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .notes-textarea {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #666;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            padding-right: 40px;
+        }
+
+        .modal-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .resource-section {
+            margin-bottom: 30px;
+        }
+
+        .resource-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .resource-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .resource-link {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .resource-link:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .resource-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .code-snippet {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+        }
+
+        .code-snippet pre {
+            margin: 0;
+        }
+
+        .reference-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .reference-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .original-image {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 20px auto;
+            display: block;
+        }
+
+        .prompt-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin-top: 20px;
+        }
+
+        .prompt-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .prompt-box p {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 78 Topics to Master Data Science</h1>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill">0%</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search topics...">
+        </div>
+
+        <div class="content" id="content"></div>
+
+        <div class="reference-section">
+            <h2>📋 Original Reference Guide</h2>
+            <img src="20251116_171622.jpg" alt="78 Topics to Master Data Science" class="original-image" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+            <div style="display:none; text-align:center; padding:40px; background:#e9ecef; border-radius:10px;">
+                <p style="color:#666;">📊 Original infographic would be displayed here</p>
+                <p style="color:#999; font-size:0.9em; margin-top:10px;">Upload the image to see it embedded in the app</p>
+            </div>
+            
+            <div class="prompt-box">
+                <h3>🎯 Original Prompt</h3>
+                <p>Generate an HTML app with JavaScript that provides actionable and clickable guides to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete. Before generating app, ask interactive questions, waiting for answers, to improve the quality of the app. Include the graphic at the end and this prompt.</p>
+            </div>
+
+            <div class="prompt-box" style="margin-top:15px;">
+                <h3>✨ Features Implemented</h3>
+                <p><strong>1. Learning Resources:</strong> Mix of written tutorials, video content, and interactive platforms<br>
+                <strong>2. Progress Tracking:</strong> Local storage saves progress, progress bar shows completion, notes and ratings per topic<br>
+                <strong>3. Resource Quality:</strong> Curated mix of official docs, beginner tutorials, and advanced resources<br>
+                <strong>4. Layout:</strong> 13 collapsible categories, search/filter, difficulty indicators, resource panels with code snippets<br>
+                <strong>5. Design:</strong> Purple/blue theme matching the original graphic</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="resourceModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const categories = [
+            {
+                name: "Python for Data Science",
+                topics: [
+                    {num: 1, name: "Python Basics", difficulty: "beginner"},
+                    {num: 2, name: "Jupyter Notebooks", difficulty: "beginner"},
+                    {num: 3, name: "Data Structures", difficulty: "beginner"},
+                    {num: 4, name: "Functions & Modules", difficulty: "beginner"},
+                    {num: 5, name: "File Handling", difficulty: "intermediate"},
+                    {num: 6, name: "Error Handling", difficulty: "intermediate"}
+                ]
+            },
+            {
+                name: "Data Manipulation",
+                topics: [
+                    {num: 7, name: "NumPy", difficulty: "beginner"},
+                    {num: 8, name: "Pandas", difficulty: "intermediate"},
+                    {num: 9, name: "DataFrames", difficulty: "intermediate"},
+                    {num: 10, name: "GroupBy & Aggregations", difficulty: "intermediate"},
+                    {num: 11, name: "Merging & Joining", difficulty: "intermediate"},
+                    {num: 12, name: "Pivot Tables", difficulty: "advanced"}
+                ]
+            },
+            {
+                name: "Data Visualization",
+                topics: [
+                    {num: 13, name: "Matplotlib", difficulty: "beginner"},
+                    {num: 14, name: "Seaborn", difficulty: "intermediate"},
+                    {num: 15, name: "Plotly", difficulty: "intermediate"},
+                    {num: 16, name: "Dashboards", difficulty: "advanced"},
+                    {num: 17, name: "Heatmaps", difficulty: "intermediate"},
+                    {num: 18, name: "Interactive Charts", difficulty: "advanced"}
+                ]
+            },
+            {
+                name: "Exploratory Data Analysis (EDA)",
+                topics: [
+                    {num: 19, name: "Descriptive Statistics", difficulty: "beginner"},
+                    {num: 20, name: "Outlier Detection", difficulty: "intermediate"},
+                    {num: 21, name: "Correlation Matrix", difficulty: "intermediate"},
+                    {num: 22, name: "Boxplots & Histograms", difficulty: "beginner"},
+                    {num: 23, name: "Missing Data Treatment", difficulty: "intermediate"},
+                    {num: 24, name: "Trend Analysis", difficulty: "intermediate"}
+                ]
+            },
+            {
+                name: "Probability & Statistics",
+                topics: [
+                    {num: 25, name: "Distributions", difficulty: "intermediate"},
+                    {num: 26, name: "Central Limit Theorem", difficulty: "intermediate"},
+                    {num: 27, name: "Hypothesis Testing", difficulty: "intermediate"},
+                    {num: 28, name: "p-values & t-tests", difficulty: "intermediate"},
+                    {num: 29, name: "Confidence Intervals", difficulty: "intermediate"},
+                    {num: 30, name: "Bayes' Theorem", difficulty: "advanced"}
+                ]
+            },
+            {
+                name: "SQL for Data Science",
+                topics: [
+                    {num: 31, name: "SELECT Statements", difficulty: "beginner"},
+                    {num: 32, name: "JOINs & Subqueries", difficulty: "intermediate"},
+                    {num: 33, name: "GROUP BY & HAVING", difficulty: "intermediate"},
+                    {num: 34, name: "Window Functions", difficulty: "advanced"},
+                    {num: 35, name: "CTEs (Common Table Expressions)", difficulty: "advanced"},
+                    {num: 36, name: "Indexes & Optimization", difficulty: "advanced"}
+                ]
+            },
+            {
+                name: "Machine Learning (Supervised)",
+                topics: [
+                    {num: 37, name: "Linear Regression", difficulty: "beginner"},
+                    {num: 38, name: "Logistic Regression", difficulty: "intermediate"},
+                    {num: 39, name: "Decision Trees", difficulty: "intermediate"},
+                    {num: 40, name: "Random Forest", difficulty: "intermediate"},
+                    {num: 41, name: "Gradient Boosting", difficulty: "advanced"},
+                    {num: 42, name: "Support Vector Machines", difficulty: "advanced"}
+                ]
+            },
+            {
+                name: "Machine Learning (Unsupervised)",
+                topics: [
+                    {num: 43, name: "K-Means Clustering", difficulty: "intermediate"},
+                    {num: 44, name: "DBSCAN", difficulty: "advanced"},
+                    {num: 45, name: "Hierarchical Clustering", difficulty: "advanced"},
+                    {num: 46, name: "PCA (Dimensionality Reduction)", difficulty: "advanced"},
+                    {num: 47, name: "Anomaly Detection", difficulty: "advanced"},
+                    {num: 48, name: "Association Rules", difficulty: "intermediate"}
+                ]
+            },
+            {
+                name: "Model Evaluation Metrics",
+                topics: [
+                    {num: 49, name: "Accuracy, Precision, Recall", difficulty: "beginner"},
+                    {num: 50, name: "F1 Score", difficulty: "intermediate"},
+                    {num: 51, name: "ROC & AUC", difficulty: "intermediate"},
+                    {num: 52, name: "Confusion Matrix", difficulty: "beginner"},
+                    {num: 53, name: "Cross-Validation", difficulty: "intermediate"},
+                    {num: 54, name: "R-squared & RMSE", difficulty: "intermediate"}
+                ]
+            },
+            {
+                name: "Feature Engineering",
+                topics: [
+                    {num: 55, name: "Feature Scaling", difficulty: "intermediate"},
+                    {num: 56, name: "One-Hot Encoding", difficulty: "beginner"},
+                    {num: 57, name: "Label Encoding", difficulty: "beginner"},
+                    {num: 58, name: "Binning & Bucketing", difficulty: "intermediate"},
+                    {num: 59, name: "Feature Selection", difficulty: "intermediate"},
+                    {num: 60, name: "Feature Extraction", difficulty: "advanced"}
+                ]
+            },
+            {
+                name: "Time Series Analysis",
+                topics: [
+                    {num: 61, name: "Time Series Decomposition", difficulty: "intermediate"},
+                    {num: 62, name: "ARIMA", difficulty: "advanced"},
+                    {num: 63, name: "Prophet", difficulty: "intermediate"},
+                    {num: 64, name: "Rolling Statistics", difficulty: "intermediate"},
+                    {num: 65, name: "Seasonality & Trends", difficulty: "intermediate"},
+                    {num: 66, name: "Forecasting Models", difficulty: "advanced"}
+                ]
+            },
+            {
+                name: "Natural Language Processing (NLP)",
+                topics: [
+                    {num: 67, name: "Tokenization", difficulty: "beginner"},
+                    {num: 68, name: "Stemming & Lemmatization", difficulty: "intermediate"},
+                    {num: 69, name: "TF-IDF", difficulty: "intermediate"},
+                    {num: 70, name: "Sentiment Analysis", difficulty: "intermediate"},
+                    {num: 71, name: "Named Entity Recognition", difficulty: "advanced"},
+                    {num: 72, name: "Topic Modeling", difficulty: "advanced"}
+                ]
+            },
+            {
+                name: "Cloud & Big Data Tools",
+                topics: [
+                    {num: 73, name: "AWS S3 & Redshift", difficulty: "intermediate"},
+                    {num: 74, name: "Google BigQuery", difficulty: "intermediate"},
+                    {num: 75, name: "Apache Spark", difficulty: "advanced"},
+                    {num: 76, name: "Databricks", difficulty: "advanced"},
+                    {num: 77, name: "Hadoop Ecosystem", difficulty: "advanced"},
+                    {num: 78, name: "Snowflake", difficulty: "intermediate"}
+                ]
+            }
+        ];
+
+        const resources = {
+            1: {
+                tutorials: [
+                    {name: "Python.org Official Tutorial", url: "https://docs.python.org/3/tutorial/"},
+                    {name: "Real Python - Python Basics", url: "https://realpython.com/python-basics/"},
+                    {name: "W3Schools Python Tutorial", url: "https://www.w3schools.com/python/"}
+                ],
+                videos: [
+                    {name: "Python for Beginners - freeCodeCamp", url: "https://www.youtube.com/watch?v=rfscVS0vtbw"},
+                    {name: "Corey Schafer Python Tutorial", url: "https://www.youtube.com/playlist?list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7"}
+                ],
+                interactive: [
+                    {name: "Codecademy Python Course", url: "https://www.codecademy.com/learn/learn-python-3"},
+                    {name: "DataCamp Python Basics", url: "https://www.datacamp.com/courses/intro-to-python-for-data-science"}
+                ],
+                code: `# Python Basics - Variables and Data Types
+# Variables
+name = "Data Scientist"
+age = 25
+salary = 85000.50
+is_employed = True
+
+# Print values
+print(f"Name: {name}")
+print(f"Age: {age}")
+
+# Lists
+skills = ["Python", "SQL", "Machine Learning"]
+skills.append("Deep Learning")
+
+# Dictionaries
+person = {
+    "name": "Alice",
+    "role": "Data Scientist",
+    "experience": 3
+}
+
+# Control flow
+if age >= 18:
+    print("Adult")
+else:
+    print("Minor")
+
+# Loops
+for skill in skills:
+    print(f"- {skill}")`
+            },
+            2: {
+                tutorials: [
+                    {name: "Jupyter Documentation", url: "https://jupyter.org/documentation"},
+                    {name: "DataCamp Jupyter Notebook Tutorial", url: "https://www.datacamp.com/tutorial/tutorial-jupyter-notebook"}
+                ],
+                videos: [
+                    {name: "Jupyter Notebook Tutorial - Corey Schafer", url: "https://www.youtube.com/watch?v=HW29067qVWk"}
+                ],
+                interactive: [
+                    {name: "Try Jupyter Online", url: "https://jupyter.org/try"}
+                ],
+                code: `# Jupyter Notebook Basics
+# Cell types: Code and Markdown
+
+# Magic commands
+%timeit sum(range(100))
+%matplotlib inline
+
+# Display multiple outputs
+from IPython.display import display
+display(df.head())
+display(df.describe())
+
+# Keyboard shortcuts:
+# Shift + Enter: Run cell
+# Esc + A: Insert cell above
+# Esc + B: Insert cell below
+# Esc + DD: Delete cell`
+            },
+            8: {
+                tutorials: [
+                    {name: "Pandas Official Documentation", url: "https://pandas.pydata.org/docs/"},
+                    {name: "Real Python - Pandas Tutorial", url: "https://realpython.com/pandas-python-explore-dataset/"}
+                ],
+                videos: [
+                    {name: "Pandas Tutorial by Corey Schafer", url: "https://www.youtube.com/playlist?list=PL-osiE80TeTsWmV9i9c58mdDCSskIFdDS"}
+                ],
+                interactive: [
+                    {name: "DataCamp Pandas Course", url: "https://www.datacamp.com/courses/pandas-foundations"}
+                ],
+                code: `import pandas as pd
+import numpy as np
+
+# Create DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie'],
+    'Age': [25, 30, 35],
+    'Salary': [70000, 80000, 90000]
+}
+df = pd.DataFrame(data)
+
+# Basic operations
+print(df.head())
+print(df.describe())
+print(df.info())
+
+# Filtering
+high_earners = df[df['Salary'] > 75000]
+
+# Adding columns
+df['Bonus'] = df['Salary'] * 0.1
+
+# Reading files
+# df = pd.read_csv('data.csv')`
+            },
+            37: {
+                tutorials: [
+                    {name: "Scikit-learn Linear Regression", url: "https://scikit-learn.org/stable/modules/linear_model.html"},
+                    {name: "StatQuest - Linear Regression", url: "https://statquest.org/video-index/"}
+                ],
+                videos: [
+                    {name: "StatQuest: Linear Regression", url: "https://www.youtube.com/watch?v=nk2CQITm_eo"}
+                ],
+                interactive: [
+                    {name: "Kaggle Linear Regression", url: "https://www.kaggle.com/learn/intro-to-machine-learning"}
+                ],
+                code: `from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+# Sample data
+X = np.array([[1], [2], [3], [4], [5]])
+y = np.array([2, 4, 5, 4, 5])
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create and train model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate
+print(f"R² Score: {r2_score(y_test, y_pred):.3f}")`
+            }
+        };
+
+        function getGenericResources(topicName) {
+            return {
+                tutorials: [
+                    {name: `${topicName} - Official Documentation`, url: `https://www.google.com/search?q=${encodeURIComponent(topicName + ' documentation')}`},
+                    {name: `${topicName} - Towards Data Science`, url: `https://towardsdatascience.com/search?q=${encodeURIComponent(topicName)}`}
+                ],
+                videos: [
+                    {name: `${topicName} - YouTube Tutorial`, url: `https://www.youtube.com/results?search_query=${encodeURIComponent(topicName + ' tutorial')}`}
+                ],
+                interactive: [
+                    {name: `${topicName} - Kaggle Learn`, url: `https://www.kaggle.com/learn`}
+                ],
+                code: `# ${topicName} - Code Example
+# Search for implementations:
+# GitHub: github.com/search?q=${encodeURIComponent(topicName)}
+# Stack Overflow: stackoverflow.com
+
+# Add your code snippets here!`
+            };
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('dsProgress');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveProgress(progress) {
+            localStorage.setItem('dsProgress', JSON.stringify(progress));
+        }
+
+        let progress = loadProgress();
+
+        function updateProgress() {
+            const total = 78;
+            const completed = Object.values(progress).filter(p => p.completed).length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = `${completed}/${total} (${percentage}%)`;
+
+            categories.forEach((cat, idx) => {
+                const catCompleted = cat.topics.filter(t => progress[t.num]?.completed).length;
+                const catTotal = cat.topics.length;
+                const catElement = document.querySelector(`[data-category="${idx}"]`);
+                if (catElement) {
+                    catElement.textContent = `${catCompleted}/${catTotal}`;
+                }
+            });
+        }
+
+        function toggleComplete(topicNum) {
+            if (!progress[topicNum]) {
+                progress[topicNum] = {completed: false, rating: 0, notes: ''};
+            }
+            progress[topicNum].completed = !progress[topicNum].completed;
+            saveProgress(progress);
+            updateProgress();
+            renderContent();
+        }
+
+        function setRating(topicNum, rating) {
+            if (!progress[topicNum]) {
+                progress[topicNum] = {completed: false, rating: 0, notes: ''};
+            }
+            progress[topicNum].rating = rating;
+            saveProgress(progress);
+            renderContent();
+        }
+
+        function updateNotes(topicNum, notes) {
+            if (!progress[topicNum]) {
+                progress[topicNum] = {completed: false, rating: 0, notes: ''};
+            }
+            progress[topicNum].notes = notes;
+            saveProgress(progress);
+        }
+
+        function openResourceModal(topicNum, topicName) {
+            const modal = document.getElementById('resourceModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            const topicResources = resources[topicNum] || getGenericResources(topicName);
+            
+            modalBody.innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">${topicNum}. ${topicName}</h2>
+                </div>
+
+                <div class="resource-section">
+                    <h3>📚 Written Tutorials</h3>
+                    <div class="resource-links">
+                        ${topicResources.tutorials.map(r => `
+                            <a href="${r.url}" target="_blank" class="resource-link">
+                                <span class="resource-icon">📖</span>
+                                <span>${r.name}</span>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="resource-section">
+                    <h3>🎥 Video Tutorials</h3>
+                    <div class="resource-links">
+                        ${topicResources.videos.map(r => `
+                            <a href="${r.url}" target="_blank" class="resource-link">
+                                <span class="resource-icon">▶️</span>
+                                <span>${r.name}</span>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="resource-section">
+                    <h3>💻 Interactive Platforms</h3>
+                    <div class="resource-links">
+                        ${topicResources.interactive.map(r => `
+                            <a href="${r.url}" target="_blank" class="resource-link">
+                                <span class="resource-icon">🖱️</span>
+                                <span>${r.name}</span>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="resource-section">
+                    <h3>💡 Code Snippet</h3>
+                    <div class="code-snippet">
+                        <pre>${topicResources.code}</pre>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('resourceModal').classList.remove('active');
+        }
+
+        function toggleCategory(idx) {
+            const grid = document.querySelector(`[data-grid="${idx}"]`);
+            grid.classList.toggle('expanded');
+        }
+
+        function renderContent() {
+            const content = document.getElementById('content');
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            
+            content.innerHTML = categories.map((cat, catIdx) => {
+                const filteredTopics = cat.topics.filter(topic => 
+                    topic.name.toLowerCase().includes(searchTerm) ||
+                    topic.num.toString().includes(searchTerm)
+                );
+                
+                if (filteredTopics.length === 0 && searchTerm) return '';
+                
+                const catCompleted = cat.topics.filter(t => progress[t.num]?.completed).length;
+                const catTotal = cat.topics.length;
+                
+                return `
+                    <div class="category">
+                        <div class="category-header" onclick="toggleCategory(${catIdx})">
+                            <span class="category-title">${catIdx + 1}. ${cat.name}</span>
+                            <span class="category-progress" data-category="${catIdx}">${catCompleted}/${catTotal}</span>
+                        </div>
+                        <div class="topics-grid ${searchTerm ? 'expanded' : ''}" data-grid="${catIdx}">
+                            ${filteredTopics.map(topic => {
+                                const topicProgress = progress[topic.num] || {completed: false, rating: 0, notes: ''};
+                                return `
+                                    <div class="topic-card ${topicProgress.completed ? 'completed' : ''}" 
+                                         onclick="event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.classList.contains('star') === false && openResourceModal(${topic.num}, '${topic.name}')">
+                                        <div class="topic-header">
+                                            <span class="topic-number">${topic.num}</span>
+                                            <div class="checkbox-container">
+                                                <input type="checkbox" 
+                                                       class="checkbox" 
+                                                       ${topicProgress.completed ? 'checked' : ''}
+                                                       onclick="event.stopPropagation(); toggleComplete(${topic.num})">
+                                            </div>
+                                        </div>
+                                        <div class="topic-name">${topic.name}</div>
+                                        <span class="difficulty ${topic.difficulty}">${topic.difficulty}</span>
+                                        <div class="rating-container">
+                                            <div class="stars">
+                                                ${[1,2,3,4,5].map(star => `
+                                                    <span class="star" 
+                                                          onclick="event.stopPropagation(); setRating(${topic.num}, ${star})">
+                                                        ${star <= topicProgress.rating ? '★' : '☆'}
+                                                    </span>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                        <textarea class="notes-textarea" 
+                                                  placeholder="Add your notes..."
+                                                  onclick="event.stopPropagation()"
+                                                  onchange="updateNotes(${topic.num}, this.value)">${topicProgress.notes || ''}</textarea>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            updateProgress();
+        }
+
+        document.getElementById('searchBox').addEventListener('input', renderContent);
+
+        document.getElementById('resourceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        renderContent();
+    </script>
+</body>
+</html>

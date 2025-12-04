@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making eBooks Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: #e8f4ff;
+        }
+        
+        .tab.active {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .tile {
+            background: #f9f9f9;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .tile.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .tile.enabled {
+            border-color: #2196F3;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+        }
+        
+        .tile.completed {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+        }
+        
+        .tile h3 {
+            color: #2196F3;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .tile ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .tile input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .tile textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .tile button {
+            width: 100%;
+            padding: 10px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        
+        .tile button:hover {
+            background: #1976D2;
+        }
+        
+        .tile.disabled button {
+            background: #ccc;
+        }
+        
+        .prompt-output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .prompt-output h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .prompt-output textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-buttons button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn-send {
+            background: #4CAF50;
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-send:hover {
+            background: #45a049;
+        }
+        
+        .btn-reset {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #e68900;
+        }
+        
+        .btn-copy {
+            background: #9C27B0;
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            background: #7B1FA2;
+        }
+        
+        .test-prompt-area {
+            margin-bottom: 20px;
+        }
+        
+        .test-prompt-area textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        .references img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .references pre {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+        
+        .prompt-box {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .badge-locked {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        .badge-active {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .badge-completed {
+            background: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Use ChatGPT for Making Money with EBooks</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('roadmap')">Roadmap</button>
+            <button class="tab" onclick="switchTab('test')">Test Prompt</button>
+            <button class="tab" onclick="switchTab('references')">References</button>
+        </div>
+        
+        <!-- ROADMAP TAB -->
+        <div id="roadmap" class="tab-content active">
+            <div class="tiles-grid">
+                <!-- Tile 1: Come Up with Your Book Idea -->
+                <div class="tile enabled" id="tile1">
+                    <h3>1. Come Up with Your Book Idea <span class="status-badge badge-active">Active</span></h3>
+                    <ul>
+                        <li>Ask for Ideas</li>
+                        <li>Choose a Profitable Niche</li>
+                    </ul>
+                    <label>Your Niche:</label>
+                    <input type="text" id="niche1" placeholder="e.g., self-help, cooking, finance">
+                    <label>Your Topic:</label>
+                    <input type="text" id="topic1" placeholder="e.g., productivity, vegan recipes">
+                    <label>Answer Space:</label>
+                    <textarea id="answer1" placeholder="Your response to ChatGPT's output..."></textarea>
+                    <button onclick="generatePrompt(1)">Add Prompt to Output</button>
+                </div>
+                
+                <!-- Tile 2: Outline Your Book -->
+                <div class="tile disabled" id="tile2">
+                    <h3>2. Outline Your Book <span class="status-badge badge-locked">Locked</span></h3>
+                    <ul>
+                        <li>Generate an Outline</li>
+                        <li>Include Chapters and Subheadings</li>
+                        <li>Ensure Logical Flow</li>
+                    </ul>
+                    <label>Your Topic:</label>
+                    <input type="text" id="topic2" placeholder="e.g., time management">
+                    <label>Answer Space:</label>
+                    <textarea id="answer2" placeholder="Your response to ChatGPT's output..."></textarea>
+                    <button onclick="generatePrompt(2)">Add Prompt to Output</button>
+                </div>
+                
+                <!-- Tile 3: Writing a Book -->
+                <div class="tile disabled" id="tile3">
+                    <h3>3. Writing a Book <span class="status-badge badge-locked">Locked</span></h3>
+                    <ul>
+                        <li>Write Section by Section</li>
+                        <li>Maintain Consistency</li>
+                        <li>Personalize Content</li>
+                    </ul>
+                    <label>Specific Subtopic:</label>
+                    <input type="text" id="subtopic3" placeholder="e.g., morning routines">
+                    <label>Answer Space:</label>
+                    <textarea id="answer3" placeholder="Your response to ChatGPT's output..."></textarea>
+                    <button onclick="generatePrompt(3)">Add Prompt to Output</button>
+                </div>
+            </div>
+            
+            <div class="prompt-output">
+                <h3>📋 Generated Prompts</h3>
+                <textarea id="outputPrompt" placeholder="Your generated prompts will appear here..."></textarea>
+                <div class="action-buttons">
+                    <button class="btn-send" onclick="sendToChatGPT()">🚀 Send to ChatGPT</button>
+                    <button class="btn-copy" onclick="copyPrompt()">📋 Copy</button>
+                </div>
+            </div>
+            
+            <div class="tiles-grid">
+                <!-- Tile 4: Basic Formatting -->
+                <div class="tile disabled" id="tile4">
+                    <h3>4. Basic Formatting in Google Docs <span class="status-badge badge-locked">Locked</span></h3>
+                    <ul>
+                        <li>Use Headings (H1, H2)</li>
+                        <li>Set Line Spacing (1.5 or 1.15)</li>
+                        <li>Insert Page Breaks</li>
+                        <li>Consistent Styling</li>
+                    </ul>
+                    <label>Answer Space:</label>
+                    <textarea id="answer4" placeholder="Document your formatting choices..."></textarea>
+                    <button onclick="completeStep(4)">Complete Step</button>
+                </div>
+                
+                <!-- Tile 5: Adding Amazon Kindle Book -->
+                <div class="tile disabled" id="tile5">
+                    <h3>5. Adding Amazon Kindle Book <span class="status-badge badge-locked">Locked</span></h3>
+                    <ul>
+                        <li>Create an Account at <a href="https://kdp.amazon.com" target="_blank">kdp.amazon.com</a></li>
+                        <li>Enter Book Details</li>
+                        <li>Select Keywords and Categories</li>
+                        <li>Use Kindle Create</li>
+                    </ul>
+                    <label>Book Title:</label>
+                    <input type="text" id="booktitle5" placeholder="Must match cover">
+                    <label>Author Name:</label>
+                    <input type="text" id="author5" placeholder="Your real or pen name">
+                    <label>Answer Space:</label>
+                    <textarea id="answer5" placeholder="Your book description and keywords..."></textarea>
+                    <button onclick="completeStep(5)">Complete Step</button>
+                </div>
+                
+                <!-- Tile 6: Design a Book Cover -->
+                <div class="tile disabled" id="tile6">
+                    <h3>6. Design a Book Cover <span class="status-badge badge-locked">Locked</span></h3>
+                    <ul>
+                        <li>Use <a href="https://www.canva.com" target="_blank">Canva</a></li>
+                        <li>Correct dimensions (1600 x 2560 pixels)</li>
+                        <li>Create an Eye-Catching Design</li>
+                        <li>Use Clear, bold fonts</li>
+                    </ul>
+                    <label>Answer Space:</label>
+                    <textarea id="answer6" placeholder="Describe your cover design choices..."></textarea>
+                    <button onclick="completeStep(6)">Complete Step</button>
+                </div>
+                
+                <!-- Tile 7: How to Price Your New Book -->
+                <div class="tile disabled" id="tile7">
+                    <h3>7. How to Price Your New Book <span class="status-badge badge-locked">Locked</span></h3>
+                    <ul>
+                        <li>Research Competitors</li>
+                        <li>Choose Royalty Option: 35% or 70%</li>
+                        <li>Set Your Price</li>
+                        <li>Consider Promotions</li>
+                    </ul>
+                    <label>Your Genre:</label>
+                    <input type="text" id="genre7" placeholder="e.g., mystery, business">
+                    <label>Answer Space:</label>
+                    <textarea id="answer7" placeholder="Your pricing strategy..."></textarea>
+                    <button onclick="completeStep(7)">Complete Step</button>
+                </div>
+                
+                <!-- Tile 8: Marketing Your Book -->
+                <div class="tile disabled" id="tile8">
+                    <h3>8. Marketing Your Book <span class="status-badge badge-locked">Locked</span></h3>
+                    <ul>
+                        <li>Leverage Social Media</li>
+                        <li>Use Amazon Advertising</li>
+                        <li>Build an Email List</li>
+                        <li>Encourage Reviews</li>
+                    </ul>
+                    <label>Answer Space:</label>
+                    <textarea id="answer8" placeholder="Your marketing plan..."></textarea>
+                    <button onclick="completeStep(8)">Complete Step</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn-reset" onclick="resetRoadmap()">🔄 Reset All</button>
+            </div>
+        </div>
+        
+        <!-- TEST PROMPT TAB -->
+        <div id="test" class="tab-content">
+            <h2>Test Your Prompt</h2>
+            <p style="margin-bottom: 20px;">Edit and refine your prompt before sending it to ChatGPT.</p>
+            <div class="test-prompt-area">
+                <textarea id="testPromptArea" placeholder="Paste or edit your prompt here..."></textarea>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-send" onclick="sendTestPrompt()">🚀 Send to ChatGPT</button>
+                <button class="btn-copy" onclick="copyTestPrompt()">📋 Copy</button>
+            </div>
+        </div>
+        
+        <!-- REFERENCES TAB -->
+        <div id="references" class="tab-content">
+            <h2>References</h2>
+            <h3>Original Graphic:</h3>
+            <img src="GYFbJbebUAAruWS.jpg" alt="Making Money with EBooks Guide">
+            <p><em>Note: The original graphic should be displayed here. This is a placeholder.</em></p>
+            
+            <h3 style="margin-top: 30px;">Original Prompt:</h3>
+            <div class="prompt-box">Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Making eBooks Guide". Use the graphic to create the first tab "Roadmap" and make a tile matching the steps on the graphic. On each tile hyperlink any links and a button that adds the prompt to a text box at the bottom of the tab. Put a text box in each tile whenever there is an empty space to fill in. Below the box will be a button for sending the prompt to ChatGPT. Start with all the tiles disabled except the first one. As we click on a tile the next tile enables. Also provide a button for returning the tab to initial conditions. The next tab "Test Prompt", from the previous tab fill in a text box for the prompt and allow the user to evaluate the prompt. Ask any questions you need one-at-a-time and move on to the next question after the answer. Include a last tab called "References" where the graphics are on it and this prompt.</div>
+        </div>
+    </div>
+    
+    <script>
+        let currentTile = 1;
+        const totalTiles = 8;
+        
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // If switching to test tab, copy prompt from roadmap
+            if (tabName === 'test') {
+                document.getElementById('testPromptArea').value = document.getElementById('outputPrompt').value;
+            }
+        }
+        
+        function generatePrompt(tileNum) {
+            let prompt = '';
+            
+            switch(tileNum) {
+                case 1:
+                    const niche = document.getElementById('niche1').value || '[your niche]';
+                    const topic = document.getElementById('topic1').value || '[topic]';
+                    prompt = `List 10 trending topics in ${niche}.\nWhat are common problems people face in ${topic}?\nChoose a Profitable Niche: High demand, Low competition, Aligns with your interests.`;
+                    break;
+                case 2:
+                    const topic2 = document.getElementById('topic2').value || '[your topic]';
+                    prompt = `Create a detailed outline for a book on ${topic2}.\nInclude Chapters and Subheadings: "Break down each chapter into key points."\nEnsure Logical Flow: Introduction to advanced concepts. Problem to solution progression.`;
+                    break;
+                case 3:
+                    const subtopic = document.getElementById('subtopic3').value || '[specific subtopic]';
+                    prompt = `Write 500 words on ${subtopic}.\nMaintain Consistency: Keep tone and style uniform. Personalize Content: Add anecdotes or insights. Edit Thoroughly: Proofread for errors. Ensure originality.`;
+                    break;
+            }
+            
+            // Add to output
+            const currentOutput = document.getElementById('outputPrompt').value;
+            const newOutput = currentOutput ? currentOutput + '\n\n--- Step ' + tileNum + ' ---\n' + prompt : prompt;
+            document.getElementById('outputPrompt').value = newOutput;
+            
+            // Mark tile as completed and enable next
+            const tile = document.getElementById('tile' + tileNum);
+            tile.classList.remove('enabled');
+            tile.classList.add('completed');
+            const badge = tile.querySelector('.status-badge');
+            badge.className = 'status-badge badge-completed';
+            badge.textContent = 'Completed';
+            
+            // Enable next tile
+            if (tileNum < totalTiles) {
+                const nextTile = document.getElementById('tile' + (tileNum + 1));
+                nextTile.classList.remove('disabled');
+                nextTile.classList.add('enabled');
+                const nextBadge = nextTile.querySelector('.status-badge');
+                nextBadge.className = 'status-badge badge-active';
+                nextBadge.textContent = 'Active';
+                currentTile = tileNum + 1;
+            }
+        }
+        
+        function completeStep(tileNum) {
+            // Mark tile as completed and enable next
+            const tile = document.getElementById('tile' + tileNum);
+            tile.classList.remove('enabled');
+            tile.classList.add('completed');
+            const badge = tile.querySelector('.status-badge');
+            badge.className = 'status-badge badge-completed';
+            badge.textContent = 'Completed';
+            
+            // Enable next tile
+            if (tileNum < totalTiles) {
+                const nextTile = document.getElementById('tile' + (tileNum + 1));
+                nextTile.classList.remove('disabled');
+                nextTile.classList.add('enabled');
+                const nextBadge = nextTile.querySelector('.status-badge');
+                nextBadge.className = 'status-badge badge-active';
+                nextBadge.textContent = 'Active';
+                currentTile = tileNum + 1;
+            }
+        }
+        
+        function resetRoadmap() {
+            // Clear all inputs
+            for (let i = 1; i <= totalTiles; i++) {
+                const inputs = document.querySelectorAll(`#tile${i} input, #tile${i} textarea`);
+                inputs.forEach(input => input.value = '');
+                
+                const tile = document.getElementById('tile' + i);
+                tile.classList.remove('enabled', 'completed');
+                const badge = tile.querySelector('.status-badge');
+                
+                if (i === 1) {
+                    tile.classList.add('enabled');
+                    badge.className = 'status-badge badge-active';
+                    badge.textContent = 'Active';
+                } else {
+                    tile.classList.add('disabled');
+                    badge.className = 'status-badge badge-locked';
+                    badge.textContent = 'Locked';
+                }
+            }
+            
+            // Clear output
+            document.getElementById('outputPrompt').value = '';
+            currentTile = 1;
+        }
+        
+        function sendToChatGPT() {
+            const prompt = document.getElementById('outputPrompt').value;
+            if (prompt) {
+                window.open('https://chat.openai.com/', '_blank');
+                alert('Prompt copied to clipboard! Paste it into ChatGPT.');
+                copyPrompt();
+            } else {
+                alert('Please generate a prompt first by completing the tiles.');
+            }
+        }
+        
+        function copyPrompt() {
+            const prompt = document.getElementById('outputPrompt').value;
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert('Prompt copied to clipboard!');
+            });
+        }
+        
+        function sendTestPrompt() {
+            const prompt = document.getElementById('testPromptArea').value;
+            if (prompt) {
+                window.open('https://chat.openai.com/', '_blank');
+                alert('Prompt copied to clipboard! Paste it into ChatGPT.');
+                copyTestPrompt();
+            } else {
+                alert('Please enter a prompt to test.');
+            }
+        }
+        
+        function copyTestPrompt() {
+            const prompt = document.getElementById('testPromptArea').value;
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert('Prompt copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humanoids In America Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4CAF50;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 3px solid #667eea;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .tab:hover {
+            background: #e8e8e8;
+            color: #667eea;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: -3px;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        /* --- Styles for Relative Map Visualization --- */
+        .map-visualization {
+            position: relative;
+            width: 100%;
+            height: 450px; 
+            background: #f0f8ff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .map-svg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        
+        .map-svg-container svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .map-svg-container .map-outline path {
+            fill: #e8f4f8; /* Light blue background for landmass */
+            stroke: #8b9dc3;
+            stroke-width: 1.5;
+            stroke-linejoin: round;
+        }
+
+        .map-point {
+            position: absolute;
+            width: 50px; 
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transform: translate(-50%, -50%); 
+            z-index: 10;
+        }
+
+        .map-point:hover {
+            background: #764ba2;
+            transform: translate(-50%, -50%) scale(1.1);
+            z-index: 11;
+        }
+        
+        .map-point span {
+            display: block;
+            line-height: 1.2;
+            padding-top: 5px;
+        }
+        /* --- End New Styles --- */
+
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .company-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .company-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .company-card.contacted {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #f0fff0 0%, #ffffff 100%);
+        }
+
+        .company-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .company-card .location {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .contact-check {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .concept-tile {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .concept-tile:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .concept-tile.completed {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #f0fff0 0%, #ffffff 100%);
+        }
+
+        .concept-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .concept-title {
+            flex: 1;
+        }
+
+        .concept-title h3 {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 1.4em;
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-beginner {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .badge-intermediate {
+            background: #ff9800;
+            color: white;
+        }
+
+        .badge-advanced {
+            background: #f44336;
+            color: white;
+        }
+
+        .badge-time {
+            background: #2196F3;
+            color: white;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .complete-check {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .complete-check:hover {
+            transform: scale(1.1);
+        }
+
+        .concept-content {
+            margin-top: 15px;
+        }
+
+        .concept-content p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .prerequisites {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .prerequisites strong {
+            color: #856404;
+        }
+
+        .related-links {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .related-links strong {
+            color: #0c5460;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+            border-radius: 15px;
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .reference-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .reference-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .tabs, .controls, .btn {
+                display: none;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Humanoids In America Guide</h1>
+            <p>Interactive Learning Dashboard for Robotics Students & Educators</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab(0)">📍 Interactive Map</button>
+            <button class="tab" onclick="switchTab(1)">🧠 AI Use Cases</button>
+            <button class="tab" onclick="switchTab(2)">🔧 Build Guide</button>
+            <button class="tab" onclick="switchTab(3)">📚 References</button>
+        </div>
+
+        <div class="tab-content active">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="exportProgress()">💾 Export Progress</button>
+                <button class="btn btn-success" onclick="importProgress()">📥 Import Progress</button>
+                <button class="btn btn-warning" onclick="generateReport()">📄 Generate PDF Report</button>
+                <button class="btn btn-danger" onclick="resetProgress()">🔄 Reset All</button>
+                <input type="file" id="importFile" style="display:none" accept=".json" onchange="handleImport(event)">
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3 id="companiesContacted">0</h3>
+                    <p>Companies Contacted</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="conceptsCompleted">0</h3>
+                    <p>Concepts Completed</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalProgress">0%</h3>
+                    <p>Overall Progress</p>
+                </div>
+            </div>
+
+            <h2 style="margin-bottom: 20px; color: #667eea;">Geographical Visualization of Robotics Companies</h2>
+            <div class="map-visualization" id="mapVisualization">
+                </div>
+            
+            <h2 style="margin-top: 30px; color: #667eea;">Companies Directory (Interactive Points)</h2>
+            <p style="margin-bottom: 20px; color: #666;">Click any company card below to view detailed information and track your progress.</p>
+            
+            <div class="company-grid" id="companyGrid"></div>
+        </div>
+
+        <div class="tab-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Current Robotics & AI Technology</h2>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all" onclick="filterUseCases('all')">All</button>
+                <button class="filter-btn" data-filter="application" onclick="filterUseCases('application')">By Application</button>
+                <button class="filter-btn" data-filter="capability" onclick="filterUseCases('capability')">By AI Capability</button>
+                <button class="filter-btn" data-filter="company" onclick="filterUseCases('company')">By Company</button>
+                <button class="filter-btn" data-filter="learning" onclick="filterUseCases('learning')">Learning Modules</button>
+            </div>
+
+            <div id="useCasesContainer"></div>
+        </div>
+
+        <div class="tab-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Design, Build & Deploy Your Humanoid</h2>
+            <p style="margin-bottom: 30px; color: #666; font-size: 1.1em;">Follow this comprehensive guide from simulation to physical deployment with AI integration.</p>
+            <div id="buildGuideContainer"></div>
+        </div>
+
+        <div class="tab-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">References & Resources</h2>
+            
+            <div class="reference-section">
+                <h3>Original Prompt</h3>
+                <p style="line-height: 1.8; color: #555;">
+                    Generate an HTML app/dashboard with JavaScript (no REACT) that provides actionable and clickable guide for "Humanoids In America Guide" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics. Assume Intermediate level. Organize the app according to four tabs. One Tab will have a map of north America like the graphic, reproduce the picture of the robot and the name of the company. Hyperlink the name to more information on the company and any information about the product and company in a popup window. Include Terms and parameters. The Second tab will be for studying current robotics and android technology that uses latest AI usecases. Fourth Tab is for "References" - put the prompt on this tab and ADD THE GRAPHIC. Also desire for the app to lead a user through the steps of designing, building, AND DEPLOYING a humanoid robot on a third tab.
+                </p>
+            </div>
+
+            <div class="reference-section">
+                <h3>Reference Graphic</h3>
+                <img src="X2Twitter.com_G7BF4_vWMAAaPMp.jpg?format=jpg&name=large" alt="Humanoid Robotics Companies" style="width: 100%; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            </div>
+
+            <div class="reference-section">
+                <h3>Gemini Generated Image</h3>
+                <img src="Gemini_Generated_Image_mqi6dpmqi6dpmqi6.png" alt="Gemini Generated Image for Robotics" style="width: 100%; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            </div>
+
+            <div class="reference-section">
+                <h3>Key Learning Resources</h3>
+                <ul style="line-height: 2; color: #555;">
+                    <li><a href="https://www.ros.org/" target="_blank">ROS (Robot Operating System)</a> - Primary robotics middleware</li>
+                    <li><a href="https://pytorch.org/" target="_blank">PyTorch</a> - Deep learning framework</li>
+                    <li><a href="https://www.nvidia.com/en-us/omniverse/" target="_blank">NVIDIA Omniverse</a> - Robot simulation</li>
+                    <li><a href="https://arxiv.org/list/cs.RO/recent" target="_blank">arXiv Robotics</a> - Latest research</li>
+                    <li><a href="https://github.com/topics/humanoid-robot" target="_blank">GitHub Humanoid Projects</a> - Open source</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="companyModal" class="modal" onclick="closeModalBackground(event)">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Storage keys
+        const STORAGE_KEY = 'humanoid_guide_progress';
+        
+        // --- Data Definitions ---
+
+        // Company data - Coordinates updated to fit the new detailed SVG (1000x600 viewBox)
+        const companies = [
+            {
+                name: "Boston Dynamics", location: "Waltham, MA", robot: "Atlas", website: "https://www.bostondynamics.com",
+                description: "Leader in advanced humanoid robotics with Atlas, featuring dynamic mobility and advanced manipulation capabilities.",
+                specs: "28 DOF, hydraulic actuation, 3D vision, real-time path planning", applications: "Research, disaster response, industrial automation", founded: 1992,
+                coords: { x: 880, y: 140 }, shortName: "BD"
+            },
+            {
+                name: "Tesla", location: "Austin, TX", robot: "Optimus", website: "https://www.tesla.com",
+                description: "AI-powered humanoid designed for general-purpose tasks.",
+                specs: "40+ DOF, electric actuation, neural network control, 5'8\" tall", applications: "Manufacturing, household tasks, general labor", founded: 2021,
+                coords: { x: 500, y: 500 }, shortName: "Tesla"
+            },
+            {
+                name: "Figure AI", location: "Sunnyvale, CA", robot: "Figure 01", website: "https://www.figure.ai",
+                description: "Commercial humanoid for warehouse and manufacturing.",
+                specs: "Full-body humanoid, AI-driven task learning", applications: "Warehousing, logistics, manufacturing", founded: 2022,
+                coords: { x: 80, y: 350 }, shortName: "Figure"
+            },
+            {
+                name: "Agility Robotics", location: "Corvallis, OR", robot: "Digit", website: "https://www.agilityrobotics.com",
+                description: "Bipedal robot for logistics with dynamic balance.",
+                specs: "Multi-modal locomotion, 3D sensing, autonomous navigation", applications: "Package delivery, warehouse logistics", founded: 2015,
+                coords: { x: 100, y: 120 }, shortName: "Agility"
+            },
+            {
+                name: "Sanctuary AI", location: "Vancouver, BC", robot: "Phoenix", website: "https://www.sanctuary.ai",
+                description: "General-purpose humanoid with advanced dexterity.",
+                specs: "Human-like design, advanced hands, AI cognition", applications: "General labor, customer service", founded: 2018,
+                coords: { x: 130, y: 30 }, shortName: "Sanctuary"
+            },
+            {
+                name: "Apptronik", location: "Austin, TX", robot: "Apollo", website: "https://www.apptronik.com",
+                description: "Modular humanoid for logistics and manufacturing.",
+                specs: "Modular architecture, 160 lbs, 5'8\" height", applications: "Logistics, manufacturing, supply chain", founded: 2016,
+                coords: { x: 520, y: 510 }, shortName: "Apptronik"
+            },
+            {
+                name: "1X Technologies", location: "San Francisco, CA", robot: "NEO", website: "https://www.1x.tech",
+                description: "Safe, bio-inspired humanoid for home and commercial use.",
+                specs: "Soft materials, safe interaction design, bipedal locomotion", applications: "Home assistance, commercial services, security", founded: 2014,
+                coords: { x: 60, y: 340 }, shortName: "1X Tech"
+            },
+            {
+                name: "Clone Robotics", location: "San Diego, CA", robot: "Clone Alpha", website: "https://www.clonerobotics.com",
+                description: "Bio-inspired humanoid with artificial muscle technology.",
+                specs: "Myofiber actuators, human-like movement, soft robotics", applications: "Research, entertainment, medical training", founded: 2021,
+                coords: { x: 80, y: 530 }, shortName: "Clone"
+            },
+            {
+                name: "Fourier Intelligence", location: "Houston, TX", robot: "GR-1", website: "https://www.fftai.com",
+                description: "Rehabilitation and general-purpose humanoid.",
+                specs: "40+ DOF, force-controlled joints, rehabilitation focus", applications: "Healthcare, rehabilitation, assisted living", founded: 2015,
+                coords: { x: 570, y: 550 }, shortName: "Fourier"
+            },
+            {
+                name: "Persona AI", location: "Atlanta, GA", robot: "Persona Robot", website: "https://www.persona-ai.com",
+                description: "Service-oriented humanoid with human-robot interaction focus.",
+                specs: "Social interaction AI, NLP, expressive design", applications: "Customer service, hospitality, education", founded: 2020,
+                coords: { x: 780, y: 450 }, shortName: "Persona"
+            },
+            {
+                name: "Unitree Robotics", location: "Houston, TX", robot: "H1", website: "https://www.unitree.com",
+                description: "Affordable humanoid platform for research and education.",
+                specs: "Lightweight design, open SDK, educational pricing", applications: "Research, education, development platform", founded: 2016,
+                coords: { x: 590, y: 560 }, shortName: "Unitree"
+            },
+            {
+                name: "Kinisi Robotics", location: "New York, NY", robot: "Kinisi Bot", website: "https://www.kinisi-robotics.com",
+                description: "Compact humanoid for research and commercial applications.",
+                specs: "Compact form factor, modular components, research-friendly", applications: "Research, light manufacturing, service tasks", founded: 2019,
+                coords: { x: 860, y: 200 }, shortName: "Kinisi"
+            }
+        ];
+
+        // New bounding box for the detailed map SVG
+        const SVG_WIDTH = 1000; 
+        const SVG_HEIGHT = 600; 
+        
+        // --- Static SVG Map Outline Data (Detailed and Robust) ---
+        const mapOutlineSVG = `
+            <svg viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .state {
+        fill: #e0e7ff;
+        stroke: #4338ca;
+        stroke-width: 1;
+        transition: fill 0.3s;
+      }
+      .state:hover {
+        fill: #c7d2fe;
+        cursor: pointer;
+      }
+      .state-label {
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+        font-weight: bold;
+        fill: #1e293b;
+        pointer-events: none;
+        text-anchor: middle;
+      }
+      .water {
+        fill: #dbeafe;
+        stroke: #3b82f6;
+        stroke-width: 0.5;
+      }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="960" height="600" fill="#f0f9ff"/>
+  
+  <!-- Pacific Ocean -->
+  <rect x="0" y="0" width="150" height="600" fill="#bfdbfe" opacity="0.3"/>
+  
+  <!-- Atlantic Ocean -->
+  <rect x="800" y="0" width="160" height="600" fill="#bfdbfe" opacity="0.3"/>
+  
+  <!-- Gulf of Mexico -->
+  <path d="M 350 520 Q 450 560, 650 530 L 650 600 L 350 600 Z" fill="#bfdbfe" opacity="0.3"/>
+  
+  <!-- Great Lakes -->
+  <ellipse cx="580" cy="180" rx="25" ry="18" class="water"/>
+  <ellipse cx="620" cy="175" rx="20" ry="15" class="water"/>
+  <ellipse cx="650" cy="185" rx="18" ry="14" class="water"/>
+  <ellipse cx="680" cy="195" rx="22" ry="16" class="water"/>
+  <ellipse cx="710" cy="190" rx="28" ry="20" class="water"/>
+  
+  <!-- Washington -->
+  <path id="WA" class="state" d="M 60 80 L 150 80 L 150 140 L 60 140 Z"/>
+  <text x="105" y="115" class="state-label">WA</text>
+  
+  <!-- Oregon -->
+  <path id="OR" class="state" d="M 60 140 L 150 140 L 150 200 L 60 200 Z"/>
+  <text x="105" y="175" class="state-label">OR</text>
+  
+  <!-- California -->
+  <path id="CA" class="state" d="M 60 200 L 150 200 L 165 300 L 150 400 L 130 450 L 100 480 L 70 450 L 60 350 Z"/>
+  <text x="110" y="320" class="state-label">CA</text>
+  
+  <!-- Nevada -->
+  <path id="NV" class="state" d="M 150 200 L 200 200 L 215 300 L 200 380 L 165 300 L 150 200 Z"/>
+  <text x="175" y="280" class="state-label">NV</text>
+  
+  <!-- Idaho -->
+  <path id="ID" class="state" d="M 150 80 L 210 80 L 210 180 L 200 200 L 150 200 L 150 140 Z"/>
+  <text x="180" y="145" class="state-label">ID</text>
+  
+  <!-- Montana -->
+  <path id="MT" class="state" d="M 210 80 L 350 80 L 350 180 L 210 180 Z"/>
+  <text x="280" y="135" class="state-label">MT</text>
+  
+  <!-- Wyoming -->
+  <path id="WY" class="state" d="M 210 180 L 350 180 L 350 270 L 210 270 Z"/>
+  <text x="280" y="230" class="state-label">WY</text>
+  
+  <!-- Utah -->
+  <path id="UT" class="state" d="M 200 200 L 250 200 L 250 330 L 200 330 Z"/>
+  <text x="225" y="270" class="state-label">UT</text>
+  
+  <!-- Colorado -->
+  <path id="CO" class="state" d="M 250 200 L 380 200 L 380 330 L 250 330 Z"/>
+  <text x="315" y="270" class="state-label">CO</text>
+  
+  <!-- Arizona -->
+  <path id="AZ" class="state" d="M 150 380 L 250 330 L 290 420 L 260 480 L 200 460 Z"/>
+  <text x="220" y="420" class="state-label">AZ</text>
+  
+  <!-- New Mexico -->
+  <path id="NM" class="state" d="M 250 330 L 380 330 L 380 480 L 290 480 L 290 420 Z"/>
+  <text x="330" y="410" class="state-label">NM</text>
+  
+  <!-- North Dakota -->
+  <path id="ND" class="state" d="M 350 80 L 500 80 L 500 160 L 350 160 Z"/>
+  <text x="425" y="125" class="state-label">ND</text>
+  
+  <!-- South Dakota -->
+  <path id="SD" class="state" d="M 350 160 L 500 160 L 500 240 L 350 240 Z"/>
+  <text x="425" y="205" class="state-label">SD</text>
+  
+  <!-- Nebraska -->
+  <path id="NE" class="state" d="M 350 240 L 520 240 L 520 310 L 380 310 L 380 270 L 350 270 Z"/>
+  <text x="440" y="280" class="state-label">NE</text>
+  
+  <!-- Kansas -->
+  <path id="KS" class="state" d="M 380 310 L 520 310 L 520 380 L 380 380 Z"/>
+  <text x="450" y="350" class="state-label">KS</text>
+  
+  <!-- Oklahoma -->
+  <path id="OK" class="state" d="M 380 380 L 520 380 L 520 440 L 380 440 Z"/>
+  <text x="450" y="415" class="state-label">OK</text>
+  
+  <!-- Texas -->
+  <path id="TX" class="state" d="M 290 480 L 380 480 L 380 560 L 450 560 L 520 520 L 520 440 L 380 440 L 290 420 Z"/>
+  <text x="410" y="500" class="state-label">TX</text>
+  
+  <!-- Minnesota -->
+  <path id="MN" class="state" d="M 500 80 L 580 80 L 580 210 L 500 210 L 500 160 Z"/>
+  <text x="540" y="150" class="state-label">MN</text>
+  
+  <!-- Iowa -->
+  <path id="IA" class="state" d="M 500 240 L 580 240 L 580 310 L 520 310 Z"/>
+  <text x="540" y="280" class="state-label">IA</text>
+  
+  <!-- Missouri -->
+  <path id="MO" class="state" d="M 520 310 L 600 310 L 600 400 L 520 400 L 520 380 Z"/>
+  <text x="560" y="360" class="state-label">MO</text>
+  
+  <!-- Arkansas -->
+  <path id="AR" class="state" d="M 520 400 L 600 400 L 600 470 L 520 470 L 520 440 Z"/>
+  <text x="560" y="440" class="state-label">AR</text>
+  
+  <!-- Louisiana -->
+  <path id="LA" class="state" d="M 520 470 L 600 470 L 620 530 L 550 540 L 520 520 Z"/>
+  <text x="560" y="505" class="state-label">LA</text>
+  
+  <!-- Wisconsin -->
+  <path id="WI" class="state" d="M 580 140 L 620 140 L 620 240 L 580 240 L 580 210 Z"/>
+  <text x="600" y="195" class="state-label">WI</text>
+  
+  <!-- Illinois -->
+  <path id="IL" class="state" d="M 580 240 L 620 240 L 620 360 L 600 360 L 600 310 L 580 310 Z"/>
+  <text x="600" y="300" class="state-label">IL</text>
+  
+  <!-- Michigan -->
+  <path id="MI" class="state" d="M 620 140 L 680 140 L 690 220 L 660 240 L 620 240 Z"/>
+  <text x="650" y="195" class="state-label">MI</text>
+  
+  <!-- Indiana -->
+  <path id="IN" class="state" d="M 620 240 L 670 240 L 670 350 L 620 350 Z"/>
+  <text x="645" y="300" class="state-label">IN</text>
+  
+  <!-- Ohio -->
+  <path id="OH" class="state" d="M 670 240 L 730 240 L 730 340 L 670 340 Z"/>
+  <text x="700" y="295" class="state-label">OH</text>
+  
+  <!-- Kentucky -->
+  <path id="KY" class="state" d="M 620 350 L 730 340 L 730 380 L 600 390 Z"/>
+  <text x="670" y="370" class="state-label">KY</text>
+  
+  <!-- Tennessee -->
+  <path id="TN" class="state" d="M 600 390 L 730 380 L 730 420 L 600 430 Z"/>
+  <text x="665" y="410" class="state-label">TN</text>
+  
+  <!-- Mississippi -->
+  <path id="MS" class="state" d="M 600 430 L 650 430 L 650 510 L 620 530 L 600 470 Z"/>
+  <text x="625" y="475" class="state-label">MS</text>
+  
+  <!-- Alabama -->
+  <path id="AL" class="state" d="M 650 430 L 700 430 L 710 520 L 670 520 L 650 510 Z"/>
+  <text x="680" y="475" class="state-label">AL</text>
+  
+  <!-- Georgia -->
+  <path id="GA" class="state" d="M 700 430 L 760 420 L 760 510 L 710 520 Z"/>
+  <text x="730" y="470" class="state-label">GA</text>
+  
+  <!-- Florida -->
+  <path id="FL" class="state" d="M 710 520 L 760 510 L 780 560 L 770 590 L 740 580 L 720 570 L 710 560 L 670 520 Z"/>
+  <text x="735" y="550" class="state-label">FL</text>
+  
+  <!-- South Carolina -->
+  <path id="SC" class="state" d="M 730 420 L 780 410 L 780 460 L 760 460 Z"/>
+  <text x="755" y="442" class="state-label">SC</text>
+  
+  <!-- North Carolina -->
+  <path id="NC" class="state" d="M 730 380 L 800 360 L 800 410 L 780 410 L 730 420 Z"/>
+  <text x="765" y="395" class="state-label">NC</text>
+  
+  <!-- Virginia -->
+  <path id="VA" class="state" d="M 730 340 L 800 320 L 800 360 L 730 380 Z"/>
+  <text x="765" y="355" class="state-label">VA</text>
+  
+  <!-- West Virginia -->
+  <path id="WV" class="state" d="M 730 300 L 770 290 L 780 320 L 730 340 Z"/>
+  <text x="750" y="320" class="state-label">WV</text>
+  
+  <!-- Maryland -->
+  <path id="MD" class="state" d="M 770 290 L 800 280 L 800 310 L 780 320 Z"/>
+  <text x="785" y="302" class="state-label">MD</text>
+  
+  <!-- Delaware -->
+  <path id="DE" class="state" d="M 800 280 L 810 280 L 810 310 L 800 310 Z"/>
+  <text x="805" y="298" class="state-label">DE</text>
+  
+  <!-- Pennsylvania -->
+  <path id="PA" class="state" d="M 730 240 L 800 230 L 800 280 L 770 290 L 730 300 Z"/>
+  <text x="765" y="265" class="state-label">PA</text>
+  
+  <!-- New Jersey -->
+  <path id="NJ" class="state" d="M 800 230 L 820 230 L 820 280 L 810 280 L 800 280 Z"/>
+  <text x="810" y="258" class="state-label">NJ</text>
+  
+  <!-- New York -->
+  <path id="NY" class="state" d="M 730 180 L 820 170 L 820 230 L 800 230 L 730 240 Z"/>
+  <text x="775" y="210" class="state-label">NY</text>
+  
+  <!-- Vermont -->
+  <path id="VT" class="state" d="M 820 140 L 840 140 L 840 180 L 820 180 Z"/>
+  <text x="830" y="165" class="state-label">VT</text>
+  
+  <!-- New Hampshire -->
+  <path id="NH" class="state" d="M 840 140 L 860 130 L 860 175 L 840 180 Z"/>
+  <text x="850" y="160" class="state-label">NH</text>
+  
+  <!-- Maine -->
+  <path id="ME" class="state" d="M 860 90 L 890 90 L 890 175 L 860 175 L 860 130 Z"/>
+  <text x="875" y="135" class="state-label">ME</text>
+  
+  <!-- Massachusetts -->
+  <path id="MA" class="state" d="M 820 180 L 870 175 L 870 200 L 820 200 Z"/>
+  <text x="845" y="192" class="state-label">MA</text>
+  
+  <!-- Connecticut -->
+  <path id="CT" class="state" d="M 820 200 L 850 200 L 850 220 L 820 220 Z"/>
+  <text x="835" y="213" class="state-label">CT</text>
+  
+  <!-- Rhode Island -->
+  <path id="RI" class="state" d="M 850 200 L 860 200 L 860 215 L 850 215 Z"/>
+  <text x="855" y="210" class="state-label">RI</text>
+  
+  <!-- Alaska (inset) -->
+  <g transform="translate(80, 480)">
+    <path id="AK" class="state" d="M 0 0 L 100 0 L 120 30 L 110 60 L 80 80 L 40 80 L 10 60 L 0 30 Z"/>
+    <text x="60" y="45" class="state-label">AK</text>
+    <rect x="-5" y="-5" width="130" height="95" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  </g>
+  
+  <!-- Hawaii (inset) -->
+  <g transform="translate(250, 500)">
+    <ellipse id="HI-1" cx="10" cy="20" rx="8" ry="5" class="state"/>
+    <ellipse id="HI-2" cx="30" cy="25" rx="6" ry="4" class="state"/>
+    <ellipse id="HI-3" cx="50" cy="22" rx="10" ry="6" class="state"/>
+    <ellipse id="HI-4" cx="72" cy="28" rx="7" ry="5" class="state"/>
+    <ellipse id="HI-5" cx="90" cy="25" rx="5" ry="3" class="state"/>
+    <text x="50" y="50" class="state-label">HI</text>
+    <rect x="-5" y="5" width="110" height="50" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="480" y="30" text-anchor="middle" style="font-family: Arial, sans-serif; font-size: 22px; font-weight: bold; fill: #1e293b;">United States</text>
+  
+  <!-- Legend -->
+  <g transform="translate(800, 500)">
+    <text x="0" y="0" style="font-family: Arial, sans-serif; font-size: 11px; fill: #475569; font-weight: bold;">Hover over states</text>
+    <text x="0" y="15" style="font-family: Arial, sans-serif; font-size: 10px; fill: #64748b;">for interaction</text>
+  </g>
+</svg>
+        `;
+
+        // AI Use Case data (includes tags for filtering)
+        const useCases = [
+            {
+                id: 'manufacturing',
+                title: "Manufacturing & Assembly",
+                difficulty: "intermediate",
+                time: "4-6 hours",
+                description: "Humanoid robots performing complex assembly using computer vision and force feedback.",
+                prerequisites: "Basic understanding of inverse kinematics and sensor integration",
+                related: "Build Guide: Inverse Kinematics, Map: Tesla, Figure AI",
+                tags: ['application', 'company']
+            },
+            {
+                id: 'warehouse',
+                title: "Warehouse Logistics",
+                difficulty: "intermediate",
+                time: "3-5 hours",
+                description: "Package handling, sorting, and autonomous navigation in warehouses.",
+                prerequisites: "Understanding of SLAM algorithms and autonomous navigation",
+                related: "Build Guide: SLAM Implementation, Map: Agility Robotics",
+                tags: ['application', 'company']
+            },
+            {
+                id: 'computer-vision',
+                title: "Computer Vision for Manipulation",
+                difficulty: "intermediate",
+                time: "5-7 hours",
+                description: "Using deep learning for object detection, pose estimation, and grasp planning.",
+                prerequisites: "Python, PyTorch/TensorFlow, basic computer vision",
+                related: "Build Guide: Vision Integration",
+                tags: ['capability', 'learning']
+            },
+            {
+                id: 'rl-locomotion',
+                title: "Reinforcement Learning for Locomotion",
+                difficulty: "advanced",
+                time: "8-10 hours",
+                description: "Training bipedal walking using deep RL algorithms.",
+                prerequisites: "Advanced Python, RL theory, PyTorch",
+                related: "Build Guide: Locomotion & Balance Control",
+                tags: ['capability', 'learning']
+            },
+            {
+                id: 'hri',
+                title: "Human-Robot Interaction (HRI) & NLP",
+                difficulty: "intermediate",
+                time: "5-6 hours",
+                description: "Integrating natural language processing for social and service tasks.",
+                prerequisites: "Python, basic NLP concepts (transformers), Persona AI",
+                related: "Map: Persona AI",
+                tags: ['application', 'capability']
+            },
+            {
+                id: 'soft-robotics',
+                title: "Soft Robotics & Actuation",
+                difficulty: "advanced",
+                time: "6-8 hours",
+                description: "Exploring artificial muscle technology and bio-inspired design.",
+                prerequisites: "Materials science, Clone Robotics specs",
+                related: "Map: Clone Robotics",
+                tags: ['application', 'company']
+            }
+        ];
+
+        // Build Guide data
+        const phases = [
+            {
+                id: 'simulation',
+                title: "Phase 1: Simulation Environment Setup",
+                difficulty: "beginner",
+                time: "3-4 hours",
+                description: "Set up robotics simulation using Isaac Sim or PyBullet.",
+                prerequisites: "Basic Python, familiarity with Linux terminal",
+                steps: ["Install Ubuntu or WSL2", "Install PyBullet/Isaac Sim", "Download URDF models", "Create basic scene", "Test robot spawn"]
+            },
+            {
+                id: 'kinematics',
+                title: "Phase 2: Inverse Kinematics & Forward Kinematics",
+                difficulty: "intermediate",
+                time: "5-6 hours",
+                description: "Implement IK/FK solvers to control humanoid limb positions.",
+                prerequisites: "Linear algebra, Python, rotation matrices",
+                steps: ["Understand DH parameters", "Implement forward kinematics", "Set up IK solver", "Test positioning", "Validate limits"]
+            },
+            {
+                id: 'vision',
+                title: "Phase 3: Computer Vision Integration",
+                difficulty: "intermediate",
+                time: "6-7 hours",
+                description: "Add visual perception using cameras and object detection.",
+                prerequisites: "Python, OpenCV basics, CNNs",
+                steps: ["Set up cameras", "Implement YOLOv8", "Add depth perception", "Create grasp pipeline", "Test tracking"]
+            },
+            {
+                id: 'locomotion',
+                title: "Phase 4: Locomotion & Balance Control",
+                difficulty: "advanced",
+                time: "8-10 hours",
+                description: "Implement bipedal walking using ZMP, MPC, or RL.",
+                prerequisites: "Control theory, dynamics, Python, RL basics",
+                steps: ["Understand ZMP theory", "Implement walking pattern", "Add MPC", "Train RL policy", "Test terrains"]
+            },
+            {
+                id: 'ros',
+                title: "Phase 5: ROS 2 Integration",
+                difficulty: "intermediate",
+                time: "5-6 hours",
+                description: "Structure software using ROS 2 for modularity.",
+                prerequisites: "Linux, Python/C++, networking",
+                steps: ["Install ROS 2", "Create packages", "Set up pub/sub", "Implement actions", "Configure navigation"]
+            },
+            {
+                id: 'hardware',
+                title: "Phase 6: Hardware Selection & Assembly",
+                difficulty: "advanced",
+                time: "12-15 hours",
+                description: "Choose components and assemble physical humanoid.",
+                prerequisites: "Electronics, mechanical assembly, budget",
+                steps: ["Select motors", "Choose microcontroller", "Design/download parts", "Wire electronics", "Assemble structure"]
+            },
+            {
+                id: 'deployment',
+                title: "Phase 7: AI Model Training & Deployment",
+                difficulty: "advanced",
+                time: "10-12 hours",
+                description: "Train and deploy custom AI models efficiently.",
+                prerequisites: "Deep learning, PyTorch/TensorFlow, optimization",
+                steps: ["Collect data", "Train models", "Optimize for edge", "Convert format", "Deploy on hardware"]
+            },
+            {
+                id: 'safety',
+                title: "Phase 8: Safety Systems & Testing",
+                difficulty: "intermediate",
+                time: "4-5 hours",
+                description: "Implement safety features and test thoroughly.",
+                prerequisites: "Software testing, safety standards",
+                steps: ["Add e-stop", "Implement collision detection", "Set limits", "Create fail-safes", "Document protocols"]
+            }
+        ];
+        
+        // --- State and Initialization ---
+        
+        let progressData = {
+            contactedCompanies: {},
+            completedConcepts: {},
+            timestamp: Date.now()
+        };
+
+        let currentFilter = 'all';
+
+        // Load saved progress
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    progressData = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error loading progress:', e);
+                }
+            }
+            // Ensure concepts in data are covered for total calculation
+            const allConceptIds = [...useCases.map(u => u.id), ...phases.map(p => p.id)];
+            allConceptIds.forEach(id => {
+                if (progressData.completedConcepts[id] === undefined) {
+                    progressData.completedConcepts[id] = false;
+                }
+            });
+        }
+
+        // Save progress
+        function saveProgress() {
+            progressData.timestamp = Date.now();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progressData));
+            updateStats();
+        }
+
+        // Initialize app
+        function init() {
+            loadProgress();
+            renderMapVisualization(); 
+            renderCompanies();
+            renderUseCases();
+            renderBuildGuide();
+            updateStats();
+        }
+
+        // --- Tab Navigation and Core Functions ---
+
+        // Switch tabs
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach((tab, i) => {
+                if (i === index) {
+                    tab.classList.add('active');
+                    contents[i].classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                    contents[i].classList.remove('active');
+                }
+            });
+        }
+
+        // Toggle concept completion (used by both Use Cases and Build Guide)
+        function toggleConcept(id) {
+            progressData.completedConcepts[id] = !progressData.completedConcepts[id];
+            saveProgress();
+            renderUseCases();
+            renderBuildGuide();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const contacted = Object.values(progressData.contactedCompanies).filter(Boolean).length;
+            const completed = Object.values(progressData.completedConcepts).filter(Boolean).length;
+            const totalItems = companies.length + useCases.length + phases.length; 
+            const percentage = Math.round((contacted + completed) / totalItems * 100);
+
+            document.getElementById('companiesContacted').textContent = contacted;
+            document.getElementById('conceptsCompleted').textContent = completed;
+            document.getElementById('totalProgress').textContent = percentage + '%';
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+
+        // --- Tab 1: Interactive Map / Companies Directory ---
+
+        // Renders the abstract map view with the SVG background
+        function renderMapVisualization() {
+            const container = document.getElementById('mapVisualization');
+            
+            if (!container || container.clientWidth === 0 || container.clientHeight === 0) {
+                // Reruns initialization slightly delayed to ensure DOM dimensions are ready
+                if (container) setTimeout(renderMapVisualization, 100);
+                return;
+            }
+
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+
+            // Calculate scaling factors
+            const scaleX = containerWidth / SVG_WIDTH;
+            const scaleY = containerHeight / SVG_HEIGHT;
+
+            // Start with the map outline SVG
+            let htmlContent = `<div class="map-svg-container">${mapOutlineSVG}</div>`;
+
+            // Append company points
+            htmlContent += companies.map((company, index) => {
+                const scaledX = company.coords.x * scaleX;
+                const scaledY = company.coords.y * scaleY;
+                const label = company.shortName;
+
+                return `
+                    <div class="map-point" 
+                         style="left: ${scaledX}px; top: ${scaledY}px;"
+                         onclick="showCompanyDetails(${index})"
+                         title="${company.name} (${company.robot})">
+                        <span>${label}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = htmlContent;
+        }
+        
+        // Render companies (Now renders the list/grid of company cards)
+        function renderCompanies() {
+            const grid = document.getElementById('companyGrid');
+            grid.innerHTML = companies.map((company, index) => `
+                <div class="company-card ${progressData.contactedCompanies[index] ? 'contacted' : ''}" 
+                     onclick="showCompanyDetails(${index})">
+                    <svg class="contact-check" onclick="toggleContact(event, ${index})" 
+                         viewBox="0 0 24 24" fill="none" stroke="${progressData.contactedCompanies[index] ? '#4CAF50' : '#ccc'}" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                    </svg>
+                    <h3>${company.name}</h3>
+                    <p class="location">📍 ${company.location}</p>
+                    <p style="color: #666;"><strong>Robot:</strong> ${company.robot}</p>
+                    <p style="color: #666; margin-top: 10px; font-size: 0.9em;">${company.description}</p>
+                </div>
+            `).join('');
+        }
+
+        // Toggle company contact
+        function toggleContact(event, index) {
+            event.stopPropagation();
+            progressData.contactedCompanies[index] = !progressData.contactedCompanies[index];
+            saveProgress();
+            renderCompanies();
+        }
+
+        // Show company details modal
+        function showCompanyDetails(index) {
+            const company = companies[index];
+            const modal = document.getElementById('companyModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <h2 style="color: #667eea; margin-bottom: 20px;">${company.name}</h2>
+                <p><strong>Location:</strong> ${company.location}</p>
+                <p><strong>Robot Model:</strong> ${company.robot}</p>
+                <p><strong>Founded:</strong> ${company.founded}</p>
+                <p style="margin: 20px 0;"><strong>Description:</strong><br>${company.description}</p>
+                <p><strong>Specifications:</strong><br>${company.specs}</p>
+                <p style="margin-top: 20px;">
+                    <a href="${company.website}" target="_blank" class="resource-link">Visit Website →</a>
+                </p>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('companyModal').style.display = 'none';
+        }
+
+        function closeModalBackground(event) {
+            if (event.target.id === 'companyModal') {
+                closeModal();
+            }
+        }
+
+
+        // --- Tab 2: AI Use Cases ---
+        
+        // Filter use cases
+        function filterUseCases(filter) {
+            currentFilter = filter;
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('data-filter') === filter) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            renderUseCases();
+        }
+
+        // Render use cases
+        function renderUseCases() {
+            const container = document.getElementById('useCasesContainer');
+
+            const filteredUseCases = useCases.filter(useCase => 
+                currentFilter === 'all' || useCase.tags.includes(currentFilter)
+            );
+
+            container.innerHTML = filteredUseCases.map(useCase => `
+                <div class="concept-tile ${progressData.completedConcepts[useCase.id] ? 'completed' : ''}">
+                    <div class="concept-header">
+                        <div class="concept-title">
+                            <h3>${useCase.title}</h3>
+                            <div class="badges">
+                                <span class="badge badge-${useCase.difficulty}">${useCase.difficulty.toUpperCase()}</span>
+                                <span class="badge badge-time">⏱️ ${useCase.time}</span>
+                            </div>
+                        </div>
+                        <svg class="complete-check" onclick="toggleConcept('${useCase.id}')" 
+                             viewBox="0 0 24 24" fill="none" 
+                             stroke="${progressData.completedConcepts[useCase.id] ? '#4CAF50' : '#ccc'}" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="concept-content">
+                        <p>${useCase.description}</p>
+                        <div class="prerequisites">
+                            <strong>📋 Prerequisites:</strong> ${useCase.prerequisites}
+                        </div>
+                        <div class="related-links">
+                            <strong>🔗 Related:</strong> ${useCase.related}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        // --- Tab 3: Build Guide ---
+
+        // Render build guide
+        function renderBuildGuide() {
+            const container = document.getElementById('buildGuideContainer');
+            
+            container.innerHTML = phases.map(phase => `
+                <div class="concept-tile ${progressData.completedConcepts[phase.id] ? 'completed' : ''}">
+                    <div class="concept-header">
+                        <div class="concept-title">
+                            <h3>${phase.title}</h3>
+                            <div class="badges">
+                                <span class="badge badge-${phase.difficulty}">${phase.difficulty.toUpperCase()}</span>
+                                <span class="badge badge-time">⏱️ ${phase.time}</span>
+                            </div>
+                        </div>
+                        <svg class="complete-check" onclick="toggleConcept('${phase.id}')" 
+                             viewBox="0 0 24 24" fill="none" 
+                             stroke="${progressData.completedConcepts[phase.id] ? '#4CAF50' : '#ccc'}" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="concept-content">
+                        <p>${phase.description}</p>
+                        <div class="prerequisites">
+                            <strong>📋 Prerequisites:</strong> ${phase.prerequisites}
+                        </div>
+                        <p style="margin-top: 15px;"><strong>Steps:</strong></p>
+                        <ul style="margin-left: 20px; color: #555;">
+                            ${phase.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        // --- Progress Management (Export/Import/Reset) ---
+
+        // Export progress
+        function exportProgress() {
+            const dataStr = JSON.stringify(progressData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `humanoid-guide-progress-${Date.now()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            alert('✅ Progress exported successfully!');
+        }
+
+        // Import progress
+        function importProgress() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (confirm('Import this progress? This will overwrite your current progress.')) {
+                        progressData = imported;
+                        saveProgress();
+                        renderMapVisualization();
+                        renderCompanies();
+                        renderUseCases();
+                        renderBuildGuide();
+                        alert('✅ Progress imported successfully!');
+                    }
+                } catch (error) {
+                    alert('❌ Error importing file. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Generate PDF report
+        function generateReport() {
+            window.print();
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('⚠️ Are you sure you want to reset all progress? This cannot be undone.')) {
+                progressData = {
+                    contactedCompanies: {},
+                    completedConcepts: {},
+                    timestamp: Date.now()
+                };
+                saveProgress();
+                renderMapVisualization();
+                renderCompanies();
+                renderUseCases();
+                renderBuildGuide();
+                alert('✅ All progress has been reset.');
+            }
+        }
+
+        // Initialize on load
+        window.onload = init;
+        // Re-render visualization on window resize to maintain relative position
+        window.onresize = renderMapVisualization;
+    </script>
+</body>
+</html>

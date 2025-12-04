@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Engineer Roadmap Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .progress-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 1s ease;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .tile {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.6s ease;
+        }
+        .tile:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .tile.completed { border: 3px solid #4CAF50; }
+        .tile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .tile-title h2 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .tile-title p { color: #666; font-size: 0.95em; }
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+        .checkbox:hover {
+            background: #f0f0f0;
+            transform: scale(1.1);
+        }
+        .checkbox.checked {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 15px;
+        }
+        .section h3 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        .resources-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .resources-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .resources-list li::before {
+            content: '•';
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .resources-list a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .resources-list a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .action-steps {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .action-steps ol {
+            padding-left: 20px;
+        }
+        .action-steps li {
+            margin-bottom: 6px;
+            color: #555;
+        }
+        .notes-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed #e0e0e0;
+        }
+        .notes-section textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .color-accent-1 { border-top: 5px solid #FF6B6B; }
+        .color-accent-2 { border-top: 5px solid #4ECDC4; }
+        .color-accent-3 { border-top: 5px solid #45B7D1; }
+        .color-accent-4 { border-top: 5px solid #FFA07A; }
+        .color-accent-5 { border-top: 5px solid #98D8C8; }
+        .color-accent-6 { border-top: 5px solid #F7DC6F; }
+        .color-accent-7 { border-top: 5px solid #BB8FCE; }
+        .color-accent-8 { border-top: 5px solid #85C1E2; }
+        .color-accent-9 { border-top: 5px solid #F8B400; }
+        .color-accent-10 { border-top: 5px solid #52B788; }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .badge-python { background: #3776AB; color: white; }
+        .badge-sql { background: #CC2927; color: white; }
+        .badge-r { background: #276DC3; color: white; }
+        .badge-js { background: #F7DF1E; color: #333; }
+        .badge-excel { background: #217346; color: white; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Data Engineer Roadmap</h1>
+            <p>Your Interactive Guide to Mastering Data Engineering</p>
+        </header>
+
+        <div class="progress-container">
+            <h3 style="margin-bottom: 10px; color: #333;">Overall Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+
+        <div class="tiles-grid" id="tilesContainer"></div>
+    </div>
+
+    <script>
+        const topics = [
+            {
+                id: 1,
+                title: "1. Programming",
+                subtitle: "Python or Java",
+                languages: ["python", "r", "js"],
+                resources: [
+                    { name: "Python Official Docs", url: "https://docs.python.org/3/" },
+                    { name: "Real Python Tutorials", url: "https://realpython.com/" },
+                    { name: "LeetCode Practice", url: "https://leetcode.com/" },
+                    { name: "Python Interview Questions", url: "https://www.interviewbit.com/python-interview-questions/" }
+                ],
+                steps: [
+                    "Master Python data structures (lists, dicts, sets, tuples)",
+                    "Learn OOP concepts and design patterns",
+                    "Practice algorithms on LeetCode (Easy → Medium)",
+                    "Build a CLI tool for data processing"
+                ]
+            },
+            {
+                id: 2,
+                title: "2. SQL",
+                subtitle: "Querying and manipulating databases",
+                languages: ["sql", "python"],
+                resources: [
+                    { name: "SQLZoo Interactive", url: "https://sqlzoo.net/" },
+                    { name: "Mode SQL Tutorial", url: "https://mode.com/sql-tutorial/" },
+                    { name: "HackerRank SQL", url: "https://www.hackerrank.com/domains/sql" },
+                    { name: "StrataScratch Interview Prep", url: "https://www.stratascratch.com/" }
+                ],
+                steps: [
+                    "Master SELECT, JOIN, GROUP BY, window functions",
+                    "Learn query optimization and indexing",
+                    "Practice complex SQL problems",
+                    "Understand ACID properties"
+                ]
+            },
+            {
+                id: 3,
+                title: "3. Data Modeling",
+                subtitle: "Designing efficient databases",
+                languages: ["sql"],
+                resources: [
+                    { name: "Kimball's Data Warehouse", url: "https://www.kimballgroup.com/" },
+                    { name: "Data Modeling Best Practices", url: "https://www.vertabelo.com/blog/" },
+                    { name: "dbt Documentation", url: "https://docs.getdbt.com/" },
+                    { name: "Star vs Snowflake Schema", url: "https://www.guru99.com/star-snowflake-data-warehousing.html" }
+                ],
+                steps: [
+                    "Study dimensional modeling (star/snowflake)",
+                    "Learn normalization vs denormalization",
+                    "Practice ERD design",
+                    "Understand slowly changing dimensions"
+                ]
+            },
+            {
+                id: 4,
+                title: "4. ETL",
+                subtitle: "Extract, Transform, Load processes",
+                languages: ["python", "sql"],
+                resources: [
+                    { name: "Apache Airflow Docs", url: "https://airflow.apache.org/docs/" },
+                    { name: "Pandas ETL Tutorial", url: "https://realpython.com/pandas-python-explore-dataset/" },
+                    { name: "Luigi Workflow", url: "https://luigi.readthedocs.io/" },
+                    { name: "Prefect", url: "https://docs.prefect.io/" }
+                ],
+                steps: [
+                    "Build ETL pipelines with Airflow",
+                    "Learn data validation techniques",
+                    "Master incremental loading",
+                    "Implement error handling"
+                ]
+            },
+            {
+                id: 5,
+                title: "5. Data Warehousing",
+                subtitle: "Storing and managing data",
+                languages: ["sql", "python"],
+                resources: [
+                    { name: "Snowflake Docs", url: "https://docs.snowflake.com/" },
+                    { name: "BigQuery Best Practices", url: "https://cloud.google.com/bigquery/docs/best-practices" },
+                    { name: "Redshift Guide", url: "https://docs.aws.amazon.com/redshift/" },
+                    { name: "Modern Data Stack", url: "https://www.getdbt.com/blog/" }
+                ],
+                steps: [
+                    "Compare Snowflake, BigQuery, Redshift",
+                    "Learn partitioning strategies",
+                    "Master cost optimization",
+                    "Practice with dbt"
+                ]
+            },
+            {
+                id: 6,
+                title: "6. Data Lakes",
+                subtitle: "Distributed data storage",
+                languages: ["python", "sql"],
+                resources: [
+                    { name: "AWS S3 Documentation", url: "https://docs.aws.amazon.com/s3/" },
+                    { name: "Delta Lake Guide", url: "https://docs.delta.io/" },
+                    { name: "Apache Iceberg", url: "https://iceberg.apache.org/" },
+                    { name: "Azure Data Lake", url: "https://azure.microsoft.com/services/storage/data-lake-storage/" }
+                ],
+                steps: [
+                    "Learn object storage (S3, Blob)",
+                    "Understand Bronze/Silver/Gold architecture",
+                    "Master file formats (Parquet, ORC)",
+                    "Study Delta Lake"
+                ]
+            },
+            {
+                id: 7,
+                title: "7. Apache Spark",
+                subtitle: "Cluster computing",
+                languages: ["python", "sql"],
+                resources: [
+                    { name: "Apache Spark Docs", url: "https://spark.apache.org/docs/latest/" },
+                    { name: "PySpark Tutorial", url: "https://spark.apache.org/docs/latest/api/python/" },
+                    { name: "Databricks Academy", url: "https://www.databricks.com/learn/training" },
+                    { name: "Spark Interview Questions", url: "https://www.edureka.co/blog/interview-questions/top-apache-spark-interview-questions-2016/" }
+                ],
+                steps: [
+                    "Learn RDD, DataFrame, Dataset APIs",
+                    "Master transformations vs actions",
+                    "Understand partitioning",
+                    "Practice Spark SQL"
+                ]
+            },
+            {
+                id: 8,
+                title: "8. Apache Kafka",
+                subtitle: "Data streaming",
+                languages: ["python", "js"],
+                resources: [
+                    { name: "Kafka Documentation", url: "https://kafka.apache.org/documentation/" },
+                    { name: "Confluent Tutorials", url: "https://developer.confluent.io/" },
+                    { name: "Kafka Python Client", url: "https://kafka-python.readthedocs.io/" },
+                    { name: "Kafka Streams", url: "https://kafka.apache.org/documentation/streams/" }
+                ],
+                steps: [
+                    "Understand Kafka architecture",
+                    "Learn producer/consumer patterns",
+                    "Master Kafka Connect",
+                    "Study Kafka Streams"
+                ]
+            },
+            {
+                id: 9,
+                title: "9. Workflow Scheduling",
+                subtitle: "Orchestration and dependency management",
+                languages: ["python"],
+                resources: [
+                    { name: "Apache Airflow", url: "https://airflow.apache.org/" },
+                    { name: "Prefect Docs", url: "https://docs.prefect.io/" },
+                    { name: "Dagster Guide", url: "https://docs.dagster.io/" },
+                    { name: "Astronomer Guides", url: "https://www.astronomer.io/guides/" }
+                ],
+                steps: [
+                    "Master Airflow DAG development",
+                    "Learn task dependencies",
+                    "Implement monitoring",
+                    "Practice idempotent design"
+                ]
+            },
+            {
+                id: 10,
+                title: "10. Cloud Platforms",
+                subtitle: "AWS / Azure / GCP",
+                languages: ["python", "sql"],
+                resources: [
+                    { name: "AWS Data Analytics", url: "https://aws.amazon.com/big-data/datalakes-and-analytics/" },
+                    { name: "Google Cloud Data Engineering", url: "https://cloud.google.com/learn/training/data-engineering" },
+                    { name: "Azure Data Engineer Path", url: "https://learn.microsoft.com/training/career-paths/data-engineer" },
+                    { name: "Terraform", url: "https://learn.hashicorp.com/terraform" }
+                ],
+                steps: [
+                    "Learn S3/GCS/Blob Storage",
+                    "Master managed services",
+                    "Understand IAM and security",
+                    "Learn Infrastructure as Code"
+                ]
+            }
+        ];
+
+        let completed = JSON.parse(localStorage.getItem('completed')) || [];
+        let notes = JSON.parse(localStorage.getItem('notes')) || {};
+
+        function updateProgress() {
+            const pct = (completed.length / topics.length * 100).toFixed(0);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressFill').textContent = pct + '%';
+        }
+
+        function toggleComplete(id) {
+            const idx = completed.indexOf(id);
+            if (idx > -1) completed.splice(idx, 1);
+            else completed.push(id);
+            localStorage.setItem('completed', JSON.stringify(completed));
+            renderTiles();
+            updateProgress();
+        }
+
+        function saveNote(id, text) {
+            notes[id] = text;
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+
+        function renderTiles() {
+            const container = document.getElementById('tilesContainer');
+            container.innerHTML = '';
+
+            topics.forEach((topic, i) => {
+                const isComplete = completed.includes(topic.id);
+                const tile = document.createElement('div');
+                tile.className = `tile color-accent-${(i % 10) + 1} ${isComplete ? 'completed' : ''}`;
+                tile.style.animationDelay = `${i * 0.1}s`;
+
+                const badges = topic.languages.map(l => 
+                    `<span class="badge badge-${l}">${l.toUpperCase()}</span>`
+                ).join('');
+
+                const resources = topic.resources.map(r => 
+                    `<li><a href="${r.url}" target="_blank">${r.name}</a></li>`
+                ).join('');
+
+                const steps = topic.steps.map(s => `<li>${s}</li>`).join('');
+
+                tile.innerHTML = `
+                    <div class="tile-header">
+                        <div class="tile-title">
+                            <h2>${topic.title}</h2>
+                            <p>${topic.subtitle}</p>
+                            <div style="margin-top: 8px;">${badges}</div>
+                        </div>
+                        <div class="checkbox ${isComplete ? 'checked' : ''}" onclick="toggleComplete(${topic.id})"></div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📚 Resources</h3>
+                        <ul class="resources-list">${resources}</ul>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>✅ Action Steps</h3>
+                        <div class="action-steps">
+                            <ol>${steps}</ol>
+                        </div>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <h3 style="font-size: 0.9em; color: #666; margin-bottom: 8px;">📝 Personal Notes</h3>
+                        <textarea placeholder="Add your notes, progress, or insights here..." 
+                                  onblur="saveNote(${topic.id}, this.value)">${notes[topic.id] || ''}</textarea>
+                    </div>
+                `;
+
+                container.appendChild(tile);
+            });
+        }
+
+        renderTiles();
+        updateProgress();
+    </script>
+</body>
+</html>

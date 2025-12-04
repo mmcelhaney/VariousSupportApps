@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analyst Preparation Checklist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            border: 4px solid #4CAF50;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 10px;
+        }
+        
+        .reset-btn {
+            background: #f44336;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.05);
+        }
+        
+        .resources-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .resources-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        
+        .focus-btn {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .focus-btn:hover {
+            background: #F57C00;
+            transform: scale(1.05);
+        }
+        
+        .focus-btn.active {
+            background: #E65100;
+            box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+        }
+        
+        .export-btn {
+            background: #9C27B0;
+            color: white;
+        }
+        
+        .export-btn:hover {
+            background: #7B1FA2;
+            transform: scale(1.05);
+        }
+        
+        .print-btn {
+            background: #607D8B;
+            color: white;
+        }
+        
+        .print-btn:hover {
+            background: #455A64;
+            transform: scale(1.05);
+        }
+        
+        .dashboard-btn {
+            background: #00BCD4;
+            color: white;
+        }
+        
+        .dashboard-btn:hover {
+            background: #0097A7;
+            transform: scale(1.05);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .category {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid;
+        }
+        
+        .category h2 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            text-transform: uppercase;
+        }
+        
+        .excel { border-color: #4CAF50; }
+        .excel h2 { color: #4CAF50; }
+        
+        .powerbi { border-color: #FFC107; }
+        .powerbi h2 { color: #F57C00; }
+        
+        .sql { border-color: #2196F3; }
+        .sql h2 { color: #2196F3; }
+        
+        .tech { border-color: #9C27B0; }
+        .tech h2 { color: #9C27B0; }
+        
+        .business { border-color: #FF5722; }
+        .business h2 { color: #FF5722; }
+        
+        .portfolio { border-color: #E91E63; }
+        .portfolio h2 { color: #E91E63; }
+        
+        .linkedin { border-color: #0077B5; }
+        .linkedin h2 { color: #0077B5; }
+        
+        .resume { border-color: #607D8B; }
+        .resume h2 { color: #607D8B; }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .checklist-item:hover {
+            background: #e8e8e8;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .checklist-item label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+        
+        .notes-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-left: 8px;
+            transition: all 0.3s;
+        }
+        
+        .notes-btn:hover {
+            background: #1976D2;
+            transform: scale(1.05);
+        }
+        
+        .notes-btn.has-notes {
+            background: #4CAF50;
+        }
+        
+        .notes-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        
+        .checklist-item.unchecked label {
+            color: black;
+        }
+        
+        .checklist-item.reset label {
+            color: #f44336;
+        }
+        
+        .cross {
+            color: #f44336;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .check {
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 1400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 35px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .progress-container {
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9f2f9 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .progress-header h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin: 0;
+        }
+        
+        .progress-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        #progress-text {
+            color: #555;
+        }
+        
+        #progress-percentage {
+            color: #4CAF50;
+            font-size: 1.5em;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #81C784 100%);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            min-width: 0;
+        }
+        
+        .category-progress {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .category-stat {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid;
+        }
+        
+        .category-stat h4 {
+            margin: 0 0 10px 0;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            color: #555;
+        }
+        
+        .category-stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .category-mini-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .category-mini-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Focus Mode Styles */
+        .focus-mode-active .checklist-item {
+            transition: all 0.3s ease;
+        }
+        
+        .focus-mode-active .checklist-item.completed {
+            opacity: 0.3;
+            filter: grayscale(100%);
+            pointer-events: none;
+        }
+        
+        .focus-mode-active .checklist-item:not(.completed) {
+            background: linear-gradient(90deg, #fff3cd 0%, #ffffff 100%);
+            border-left: 4px solid #FF9800;
+            padding-left: 12px;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+            }
+            50% {
+                box-shadow: 0 4px 16px rgba(255, 152, 0, 0.4);
+            }
+        }
+        
+        .focus-mode-banner {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: none;
+            animation: slideDown 0.5s ease;
+        }
+        
+        .focus-mode-banner.active {
+            display: block;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .focus-mode-banner span {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 20px;
+            }
+            
+            .controls, .modal, .focus-mode-banner {
+                display: none !important;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            
+            .category {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            .progress-container {
+                page-break-after: always;
+            }
+            
+            h1 {
+                font-size: 2em;
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DATA ANALYST PREPARATION CHECKLIST</h1>
+        
+        <div class="progress-container">
+            <div class="progress-header">
+                <h2>Your Progress</h2>
+                <div class="progress-stats">
+                    <span id="progress-text">0 / 48 items completed</span>
+                    <span id="progress-percentage">0%</span>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="category-progress" id="category-progress"></div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn reset-btn" onclick="resetAll()">🔄 Reset All</button>
+            <button class="btn focus-btn" onclick="toggleFocusMode()" id="focus-btn">🎯 Focus Mode</button>
+            <button class="btn dashboard-btn" onclick="openDashboard()">📊 Analytics Dashboard</button>
+            <button class="btn export-btn" onclick="exportProgress()">📥 Export Progress</button>
+            <button class="btn print-btn" onclick="printProgress()">🖨️ Print Report</button>
+            <button class="btn resources-btn" onclick="openResources()">📚 View Resources & Action Plan</button>
+        </div>
+        
+        <div class="focus-mode-banner" id="focus-banner">
+            <span>🎯 FOCUS MODE ACTIVE</span>
+            <span>•</span>
+            <span id="focus-count">0 items need your attention</span>
+        </div>
+        
+        <div class="grid">
+            <div class="category excel">
+                <h2>Excel</h2>
+                <div class="checklist-item" data-id="excel-lookups">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="excel-lookups" checked>
+                    <label for="excel-lookups">LOOK UPS</label>
+                    <button class="notes-btn" onclick="openNotes('excel-lookups')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="excel-pivot">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="excel-pivot" checked>
+                    <label for="excel-pivot">PIVOT TABLE</label>
+                    <button class="notes-btn" onclick="openNotes('excel-pivot')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="excel-powerquery">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="excel-powerquery" checked>
+                    <label for="excel-powerquery">POWER QUERY</label>
+                    <button class="notes-btn" onclick="openNotes('excel-powerquery')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="excel-stats">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="excel-stats" checked>
+                    <label for="excel-stats">BASIC MATH & STATS!</label>
+                    <button class="notes-btn" onclick="openNotes('excel-stats')">📝 Notes</button>
+                </div>
+            </div>
+            
+            <div class="category powerbi">
+                <h2>Power BI</h2>
+                <div class="checklist-item" data-id="powerbi-query">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="powerbi-query" checked>
+                    <label for="powerbi-query">POWER QUERY</label>
+                    <button class="notes-btn" onclick="openNotes('powerbi-query')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="powerbi-dax">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="powerbi-dax" checked>
+                    <label for="powerbi-dax">DAX & DATA MODELING</label>
+                    <button class="notes-btn" onclick="openNotes('powerbi-dax')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="powerbi-dashboard">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="powerbi-dashboard" checked>
+                    <label for="powerbi-dashboard">DASHBOARD DESIGN</label>
+                    <button class="notes-btn" onclick="openNotes('powerbi-dashboard')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="powerbi-service">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="powerbi-service" checked>
+                    <label for="powerbi-service">PBI SERVICE</label>
+                    <button class="notes-btn" onclick="openNotes('powerbi-service')">📝 Notes</button>
+                </div>
+            </div>
+            
+            <div class="category sql">
+                <h2>SQL & Python</h2>
+                <div class="checklist-item" data-id="sql-bigc">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="sql-bigc" checked>
+                    <label for="sql-bigc">BIG C STATEMENTS</label>
+                    <button class="notes-btn" onclick="openNotes('sql-bigc')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="sql-joins">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="sql-joins" checked>
+                    <label for="sql-joins">JOINS, CTEs, WINDOW</label>
+                    <button class="notes-btn" onclick="openNotes('sql-joins')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="sql-stored">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="sql-stored" checked>
+                    <label for="sql-stored">STORED PROCEDURES</label>
+                    <button class="notes-btn" onclick="openNotes('sql-stored')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="sql-pandas">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="sql-pandas" checked>
+                    <label for="sql-pandas">PANDAS + DF BASICS</label>
+                    <button class="notes-btn" onclick="openNotes('sql-pandas')">📝 Notes</button>
+                </div>
+            </div>
+            
+            <div class="category tech">
+                <h2>Tech-Driven Mindset</h2>
+                <div class="checklist-item" data-id="tech-google">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="tech-google" checked>
+                    <label for="tech-google">GOOGLING SKILL</label>
+                    <button class="notes-btn" onclick="openNotes('tech-google')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="tech-chatgpt">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="tech-chatgpt" checked>
+                    <label for="tech-chatgpt">USING CHATGPT BARD</label>
+                    <button class="notes-btn" onclick="openNotes('tech-chatgpt')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="tech-learning">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="tech-learning" checked>
+                    <label for="tech-learning">CONTINUOUS LEARNING</label>
+                    <button class="notes-btn" onclick="openNotes('tech-learning')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="tech-problem">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="tech-problem">
+                    <label for="tech-problem">PROBLEM SOLVING</label>
+                    <button class="notes-btn" onclick="openNotes('tech-problem')">📝 Notes</button>
+                </div>
+            </div>
+            
+            <div class="category business">
+                <h2>Business Acumen</h2>
+                <div class="checklist-item" data-id="business-revenue">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="business-revenue" checked>
+                    <label for="business-revenue">REVENUE & PROFIT</label>
+                    <button class="notes-btn" onclick="openNotes('business-revenue')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="business-market">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="business-market" checked>
+                    <label for="business-market">MARKET SHARE</label>
+                    <button class="notes-btn" onclick="openNotes('business-market')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="business-domains">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="business-domains" checked>
+                    <label for="business-domains">BASICS OF ANY 2 DOMAINS</label>
+                    <button class="notes-btn" onclick="openNotes('business-domains')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="business-metrics">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="business-metrics" checked>
+                    <label for="business-metrics">FINANCE, SALES METRICS</label>
+                    <button class="notes-btn" onclick="openNotes('business-metrics')">📝 Notes</button>
+                </div>
+            </div>
+            
+            <div class="category portfolio">
+                <h2>Portfolio</h2>
+                <div class="checklist-item" data-id="portfolio-projects">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="portfolio-projects" checked>
+                    <label for="portfolio-projects">4+ BUSINESS PROJECTS</label>
+                    <button class="notes-btn" onclick="openNotes('portfolio-projects')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="portfolio-tool">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="portfolio-tool" checked>
+                    <label for="portfolio-tool">1 PER TOOL</label>
+                    <button class="notes-btn" onclick="openNotes('portfolio-tool')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="portfolio-insights">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="portfolio-insights" checked>
+                    <label for="portfolio-insights">INSIGHTS DECK</label>
+                    <button class="notes-btn" onclick="openNotes('portfolio-insights')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="portfolio-video-pres">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="portfolio-video-pres" checked>
+                    <label for="portfolio-video-pres">VIDEO PRESENTATION</label>
+                    <button class="notes-btn" onclick="openNotes('portfolio-video-pres')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="portfolio-video-proj">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="portfolio-video-proj">
+                    <label for="portfolio-video-proj">IRRELEVANT PROJECTS</label>
+                    <button class="notes-btn" onclick="openNotes('portfolio-video-proj')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="portfolio-cluttered">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="portfolio-cluttered">
+                    <label for="portfolio-cluttered">CLUTTERED DESIGN</label>
+                    <button class="notes-btn" onclick="openNotes('portfolio-cluttered')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="portfolio-impact">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="portfolio-impact">
+                    <label for="portfolio-impact">NO PROJECT IMPACT</label>
+                    <button class="notes-btn" onclick="openNotes('portfolio-impact')">📝 Notes</button>
+                </div>
+            </div>
+            
+            <div class="category linkedin">
+                <h2>LinkedIn</h2>
+                <div class="checklist-item" data-id="linkedin-dp">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="linkedin-dp" checked>
+                    <label for="linkedin-dp">GOOD DP + BANNER</label>
+                    <button class="notes-btn" onclick="openNotes('linkedin-dp')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="linkedin-skills">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="linkedin-skills" checked>
+                    <label for="linkedin-skills">10 ENDORSED SKILLS</label>
+                    <button class="notes-btn" onclick="openNotes('linkedin-skills')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="linkedin-recommendations">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="linkedin-recommendations" checked>
+                    <label for="linkedin-recommendations">3 RECOMMENDATIONS</label>
+                    <button class="notes-btn" onclick="openNotes('linkedin-recommendations')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="linkedin-link">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="linkedin-link" checked>
+                    <label for="linkedin-link">LINK TO PORTFOLIO</label>
+                    <button class="notes-btn" onclick="openNotes('linkedin-link')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="linkedin-unprofessional">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="linkedin-unprofessional">
+                    <label for="linkedin-unprofessional">UNPROFESSIONAL DP</label>
+                    <button class="notes-btn" onclick="openNotes('linkedin-unprofessional')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="linkedin-nosummary">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="linkedin-nosummary">
+                    <label for="linkedin-nosummary">NO SUMMARY</label>
+                    <button class="notes-btn" onclick="openNotes('linkedin-nosummary')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="linkedin-spam">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="linkedin-spam">
+                    <label for="linkedin-spam">SPAMMY CONNECTIONS</label>
+                    <button class="notes-btn" onclick="openNotes('linkedin-spam')">📝 Notes</button>
+                </div>
+            </div>
+            
+            <div class="category resume">
+                <h2>Resume</h2>
+                <div class="checklist-item" data-id="resume-ats">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="resume-ats" checked>
+                    <label for="resume-ats">ATS CHECKED</label>
+                    <button class="notes-btn" onclick="openNotes('resume-ats')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="resume-curated">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="resume-curated" checked>
+                    <label for="resume-curated">CURATED FOR JD</label>
+                    <button class="notes-btn" onclick="openNotes('resume-curated')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="resume-star">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="resume-star" checked>
+                    <label for="resume-star">STAR METHOD USED</label>
+                    <button class="notes-btn" onclick="openNotes('resume-star')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="resume-portfolio">
+                    <span class="check">✓</span>
+                    <input type="checkbox" id="resume-portfolio" checked>
+                    <label for="resume-portfolio">PORTFOLIO LINK</label>
+                    <button class="notes-btn" onclick="openNotes('resume-portfolio')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="resume-irrelevant">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="resume-irrelevant">
+                    <label for="resume-irrelevant">IRRELEVANT INFO</label>
+                    <button class="notes-btn" onclick="openNotes('resume-irrelevant')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="resume-generic">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="resume-generic">
+                    <label for="resume-generic">GENERIC RESUME</label>
+                    <button class="notes-btn" onclick="openNotes('resume-generic')">📝 Notes</button>
+                </div>
+                <div class="checklist-item" data-id="resume-formatting">
+                    <span class="cross">✗</span>
+                    <input type="checkbox" id="resume-formatting">
+                    <label for="resume-formatting">POOR FORMATTING</label>
+                    <button class="notes-btn" onclick="openNotes('resume-formatting')">📝 Notes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="resourcesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeResources()">&times;</span>
+            <h1 style="margin-bottom: 30px;">📚 Resources & Action Plan</h1>
+            <p style="text-align: center; margin-bottom: 20px; font-style: italic;">Click on each resource link to learn more. Check the box when completed!</p>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <button class="btn reset-btn" onclick="resetResourceChecks()">🔄 Reset All Resource Checkboxes</button>
+            </div>
+            <div id="resourcesContent"></div>
+        </div>
+    </div>
+    
+    <div id="notesModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close" onclick="closeNotes()">&times;</span>
+            <h1 style="margin-bottom: 20px;" id="notesTitle">📝 Notes</h1>
+            
+            <div style="background: #f0f8ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin: 0 0 15px 0; color: #2196F3;">Personal Notes</h3>
+                <textarea id="notesText" placeholder="Add your notes here... (e.g., 'Completed Excel course on Udemy', 'Need to practice more DAX')" 
+                    style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid #2196F3; border-radius: 8px; font-size: 1em; font-family: Arial, sans-serif; resize: vertical;"></textarea>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin: 0 0 15px 0; color: #FF9800;">⏱️ Time Tracking</h3>
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <label style="flex: 1; min-width: 200px;">
+                        <strong>Hours Spent:</strong>
+                        <input type="number" id="notesHours" min="0" step="0.5" placeholder="0" 
+                            style="width: 100%; padding: 10px; margin-top: 5px; border: 2px solid #FF9800; border-radius: 8px; font-size: 1em;">
+                    </label>
+                    <div style="flex: 1; min-width: 200px;">
+                        <strong>Completion Date:</strong>
+                        <input type="date" id="notesCompletionDate" 
+                            style="width: 100%; padding: 10px; margin-top: 5px; border: 2px solid #FF9800; border-radius: 8px; font-size: 1em;">
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin: 0 0 15px 0; color: #4CAF50;">🔗 Project Links</h3>
+                <div style="margin-bottom: 10px;">
+                    <input type="url" id="notesLink" placeholder="https://github.com/yourproject or https://portfolio.com/project" 
+                        style="width: 100%; padding: 10px; border: 2px solid #4CAF50; border-radius: 8px; font-size: 1em;">
+                </div>
+                <div id="notesLinksList" style="margin-top: 15px;"></div>
+            </div>
+            
+            <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                <button class="btn" style="background: #f44336;" onclick="clearNotes()">🗑️ Clear All</button>
+                <button class="btn" style="background: #4CAF50;" onclick="saveNotes()">💾 Save Notes</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDashboard()">&times;</span>
+            <h1 style="margin-bottom: 30px; text-align: center;">📊 Analytics Dashboard</h1>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="dashboard-stat-card" style="border-top-color: #4CAF50;">
+                    <div class="dashboard-stat-label">Total Hours</div>
+                    <div class="dashboard-stat-value" id="totalHours" style="color: #4CAF50;">0</div>
+                </div>
+                <div class="dashboard-stat-card" style="border-top-color: #2196F3;">
+                    <div class="dashboard-stat-label">Items Completed</div>
+                    <div class="dashboard-stat-value" id="itemsCompleted" style="color: #2196F3;">0</div>
+                </div>
+                <div class="dashboard-stat-card" style="border-top-color: #FF9800;">
+                    <div class="dashboard-stat-label">Items with Notes</div>
+                    <div class="dashboard-stat-value" id="itemsWithNotes" style="color: #FF9800;">0</div>
+                </div>
+                <div class="dashboard-stat-card" style="border-top-color: #9C27B0;">
+                    <div class="dashboard-stat-label">Project Links</div>
+                    <div class="dashboard-stat-value" id="totalLinks" style="color: #9C27B0;">0</div>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                <div class="chart-container">
+                    <h2 style="margin: 0 0 20px 0; color: #333;">📈 Category Progress</h2>
+                    <div id="categoryChart"></div>
+                </div>
+                
+                <div class="chart-container">
+                    <h2 style="margin: 0 0 20px 0; color: #333;">⏱️ Time by Category</h2>
+                    <div id="timeChart"></div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h2 style="margin: 0 0 20px 0; color: #333;">📅 Recent Activity Timeline</h2>
+                <div id="timeline" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const resources = {
+            'excel-lookups': {
+                title: 'Excel Look-ups (VLOOKUP, XLOOKUP, INDEX-MATCH)',
+                resources: [
+                    { name: 'Microsoft Excel VLOOKUP Tutorial', url: 'https://support.microsoft.com/en-us/office/vlookup-function-0bbc8083-26fe-4963-8ab8-93a18ad188a1' },
+                    { name: 'ExcelJet XLOOKUP Guide', url: 'https://exceljet.net/excel-functions/excel-xlookup-function' },
+                    { name: 'Chandoo XLOOKUP Tutorial', url: 'https://chandoo.org/wp/xlookup-function/' }
+                ],
+                plan: [
+                    'Learn VLOOKUP basics with exact and approximate matches',
+                    'Practice INDEX-MATCH for more flexible lookups',
+                    'Master XLOOKUP (available in newer Excel versions)',
+                    'Complete 5 practice exercises using sample datasets',
+                    'Build a project connecting data from multiple sheets'
+                ]
+            },
+            'excel-pivot': {
+                title: 'Excel Pivot Tables',
+                resources: [
+                    { name: 'Microsoft Pivot Table Guide', url: 'https://support.microsoft.com/en-us/office/create-a-pivottable-to-analyze-worksheet-data-a9a84538-bfe9-40a9-a8e9-f99134456576' },
+                    { name: 'MyOnlineTrainingHub Pivot Tutorial', url: 'https://www.myonlinetraininghub.com/excel-pivot-tables' },
+                    { name: 'Excel Campus Pivot Tables Course', url: 'https://www.excelcampus.com/pivot-tables/' }
+                ],
+                plan: [
+                    'Understand pivot table structure: rows, columns, values, filters',
+                    'Create your first pivot table from raw data',
+                    'Learn to use calculated fields and items',
+                    'Practice grouping data by dates, numbers, and categories',
+                    'Build 3 pivot tables for different business scenarios (sales, inventory, HR)'
+                ]
+            },
+            'excel-powerquery': {
+                title: 'Excel Power Query',
+                resources: [
+                    { name: 'Microsoft Power Query Documentation', url: 'https://support.microsoft.com/en-us/office/about-power-query-in-excel-7104fbee-9e62-4cb9-a02e-5bfb1a6c536a' },
+                    { name: 'Excel Off The Grid Power Query', url: 'https://exceloffthegrid.com/power-query/' },
+                    { name: 'SQLBI Power Query Guide', url: 'https://www.sqlbi.com/articles/introducing-power-query/' }
+                ],
+                plan: [
+                    'Learn to import data from various sources (CSV, databases, web)',
+                    'Master data transformation: filtering, sorting, removing duplicates',
+                    'Practice merging and appending queries',
+                    'Learn M language basics for custom transformations',
+                    'Create a reusable data pipeline project'
+                ]
+            },
+            'excel-stats': {
+                title: 'Basic Math & Statistics in Excel',
+                resources: [
+                    { name: 'Excel Statistical Functions', url: 'https://support.microsoft.com/en-us/office/statistical-functions-reference-624dac86-a375-4435-bc25-76d659719ffd' },
+                    { name: 'Statistics How To - Excel Stats', url: 'https://www.statisticshowto.com/probability-and-statistics/excel-statistics/' },
+                    { name: 'Real Statistics Using Excel', url: 'https://www.real-statistics.com/' }
+                ],
+                plan: [
+                    'Master descriptive statistics: AVERAGE, MEDIAN, MODE, STDEV',
+                    'Learn percentiles and quartiles for data distribution',
+                    'Practice correlation and regression analysis',
+                    'Understand confidence intervals and hypothesis testing basics',
+                    'Complete a statistical analysis project with visualizations'
+                ]
+            },
+            'powerbi-query': {
+                title: 'Power BI Power Query',
+                resources: [
+                    { name: 'Microsoft Power Query M Reference', url: 'https://learn.microsoft.com/en-us/powerquery-m/' },
+                    { name: 'SQLBI Power Query in Power BI', url: 'https://www.sqlbi.com/topics/power-query/' },
+                    { name: 'Guy in a Cube Power Query Videos', url: 'https://www.youtube.com/c/GuyinaCube' }
+                ],
+                plan: [
+                    'Connect to multiple data sources in Power BI',
+                    'Apply transformations: unpivot, split columns, data type changes',
+                    'Create parameters for dynamic queries',
+                    'Build a data cleaning workflow',
+                    'Document your transformation steps with annotations'
+                ]
+            },
+            'powerbi-dax': {
+                title: 'DAX & Data Modeling',
+                resources: [
+                    { name: 'SQLBI DAX Guide', url: 'https://dax.guide/' },
+                    { name: 'Microsoft DAX Reference', url: 'https://learn.microsoft.com/en-us/dax/' },
+                    { name: 'Enterprise DNA DAX Courses', url: 'https://blog.enterprisedna.co/category/dax/' }
+                ],
+                plan: [
+                    'Learn DAX basics: calculated columns vs measures',
+                    'Master key functions: SUM, CALCULATE, FILTER, ALL',
+                    'Understand star schema and snowflake schema design',
+                    'Create relationships and manage cardinality',
+                    'Build time intelligence calculations (YTD, MTD, YoY)',
+                    'Complete a project with proper data model and 10+ DAX measures'
+                ]
+            },
+            'powerbi-dashboard': {
+                title: 'Power BI Dashboard Design',
+                resources: [
+                    { name: 'Microsoft Power BI Best Practices', url: 'https://learn.microsoft.com/en-us/power-bi/guidance/power-bi-optimization' },
+                    { name: 'Data Viz Project', url: 'https://datavizproject.com/' },
+                    { name: 'Power BI Design Tips', url: 'https://www.sqlbi.com/articles/design-tips-power-bi/' }
+                ],
+                plan: [
+                    'Study principles of effective data visualization',
+                    'Learn when to use different chart types',
+                    'Practice color theory and accessibility in dashboards',
+                    'Master bookmarks, drill-through, and tooltips',
+                    'Create 3 dashboards: executive summary, operational, and analytical',
+                    'Get feedback from peers on your dashboard designs'
+                ]
+            },
+            'powerbi-service': {
+                title: 'Power BI Service',
+                resources: [
+                    { name: 'Power BI Service Documentation', url: 'https://learn.microsoft.com/en-us/power-bi/fundamentals/power-bi-service-overview' },
+                    { name: 'Power BI Workspace Guide', url: 'https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-new-workspaces' },
+                    { name: 'Power BI Mobile Apps', url: 'https://learn.microsoft.com/en-us/power-bi/consumer/mobile/mobile-apps-for-mobile-devices' }
+                ],
+                plan: [
+                    'Create and manage workspaces in Power BI Service',
+                    'Learn to publish reports and configure refresh schedules',
+                    'Share dashboards and set up row-level security',
+                    'Create and distribute apps to end users',
+                    'Set up alerts and subscriptions',
+                    'Practice using Power BI Mobile for report access'
+                ]
+            },
+            'sql-bigc': {
+                title: 'SQL Big C Statements (CREATE, SELECT, INSERT, UPDATE, DELETE)',
+                resources: [
+                    { name: 'W3Schools SQL Tutorial', url: 'https://www.w3schools.com/sql/' },
+                    { name: 'SQLZoo Interactive Tutorials', url: 'https://sqlzoo.net/' },
+                    { name: 'Mode Analytics SQL Tutorial', url: 'https://mode.com/sql-tutorial/' }
+                ],
+                plan: [
+                    'Master SELECT with WHERE, ORDER BY, LIMIT',
+                    'Learn INSERT, UPDATE, DELETE operations',
+                    'Practice CREATE TABLE and data types',
+                    'Understand constraints: PRIMARY KEY, FOREIGN KEY, UNIQUE',
+                    'Complete 20 SQL exercises on HackerRank or LeetCode',
+                    'Build a sample database schema for a business scenario'
+                ]
+            },
+            'sql-joins': {
+                title: 'SQL Joins, CTEs, and Window Functions',
+                resources: [
+                    { name: 'SQL Joins Visualizer', url: 'https://sql-joins.leopard.in.ua/' },
+                    { name: 'PostgreSQL Window Functions', url: 'https://www.postgresql.org/docs/current/tutorial-window.html' },
+                    { name: 'Advanced SQL Tutorial', url: 'https://mode.com/sql-tutorial/sql-window-functions/' }
+                ],
+                plan: [
+                    'Master all join types: INNER, LEFT, RIGHT, FULL OUTER, CROSS',
+                    'Learn Common Table Expressions (CTEs) for complex queries',
+                    'Practice window functions: ROW_NUMBER, RANK, LAG, LEAD',
+                    'Use PARTITION BY for grouped calculations',
+                    'Solve 15 intermediate-to-advanced SQL problems',
+                    'Create a complex analytical query combining all concepts'
+                ]
+            },
+            'sql-stored': {
+                title: 'SQL Stored Procedures',
+                resources: [
+                    { name: 'MySQL Stored Procedures', url: 'https://dev.mysql.com/doc/refman/8.0/en/stored-programs.html' },
+                    { name: 'SQL Server Stored Procedures', url: 'https://learn.microsoft.com/en-us/sql/relational-databases/stored-procedures/stored-procedures-database-engine' },
+                    { name: 'PostgreSQL Functions', url: 'https://www.postgresql.org/docs/current/sql-createfunction.html' }
+                ],
+                plan: [
+                    'Understand when and why to use stored procedures',
+                    'Learn to create procedures with parameters',
+                    'Practice error handling and transactions',
+                    'Create procedures for common business operations',
+                    'Build 3 stored procedures for data processing tasks',
+                    'Document your procedures with clear comments'
+                ]
+            },
+            'sql-pandas': {
+                title: 'Python Pandas & DataFrame Basics',
+                resources: [
+                    { name: 'Pandas Official Documentation', url: 'https://pandas.pydata.org/docs/' },
+                    { name: 'Real Python Pandas Tutorials', url: 'https://realpython.com/learning-paths/pandas-data-science/' },
+                    { name: 'Kaggle Pandas Course', url: 'https://www.kaggle.com/learn/pandas' }
+                ],
+                plan: [
+                    'Learn to read CSV, Excel, and SQL data into DataFrames',
+                    'Master data selection: loc, iloc, boolean indexing',
+                    'Practice data cleaning: handling nulls, duplicates, data types',
+                    'Learn groupby, pivot tables, and aggregations',
+                    'Merge and concatenate DataFrames',
+                    'Complete 3 data analysis projects using Pandas'
+                ]
+            },
+            'tech-google': {
+                title: 'Effective Googling Skills',
+                resources: [
+                    { name: 'Google Search Tips & Tricks', url: 'https://www.google.com/search/howsearchworks/tips-tricks/' },
+                    { name: 'Stack Overflow - How to Ask', url: 'https://stackoverflow.com/help/how-to-ask' },
+                    { name: 'MIT - Becoming a Better Searcher', url: 'https://libguides.mit.edu/c.php?g=175963&p=1158594' }
+                ],
+                plan: [
+                    'Learn advanced search operators: site:, filetype:, intitle:',
+                    'Practice formulating specific technical queries',
+                    'Use Stack Overflow effectively for coding problems',
+                    'Learn to evaluate source credibility',
+                    'Track your search strategies for common problems'
+                ]
+            },
+            'tech-chatgpt': {
+                title: 'Using ChatGPT & AI Tools Effectively',
+                resources: [
+                    { name: 'OpenAI ChatGPT Best Practices', url: 'https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api' },
+                    { name: 'Anthropic Claude Prompt Library', url: 'https://docs.anthropic.com/en/prompt-library/library' },
+                    { name: 'Learn Prompting', url: 'https://learnprompting.org/' }
+                ],
+                plan: [
+                    'Learn to write clear, specific prompts',
+                    'Practice iterative prompting for better results',
+                    'Use AI for code debugging and explanation',
+                    'Generate synthetic data for practice projects',
+                    'Use AI to learn new concepts with examples',
+                    'Keep a prompt library of effective prompts you\'ve used'
+                ]
+            },
+            'tech-learning': {
+                title: 'Continuous Learning Mindset',
+                resources: [
+                    { name: 'LinkedIn Learning', url: 'https://www.linkedin.com/learning/' },
+                    { name: 'Coursera Data Analysis Courses', url: 'https://www.coursera.org/browse/data-science' },
+                    { name: 'DataCamp', url: 'https://www.datacamp.com/' },
+                    { name: 'Towards Data Science Blog', url: 'https://towardsdatascience.com/' }
+                ],
+                plan: [
+                    'Set aside 30 minutes daily for learning',
+                    'Subscribe to 3-5 data analytics newsletters',
+                    'Follow industry leaders on LinkedIn and Twitter',
+                    'Join data analytics communities (Reddit, Discord)',
+                    'Complete one course or certification every quarter',
+                    'Keep a learning journal to track progress'
+                ]
+            },
+            'tech-problem': {
+                title: 'Problem Solving Skills',
+                resources: [
+                    { name: 'HackerRank Problem Solving', url: 'https://www.hackerrank.com/domains/algorithms' },
+                    { name: 'LeetCode Database Problems', url: 'https://leetcode.com/problemset/database/' },
+                    { name: 'Case Interview Frameworks', url: 'https://www.caseinterview.com/' }
+                ],
+                plan: [
+                    'Practice breaking complex problems into smaller steps',
+                    'Learn structured problem-solving frameworks',
+                    'Solve 2-3 coding/SQL problems weekly',
+                    'Practice explaining your thought process out loud',
+                    'Work on case study problems from real businesses',
+                    'Review and learn from others\' solutions'
+                ]
+            },
+            'business-revenue': {
+                title: 'Revenue & Profit Metrics',
+                resources: [
+                    { name: 'Corporate Finance Institute - Revenue', url: 'https://corporatefinanceinstitute.com/resources/accounting/revenue/' },
+                    { name: 'Investopedia - Profit Margins', url: 'https://www.investopedia.com/terms/p/profitmargin.asp' },
+                    { name: 'Harvard Business Review - Financial Metrics', url: 'https://hbr.org/topic/financial-management' }
+                ],
+                plan: [
+                    'Understand revenue types: recurring, non-recurring, deferred',
+                    'Learn to calculate gross, operating, and net profit',
+                    'Study profit margin analysis and benchmarks',
+                    'Practice reading income statements',
+                    'Analyze 3 public companies\' financial statements',
+                    'Create a dashboard showing key revenue/profit KPIs'
+                ]
+            },
+            'business-market': {
+                title: 'Market Share Analysis',
+                resources: [
+                    { name: 'Investopedia - Market Share', url: 'https://www.investopedia.com/terms/m/marketshare.asp' },
+                    { name: 'Statista Market Data', url: 'https://www.statista.com/' },
+                    { name: 'IBISWorld Industry Research', url: 'https://www.ibisworld.com/' }
+                ],
+                plan: [
+                    'Learn to calculate market share and growth rates',
+                    'Understand competitive positioning',
+                    'Study market segmentation and TAM/SAM/SOM',
+                    'Analyze a competitive landscape for an industry',
+                    'Create a market share visualization dashboard',
+                    'Practice presenting market insights'
+                ]
+            },
+            'business-domains': {
+                title: 'Industry Domain Knowledge',
+                resources: [
+                    { name: 'E-commerce Metrics Guide', url: 'https://www.shopify.com/blog/ecommerce-metrics' },
+                    { name: 'Healthcare Analytics', url: 'https://www.healthcatalyst.com/insights/' },
+                    { name: 'Financial Services Analytics', url: 'https://www.mckinsey.com/industries/financial-services/our-insights' }
+                ],
+                plan: [
+                    'Choose 2 industries that interest you',
+                    'Learn key metrics for each industry (e.g., CAC, LTV for SaaS)',
+                    'Study common business models and revenue streams',
+                    'Read industry reports and case studies',
+                    'Complete a project analyzing data from each domain',
+                    'Network with professionals in those industries'
+                ]
+            },
+            'business-metrics': {
+                title: 'Finance & Sales Metrics',
+                resources: [
+                    { name: 'KPI Library', url: 'https://kpi.org/KPI-Basics' },
+                    { name: 'Sales Metrics Guide', url: 'https://blog.hubspot.com/sales/sales-metrics' },
+                    { name: 'Financial Modeling Course', url: 'https://corporatefinanceinstitute.com/resources/' }
+                ],
+                plan: [
+                    'Master key sales metrics: conversion rate, pipeline velocity, win rate',
+                    'Learn financial ratios: ROI, ROE, current ratio, debt-to-equity',
+                    'Understand cash flow analysis',
+                    'Practice calculating CLV (Customer Lifetime Value)',
+                    'Build a sales performance dashboard',
+                    'Create a financial health scorecard for a business'
+                ]
+            },
+            'portfolio-projects': {
+                title: '4+ Business-Focused Projects',
+                resources: [
+                    { name: 'Kaggle Datasets', url: 'https://www.kaggle.com/datasets' },
+                    { name: 'Maven Analytics Data Playground', url: 'https://www.mavenanalytics.io/data-playground' },
+                    { name: 'Data.gov', url: 'https://data.gov/' },
+                    { name: 'Google Dataset Search', url: 'https://datasetsearch.research.google.com/' }
+                ],
+                plan: [
+                    'Identify 4 business problems in different domains',
+                    'Find or create relevant datasets',
+                    'Complete end-to-end analysis for each project',
+                    'Focus on business impact and actionable insights',
+                    'Include data cleaning, analysis, visualization, and recommendations',
+                    'Ensure at least one project per major tool (Excel, SQL, Power BI, Python)'
+                ]
+            },
+            'portfolio-tool': {
+                title: 'One Project Per Tool',
+                resources: [
+                    { name: 'GitHub Portfolio Examples', url: 'https://github.com/topics/data-analysis-portfolio' },
+                    { name: 'Portfolio Project Ideas', url: 'https://www.dataquest.io/blog/data-science-portfolio-project/' }
+                ],
+                plan: [
+                    'Excel project: Sales analysis with pivot tables and charts',
+                    'SQL project: Database design and complex queries',
+                    'Power BI project: Interactive executive dashboard',
+                    'Python project: Exploratory data analysis with Pandas',
+                    'Document your methodology and findings clearly',
+                    'Host projects on GitHub with README files'
+                ]
+            },
+            'portfolio-insights': {
+                title: 'Insights Deck/Presentation',
+                resources: [
+                    { name: 'McKinsey Presentation Tips', url: 'https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/how-we-help-clients/growth-and-innovation' },
+                    { name: 'Storytelling with Data', url: 'https://www.storytellingwithdata.com/' },
+                    { name: 'Google Slides Templates', url: 'https://slidesgo.com/business' }
+                ],
+                plan: [
+                    'Create an insights deck for each major project',
+                    'Structure: Problem → Analysis → Insights → Recommendations',
+                    'Use clear, compelling visualizations',
+                    'Focus on business impact and ROI',
+                    'Practice the "So What?" test for each slide',
+                    'Get feedback from mentors or peers'
+                ]
+            },
+            'portfolio-video-pres': {
+                title: 'Video Presentation',
+                resources: [
+                    { name: 'Loom for Screen Recording', url: 'https://www.loom.com/' },
+                    { name: 'OBS Studio', url: 'https://obsproject.com/' },
+                    { name: 'Canva Video Editor', url: 'https://www.canva.com/video-editor/' }
+                ],
+                plan: [
+                    'Script your project walkthrough (5-7 minutes)',
+                    'Practice explaining technical concepts simply',
+                    'Record a screen + webcam video',
+                    'Highlight key insights and business value',
+                    'Edit for clarity and pacing',
+                    'Upload to YouTube or LinkedIn and embed in portfolio'
+                ]
+            },
+            'portfolio-video-proj': {
+                title: 'AVOID: Irrelevant Projects',
+                resources: [
+                    { name: 'How to Choose Portfolio Projects', url: 'https://www.kdnuggets.com/2021/05/data-science-portfolio-projects.html' }
+                ],
+                plan: [
+                    'Audit existing projects for relevance',
+                    'Remove tutorial-based or overly common projects (Titanic, Iris)',
+                    'Focus on projects that show business acumen',
+                    'Ensure projects solve real-world problems',
+                    'Quality over quantity - 4 great projects > 10 mediocre ones'
+                ]
+            },
+            'portfolio-cluttered': {
+                title: 'AVOID: Cluttered Design',
+                resources: [
+                    { name: 'Minimalist Design Principles', url: 'https://www.interaction-design.org/literature/article/the-principles-of-minimalist-design' },
+                    { name: 'Portfolio Website Examples', url: 'https://www.wix.com/blog/portfolio-website-examples' }
+                ],
+                plan: [
+                    'Simplify your portfolio layout',
+                    'Use consistent fonts, colors, and spacing',
+                    'Ensure easy navigation',
+                    'Remove unnecessary elements',
+                    'Test on mobile and desktop devices',
+                    'Get UX feedback from friends'
+                ]
+            },
+            'portfolio-impact': {
+                title: 'AVOID: No Project Impact',
+                resources: [
+                    { name: 'Measuring Project Impact', url: 'https://www.datascience-pm.com/impact/' }
+                ],
+                plan: [
+                    'Quantify impact for each project (e.g., "Identified $50K cost savings")',
+                    'Use STAR method: Situation, Task, Action, Result',
+                    'Include metrics: % improvement, $ saved, time reduced',
+                    'Show before/after comparisons',
+                    'Connect analysis to business outcomes',
+                    'Update all project descriptions with impact statements'
+                ]
+            },
+            'linkedin-dp': {
+                title: 'Professional LinkedIn Profile Picture & Banner',
+                resources: [
+                    { name: 'LinkedIn Profile Photo Tips', url: 'https://www.linkedin.com/help/linkedin/answer/a549047' },
+                    { name: 'Canva LinkedIn Banner Templates', url: 'https://www.canva.com/templates/linkedin-banners/' },
+                    { name: 'PhotoFeeler for Profile Photo Ratings', url: 'https://www.photofeeler.com/' }
+                ],
+                plan: [
+                    'Get a high-quality, professional headshot',
+                    'Ensure good lighting, neutral background, professional attire',
+                    'Create a custom banner showing your specialty',
+                    'Include your title and key skills in the banner',
+                    'Test your photo with PhotoFeeler',
+                    'Update regularly (at least yearly)'
+                ]
+            },
+            'linkedin-skills': {
+                title: '10+ Endorsed Skills on LinkedIn',
+                resources: [
+                    { name: 'LinkedIn Skills Guide', url: 'https://www.linkedin.com/help/linkedin/answer/a507836' },
+                    { name: 'Top Data Analyst Skills', url: 'https://www.linkedin.com/business/talent/blog/talent-acquisition/most-in-demand-skills' }
+                ],
+                plan: [
+                    'Add 10-15 relevant skills: SQL, Python, Power BI, Excel, etc.',
+                    'Prioritize in-demand skills for your target role',
+                    'Ask colleagues and classmates for endorsements',
+                    'Endorse others to encourage reciprocity',
+                    'Take LinkedIn Skill Assessments and display badges',
+                    'Update skills based on new competencies'
+                ]
+            },
+            'linkedin-recommendations': {
+                title: '3+ LinkedIn Recommendations',
+                resources: [
+                    { name: 'How to Request Recommendations', url: 'https://www.linkedin.com/help/linkedin/answer/a547930' },
+                    { name: 'Writing Great Recommendations', url: 'https://www.themuse.com/advice/how-to-write-a-linkedin-recommendation' }
+                ],
+                plan: [
+                    'Identify 3-5 people who can speak to your work',
+                    'Write personalized recommendation requests',
+                    'Offer to write recommendations for them first',
+                    'Provide context: specific projects or skills to highlight',
+                    'Follow up politely if needed',
+                    'Thank them publicly when received'
+                ]
+            },
+            'linkedin-link': {
+                title: 'Link to Portfolio on LinkedIn',
+                resources: [
+                    { name: 'Adding Websites to LinkedIn', url: 'https://www.linkedin.com/help/linkedin/answer/a549956' },
+                    { name: 'GitHub Pages for Portfolio Hosting', url: 'https://pages.github.com/' },
+                    { name: 'Portfolio Website Builders', url: 'https://www.wix.com/' }
+                ],
+                plan: [
+                    'Create or update your portfolio website',
+                    'Add portfolio link to "Contact Info" section',
+                    'Include portfolio link in your LinkedIn summary',
+                    'Add project media to Experience section',
+                    'Use custom URL for your LinkedIn profile',
+                    'Test all links regularly'
+                ]
+            },
+            'linkedin-unprofessional': {
+                title: 'AVOID: Unprofessional Profile Picture',
+                resources: [
+                    { name: 'LinkedIn Profile Mistakes to Avoid', url: 'https://www.themuse.com/advice/linkedin-profile-mistakes' }
+                ],
+                plan: [
+                    'Replace casual, cropped, or low-quality photos',
+                    'Avoid group photos, selfies, or party pictures',
+                    'Invest in a professional headshot if needed',
+                    'Use consistent photo across all professional platforms'
+                ]
+            },
+            'linkedin-nosummary': {
+                title: 'AVOID: No LinkedIn Summary',
+                resources: [
+                    { name: 'LinkedIn Summary Examples', url: 'https://www.jobscan.co/blog/linkedin-summary-examples/' },
+                    { name: 'How to Write Your About Section', url: 'https://www.linkedin.com/help/linkedin/answer/a521928' }
+                ],
+                plan: [
+                    'Write a 3-5 paragraph summary',
+                    'Include: who you are, what you do, key skills, achievements',
+                    'Add a call-to-action (e.g., "Let\'s connect!")',
+                    'Use keywords for searchability',
+                    'Tell your professional story',
+                    'Update quarterly as you gain experience'
+                ]
+            },
+            'linkedin-spam': {
+                title: 'AVOID: Spammy Connections',
+                resources: [
+                    { name: 'LinkedIn Networking Best Practices', url: 'https://www.linkedin.com/help/linkedin/answer/a525286' }
+                ],
+                plan: [
+                    'Connect with people you actually know or have interacted with',
+                    'Personalize connection requests with context',
+                    'Avoid mass connection requests',
+                    'Engage meaningfully with your network\'s content',
+                    'Quality connections > quantity',
+                    'Remove inactive or irrelevant connections periodically'
+                ]
+            },
+            'resume-ats': {
+                title: 'ATS-Friendly Resume',
+                resources: [
+                    { name: 'Jobscan ATS Checker', url: 'https://www.jobscan.co/' },
+                    { name: 'Resume Worded', url: 'https://resumeworded.com/' },
+                    { name: 'ATS Resume Templates', url: 'https://www.overleaf.com/gallery/tagged/cv' }
+                ],
+                plan: [
+                    'Use simple, clean formatting (no tables, text boxes, headers/footers)',
+                    'Use standard section headings: Experience, Education, Skills',
+                    'Save as .docx or PDF (check job posting requirements)',
+                    'Test your resume with free ATS checkers',
+                    'Use keywords from job descriptions',
+                    'Keep formatting consistent'
+                ]
+            },
+            'resume-curated': {
+                title: 'Resume Curated for Job Description',
+                resources: [
+                    { name: 'Tailoring Your Resume Guide', url: 'https://www.indeed.com/career-advice/resumes-cover-letters/how-to-tailor-your-resume' },
+                    { name: 'Job Description Analysis', url: 'https://www.themuse.com/advice/how-to-read-a-job-description' }
+                ],
+                plan: [
+                    'Create a master resume with all experiences',
+                    'For each application, customize based on JD',
+                    'Match keywords and required skills',
+                    'Highlight relevant projects and achievements',
+                    'Adjust your summary/objective for each role',
+                    'Keep 3-5 tailored resume versions for different roles'
+                ]
+            },
+            'resume-star': {
+                title: 'STAR Method in Resume',
+                resources: [
+                    { name: 'STAR Method Explained', url: 'https://www.indeed.com/career-advice/resumes-cover-letters/star-method-resume' },
+                    { name: 'Achievement-Focused Resume Writing', url: 'https://www.themuse.com/advice/how-to-quantify-your-resume-bullets-when-you-dont-work-with-numbers' }
+                ],
+                plan: [
+                    'Rewrite bullet points using STAR: Situation, Task, Action, Result',
+                    'Start with action verbs: Analyzed, Developed, Implemented',
+                    'Quantify results: "Increased efficiency by 30%"',
+                    'Focus on impact, not just responsibilities',
+                    'Review and improve each bullet point',
+                    'Limit to 3-5 bullets per role'
+                ]
+            },
+            'resume-portfolio': {
+                title: 'Portfolio Link on Resume',
+                resources: [
+                    { name: 'Including Links in Resume', url: 'https://www.indeed.com/career-advice/resumes-cover-letters/should-i-include-links-on-my-resume' }
+                ],
+                plan: [
+                    'Add portfolio link in header or contact section',
+                    'Include GitHub profile if relevant',
+                    'Add LinkedIn URL',
+                    'Ensure all links are clickable in digital versions',
+                    'Use a URL shortener for long links if needed',
+                    'Test all links before submitting'
+                ]
+            },
+            'resume-irrelevant': {
+                title: 'AVOID: Irrelevant Information',
+                resources: [
+                    { name: 'What Not to Include on Resume', url: 'https://www.thebalancemoney.com/what-not-to-include-on-your-resume-2063420' }
+                ],
+                plan: [
+                    'Remove unrelated work experience (or minimize to one line)',
+                    'Exclude personal info: age, marital status, photo (in US)',
+                    'Remove outdated skills and technologies',
+                    'Cut hobbies unless directly relevant',
+                    'Focus on last 10-15 years of experience',
+                    'Keep resume to 1-2 pages maximum'
+                ]
+            },
+            'resume-generic': {
+                title: 'AVOID: Generic Resume',
+                resources: [
+                    { name: 'Standing Out in Applications', url: 'https://www.linkedin.com/business/talent/blog/talent-acquisition/ways-to-make-your-resume-stand-out' }
+                ],
+                plan: [
+                    'Never send the exact same resume to multiple jobs',
+                    'Customize summary and top skills for each application',
+                    'Reorder bullet points to match JD priorities',
+                    'Use company-specific language when possible',
+                    'Show you understand the role and company',
+                    'Track which resume version you sent where'
+                ]
+            },
+            'resume-formatting': {
+                title: 'AVOID: Poor Formatting',
+                resources: [
+                    { name: 'Resume Formatting Guide', url: 'https://www.indeed.com/career-advice/resumes-cover-letters/resume-format' },
+                    { name: 'Google Docs Resume Templates', url: 'https://docs.google.com/document/u/0/?tgif=d&ftv=1' }
+                ],
+                plan: [
+                    'Use consistent fonts (10-12pt for body, 14-16pt for headers)',
+                    'Maintain even margins (0.5-1 inch)',
+                    'Use adequate white space',
+                    'Align text consistently',
+                    'Check for typos and grammatical errors',
+                    'Export as PDF to preserve formatting'
+                ]
+            }
+        };
+
+        // Initialize checkboxes from storage
+        function initializeCheckboxes() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                const saved = localStorage.getItem(cb.id);
+                if (saved !== null) {
+                    cb.checked = saved === 'true';
+                }
+                updateCheckboxState(cb);
+                cb.addEventListener('change', function() {
+                    localStorage.setItem(this.id, this.checked);
+                    updateCheckboxState(this);
+                    updateProgress();
+                });
+            });
+            updateProgress();
+        }
+
+        function updateCheckboxState(checkbox) {
+            const item = checkbox.closest('.checklist-item');
+            if (checkbox.checked) {
+                item.classList.remove('reset');
+                item.classList.remove('unchecked');
+            } else {
+                item.classList.add('unchecked');
+            }
+        }
+
+        function updateProgress() {
+            // Get all main checklist checkboxes (not resource checkboxes)
+            const checkboxes = document.querySelectorAll('.grid .checklist-item input[type="checkbox"]');
+            const total = checkboxes.length;
+            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const percentage = Math.round((checked / total) * 100);
+            
+            // Update overall progress
+            document.getElementById('progress-text').textContent = `${checked} / ${total} items completed`;
+            document.getElementById('progress-percentage').textContent = `${percentage}%`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            
+            // Update category progress
+            const categories = {
+                'Excel': { selector: '.excel', color: '#4CAF50' },
+                'Power BI': { selector: '.powerbi', color: '#F57C00' },
+                'SQL & Python': { selector: '.sql', color: '#2196F3' },
+                'Tech Mindset': { selector: '.tech', color: '#9C27B0' },
+                'Business': { selector: '.business', color: '#FF5722' },
+                'Portfolio': { selector: '.portfolio', color: '#E91E63' },
+                'LinkedIn': { selector: '.linkedin', color: '#0077B5' },
+                'Resume': { selector: '.resume', color: '#607D8B' }
+            };
+            
+            let categoryHtml = '';
+            for (const [name, config] of Object.entries(categories)) {
+                const categoryElement = document.querySelector(config.selector);
+                if (categoryElement) {
+                    const catCheckboxes = categoryElement.querySelectorAll('input[type="checkbox"]');
+                    const catTotal = catCheckboxes.length;
+                    const catChecked = Array.from(catCheckboxes).filter(cb => cb.checked).length;
+                    const catPercentage = Math.round((catChecked / catTotal) * 100);
+                    
+                    categoryHtml += `
+                        <div class="category-stat" style="border-left-color: ${config.color}">
+                            <h4>${name}</h4>
+                            <div class="category-stat-value">${catChecked} / ${catTotal}</div>
+                            <div class="category-mini-bar">
+                                <div class="category-mini-fill" style="width: ${catPercentage}%; background: ${config.color};"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('category-progress').innerHTML = categoryHtml;
+            
+            // Update focus mode count if active
+            if (document.body.classList.contains('focus-mode-active')) {
+                updateFocusModeCount();
+            }
+        }
+        
+        let focusModeActive = false;
+        
+        function toggleFocusMode() {
+            focusModeActive = !focusModeActive;
+            const body = document.body;
+            const focusBtn = document.getElementById('focus-btn');
+            const focusBanner = document.getElementById('focus-banner');
+            
+            if (focusModeActive) {
+                body.classList.add('focus-mode-active');
+                focusBtn.classList.add('active');
+                focusBtn.textContent = '✓ Focus Mode ON';
+                focusBanner.classList.add('active');
+                updateFocusModeCount();
+                
+                // Mark completed items
+                const items = document.querySelectorAll('.grid .checklist-item');
+                items.forEach(item => {
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    if (checkbox && checkbox.checked) {
+                        item.classList.add('completed');
+                    } else {
+                        item.classList.remove('completed');
+                    }
+                });
+                
+                // Scroll to first incomplete item
+                const firstIncomplete = document.querySelector('.grid .checklist-item:not(.completed)');
+                if (firstIncomplete) {
+                    firstIncomplete.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } else {
+                body.classList.remove('focus-mode-active');
+                focusBtn.classList.remove('active');
+                focusBtn.textContent = '🎯 Focus Mode';
+                focusBanner.classList.remove('active');
+                
+                // Remove completed class
+                const items = document.querySelectorAll('.grid .checklist-item');
+                items.forEach(item => item.classList.remove('completed'));
+            }
+        }
+        
+        function updateFocusModeCount() {
+            const checkboxes = document.querySelectorAll('.grid .checklist-item input[type="checkbox"]');
+            const unchecked = Array.from(checkboxes).filter(cb => !cb.checked).length;
+            document.getElementById('focus-count').textContent = `${unchecked} item${unchecked !== 1 ? 's' : ''} need your attention`;
+        }
+        
+        function exportProgress() {
+            // Gather all progress data
+            const checkboxes = document.querySelectorAll('.grid .checklist-item input[type="checkbox"]');
+            const total = checkboxes.length;
+            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const percentage = Math.round((checked / total) * 100);
+            
+            const categories = {
+                'Excel': '.excel',
+                'Power BI': '.powerbi',
+                'SQL & Python': '.sql',
+                'Tech Mindset': '.tech',
+                'Business': '.business',
+                'Portfolio': '.portfolio',
+                'LinkedIn': '.linkedin',
+                'Resume': '.resume'
+            };
+            
+            let report = `DATA ANALYST PREPARATION CHECKLIST - PROGRESS REPORT\n`;
+            report += `Generated: ${new Date().toLocaleString()}\n`;
+            report += `${'='.repeat(60)}\n\n`;
+            report += `OVERALL PROGRESS: ${checked} / ${total} items completed (${percentage}%)\n\n`;
+            report += `${'='.repeat(60)}\n\n`;
+            
+            for (const [name, selector] of Object.entries(categories)) {
+                const categoryElement = document.querySelector(selector);
+                if (categoryElement) {
+                    const catCheckboxes = categoryElement.querySelectorAll('input[type="checkbox"]');
+                    const catTotal = catCheckboxes.length;
+                    const catChecked = Array.from(catCheckboxes).filter(cb => cb.checked).length;
+                    const catPercentage = Math.round((catChecked / catTotal) * 100);
+                    
+                    report += `${name.toUpperCase()}\n`;
+                    report += `Progress: ${catChecked} / ${catTotal} (${catPercentage}%)\n`;
+                    report += `${'-'.repeat(40)}\n`;
+                    
+                    catCheckboxes.forEach(cb => {
+                        const label = cb.nextElementSibling.textContent;
+                        const status = cb.checked ? '✓' : '✗';
+                        report += `  ${status} ${label}\n`;
+                    });
+                    report += `\n`;
+                }
+            }
+            
+            report += `${'='.repeat(60)}\n`;
+            report += `NEXT STEPS:\n`;
+            report += `${'-'.repeat(40)}\n`;
+            
+            const uncheckedItems = [];
+            checkboxes.forEach(cb => {
+                if (!cb.checked) {
+                    const label = cb.nextElementSibling.textContent;
+                    const category = cb.closest('.category').querySelector('h2').textContent;
+                    uncheckedItems.push(`• [${category}] ${label}`);
+                }
+            });
+            
+            if (uncheckedItems.length > 0) {
+                report += uncheckedItems.slice(0, 10).join('\n');
+                if (uncheckedItems.length > 10) {
+                    report += `\n... and ${uncheckedItems.length - 10} more items`;
+                }
+            } else {
+                report += `🎉 Congratulations! You've completed all items!`;
+            }
+            
+            // Create and download file
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `data-analyst-checklist-progress-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show confirmation
+            alert('✅ Progress report exported successfully!\n\nThe file has been downloaded to your computer.');
+        }
+        
+        function printProgress() {
+            // Store current focus mode state
+            const wasFocusMode = focusModeActive;
+            
+            // Turn off focus mode if active
+            if (focusModeActive) {
+                toggleFocusMode();
+            }
+            
+            // Add print-specific content
+            const printDate = document.createElement('div');
+            printDate.id = 'print-date';
+            printDate.style.cssText = 'text-align: center; margin: 20px 0; font-size: 14px; color: #666;';
+            printDate.textContent = `Report Generated: ${new Date().toLocaleString()}`;
+            
+            const container = document.querySelector('.container');
+            const progressContainer = document.querySelector('.progress-container');
+            progressContainer.parentNode.insertBefore(printDate, progressContainer.nextSibling);
+            
+            // Print
+            window.print();
+            
+            // Cleanup
+            setTimeout(() => {
+                printDate.remove();
+                // Restore focus mode if it was active
+                if (wasFocusMode) {
+                    toggleFocusMode();
+                }
+            }, 100);
+        }
+
+        function resetAll() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+                localStorage.setItem(cb.id, 'false');
+                const item = cb.closest('.checklist-item');
+                item.classList.add('reset');
+                item.classList.remove('unchecked');
+            });
+            
+            updateProgress();
+            
+            setTimeout(() => {
+                checkboxes.forEach(cb => {
+                    const item = cb.closest('.checklist-item');
+                    item.classList.remove('reset');
+                    item.classList.add('unchecked');
+                });
+            }, 2000);
+        }
+
+        function openResources() {
+            const modal = document.getElementById('resourcesModal');
+            const content = document.getElementById('resourcesContent');
+            
+            let html = '<div class="grid">';
+            
+            for (const [key, value] of Object.entries(resources)) {
+                const isNegative = key.includes('video-proj') || key.includes('cluttered') || 
+                                  key.includes('impact') || key.includes('unprofessional') || 
+                                  key.includes('nosummary') || key.includes('spam') || 
+                                  key.includes('irrelevant') || key.includes('generic') || 
+                                  key.includes('formatting') || key.includes('problem');
+                
+                const categoryClass = key.split('-')[0];
+                
+                html += `
+                    <div class="category ${categoryClass}">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <input type="checkbox" id="resource-${key}" style="width: 24px; height: 24px; margin-right: 12px;" onchange="saveResourceCheck('${key}', this.checked)">
+                            <h2 style="margin: 0; flex: 1;">${value.title}</h2>
+                        </div>
+                        
+                        <h3 style="margin: 15px 0 10px 0; color: #4CAF50;">📚 Resources:</h3>
+                        <ul style="margin-left: 20px;">
+                            ${value.resources.map(r => `<li style="margin: 8px 0;"><a href="${r.url}" target="_blank" style="color: #2196F3; text-decoration: none;">${r.name}</a></li>`).join('')}
+                        </ul>
+                        
+                        <h3 style="margin: 15px 0 10px 0; color: #FF5722;">🎯 Action Plan:</h3>
+                        <ol style="margin-left: 20px;">
+                            ${value.plan.map(p => `<li style="margin: 8px 0;">${p}</li>`).join('')}
+                        </ol>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            content.innerHTML = html;
+            
+            // Load saved resource checks
+            for (const key of Object.keys(resources)) {
+                const saved = localStorage.getItem(`resource-${key}`);
+                const checkbox = document.getElementById(`resource-${key}`);
+                if (saved !== null && checkbox) {
+                    checkbox.checked = saved === 'true';
+                }
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeResources() {
+            document.getElementById('resourcesModal').style.display = 'none';
+        }
+
+        function saveResourceCheck(key, checked) {
+            localStorage.setItem(`resource-${key}`, checked);
+        }
+
+        function resetResourceChecks() {
+            for (const key of Object.keys(resources)) {
+                const checkbox = document.getElementById(`resource-${key}`);
+                if (checkbox) {
+                    checkbox.checked = false;
+                    localStorage.setItem(`resource-${key}`, 'false');
+                }
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('resourcesModal');
+            if (event.target == modal) {
+                closeResources();
+            }
+        }
+
+        // Initialize on load
+        initializeCheckboxes();
+        updateNotesIndicators();
+        
+        let currentNotesId = null;
+        
+        function openNotes(itemId) {
+            currentNotesId = itemId;
+            const modal = document.getElementById('notesModal');
+            const label = document.getElementById(itemId).nextElementSibling.textContent;
+            document.getElementById('notesTitle').textContent = `📝 Notes: ${label}`;
+            
+            // Load saved notes
+            const saved = JSON.parse(localStorage.getItem(`notes-${itemId}`) || '{}');
+            document.getElementById('notesText').value = saved.text || '';
+            document.getElementById('notesHours').value = saved.hours || '';
+            document.getElementById('notesCompletionDate').value = saved.completionDate || '';
+            document.getElementById('notesLink').value = '';
+            
+            // Display saved links
+            displayNoteLinks(saved.links || []);
+            
+            modal.style.display = 'block';
+        }
+        
+        function closeNotes() {
+            document.getElementById('notesModal').style.display = 'none';
+            currentNotesId = null;
+        }
+        
+        function saveNotes() {
+            if (!currentNotesId) return;
+            
+            const saved = JSON.parse(localStorage.getItem(`notes-${currentNotesId}`) || '{}');
+            
+            const notes = {
+                text: document.getElementById('notesText').value,
+                hours: document.getElementById('notesHours').value,
+                completionDate: document.getElementById('notesCompletionDate').value,
+                links: saved.links || [],
+                lastUpdated: new Date().toISOString()
+            };
+            
+            // Add new link if entered
+            const newLink = document.getElementById('notesLink').value.trim();
+            if (newLink && !notes.links.includes(newLink)) {
+                notes.links.push(newLink);
+            }
+            
+            localStorage.setItem(`notes-${currentNotesId}`, JSON.stringify(notes));
+            updateNotesIndicators();
+            
+            alert('✅ Notes saved successfully!');
+            closeNotes();
+        }
+        
+        function clearNotes() {
+            if (confirm('Are you sure you want to clear all notes for this item?')) {
+                document.getElementById('notesText').value = '';
+                document.getElementById('notesHours').value = '';
+                document.getElementById('notesCompletionDate').value = '';
+                document.getElementById('notesLink').value = '';
+                
+                if (currentNotesId) {
+                    localStorage.removeItem(`notes-${currentNotesId}`);
+                    updateNotesIndicators();
+                }
+                
+                displayNoteLinks([]);
+            }
+        }
+        
+        function displayNoteLinks(links) {
+            const container = document.getElementById('notesLinksList');
+            if (!links || links.length === 0) {
+                container.innerHTML = '<p style="color: #666; font-style: italic;">No links added yet</p>';
+                return;
+            }
+            
+            let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
+            links.forEach((link, index) => {
+                html += `
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: white; border-radius: 8px; border: 1px solid #ddd;">
+                        <a href="${link}" target="_blank" style="flex: 1; color: #2196F3; text-decoration: none; word-break: break-all;">🔗 ${link}</a>
+                        <button onclick="removeNoteLink(${index})" style="padding: 5px 10px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">✕</button>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        function removeNoteLink(index) {
+            if (!currentNotesId) return;
+            
+            const saved = JSON.parse(localStorage.getItem(`notes-${currentNotesId}`) || '{}');
+            if (saved.links) {
+                saved.links.splice(index, 1);
+                localStorage.setItem(`notes-${currentNotesId}`, JSON.stringify(saved));
+                displayNoteLinks(saved.links);
+            }
+        }
+        
+        function updateNotesIndicators() {
+            // Update button states based on whether notes exist
+            document.querySelectorAll('.notes-btn').forEach(btn => {
+                const itemId = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+                const saved = localStorage.getItem(`notes-${itemId}`);
+                
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data.text || data.hours || data.completionDate || (data.links && data.links.length > 0)) {
+                        btn.classList.add('has-notes');
+                        btn.textContent = '✓ Notes';
+                    } else {
+                        btn.classList.remove('has-notes');
+                        btn.textContent = '📝 Notes';
+                    }
+                } else {
+                    btn.classList.remove('has-notes');
+                    btn.textContent = '📝 Notes';
+                }
+            });
+        }
+        
+        function openDashboard() {
+            const modal = document.getElementById('dashboardModal');
+            modal.style.display = 'block';
+            
+            // Calculate statistics
+            const checkboxes = document.querySelectorAll('.grid .checklist-item input[type="checkbox"]');
+            const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
+            
+            let totalHours = 0;
+            let itemsWithNotes = 0;
+            let totalLinks = 0;
+            const activities = [];
+            
+            const categories = {
+                'Excel': { selector: '.excel', color: '#4CAF50', hours: 0, completed: 0, total: 0 },
+                'Power BI': { selector: '.powerbi', color: '#F57C00', hours: 0, completed: 0, total: 0 },
+                'SQL & Python': { selector: '.sql', color: '#2196F3', hours: 0, completed: 0, total: 0 },
+                'Tech Mindset': { selector: '.tech', color: '#9C27B0', hours: 0, completed: 0, total: 0 },
+                'Business': { selector: '.business', color: '#FF5722', hours: 0, completed: 0, total: 0 },
+                'Portfolio': { selector: '.portfolio', color: '#E91E63', hours: 0, completed: 0, total: 0 },
+                'LinkedIn': { selector: '.linkedin', color: '#0077B5', hours: 0, completed: 0, total: 0 },
+                'Resume': { selector: '.resume', color: '#607D8B', hours: 0, completed: 0, total: 0 }
+            };
+            
+            checkboxes.forEach(cb => {
+                const itemId = cb.id;
+                const label = cb.nextElementSibling.textContent;
+                const saved = localStorage.getItem(`notes-${itemId}`);
+                
+                // Find category
+                let itemCategory = '';
+                for (const [name, config] of Object.entries(categories)) {
+                    const categoryElement = document.querySelector(config.selector);
+                    if (categoryElement && categoryElement.contains(cb)) {
+                        itemCategory = name;
+                        categories[name].total++;
+                        if (cb.checked) categories[name].completed++;
+                        break;
+                    }
+                }
+                
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    
+                    if (data.text || data.hours || data.completionDate || (data.links && data.links.length > 0)) {
+                        itemsWithNotes++;
+                    }
+                    
+                    if (data.hours) {
+                        const hours = parseFloat(data.hours);
+                        totalHours += hours;
+                        if (itemCategory) categories[itemCategory].hours += hours;
+                    }
+                    
+                    if (data.links) {
+                        totalLinks += data.links.length;
+                    }
+                    
+                    if (data.completionDate || data.lastUpdated) {
+                        activities.push({
+                            label: label,
+                            category: itemCategory,
+                            date: data.completionDate || data.lastUpdated.split('T')[0],
+                            hours: data.hours || 0,
+                            text: data.text || '',
+                            links: data.links || [],
+                            color: itemCategory ? categories[itemCategory].color : '#666'
+                        });
+                    }
+                }
+            });
+            
+            // Update stat cards
+            document.getElementById('totalHours').textContent = totalHours.toFixed(1) + 'h';
+            document.getElementById('itemsCompleted').textContent = completed;
+            document.getElementById('itemsWithNotes').textContent = itemsWithNotes;
+            document.getElementById('totalLinks').textContent = totalLinks;
+            
+            // Generate category progress chart
+            let categoryChartHtml = '';
+            for (const [name, config] of Object.entries(categories)) {
+                const percentage = config.total > 0 ? Math.round((config.completed / config.total) * 100) : 0;
+                categoryChartHtml += `
+                    <div class="chart-bar">
+                        <div class="chart-label">${name}</div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar-fill" style="width: ${percentage}%; background: ${config.color};">
+                                ${percentage}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('categoryChart').innerHTML = categoryChartHtml;
+            
+            // Generate time chart
+            let timeChartHtml = '';
+            const sortedCategories = Object.entries(categories).sort((a, b) => b[1].hours - a[1].hours);
+            const maxHours = Math.max(...sortedCategories.map(([_, c]) => c.hours), 1);
+            
+            for (const [name, config] of sortedCategories) {
+                const percentage = (config.hours / maxHours) * 100;
+                timeChartHtml += `
+                    <div class="chart-bar">
+                        <div class="chart-label">${name}</div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar-fill" style="width: ${percentage}%; background: ${config.color};">
+                                ${config.hours.toFixed(1)}h
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('timeChart').innerHTML = timeChartHtml || '<p style="text-align: center; color: #666;">No time tracked yet</p>';
+            
+            // Generate timeline
+            activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+            let timelineHtml = '';
+            
+            if (activities.length === 0) {
+                timelineHtml = '<p style="text-align: center; color: #666; padding: 40px;">No activities recorded yet. Start adding notes with completion dates!</p>';
+            } else {
+                activities.slice(0, 15).forEach(activity => {
+                    const formattedDate = new Date(activity.date).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                    
+                    timelineHtml += `
+                        <div class="timeline-item" style="border-left-color: ${activity.color};">
+                            <h4>${activity.label} <span style="color: #999; font-size: 0.85em;">(${activity.category})</span></h4>
+                            <p><strong>📅 Date:</strong> ${formattedDate}</p>
+                            ${activity.hours ? `<p><strong>⏱️ Time:</strong> ${activity.hours} hours</p>` : ''}
+                            ${activity.text ? `<p><strong>📝 Note:</strong> ${activity.text.substring(0, 100)}${activity.text.length > 100 ? '...' : ''}</p>` : ''}
+                            ${activity.links.length > 0 ? `<p><strong>🔗 Links:</strong> ${activity.links.length} project link(s)</p>` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('timeline').innerHTML = timelineHtml;
+        }
+        
+        function closeDashboard() {
+            document.getElementById('dashboardModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

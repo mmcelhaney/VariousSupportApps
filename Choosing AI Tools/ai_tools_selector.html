@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Selector - Comprehensive Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a2e 0%, #16213e 50%, #1a1a3e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #f0f0f0;
+            opacity: 0.95;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #a78bfa;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            border-radius: 10px;
+            background: rgba(30, 30, 60, 0.8);
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:hover {
+            border-color: rgba(167, 139, 250, 0.6);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+        }
+
+        option {
+            background: #1e1e3c;
+            color: #e0e0e0;
+            padding: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-bottom: 3px solid rgba(167, 139, 250, 0.5);
+        }
+
+        td {
+            padding: 15px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: rgba(167, 139, 250, 0.1);
+        }
+
+        .metric-cell {
+            font-weight: 600;
+            color: #a78bfa;
+        }
+
+        a {
+            color: #4facfe;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        a:hover {
+            color: #00f2fe;
+            text-decoration: underline;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e1e3c 0%, #2a2a4e 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .close {
+            color: #f5576c;
+            float: right;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #ff6b7a;
+        }
+
+        .modal-content h2 {
+            color: #a78bfa;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        .graphics-section {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .graphics-section h2 {
+            color: #a78bfa;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .graphics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .graphic-item {
+            background: rgba(30, 30, 60, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+        }
+
+        .graphic-item h3 {
+            color: #4facfe;
+            margin-bottom: 10px;
+        }
+
+        .prompt-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(30, 30, 60, 0.5);
+            border-radius: 10px;
+            border-left: 4px solid #a78bfa;
+        }
+
+        .prompt-section h3 {
+            color: #a78bfa;
+            margin-bottom: 15px;
+        }
+
+        .prompt-section pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: #e0e0e0;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI Tools Selector</h1>
+            <p class="subtitle">Your Comprehensive Guide to Free & Paid AI Tools</p>
+        </header>
+
+        <div class="form-section">
+            <div class="form-group">
+                <label for="category">Select Tool Category:</label>
+                <select id="category" onchange="loadTools()">
+                    <option value="">-- Choose a Category --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tool">Select Tool:</label>
+                <select id="tool" disabled onchange="loadComparison()">
+                    <option value="">-- First select a category --</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button class="reset-btn" onclick="resetForm()">🔄 Reset</button>
+                <button class="export-btn" onclick="exportData()">📥 Export to CSV</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="comparisonTable">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Paid</th>
+                        <th>Free</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-cell">Name</td>
+                        <td id="paid-name"></td>
+                        <td id="free-name"></td>
+                    </tr>
+                    <tr>
+                        <td class="metric-cell">Category</td>
+                        <td id="paid-category"></td>
+                        <td id="free-category"></td>
+                    </tr>
+                    <tr>
+                        <td class="metric-cell">Cost</td>
+                        <td id="paid-cost"></td>
+                        <td id="free-cost"></td>
+                    </tr>
+                    <tr>
+                        <td class="metric-cell">Purpose</td>
+                        <td id="paid-purpose"></td>
+                        <td id="free-purpose"></td>
+                    </tr>
+                    <tr>
+                        <td class="metric-cell">URL</td>
+                        <td id="paid-url"></td>
+                        <td id="free-url"></td>
+                    </tr>
+                    <tr>
+                        <td class="metric-cell">Description</td>
+                        <td id="paid-description"></td>
+                        <td id="free-description"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="linkModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+
+        <div class="graphics-section">
+            <h2>📊 Reference Graphics</h2>
+            <div class="graphics-grid">
+                <div class="graphic-item">
+                    <h3>Python Ecosystem Skills</h3>
+                    <p>Essential Python libraries and frameworks every developer should master for data analysis, machine learning, web development, and more.</p>
+                </div>
+                <div class="graphic-item">
+                    <h3>Python vs R Comparison</h3>
+                    <p>Side-by-side comparison of data manipulation tasks in Python (pandas) and R (dplyr), helping you choose the right tool for your analytics work.</p>
+                </div>
+                <div class="graphic-item">
+                    <h3>Free vs Premium AI Tools</h3>
+                    <p>Comprehensive comparison of free and paid AI tools across different use cases, from research to video editing and project management.</p>
+                </div>
+                <div class="graphic-item">
+                    <h3>LLM Cheat Sheet</h3>
+                    <p>Master Large Language Models with this comprehensive guide covering core concepts, architectures, and practical implementation strategies.</p>
+                </div>
+                <div class="graphic-item">
+                    <h3>Paid vs Free Tool Alternatives</h3>
+                    <p>Direct comparisons between paid premium tools and their free alternatives for ideation, image generation, video creation, and more.</p>
+                </div>
+                <div class="graphic-item">
+                    <h3>100+ AI Tools Collection</h3>
+                    <p>Extensive catalog of AI tools organized by category including ideas, presentation, website building, writing, meetings, design, and automation.</p>
+                </div>
+            </div>
+
+            <div class="prompt-section">
+                <h3>Original Prompt Used to Generate This App:</h3>
+                <pre>Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "AI Tools Selector" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics. Include information and examples in for each tool. Before generating app, ask interactive questions, one-at-a-time, waiting for answers, to improve the quality of the app. It should have a form that allows the type/category of tool, which will load a combo box with a list of paid tools that are in the selected tool category. Selecting the tool will load a three column table with the headers, "Metric","Paid", and "Free". The Metric column should have the following listed, "Name", "Category", "Cost", "Purpose", "URL", and "Description". When selecting the "Tool", load the Cells of the table. I want a button called "Reset" that clears the cells, but not the row or column headers, and just keeps the type/category combo box loaded. The URLs and the Description should be loaded with a hyperlink to the materials. Include the graphics at the end and this prompt.</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toolsData = {
+            "AI Development": {
+                paid: {
+                    name: "Replicate",
+                    cost: "$0.0002-$0.01 per second",
+                    purpose: "Cloud platform for running AI models",
+                    url: "https://replicate.com",
+                    description: "Replicate is a cloud platform for deploying machine learning models at scale with automatic GPU optimization and pay-per-use pricing.",
+                    tutorial: "https://replicate.com/docs"
+                },
+                free: {
+                    name: "Hugging Face",
+                    cost: "Free (premium available)",
+                    purpose: "Open-source ML model hosting",
+                    url: "https://huggingface.co",
+                    description: "Hugging Face provides access to 300,000+ pre-trained models for NLP, computer vision, and audio with transformers library integration.",
+                    tutorial: "https://huggingface.co/docs"
+                }
+            },
+            "Blog Writer": {
+                paid: {
+                    name: "Jasper",
+                    cost: "$49-$125/month",
+                    purpose: "AI content creation and marketing",
+                    url: "https://jasper.ai",
+                    description: "Jasper provides enterprise-grade AI writing with brand voice customization, SEO optimization, and team collaboration features.",
+                    tutorial: "https://help.jasper.ai"
+                },
+                free: {
+                    name: "ChatGPT",
+                    cost: "Free (Pro available)",
+                    purpose: "Conversational AI assistant",
+                    url: "https://chat.openai.com",
+                    description: "ChatGPT offers conversational AI for writing, coding, analysis, and creative tasks with context-aware responses.",
+                    tutorial: "https://help.openai.com"
+                }
+            },
+            "Chatbot": {
+                paid: {
+                    name: "GitHub Copilot",
+                    cost: "$10/month individual",
+                    purpose: "AI pair programming assistant",
+                    url: "https://github.com/features/copilot",
+                    description: "GitHub Copilot provides real-time code suggestions, function completion, and documentation generation across 70+ languages.",
+                    tutorial: "https://docs.github.com/copilot"
+                },
+                free: {
+                    name: "Claude",
+                    cost: "Free (Pro available)",
+                    purpose: "Advanced AI assistant",
+                    url: "https://claude.ai",
+                    description: "Claude excels at analysis, coding, research, and creative tasks with 100K+ token context window and document processing.",
+                    tutorial: "https://support.claude.ai"
+                }
+            },
+            "Design": {
+                paid: {
+                    name: "Adobe Creative Studio",
+                    cost: "$54.99/month",
+                    purpose: "Professional creative suite",
+                    url: "https://adobe.com/creativecloud",
+                    description: "Adobe Creative Studio includes Photoshop, Illustrator, Premiere Pro, and 20+ apps for professional design and content creation.",
+                    tutorial: "https://helpx.adobe.com"
+                },
+                free: {
+                    name: "Canva",
+                    cost: "Free (Pro available)",
+                    purpose: "Visual design platform",
+                    url: "https://canva.com",
+                    description: "Canva offers drag-and-drop design with templates for social media, presentations, documents, and marketing materials.",
+                    tutorial: "https://canva.com/learn"
+                }
+            },
+            "Email Management": {
+                paid: {
+                    name: "Superhuman",
+                    cost: "$30/month",
+                    purpose: "High-performance email client",
+                    url: "https://superhuman.com",
+                    description: "Superhuman provides blazing-fast email with keyboard shortcuts, AI triage, scheduled sending, and read receipts.",
+                    tutorial: "https://help.superhuman.com"
+                },
+                free: {
+                    name: "Gemini in Gmail",
+                    cost: "Free with Google account",
+                    purpose: "AI-powered email assistant",
+                    url: "https://mail.google.com",
+                    description: "Gemini in Gmail offers smart compose, email summarization, and AI-powered responses integrated directly in Gmail.",
+                    tutorial: "https://support.google.com/mail"
+                }
+            },
+            "Image Generation": {
+                paid: {
+                    name: "Midjourney",
+                    cost: "$10-$120/month",
+                    purpose: "AI image generation",
+                    url: "https://midjourney.com",
+                    description: "Midjourney creates stunning artistic images from text prompts with advanced style controls and high resolution outputs.",
+                    tutorial: "https://docs.midjourney.com"
+                },
+                free: {
+                    name: "Bing Create",
+                    cost: "Free",
+                    purpose: "AI image creation",
+                    url: "https://bing.com/create",
+                    description: "Bing Create powered by DALL-E 3 generates images from text descriptions with daily free credits.",
+                    tutorial: "https://support.microsoft.com/bing"
+                }
+            },
+            "Presentation": {
+                paid: {
+                    name: "Pitch",
+                    cost: "$8-$15/user/month",
+                    purpose: "Collaborative presentation software",
+                    url: "https://pitch.com",
+                    description: "Pitch offers real-time collaboration, smart templates, analytics, and seamless sharing for modern presentations.",
+                    tutorial: "https://pitch.com/help"
+                },
+                free: {
+                    name: "Prezi",
+                    cost: "Free (Plus available)",
+                    purpose: "Dynamic presentation creator",
+                    url: "https://prezi.com",
+                    description: "Prezi creates engaging non-linear presentations with zoom effects, animations, and cloud storage.",
+                    tutorial: "https://prezi.com/learn"
+                }
+            },
+            "Video Editing": {
+                paid: {
+                    name: "Adobe Premiere Pro",
+                    cost: "$22.99/month",
+                    purpose: "Professional video editing",
+                    url: "https://adobe.com/premiere",
+                    description: "Adobe Premiere Pro provides industry-standard video editing with advanced color grading, effects, and multi-cam support.",
+                    tutorial: "https://helpx.adobe.com/premiere-pro"
+                },
+                free: {
+                    name: "Vmaker",
+                    cost: "Free (Pro available)",
+                    purpose: "Screen recording and editing",
+                    url: "https://vmaker.com",
+                    description: "Vmaker combines screen recording, webcam capture, and video editing with AI subtitles and trimming tools.",
+                    tutorial: "https://vmaker.com/tutorials"
+                }
+            },
+            "Voice Generation": {
+                paid: {
+                    name: "ElevenLabs",
+                    cost: "$5-$99/month",
+                    purpose: "AI voice cloning and synthesis",
+                    url: "https://elevenlabs.io",
+                    description: "ElevenLabs creates ultra-realistic AI voices with emotion control, voice cloning, and multi-language support.",
+                    tutorial: "https://help.elevenlabs.io"
+                },
+                free: {
+                    name: "Speechify",
+                    cost: "Free (Premium available)",
+                    purpose: "Text-to-speech reader",
+                    url: "https://speechify.com",
+                    description: "Speechify converts text to natural speech across documents, articles, and PDFs with adjustable speed and voices.",
+                    tutorial: "https://support.speechify.com"
+                }
+            },
+            "Website Building": {
+                paid: {
+                    name: "Framer",
+                    cost: "$5-$30/month",
+                    purpose: "No-code web design platform",
+                    url: "https://framer.com",
+                    description: "Framer enables designers to create production-ready websites with animations, CMS, and responsive layouts without code.",
+                    tutorial: "https://framer.com/academy"
+                },
+                free: {
+                    name: "Dora",
+                    cost: "Free (Pro available)",
+                    purpose: "3D website builder",
+                    url: "https://dora.run",
+                    description: "Dora allows creation of immersive 3D and animated websites with drag-and-drop interface and template library.",
+                    tutorial: "https://docs.dora.run"
+                }
+            },
+            "Writing": {
+                paid: {
+                    name: "Writesonic",
+                    cost: "$16-$79/month",
+                    purpose: "AI writing and SEO optimization",
+                    url: "https://writesonic.com",
+                    description: "Writesonic generates articles, ads, and marketing copy with SEO optimization, plagiarism checking, and brand voice.",
+                    tutorial: "https://docs.writesonic.com"
+                },
+                free: {
+                    name: "Fastread.io",
+                    cost: "Free",
+                    purpose: "Speed reading tool",
+                    url: "https://fastread.io",
+                    description: "Fastread.io enhances reading speed and comprehension with rapid serial visual presentation and customizable pace.",
+                    tutorial: "https://fastread.io/guide"
+                }
+            }
+        };
+
+        function initializeApp() {
+            const categorySelect = document.getElementById('category');
+            const categories = Object.keys(toolsData).sort();
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            });
+        }
+
+        function loadTools() {
+            const category = document.getElementById('category').value;
+            const toolSelect = document.getElementById('tool');
+            
+            toolSelect.innerHTML = '<option value="">-- Select a tool --</option>';
+            
+            if (category && toolsData[category]) {
+                toolSelect.disabled = false;
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = toolsData[category].paid.name + ' vs ' + toolsData[category].free.name;
+                toolSelect.appendChild(option);
+            } else {
+                toolSelect.disabled = true;
+                clearTable();
+            }
+        }
+
+        function loadComparison() {
+            const category = document.getElementById('category').value;
+            
+            if (category && toolsData[category]) {
+                const paid = toolsData[category].paid;
+                const free = toolsData[category].free;
+                
+                document.getElementById('paid-name').textContent = paid.name;
+                document.getElementById('free-name').textContent = free.name;
+                
+                document.getElementById('paid-category').textContent = category;
+                document.getElementById('free-category').textContent = category;
+                
+                document.getElementById('paid-cost').textContent = paid.cost;
+                document.getElementById('free-cost').textContent = free.cost;
+                
+                document.getElementById('paid-purpose').textContent = paid.purpose;
+                document.getElementById('free-purpose').textContent = free.purpose;
+                
+                document.getElementById('paid-url').innerHTML = '<a onclick="showModal(\'' + paid.url + '\', \'' + paid.name + '\')">' + paid.url + '</a>';
+                document.getElementById('free-url').innerHTML = '<a onclick="showModal(\'' + free.url + '\', \'' + free.name + '\')">' + free.url + '</a>';
+                
+                document.getElementById('paid-description').innerHTML = '<a onclick="showDescriptionModal(\'' + category + '\', \'paid\')">' + paid.description.substring(0, 100) + '... (click for full)</a>';
+                document.getElementById('free-description').innerHTML = '<a onclick="showDescriptionModal(\'' + category + '\', \'free\')">' + free.description.substring(0, 100) + '... (click for full)</a>';
+            }
+        }
+
+        function showModal(url, name) {
+            const modal = document.getElementById('linkModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = '<h2>' + name + '</h2><p>Visit this tool at: <a href="' + url + '" target="_blank">' + url + '</a></p><p>Click the link above to open in a new tab.</p>';
+            modal.style.display = 'block';
+        }
+
+        function showDescriptionModal(category, type) {
+            const modal = document.getElementById('linkModal');
+            const modalBody = document.getElementById('modalBody');
+            const tool = toolsData[category][type];
+            
+            modalBody.innerHTML = '<h2>' + tool.name + '</h2><p><strong>Purpose:</strong> ' + tool.purpose + '</p><p><strong>Cost:</strong> ' + tool.cost + '</p><p><strong>Description:</strong></p><p>' + tool.description + '</p><p><strong>Tutorial:</strong> <a href="' + tool.tutorial + '" target="_blank">' + tool.tutorial + '</a></p>';
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('linkModal').style.display = 'none';
+        }
+
+        function clearTable() {
+            const cells = ['paid-name', 'free-name', 'paid-category', 'free-category', 'paid-cost', 'free-cost', 'paid-purpose', 'free-purpose', 'paid-url', 'free-url', 'paid-description', 'free-description'];
+            cells.forEach(cell => {
+                document.getElementById(cell).textContent = '';
+            });
+        }
+
+        function resetForm() {
+            document.getElementById('tool').value = '';
+            document.getElementById('tool').disabled = true;
+            document.getElementById('tool').innerHTML = '<option value="">-- First select a category --</option>';
+            clearTable();
+        }
+
+        function exportData() {
+            const category = document.getElementById('category').value;
+            
+            if (!category || !toolsData[category]) {
+                alert('Please select a category and tool first!');
+                return;
+            }
+            
+            const paid = toolsData[category].paid;
+            const free = toolsData[category].free;
+            
+            let csv = 'Metric,Paid,Free\n';
+            csv += 'Name,' + paid.name + ',' + free.name + '\n';
+            csv += 'Category,' + category + ',' + category + '\n';
+            csv += 'Cost,' + paid.cost + ',' + free.cost + '\n';
+            csv += 'Purpose,"' + paid.purpose + '","' + free.purpose + '"\n';
+            csv += 'URL,' + paid.url + ',' + free.url + '\n';
+            csv += 'Description,"' + paid.description.replace(/"/g, '""') + '","' + free.description.replace(/"/g, '""') + '"\n';
+            csv += 'Tutorial,' + paid.tutorial + ',' + free.tutorial + '\n';
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ai_tools_comparison_' + category.replace(/\s+/g, '_') + '.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('linkModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        initializeApp();
+    </script>
+</body>
+</html>

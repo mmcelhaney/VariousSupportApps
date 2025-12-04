@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 Things That Matter More Than Certifications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            padding: 10px;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            height: 30px;
+            border-radius: 50px;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            min-width: 50px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 2em;
+        }
+
+        .stat-card p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .tile {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+        }
+
+        .tile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tile-title {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            accent-color: #4CAF50;
+            flex-shrink: 0;
+        }
+
+        .tile-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .subtiles {
+            margin-top: 15px;
+        }
+
+        .subtile {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .subtile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .subtile-title {
+            font-weight: bold;
+            color: #333;
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .subtile-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #4CAF50;
+            flex-shrink: 0;
+        }
+
+        .resources {
+            margin-top: 10px;
+        }
+
+        .resource-link {
+            display: block;
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: color 0.2s;
+        }
+
+        .resource-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .resource-link::before {
+            content: "→ ";
+            margin-right: 5px;
+        }
+
+        .action-steps {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .action-steps h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .action-steps ul {
+            margin-left: 20px;
+        }
+
+        .action-steps li {
+            margin: 5px 0;
+            color: #856404;
+        }
+
+        .examples {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .examples h4 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+
+        .code-snippet {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: white;
+        }
+
+        .prompt-section {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .prompt-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .prompt-section p {
+            color: #666;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 6 Things That Matter More Than Certifications</h1>
+            <p>Your Interactive Career Development Guide</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar">0%</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="completedCount">0</h3>
+                <p>Items Completed</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalCount">0</h3>
+                <p>Total Items</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="percentComplete">0%</h3>
+                <p>Overall Progress</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="exportProgress()">📥 Export Progress</button>
+            <button class="btn" onclick="importProgress()">📤 Import Progress</button>
+            <button class="btn" onclick="resetProgress()">🔄 Reset All</button>
+        </div>
+
+        <div class="grid" id="tilesContainer"></div>
+
+        <div class="footer">
+            <div class="prompt-section">
+                <h3>📋 Original Prompt</h3>
+                <p><strong>Task:</strong> Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "6 things that matter more than certification" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics. Include information and examples in Python, SQL, R, JavaScript and Excel. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete. Follow the Checklist graphic where each item is a tile. On each tile put the links to resources, descriptions, and action steps.</p>
+                <p><strong>Configuration:</strong> Intermediate level | All 6 areas equally weighted | Balanced mix of learning formats | Multiple infrastructure setups | Progress saved locally with export/import and statistics</p>
+            </div>
+            
+            <p style="margin-top: 20px; font-size: 0.9em;">Built with ❤️ for developers who want to stand out</p>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" style="display: none;" accept=".json">
+
+    <script>
+        const tilesData = [
+            {
+                id: "tile1",
+                title: "1. Home Lab Running Real Workloads",
+                description: "Transform interviews from interrogation to conversation. Run applications you actually depend on.",
+                subtiles: [
+                    {
+                        id: "1a",
+                        title: "Local Machine Setup",
+                        description: "Set up development environments on your local machine",
+                        resources: [
+                            { text: "📺 Setting Up a Development Environment (YouTube)", url: "https://www.youtube.com/results?search_query=local+development+environment+setup" },
+                            { text: "📝 Local Development Best Practices", url: "https://www.freecodecamp.org/news/how-to-set-up-a-local-development-environment/" },
+                            { text: "🔧 VSCode Setup Guide", url: "https://code.visualstudio.com/docs/setup/setup-overview" },
+                            { text: "💻 GitHub: Awesome Dev Environment", url: "https://github.com/jondot/awesome-devenv" }
+                        ],
+                        examples: {
+                            python: "# Python Virtual Environment\npython -m venv myenv\nsource myenv/bin/activate  # On Windows: myenv\\Scripts\\activate\npip install -r requirements.txt",
+                            javascript: "// Node.js Project Setup\nnpm init -y\nnpm install express\n// Create simple server\nconst express = require('express');\nconst app = express();\napp.listen(3000);",
+                            sql: "-- Local PostgreSQL Setup\n-- Install PostgreSQL, then:\nCREATE DATABASE myapp_dev;\n\\c myapp_dev\nCREATE TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(100));",
+                            r: "# R Project Setup\n# Install packages\ninstall.packages(c('tidyverse', 'shiny'))\n# Create project structure\ndir.create('data')\ndir.create('scripts')"
+                        },
+                        actions: [
+                            "Install programming language environments (Python, Node.js, R)",
+                            "Set up a code editor with proper extensions",
+                            "Create a personal project and run it locally",
+                            "Document your setup process in a README"
+                        ]
+                    },
+                    {
+                        id: "1b",
+                        title: "Cloud Platforms (AWS/Azure/GCP)",
+                        description: "Deploy and manage applications in the cloud",
+                        resources: [
+                            { text: "📺 AWS Free Tier Tutorial Series", url: "https://www.youtube.com/results?search_query=aws+free+tier+tutorial" },
+                            { text: "🎓 Google Cloud Skills Boost", url: "https://www.cloudskillsboost.google/" },
+                            { text: "📚 Azure Fundamentals Learning Path", url: "https://learn.microsoft.com/en-us/training/azure/" },
+                            { text: "💻 Terraform AWS Examples", url: "https://github.com/hashicorp/terraform-provider-aws/tree/main/examples" }
+                        ],
+                        examples: {
+                            python: "# AWS Lambda Function (Python)\nimport json\ndef lambda_handler(event, context):\n    return {\n        'statusCode': 200,\n        'body': json.dumps('Hello from Lambda!')\n    }",
+                            javascript: "// Deploy Node.js to AWS Lambda\nconst AWS = require('aws-sdk');\nexports.handler = async (event) => {\n    return { statusCode: 200, body: 'Success' };\n};",
+                            sql: "-- AWS RDS Connection String\n-- psql -h mydb.xyz.rds.amazonaws.com -U admin -d production\nSELECT version();  -- Check PostgreSQL version in RDS"
+                        },
+                        actions: [
+                            "Create free tier accounts on AWS/Azure/GCP",
+                            "Deploy a simple web app to cloud",
+                            "Set up a database instance (RDS/Cloud SQL)",
+                            "Configure monitoring and logging",
+                            "Practice infrastructure as code (Terraform/CloudFormation)"
+                        ]
+                    },
+                    {
+                        id: "1c",
+                        title: "Docker & Containers",
+                        description: "Containerize applications for consistency and portability",
+                        resources: [
+                            { text: "📺 Docker Tutorial for Beginners", url: "https://www.youtube.com/results?search_query=docker+tutorial+for+beginners" },
+                            { text: "📝 Docker Official Documentation", url: "https://docs.docker.com/get-started/" },
+                            { text: "🎮 Play with Docker (Interactive)", url: "https://labs.play-with-docker.com/" },
+                            { text: "💻 Awesome Docker on GitHub", url: "https://github.com/veggiemonk/awesome-docker" }
+                        ],
+                        examples: {
+                            python: "# Dockerfile for Python App\nFROM python:3.11-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"app.py\"]",
+                            javascript: "# Dockerfile for Node.js App\nFROM node:18-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 3000\nCMD [\"node\", \"server.js\"]",
+                            sql: "# docker-compose.yml for PostgreSQL\nversion: '3.8'\nservices:\n  db:\n    image: postgres:15\n    environment:\n      POSTGRES_PASSWORD: secret\n    ports:\n      - '5432:5432'"
+                        },
+                        actions: [
+                            "Install Docker Desktop",
+                            "Containerize an existing project",
+                            "Create a docker-compose.yml for multi-container apps",
+                            "Push images to Docker Hub",
+                            "Learn Kubernetes basics with Minikube"
+                        ]
+                    },
+                    {
+                        id: "1d",
+                        title: "Virtual Machines & Hypervisors",
+                        description: "Run multiple OS environments for testing and development",
+                        resources: [
+                            { text: "📺 VirtualBox Complete Tutorial", url: "https://www.youtube.com/results?search_query=virtualbox+tutorial" },
+                            { text: "📝 Vagrant Documentation", url: "https://developer.hashicorp.com/vagrant/docs" },
+                            { text: "🔧 VMware Workstation Player Guide", url: "https://www.vmware.com/products/workstation-player.html" },
+                            { text: "💻 Vagrantfile Examples", url: "https://github.com/patrickdlee/vagrant-examples" }
+                        ],
+                        examples: {
+                            javascript: "# Vagrantfile for Ubuntu VM\nVagrant.configure(\"2\") do |config|\n  config.vm.box = \"ubuntu/jammy64\"\n  config.vm.network \"private_network\", ip: \"192.168.56.10\"\n  config.vm.provider \"virtualbox\" do |vb|\n    vb.memory = \"2048\"\n  end\nend"
+                        },
+                        actions: [
+                            "Install VirtualBox or VMware",
+                            "Create a Linux VM for development",
+                            "Set up networking between VMs",
+                            "Automate VM provisioning with Vagrant",
+                            "Practice disaster recovery scenarios"
+                        ]
+                    },
+                    {
+                        id: "1e",
+                        title: "Raspberry Pi & IoT Projects",
+                        description: "Build physical computing projects and learn hardware integration",
+                        resources: [
+                            { text: "📺 Raspberry Pi Projects", url: "https://www.youtube.com/results?search_query=raspberry+pi+projects" },
+                            { text: "📝 Official Raspberry Pi Documentation", url: "https://www.raspberrypi.com/documentation/" },
+                            { text: "🔧 Awesome Raspberry Pi", url: "https://github.com/thibmaek/awesome-raspberry-pi" },
+                            { text: "🎓 IoT Python Projects", url: "https://realpython.com/python-raspberry-pi/" }
+                        ],
+                        examples: {
+                            python: "# Raspberry Pi GPIO Control\nimport RPi.GPIO as GPIO\nimport time\n\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(18, GPIO.OUT)\n\nwhile True:\n    GPIO.output(18, GPIO.HIGH)\n    time.sleep(1)\n    GPIO.output(18, GPIO.LOW)\n    time.sleep(1)",
+                            javascript: "// Node.js on Raspberry Pi\nconst express = require('express');\nconst { exec } = require('child_process');\nconst app = express();\n\napp.get('/temp', (req, res) => {\n  exec('vcgencmd measure_temp', (err, stdout) => {\n    res.send(stdout);\n  });\n});\napp.listen(3000);"
+                        },
+                        actions: [
+                            "Set up Raspberry Pi OS on an SD card",
+                            "Build a home automation project",
+                            "Create a network monitoring dashboard",
+                            "Deploy a small web server on Pi",
+                            "Connect sensors and collect data"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "tile2",
+                title: "2. Public GitHub Repository (100+ Commits)",
+                description: "Show your work. Document everything. Let hiring managers see how you think. Commits prove you ship code regularly.",
+                subtiles: [
+                    {
+                        id: "2a",
+                        title: "Git Fundamentals & Workflow",
+                        description: "Master version control and collaboration workflows",
+                        resources: [
+                            { text: "📺 Git and GitHub for Beginners", url: "https://www.youtube.com/results?search_query=git+github+tutorial" },
+                            { text: "📝 Atlassian Git Tutorials", url: "https://www.atlassian.com/git/tutorials" },
+                            { text: "🎮 Learn Git Branching (Interactive)", url: "https://learngitbranching.js.org/" },
+                            { text: "📚 Pro Git Book (Free)", url: "https://git-scm.com/book/en/v2" }
+                        ],
+                        examples: {
+                            javascript: "// Common Git Commands\ngit init\ngit add .\ngit commit -m \"Initial commit\"\ngit branch feature/new-feature\ngit checkout feature/new-feature\ngit merge main\ngit push origin main"
+                        },
+                        actions: [
+                            "Learn basic Git commands (add, commit, push, pull)",
+                            "Practice branching and merging strategies",
+                            "Understand Git rebase vs merge",
+                            "Write meaningful commit messages",
+                            "Use .gitignore effectively"
+                        ]
+                    },
+                    {
+                        id: "2b",
+                        title: "Building a Portfolio Project",
+                        description: "Create substantial projects that showcase your skills",
+                        resources: [
+                            { text: "📺 Full Stack Project Ideas", url: "https://www.youtube.com/results?search_query=full+stack+project+tutorial" },
+                            { text: "💻 Project Ideas by Skill Level", url: "https://github.com/practical-tutorials/project-based-learning" },
+                            { text: "📝 How to Write a Great README", url: "https://www.freecodecamp.org/news/how-to-write-a-good-readme-file/" },
+                            { text: "🎨 README Template Generator", url: "https://readme.so/" }
+                        ],
+                        examples: {
+                            python: "# Example: Data Analysis Pipeline\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\ndf = pd.read_csv('data.csv')\ndf_clean = df.dropna()\nsummary = df_clean.groupby('category').agg({'value': ['mean', 'sum']})\nsummary.plot(kind='bar')\nplt.savefig('analysis.png')",
+                            javascript: "// Example: REST API with Express\nconst express = require('express');\nconst app = express();\n\napp.get('/api/users', async (req, res) => {\n  const users = await db.query('SELECT * FROM users');\n  res.json(users);\n});\n\napp.listen(3000);",
+                            sql: "-- Database Schema for Portfolio Project\nCREATE TABLE projects (\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(100),\n  description TEXT,\n  tech_stack TEXT[],\n  created_at TIMESTAMP DEFAULT NOW()\n);"
+                        },
+                        actions: [
+                            "Choose a project that solves a real problem",
+                            "Set up proper project structure",
+                            "Write comprehensive README with setup instructions",
+                            "Add screenshots or demo videos",
+                            "Include tests and CI/CD pipeline"
+                        ]
+                    },
+                    {
+                        id: "2c",
+                        title: "Consistent Commit History",
+                        description: "Build a habit of regular, meaningful contributions",
+                        resources: [
+                            { text: "📝 Conventional Commits Guide", url: "https://www.conventionalcommits.org/" },
+                            { text: "🔧 GitHub Contribution Guidelines", url: "https://docs.github.com/en/get-started/quickstart/contributing-to-projects" },
+                            { text: "📊 Analyze Your GitHub Stats", url: "https://github-readme-stats.vercel.app/" },
+                            { text: "💻 Commit Message Best Practices", url: "https://cbea.ms/git-commit/" }
+                        ],
+                        examples: {
+                            javascript: "// Good commit messages\n// feat: add user authentication with JWT\n// fix: resolve memory leak in data processing\n// docs: update API documentation for v2 endpoints\n// refactor: simplify database query logic\n// test: add unit tests for payment processor"
+                        },
+                        actions: [
+                            "Commit small, focused changes frequently",
+                            "Write descriptive commit messages",
+                            "Contribute to open source projects",
+                            "Maintain streak of GitHub activity",
+                            "Review and refactor old code regularly"
+                        ]
+                    },
+                    {
+                        id: "2d",
+                        title: "Code Documentation",
+                        description: "Make your code readable and maintainable",
+                        resources: [
+                            { text: "📺 Documentation Best Practices", url: "https://www.youtube.com/results?search_query=code+documentation+tutorial" },
+                            { text: "📝 Python Docstring Conventions", url: "https://peps.python.org/pep-0257/" },
+                            { text: "🔧 JSDoc Documentation", url: "https://jsdoc.app/" },
+                            { text: "📚 Write the Docs Guide", url: "https://www.writethedocs.org/guide/" }
+                        ],
+                        examples: {
+                            python: "def calculate_statistics(data: list) -> dict:\n    \"\"\"\n    Calculate mean and standard deviation of dataset.\n    \n    Args:\n        data: List of numerical values\n    \n    Returns:\n        Dictionary with 'mean' and 'std' keys\n    \n    Raises:\n        ValueError: If data list is empty\n    \"\"\"\n    if not data:\n        raise ValueError(\"Data cannot be empty\")\n    mean = sum(data) / len(data)\n    return {'mean': mean}",
+                            javascript: "/**\n * Fetches user data from API\n * @param {number} userId - The user's unique identifier\n * @returns {Promise<Object>} User object with profile data\n * @throws {Error} If user not found\n */\nasync function getUserData(userId) {\n  const response = await fetch(`/api/users/${userId}`);\n  return response.json();\n}",
+                            r: "#' Calculate Summary Statistics\n#'\n#' @param x A numeric vector\n#' @return A named list with mean and sd\n#' @examples\n#' calc_stats(c(1, 2, 3, 4, 5))\ncalc_stats <- function(x) {\n  list(mean = mean(x), sd = sd(x))\n}"
+                        },
+                        actions: [
+                            "Add inline comments for complex logic",
+                            "Write function/class docstrings",
+                            "Create API documentation",
+                            "Include code examples in docs",
+                            "Keep documentation up-to-date with code changes"
+                        ]
+                    },
+                    {
+                        id: "2e",
+                        title: "Open Source Contributions",
+                        description: "Collaborate with others and contribute to real projects",
+                        resources: [
+                            { text: "📺 How to Contribute to Open Source", url: "https://www.youtube.com/results?search_query=open+source+contribution+guide" },
+                            { text: "🔍 Good First Issue Finder", url: "https://goodfirstissue.dev/" },
+                            { text: "📝 First Timers Only", url: "https://www.firsttimersonly.com/" },
+                            { text: "💻 Awesome First PR Opportunities", url: "https://github.com/MunGell/awesome-for-beginners" }
+                        ],
+                        actions: [
+                            "Find projects that interest you",
+                            "Start with documentation fixes",
+                            "Fix 'good first issue' bugs",
+                            "Engage with project maintainers",
+                            "Build relationships in the community"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "tile3",
+                title: "3. Blog Posts Explaining Problems You Solved",
+                description: "Write down every problem you fix. Explain your thought process. Share it publicly. This becomes your portfolio and makes you memorable.",
+                subtiles: [
+                    {
+                        id: "3a",
+                        title: "Setting Up Your Blog",
+                        description: "Choose a platform and establish your writing presence",
+                        resources: [
+                            { text: "📺 Start a Developer Blog Tutorial", url: "https://www.youtube.com/results?search_query=developer+blog+tutorial" },
+                            { text: "📝 Dev.to - Free Platform for Developers", url: "https://dev.to/" },
+                            { text: "✍️ Medium Developer Community", url: "https://medium.com/" },
+                            { text: "💻 GitHub Pages & Jekyll", url: "https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll" },
+                            { text: "🔧 Hashnode for Developers", url: "https://hashnode.com/" }
+                        ],
+                        examples: {
+                            javascript: "// Simple blog site config\nmodule.exports = {\n  title: 'Tech Blog',\n  description: 'Solving problems one post at a time',\n  author: 'Your Name',\n  theme: 'minimal'\n};"
+                        },
+                        actions: [
+                            "Choose a blogging platform (Dev.to, Medium, Hashnode, or self-hosted)",
+                            "Set up custom domain (optional)",
+                            "Create an about page introducing yourself",
+                            "Design a consistent posting schedule",
+                            "Set up analytics to track readership"
+                        ]
+                    },
+                    {
+                        id: "3b",
+                        title: "Technical Writing Skills",
+                        description: "Learn to explain complex concepts clearly",
+                        resources: [
+                            { text: "📺 Technical Writing for Developers", url: "https://www.youtube.com/results?search_query=technical+writing+for+developers" },
+                            { text: "📚 Google Technical Writing Course (Free)", url: "https://developers.google.com/tech-writing" },
+                            { text: "📝 Writing Tips from FreeCodeCamp", url: "https://www.freecodecamp.org/news/developer-blog-guide/" },
+                            { text: "✍️ Grammarly for Technical Writers", url: "https://www.grammarly.com/" }
+                        ],
+                        actions: [
+                            "Start with problem-solution structure",
+                            "Use clear headings and sections",
+                            "Include code examples and screenshots",
+                            "Explain your thought process, not just the solution",
+                            "Edit ruthlessly for clarity"
+                        ]
+                    },
+                    {
+                        id: "3c",
+                        title: "Blog Post Ideas & Topics",
+                        description: "Find compelling topics from your daily work",
+                        resources: [
+                            { text: "📝 100+ Blog Post Ideas for Developers", url: "https://dev.to/sloan/what-should-i-write-about-as-a-new-technical-blogger-373p" },
+                            { text: "💡 Find Trending Topics on GitHub", url: "https://github.com/trending" },
+                            { text: "🔍 Developer Survey Insights", url: "https://survey.stackoverflow.co/" }
+                        ],
+                        examples: {
+                            python: "# Example Topics:\n# - How I Optimized a Python Script from 5 minutes to 5 seconds\n# - Debugging a Memory Leak in My Flask Application\n# - Building a Web Scraper: Lessons Learned\n# - My Journey from Excel to Python for Data Analysis",
+                            sql: "-- Example Topics:\n-- 5 SQL Query Optimizations That Saved My Database\n-- Understanding Indexes: A Real-World Case Study\n-- Migrating from MySQL to PostgreSQL: What I Wish I Knew",
+                            javascript: "// Example Topics:\n// React State Management: When to Use Context vs Redux\n// Building My First Chrome Extension\n// Async/Await Patterns That Changed My Code"
+                        },
+                        actions: [
+                            "Document bugs you fix and how you solved them",
+                            "Write about tools and libraries you discover",
+                            "Share lessons from failed projects",
+                            "Create tutorial series on technologies you're learning",
+                            "Write comparison posts (Tool A vs Tool B)"
+                        ]
+                    },
+                    {
+                        id: "3d",
+                        title: "Promoting Your Content",
+                        description: "Get your writing in front of the right audience",
+                        resources: [
+                            { text: "📱 Twitter/X Developer Community", url: "https://twitter.com/search?q=%23100DaysOfCode" },
+                            { text: "💬 Reddit Programming Communities", url: "https://www.reddit.com/r/programming/" },
+                            { text: "🔗 LinkedIn Content Strategy", url: "https://www.linkedin.com/" },
+                            { text: "📰 Hacker News Guidelines", url: "https://news.ycombinator.com/newsguidelines.html" }
+                        ],
+                        actions: [
+                            "Share on Twitter/X with relevant hashtags",
+                            "Post to LinkedIn with professional context",
+                            "Submit to Hacker News (if high quality)",
+                            "Engage in Reddit communities (follow subreddit rules)",
+                            "Cross-post to multiple platforms",
+                            "Build an email newsletter for regular readers"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "tile4",
+                title: "4. LinkedIn Profile Showing Your Projects",
+                description: "Most hiring managers scout talent on LinkedIn. Show what you have built, not what courses you completed. Show real projects.",
+                subtiles: [
+                    {
+                        id: "4a",
+                        title: "Profile Optimization",
+                        description: "Make your profile stand out to recruiters",
+                        resources: [
+                            { text: "📺 LinkedIn Profile Tips for Developers", url: "https://www.youtube.com/results?search_query=linkedin+profile+for+developers" },
+                            { text: "📝 LinkedIn SEO Guide", url: "https://www.linkedin.com/help/linkedin/answer/a549047" },
+                            { text: "✍️ Writing a Compelling Headline", url: "https://www.linkedin.com/business/talent/blog/product-tips/linkedin-headline-examples" }
+                        ],
+                        actions: [
+                            "Write a headline that shows your expertise, not just job title",
+                            "Create a banner image that represents your work",
+                            "Write an 'About' section focused on problems you solve",
+                            "Use keywords recruiters search for",
+                            "Add a professional photo"
+                        ]
+                    },
+                    {
+                        id: "4b",
+                        title: "Showcasing Projects",
+                        description: "Highlight your best work prominently",
+                        resources: [
+                            { text: "📝 LinkedIn Featured Section Guide", url: "https://www.linkedin.com/help/linkedin/answer/a565286" },
+                            { text: "🎥 Creating Project Demo Videos", url: "https://www.loom.com/" },
+                            { text: "📊 Portfolio Examples for Inspiration", url: "https://github.com/topics/portfolio" }
+                        ],
+                        examples: {
+                            javascript: "// Project Description Template:\n// Built a real-time dashboard using React and WebSockets\n// - Reduced page load time by 60%\n// - Handled 10K+ concurrent users\n// - Tech: React, Node.js, Redis, PostgreSQL\n// [Link to GitHub] [Live Demo]"
+                        },
+                        actions: [
+                            "Add projects to the Featured section",
+                            "Include links to GitHub repos and live demos",
+                            "Write impact-focused descriptions (metrics matter)",
+                            "Add screenshots or demo videos",
+                            "Update regularly with new projects"
+                        ]
+                    },
+                    {
+                        id: "4c",
+                        title: "Building Your Network",
+                        description: "Connect strategically with people in your industry",
+                        resources: [
+                            { text: "📝 LinkedIn Networking Strategies", url: "https://www.linkedin.com/business/sales/blog/networking/how-to-network-on-linkedin" },
+                            { text: "💬 Effective Connection Messages", url: "https://www.linkedin.com/help/linkedin/answer/a521928" }
+                        ],
+                        actions: [
+                            "Connect with developers in your tech stack",
+                            "Follow companies you want to work for",
+                            "Engage with posts (thoughtful comments, not just likes)",
+                            "Join LinkedIn groups in your field",
+                            "Reach out to people after meeting at events"
+                        ]
+                    },
+                    {
+                        id: "4d",
+                        title: "Creating Content on LinkedIn",
+                        description: "Share your knowledge to build visibility",
+                        resources: [
+                            { text: "📺 LinkedIn Content Strategy", url: "https://www.youtube.com/results?search_query=linkedin+content+strategy+developers" },
+                            { text: "📝 What to Post on LinkedIn", url: "https://www.linkedin.com/business/marketing/blog/content-marketing/what-to-post-on-linkedin" }
+                        ],
+                        actions: [
+                            "Share your blog posts",
+                            "Post about projects you're working on",
+                            "Comment on industry trends",
+                            "Celebrate achievements (project launches, learning milestones)",
+                            "Share lessons learned from failures"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "tile5",
+                title: "5. Ability to Troubleshoot Under Pressure",
+                description: "Practice breaking things in your home lab, then fix them. Get comfortable with logs. Learn to debug networking issues. This skill cannot be faked.",
+                subtiles: [
+                    {
+                        id: "5a",
+                        title: "Debugging Fundamentals",
+                        description: "Master systematic approaches to finding and fixing bugs",
+                        resources: [
+                            { text: "📺 Debugging Techniques", url: "https://www.youtube.com/results?search_query=debugging+techniques+programming" },
+                            { text: "📝 The Debugging Manifesto", url: "https://jvns.ca/blog/2022/12/08/a-debugging-manifesto/" },
+                            { text: "📚 Python Debugging with pdb", url: "https://realpython.com/python-debugging-pdb/" },
+                            { text: "🔧 Chrome DevTools Guide", url: "https://developer.chrome.com/docs/devtools/" }
+                        ],
+                        examples: {
+                            python: "# Python Debugging\nimport pdb\n\ndef buggy_function(data):\n    pdb.set_trace()\n    result = []\n    for item in data:\n        processed = item * 2\n        result.append(processed)\n    return result",
+                            javascript: "// JavaScript Debugging\nfunction calculateTotal(items) {\n    debugger;\n    return items.reduce((sum, item) => sum + item.price, 0);\n}\n\nconsole.log('Variable:', myVar);\nconsole.trace('Execution path');",
+                            sql: "-- SQL Debugging\nEXPLAIN ANALYZE\nSELECT * FROM users WHERE active = true;\n\nSET log_min_duration_statement = 100;",
+                            r: "# R Debugging\nmy_function <- function(x) {\n  browser()\n  result <- x * 2\n  return(result)\n}"
+                        },
+                        actions: [
+                            "Learn to use debuggers (pdb, DevTools, etc.)",
+                            "Practice reading error messages carefully",
+                            "Use print/console.log strategically",
+                            "Master your IDE's debugging features",
+                            "Create minimal reproducible examples"
+                        ]
+                    },
+                    {
+                        id: "5b",
+                        title: "Log Analysis",
+                        description: "Learn to find answers in application and system logs",
+                        resources: [
+                            { text: "📺 Reading and Analyzing Logs", url: "https://www.youtube.com/results?search_query=reading+application+logs+tutorial" },
+                            { text: "📝 Log Levels Best Practices", url: "https://www.dataset.com/blog/the-10-commandments-of-logging/" },
+                            { text: "🔧 ELK Stack Tutorial", url: "https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html" },
+                            { text: "💻 Grep and Regex Guide", url: "https://www.gnu.org/software/grep/manual/grep.html" }
+                        ],
+                        examples: {
+                            python: "# Python Logging\nimport logging\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format='%(asctime)s - %(levelname)s - %(message)s',\n    handlers=[logging.FileHandler('app.log')]\n)\n\nlogger = logging.getLogger(__name__)\nlogger.error('Error occurred', exc_info=True)",
+                            javascript: "// Node.js Logging with Winston\nconst winston = require('winston');\n\nconst logger = winston.createLogger({\n  level: 'info',\n  format: winston.format.json(),\n  transports: [\n    new winston.transports.File({ filename: 'error.log' })\n  ]\n});"
+                        },
+                        actions: [
+                            "Set up proper logging in your applications",
+                            "Learn grep, awk, and sed for log parsing",
+                            "Practice finding errors in production logs",
+                            "Set up log aggregation (ELK, Splunk, or CloudWatch)",
+                            "Create alerts for critical errors"
+                        ]
+                    },
+                    {
+                        id: "5c",
+                        title: "Network Troubleshooting",
+                        description: "Diagnose and fix connectivity and performance issues",
+                        resources: [
+                            { text: "📺 Network Troubleshooting Tutorial", url: "https://www.youtube.com/results?search_query=network+troubleshooting+tutorial" },
+                            { text: "📝 TCP/IP Fundamentals", url: "https://www.cloudflare.com/learning/network-layer/what-is-a-protocol/" },
+                            { text: "🔧 Wireshark Tutorial", url: "https://www.wireshark.org/docs/wsug_html_chunked/" },
+                            { text: "💻 tcpdump Cheat Sheet", url: "https://www.tcpdump.org/manpages/tcpdump.1.html" }
+                        ],
+                        examples: {
+                            javascript: "// Network diagnostic commands\n// ping example.com\n// traceroute example.com\n// netstat -an | grep LISTEN\n// nslookup example.com\n// curl -v https://api.example.com"
+                        },
+                        actions: [
+                            "Learn ping, traceroute, netstat, nslookup",
+                            "Practice with Wireshark packet analysis",
+                            "Understand DNS resolution issues",
+                            "Debug firewall and port problems",
+                            "Learn to read network error codes"
+                        ]
+                    },
+                    {
+                        id: "5d",
+                        title: "Performance Optimization",
+                        description: "Identify and fix performance bottlenecks",
+                        resources: [
+                            { text: "📺 Performance Optimization Techniques", url: "https://www.youtube.com/results?search_query=application+performance+optimization" },
+                            { text: "📝 Database Query Optimization", url: "https://use-the-index-luke.com/" },
+                            { text: "🔧 Chrome Performance Tab", url: "https://developer.chrome.com/docs/devtools/performance/" },
+                            { text: "💻 Python Profiling Tools", url: "https://docs.python.org/3/library/profile.html" }
+                        ],
+                        examples: {
+                            python: "# Python Profiling\nimport cProfile\n\nprofiler = cProfile.Profile()\nprofiler.enable()\nslow_function()\nprofiler.disable()\nprofiler.print_stats()",
+                            sql: "-- SQL Optimization\nCREATE INDEX idx_customers_country ON customers(country);\nSELECT o.* FROM orders o\nJOIN customers c ON o.customer_id = c.id\nWHERE c.country = 'USA';",
+                            javascript: "// Performance Measurement\nconst start = performance.now();\nprocessData();\nconst end = performance.now();\nconsole.log(`Time: ${end - start}ms`);"
+                        },
+                        actions: [
+                            "Use profiling tools to find bottlenecks",
+                            "Optimize database queries with proper indexes",
+                            "Implement caching strategies",
+                            "Monitor application performance metrics",
+                            "Practice load testing with tools like JMeter or k6"
+                        ]
+                    },
+                    {
+                        id: "5e",
+                        title: "Chaos Engineering",
+                        description: "Deliberately break things to learn how systems fail",
+                        resources: [
+                            { text: "📺 Introduction to Chaos Engineering", url: "https://www.youtube.com/results?search_query=chaos+engineering+tutorial" },
+                            { text: "📝 Chaos Engineering Principles", url: "https://principlesofchaos.org/" },
+                            { text: "🔧 Chaos Monkey Guide", url: "https://netflix.github.io/chaosmonkey/" },
+                            { text: "💻 Litmus Chaos for Kubernetes", url: "https://litmuschaos.io/" }
+                        ],
+                        actions: [
+                            "Kill random processes in your home lab",
+                            "Simulate network latency and packet loss",
+                            "Fill up disk space and observe behavior",
+                            "Disconnect services and test recovery",
+                            "Document recovery procedures"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "tile6",
+                title: "6. Network of People Who Vouch for Your Work",
+                description: "Join communities. Help others. Build relationships. When someone asks who they should hire, you want your name mentioned. Referrals beat applications.",
+                subtiles: [
+                    {
+                        id: "6a",
+                        title: "Building Online Presence",
+                        description: "Establish yourself in developer communities",
+                        resources: [
+                            { text: "📱 Twitter/X Developer Community", url: "https://twitter.com/search?q=%23DevCommunity" },
+                            { text: "💬 Discord Developer Servers", url: "https://discord.com/servers" },
+                            { text: "🔗 Slack Communities for Developers", url: "https://github.com/thisdavej/tech-community-slacks" },
+                            { text: "💻 Stack Overflow Participation", url: "https://stackoverflow.com/help/how-to-answer" }
+                        ],
+                        actions: [
+                            "Join relevant Discord/Slack communities",
+                            "Answer questions on Stack Overflow",
+                            "Participate in Twitter/X dev discussions",
+                            "Share your work and learnings publicly",
+                            "Be genuinely helpful, not self-promotional"
+                        ]
+                    },
+                    {
+                        id: "6b",
+                        title: "Attending Events & Meetups",
+                        description: "Meet people face-to-face in your local tech community",
+                        resources: [
+                            { text: "📅 Meetup.com Tech Groups", url: "https://www.meetup.com/topics/technology/" },
+                            { text: "🎤 Find Tech Conferences", url: "https://github.com/scraly/developers-conferences-agenda" },
+                            { text: "💼 Eventbrite Tech Events", url: "https://www.eventbrite.com/d/online/technology/" },
+                            { text: "🎓 Hackathons Near You", url: "https://mlh.io/seasons/2025/events" }
+                        ],
+                        actions: [
+                            "Attend local meetups monthly",
+                            "Go to at least one conference per year",
+                            "Participate in hackathons",
+                            "Volunteer to help organize events",
+                            "Follow up with people you meet"
+                        ]
+                    },
+                    {
+                        id: "6c",
+                        title: "Mentorship & Helping Others",
+                        description: "Build reputation by helping others succeed",
+                        resources: [
+                            { text: "📝 Becoming a Mentor Guide", url: "https://www.codementor.io/blog/how-to-be-a-good-mentor-5yuz8qfvyn" },
+                            { text: "💬 Code Review Best Practices", url: "https://google.github.io/eng-practices/review/" },
+                            { text: "🎓 Teaching Platforms", url: "https://www.freecodecamp.org/news/how-to-start-teaching/" }
+                        ],
+                        actions: [
+                            "Offer to mentor junior developers",
+                            "Do thorough, helpful code reviews",
+                            "Answer questions in forums and communities",
+                            "Create tutorial content for beginners",
+                            "Share your knowledge generously"
+                        ]
+                    },
+                    {
+                        id: "6d",
+                        title: "Getting Referrals",
+                        description: "Leverage your network for job opportunities",
+                        resources: [
+                            { text: "📝 How to Ask for Referrals", url: "https://www.linkedin.com/business/talent/blog/job-search/how-to-ask-for-referral-on-linkedin" },
+                            { text: "💼 Referral Request Templates", url: "https://www.themuse.com/advice/how-to-ask-for-a-referral-email-template" }
+                        ],
+                        examples: {
+                            javascript: "// Example Referral Request:\n// Hi [Name],\n// I hope you're doing well! I saw [Company] is hiring for [Position].\n// I've been working on [relevant project] and think I'd be a great fit.\n// Would you be comfortable referring me?\n// Thanks for considering!\n// [Your Name]"
+                        },
+                        actions: [
+                            "Keep your network updated on your job search",
+                            "Ask for referrals thoughtfully (not spamming)",
+                            "Make it easy for people to refer you",
+                            "Thank people who help you",
+                            "Pay it forward by referring others when you can"
+                        ]
+                    },
+                    {
+                        id: "6e",
+                        title: "Building Long-term Relationships",
+                        description: "Maintain authentic connections over time",
+                        resources: [
+                            { text: "📝 Professional Relationship Building", url: "https://hbr.org/2016/05/learn-to-love-networking" },
+                            { text: "💬 Stay in Touch Strategies", url: "https://www.themuse.com/advice/the-networking-hack-thatll-change-your-career" }
+                        ],
+                        actions: [
+                            "Check in with contacts periodically",
+                            "Congratulate people on their achievements",
+                            "Share relevant articles or opportunities",
+                            "Offer help before asking for favors",
+                            "Be genuine and authentic in interactions"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let progress = {};
+
+        function initializeProgress() {
+            const saved = localStorage.getItem('careerProgress');
+            if (saved) {
+                progress = JSON.parse(saved);
+            } else {
+                progress = {};
+                tilesData.forEach(tile => {
+                    progress[tile.id] = false;
+                    tile.subtiles.forEach(subtile => {
+                        progress[subtile.id] = false;
+                    });
+                });
+                saveProgress();
+            }
+        }
+
+        function saveProgress() {
+            localStorage.setItem('careerProgress', JSON.stringify(progress));
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = Object.keys(progress).length;
+            const completed = Object.values(progress).filter(v => v).length;
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('percentComplete').textContent = percent + '%';
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+        }
+
+        function toggleTile(id) {
+            progress[id] = !progress[id];
+            saveProgress();
+            renderTiles();
+        }
+
+        function renderTiles() {
+            const container = document.getElementById('tilesContainer');
+            container.innerHTML = '';
+
+            tilesData.forEach(tile => {
+                const tileEl = document.createElement('div');
+                tileEl.className = 'tile';
+                
+                let subtileHTML = '';
+                tile.subtiles.forEach(subtile => {
+                    let resourcesHTML = subtile.resources.map(r => 
+                        `<a href="${r.url}" target="_blank" rel="noopener noreferrer" class="resource-link">${r.text}</a>`
+                    ).join('');
+
+                    let examplesHTML = '';
+                    if (subtile.examples) {
+                        examplesHTML = '<div class="examples"><h4>💻 Code Examples</h4>';
+                        for (const [lang, code] of Object.entries(subtile.examples)) {
+                            const escapedCode = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                            examplesHTML += `<strong>${lang.toUpperCase()}:</strong><div class="code-snippet">${escapedCode}</div>`;
+                        }
+                        examplesHTML += '</div>';
+                    }
+
+                    let actionsHTML = '';
+                    if (subtile.actions) {
+                        actionsHTML = '<div class="action-steps"><h4>🎯 Action Steps</h4><ul>';
+                        subtile.actions.forEach(action => {
+                            actionsHTML += `<li>${action}</li>`;
+                        });
+                        actionsHTML += '</ul></div>';
+                    }
+
+                    subtileHTML += `
+                        <div class="subtile">
+                            <div class="subtile-header">
+                                <div class="subtile-title">${subtile.title}</div>
+                                <input type="checkbox" class="subtile-checkbox" 
+                                    ${progress[subtile.id] ? 'checked' : ''} 
+                                    onchange="toggleTile('${subtile.id}')">
+                            </div>
+                            <p style="color: #666; margin-bottom: 10px;">${subtile.description}</p>
+                            <div class="resources">
+                                <strong>📚 Resources:</strong>
+                                ${resourcesHTML}
+                            </div>
+                            ${examplesHTML}
+                            ${actionsHTML}
+                        </div>
+                    `;
+                });
+
+                tileEl.innerHTML = `
+                    <div class="tile-header">
+                        <div class="tile-title">${tile.title}</div>
+                        <input type="checkbox" class="checkbox" 
+                            ${progress[tile.id] ? 'checked' : ''} 
+                            onchange="toggleTile('${tile.id}')">
+                    </div>
+                    <div class="tile-description">${tile.description}</div>
+                    <div class="subtiles">${subtileHTML}</div>
+                `;
+                
+                container.appendChild(tileEl);
+            });
+        }
+
+        function exportProgress() {
+            const dataStr = JSON.stringify(progress, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'career-progress-' + new Date().toISOString().split('T')[0] + '.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function importProgress() {
+            const input = document.getElementById('fileInput');
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        progress = importedData;
+                        saveProgress();
+                        renderTiles();
+                        alert('Progress imported successfully!');
+                    } catch (error) {
+                        alert('Error importing file. Please check the file format.');
+                        console.error('Import error:', error);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                Object.keys(progress).forEach(key => {
+                    progress[key] = false;
+                });
+                saveProgress();
+                renderTiles();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProgress();
+            renderTiles();
+            updateStats();
+        });
+    </script>
+</body>
+</html>

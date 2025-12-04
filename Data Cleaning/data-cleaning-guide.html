@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Cleaning Guide - Personal Learning Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f6f8fb 0%, #ffffff 100%);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+
+        .card.completed {
+            border-color: #48bb78;
+            background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #cbd5e0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .checkbox.checked {
+            background: #48bb78;
+            border-color: #48bb78;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .card-description {
+            color: #4a5568;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .tag-python { background: #ffd43b; color: #306998; }
+        .tag-sql { background: #f29111; color: white; }
+        .tag-r { background: #276dc3; color: white; }
+        .tag-js { background: #f7df1e; color: #000; }
+        .tag-excel { background: #217346; color: white; }
+
+        .resources {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .resource-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .resource-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-learn {
+            background: #805ad5;
+            color: white;
+        }
+
+        .btn-search {
+            background: #ed8936;
+            color: white;
+        }
+
+        .expandable {
+            margin-top: 15px;
+            border-top: 2px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .expand-btn {
+            background: #edf2f7;
+            color: #2d3748;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .expand-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .code-examples {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .code-examples.visible {
+            display: block;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .code-label {
+            color: #48bb78;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .images-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 3px solid #e2e8f0;
+        }
+
+        .images-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .reference-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .reference-images img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .prompt-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .prompt-section h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .prompt-section p {
+            color: #4a5568;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧹 Data Cleaning Mastery Guide</h1>
+            <p style="color: #4a5568; font-size: 1.1em;">Your Personal Learning & Progress Tracker</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar">0%</div>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button class="btn btn-secondary" onclick="exportProgress()">📥 Export Progress</button>
+            <button class="btn btn-primary" onclick="importProgress()">📤 Import Progress</button>
+            <button class="btn btn-danger" onclick="resetProgress()">🔄 Reset All</button>
+        </div>
+
+        <div class="grid" id="conceptsGrid"></div>
+
+        <div class="images-section">
+            <h2>📚 Reference Infographics</h2>
+            <div class="reference-images">
+                <img src="https://i.imgur.com/placeholder1.jpg" alt="6 Steps of Data Cleaning" onerror="this.style.display='none'">
+                <img src="https://i.imgur.com/placeholder2.jpg" alt="SQL Data Cleaning Cheatsheet" onerror="this.style.display='none'">
+                <img src="https://i.imgur.com/placeholder3.jpg" alt="Data Cleaning Techniques" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="prompt-section">
+                <h3>💡 Original Prompt</h3>
+                <p>Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Data Cleaning" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphic. Include information and examples in Python, SQL, R, JavaScript and Excel. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const concepts = [
+            {
+                id: 'explore-dataset',
+                title: 'Explore the Dataset',
+                description: 'Identify data sources, understand data types, and spot potential data quality issues.',
+                languages: ['python', 'sql', 'r', 'excel'],
+                learnUrl: 'https://pandas.pydata.org/docs/user_guide/10min.html',
+                searchTerm: 'exploratory data analysis techniques',
+                examples: {
+                    python: `import pandas as pd\n\n# Load and explore dataset\ndf = pd.read_csv('data.csv')\n\n# Basic info\nprint(df.info())\nprint(df.describe())\nprint(df.head())\n\n# Check data types\nprint(df.dtypes)`,
+                    sql: `-- Explore table structure\nDESCRIBE table_name;\n\n-- Basic statistics\nSELECT COUNT(*), \n       COUNT(DISTINCT column_name)\nFROM table_name;\n\n-- Sample data\nSELECT * FROM table_name LIMIT 10;`,
+                    r: `# Load and explore\ndf <- read.csv("data.csv")\n\nstr(df)        # Structure\nsummary(df)    # Summary stats\nhead(df)       # First rows\nglimpse(df)    # dplyr overview`,
+                    excel: `Formula Techniques:\n- =ROWS(A:A) - Count rows\n- =COLUMNS(A:Z) - Count columns\n- Data > Data Types > Detect\n- Use Data Profiling tools`
+                }
+            },
+            {
+                id: 'missing-data',
+                title: 'Handle Missing Data',
+                description: 'Identify missing values and address them through removal or imputation using mean, median, or mode.',
+                languages: ['python', 'sql', 'r', 'js', 'excel'],
+                learnUrl: 'https://scikit-learn.org/stable/modules/impute.html',
+                searchTerm: 'handling missing data imputation methods',
+                examples: {
+                    python: `import pandas as pd\nimport numpy as np\n\n# Identify missing values\ndf.isnull().sum()\n\n# Remove rows with missing values\ndf_clean = df.dropna()\n\n# Impute with mean\ndf['column'].fillna(df['column'].mean(), inplace=True)\n\n# Impute with median\ndf['column'].fillna(df['column'].median(), inplace=True)`,
+                    sql: `-- Find NULL values\nSELECT * FROM table WHERE column IS NULL;\n\n-- Replace with default\nUPDATE table \nSET column = COALESCE(column, default_value);\n\n-- Remove rows with NULLs\nDELETE FROM table WHERE column IS NULL;`,
+                    r: `# Check missing values\nsum(is.na(df))\n\n# Remove NAs\ndf_clean <- na.omit(df)\n\n# Impute with mean\ndf$column[is.na(df$column)] <- mean(df$column, na.rm=TRUE)`,
+                    excel: `Techniques:\n- Go To Special > Blanks\n- =ISBLANK() function\n- =IFERROR(value, replacement)\n- Fill > Down/Up\n- Use AVERAGE() with IFERROR`
+                }
+            },
+            {
+                id: 'remove-duplicates',
+                title: 'Remove Duplicates',
+                description: 'Identify and eliminate duplicate records while retaining unique data.',
+                languages: ['python', 'sql', 'r', 'js', 'excel'],
+                learnUrl: 'https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop_duplicates.html',
+                searchTerm: 'remove duplicate rows data cleaning',
+                examples: {
+                    python: `# Check for duplicates\ndf.duplicated().sum()\n\n# View duplicates\ndf[df.duplicated(keep=False)]\n\n# Remove duplicates\ndf_clean = df.drop_duplicates()\n\n# Remove based on specific columns\ndf_clean = df.drop_duplicates(subset=['col1', 'col2'])`,
+                    sql: `-- Find duplicates\nSELECT column, COUNT(*)\nFROM table\nGROUP BY column\nHAVING COUNT(*) > 1;\n\n-- Remove duplicates (keep first)\nDELETE FROM table\nWHERE id NOT IN (\n  SELECT MIN(id)\n  FROM table\n  GROUP BY column\n);`,
+                    r: `# Check duplicates\nsum(duplicated(df))\n\n# Remove duplicates\ndf_clean <- unique(df)\n# Or with dplyr\ndf_clean <- df %>% distinct()`,
+                    excel: `Steps:\n1. Data > Remove Duplicates\n2. Select columns to check\n3. Use =COUNTIF() to find duplicates\n4. Conditional formatting for highlighting`
+                }
+            },
+            {
+                id: 'formatting',
+                title: 'Handle Formatting',
+                description: 'Standardize date formats, text capitalization, and ensure uniform units across the dataset.',
+                languages: ['python', 'sql', 'r', 'js', 'excel'],
+                learnUrl: 'https://pandas.pydata.org/docs/user_guide/text.html',
+                searchTerm: 'data standardization formatting techniques',
+                examples: {
+                    python: `# Standardize text\ndf['column'] = df['column'].str.lower()\ndf['column'] = df['column'].str.strip()\n\n# Date formatting\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\n\n# Standardize units\ndf['km'] = df['miles'] * 1.60934`,
+                    sql: `-- Text formatting\nUPDATE table SET column = LOWER(TRIM(column));\n\n-- Date formatting\nUPDATE table \nSET date = DATE_FORMAT(date, '%Y-%m-%d');\n\n-- Standardize case\nUPDATE table SET name = CONCAT(UPPER(SUBSTRING(name,1,1)), LOWER(SUBSTRING(name,2)));`,
+                    r: `# Text formatting\ndf$column <- tolower(trimws(df$column))\n\n# Date formatting\ndf$date <- as.Date(df$date, format="%Y-%m-%d")\n\n# Standardize values\ndf$km <- df$miles * 1.60934`,
+                    excel: `Functions:\n- =UPPER(text) / =LOWER(text)\n- =PROPER(text) - Title Case\n- =TRIM(text) - Remove spaces\n- =TEXT(date, "yyyy-mm-dd")\n- Format Painter for consistency`
+                }
+            },
+            {
+                id: 'outliers',
+                title: 'Managing Outliers',
+                description: 'Use statistical methods like Z-score and IQR to identify and handle outliers appropriately.',
+                languages: ['python', 'sql', 'r', 'js'],
+                learnUrl: 'https://scikit-learn.org/stable/modules/outlier_detection.html',
+                searchTerm: 'outlier detection removal techniques statistics',
+                examples: {
+                    python: `import numpy as np\nfrom scipy import stats\n\n# Z-score method\nz_scores = np.abs(stats.zscore(df['column']))\ndf_clean = df[z_scores < 3]\n\n# IQR method\nQ1 = df['column'].quantile(0.25)\nQ3 = df['column'].quantile(0.75)\nIQR = Q3 - Q1\ndf_clean = df[~((df['column'] < (Q1 - 1.5 * IQR)) | \n                 (df['column'] > (Q3 + 1.5 * IQR)))]`,
+                    sql: `-- Using statistical boundaries\nWITH stats AS (\n  SELECT \n    AVG(column) as mean,\n    STDDEV(column) as std\n  FROM table\n)\nSELECT * FROM table, stats\nWHERE ABS(column - mean) <= 3 * std;`,
+                    r: `# IQR method\nQ1 <- quantile(df$column, 0.25)\nQ3 <- quantile(df$column, 0.75)\nIQR <- Q3 - Q1\n\ndf_clean <- df[df$column >= (Q1 - 1.5*IQR) & \n                df$column <= (Q3 + 1.5*IQR), ]`
+                }
+            },
+            {
+                id: 'validation',
+                title: 'Validating Data',
+                description: 'Cross-verify cleaned data with original sources and test for consistency and reliability.',
+                languages: ['python', 'sql', 'r', 'excel'],
+                learnUrl: 'https://great-expectations.io/',
+                searchTerm: 'data validation quality checks testing',
+                examples: {
+                    python: `# Validation checks\nassert df['age'].min() >= 0, "Age cannot be negative"\nassert df['email'].str.contains('@').all(), "Invalid emails"\n\n# Range validation\ndf['price'].between(0, 10000).all()\n\n# Consistency check\noriginal_count = len(df_original)\ncleaned_count = len(df_clean)\nprint(f"Records removed: {original_count - cleaned_count}")`,
+                    sql: `-- Validate data quality\nSELECT \n  COUNT(*) as total_records,\n  COUNT(DISTINCT id) as unique_ids,\n  SUM(CASE WHEN column IS NULL THEN 1 ELSE 0 END) as null_count\nFROM table;\n\n-- Check constraints\nALTER TABLE table ADD CONSTRAINT check_positive CHECK (value >= 0);`,
+                    r: `# Validation checks\nstopifnot(all(df$age >= 0))\nstopifnot(all(!is.na(df$required_column)))\n\n# Summary comparison\noriginal_summary <- summary(df_original)\ncleaned_summary <- summary(df_clean)`,
+                    excel: `Validation Tools:\n- Data > Data Validation\n- =AND(), =OR() for logic checks\n- Conditional Formatting for alerts\n- Create validation rules\n- Compare before/after counts`
+                }
+            },
+            {
+                id: 'data-filtering',
+                title: 'Data Filtering',
+                description: 'Remove irrelevant or unnecessary data to focus on the most relevant information.',
+                languages: ['python', 'sql', 'r', 'js', 'excel'],
+                learnUrl: 'https://pandas.pydata.org/docs/user_guide/indexing.html',
+                searchTerm: 'data filtering querying techniques',
+                examples: {
+                    python: `# Filter by condition\ndf_filtered = df[df['age'] > 18]\n\n# Multiple conditions\ndf_filtered = df[(df['age'] > 18) & (df['status'] == 'active')]\n\n# Filter by list\nvalid_ids = [1, 2, 3]\ndf_filtered = df[df['id'].isin(valid_ids)]\n\n# Remove columns\ndf_filtered = df.drop(['unnecessary_col'], axis=1)`,
+                    sql: `-- Basic filtering\nSELECT * FROM table WHERE age > 18;\n\n-- Multiple conditions\nSELECT * FROM table \nWHERE age > 18 AND status = 'active';\n\n-- Filter by list\nSELECT * FROM table \nWHERE id IN (1, 2, 3);`,
+                    r: `# Filter rows\ndf_filtered <- df[df$age > 18, ]\n\n# Using dplyr\ndf_filtered <- df %>% \n  filter(age > 18, status == "active") %>%\n  select(-unnecessary_col)`
+                }
+            },
+            {
+                id: 'data-transformation',
+                title: 'Data Transformation',
+                description: 'Modify data to make it more suitable for analysis or modeling, including normalization and encoding.',
+                languages: ['python', 'sql', 'r', 'js'],
+                learnUrl: 'https://scikit-learn.org/stable/modules/preprocessing.html',
+                searchTerm: 'data transformation normalization encoding',
+                examples: {
+                    python: `from sklearn.preprocessing import StandardScaler, LabelEncoder\n\n# Normalization\nscaler = StandardScaler()\ndf['normalized'] = scaler.fit_transform(df[['column']])\n\n# Log transformation\ndf['log_value'] = np.log1p(df['value'])\n\n# Encoding categorical data\nle = LabelEncoder()\ndf['encoded'] = le.fit_transform(df['category'])`,
+                    sql: `-- Create derived columns\nALTER TABLE table ADD COLUMN normalized_value FLOAT;\n\nUPDATE table \nSET normalized_value = (value - (SELECT AVG(value) FROM table)) / \n                       (SELECT STDDEV(value) FROM table);\n\n-- Log transformation\nUPDATE table SET log_value = LOG(value + 1);`,
+                    r: `# Normalization\ndf$normalized <- scale(df$column)\n\n# Log transformation\ndf$log_value <- log1p(df$value)\n\n# Factor encoding\ndf$category <- as.factor(df$category)`
+                }
+            },
+            {
+                id: 'data-standardization',
+                title: 'Data Standardization',
+                description: 'Put all data into a common format to facilitate comparison and analysis.',
+                languages: ['python', 'sql', 'r', 'excel'],
+                learnUrl: 'https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.astype.html',
+                searchTerm: 'data standardization normalization best practices',
+                examples: {
+                    python: `# Standardize column names\ndf.columns = df.columns.str.lower().str.replace(' ', '_')\n\n# Standardize data types\ndf['id'] = df['id'].astype(int)\ndf['date'] = pd.to_datetime(df['date'])\n\n# Standardize text format\ndf['country'] = df['country'].str.upper().str.strip()`,
+                    sql: `-- Rename columns to standard format\nALTER TABLE table RENAME COLUMN "Old Name" TO old_name;\n\n-- Cast data types\nALTER TABLE table ALTER COLUMN id TYPE INTEGER;\n\n-- Standardize values\nUPDATE table SET country = UPPER(TRIM(country));`,
+                    r: `# Standardize names\nnames(df) <- tolower(gsub(" ", "_", names(df)))\n\n# Convert types\ndf$id <- as.integer(df$id)\ndf$date <- as.Date(df$date)\n\n# Standardize values\ndf$country <- toupper(trimws(df$country))`
+                }
+            },
+            {
+                id: 'data-deduplication',
+                title: 'Data Deduplication',
+                description: 'Ensure dataset contains only unique records by eliminating redundant entries.',
+                languages: ['python', 'sql', 'r', 'js', 'excel'],
+                learnUrl: 'https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop_duplicates.html',
+                searchTerm: 'deduplication techniques data cleaning',
+                examples: {
+                    python: `# Advanced deduplication\n# Keep first occurrence\ndf_unique = df.drop_duplicates(subset=['email'], keep='first')\n\n# Mark duplicates\ndf['is_duplicate'] = df.duplicated(subset=['email'])\n\n# Fuzzy matching for similar records\nfrom fuzzywuzzy import fuzz\n# Compare similarity scores`,
+                    sql: `-- Find and remove duplicates\nWITH RankedRows AS (\n  SELECT *, \n    ROW_NUMBER() OVER (PARTITION BY email ORDER BY id) as rn\n  FROM table\n)\nDELETE FROM table WHERE id IN (\n  SELECT id FROM RankedRows WHERE rn > 1\n);`,
+                    r: `# Remove duplicates\ndf_unique <- df[!duplicated(df$email), ]\n\n# Using dplyr\ndf_unique <- df %>% distinct(email, .keep_all = TRUE)`
+                }
+            },
+            {
+                id: 'data-imputation',
+                title: 'Data Imputation',
+                description: 'Replace missing or null values with substituted values to maintain data integrity.',
+                languages: ['python', 'sql', 'r'],
+                learnUrl: 'https://scikit-learn.org/stable/modules/impute.html',
+                searchTerm: 'advanced imputation techniques machine learning',
+                examples: {
+                    python: `from sklearn.impute import SimpleImputer, KNNImputer\n\n# Simple imputation\nimputer = SimpleImputer(strategy='mean')\ndf[['column']] = imputer.fit_transform(df[['column']])\n\n# KNN imputation (advanced)\nknn_imputer = KNNImputer(n_neighbors=5)\ndf_imputed = pd.DataFrame(knn_imputer.fit_transform(df))`,
+                    sql: `-- Forward fill\nUPDATE table t1\nJOIN table t2 ON t1.id = t2.id - 1\nSET t1.column = t2.column\nWHERE t1.column IS NULL;\n\n-- Impute with average\nUPDATE table SET column = (SELECT AVG(column) FROM table)\nWHERE column IS NULL;`,
+                    r: `library(mice)\n\n# Simple imputation\ndf$column[is.na(df$column)] <- mean(df$column, na.rm=TRUE)\n\n# MICE (Multiple Imputation)\nimputed_data <- mice(df, m=5, method='pmm', seed=500)`
+                }
+            },
+            {
+                id: 'data-encoding',
+                title: 'Data Encoding',
+                description: 'Convert categorical data into numerical format for machine learning algorithms.',
+                languages: ['python', 'sql', 'r', 'js'],
+                learnUrl: 'https://scikit-learn.org/stable/modules/preprocessing.html#encoding-categorical-features',
+                searchTerm: 'categorical encoding one-hot label encoding',
+                examples: {
+                    python: `from sklearn.preprocessing import LabelEncoder, OneHotEncoder\nimport pandas as pd\n\n# Label Encoding\nle = LabelEncoder()\ndf['category_encoded'] = le.fit_transform(df['category'])\n\n# One-Hot Encoding\ndf_encoded = pd.get_dummies(df, columns=['category'])\n\n# Ordinal Encoding\nfrom sklearn.preprocessing import OrdinalEncoder\noe = OrdinalEncoder()\ndf['ordinal'] = oe.fit_transform(df[['size']])`,
+                    sql: `-- Simple encoding with CASE\nSELECT *,\n  CASE category\n    WHEN 'A' THEN 1\n    WHEN 'B' THEN 2\n    WHEN 'C' THEN 3\n  END as category_encoded\nFROM table;\n\n-- Create binary columns (one-hot)\nSELECT *,\n  CASE WHEN category = 'A' THEN 1 ELSE 0 END as cat_A,\n  CASE WHEN category = 'B' THEN 1 ELSE 0 END as cat_B\nFROM table;`,
+                    r: `# Label encoding\ndf$category_encoded <- as.numeric(factor(df$category))\n\n# One-hot encoding\nlibrary(caret)\ndummy <- dummyVars(" ~ category", data=df)\ndf_encoded <- data.frame(predict(dummy, newdata=df))`
+                }
+            },
+            {
+                id: 'data-aggregation',
+                title: 'Data Aggregation',
+                description: 'Combine data by category, time period, or other criteria to obtain summarized statistics.',
+                languages: ['python', 'sql', 'r', 'js', 'excel'],
+                learnUrl: 'https://pandas.pydata.org/docs/user_guide/groupby.html',
+                searchTerm: 'data aggregation groupby summarization',
+                examples: {
+                    python: `# Group by aggregation\ndf_agg = df.groupby('category').agg({\n    'sales': ['sum', 'mean', 'count'],\n    'profit': 'sum'\n})\n\n# Multiple groupby\ndf_agg = df.groupby(['category', 'region'])['sales'].sum()\n\n# Custom aggregation\ndf_agg = df.groupby('category').apply(lambda x: x['sales'].max() - x['sales'].min())`,
+                    sql: `-- Basic aggregation\nSELECT category, \n       SUM(sales) as total_sales,\n       AVG(sales) as avg_sales,\n       COUNT(*) as count\nFROM table\nGROUP BY category;\n\n-- Multiple grouping\nSELECT category, region,\n       SUM(sales) as total_sales\nFROM table\nGROUP BY category, region;`,
+                    r: `# Using dplyr\nlibrary(dplyr)\ndf_agg <- df %>%\n  group_by(category) %>%\n  summarise(\n    total_sales = sum(sales),\n    avg_sales = mean(sales),\n    count = n()\n  )`,
+                    excel: `Techniques:\n- Pivot Tables (Insert > PivotTable)\n- =SUMIF(range, criteria, sum_range)\n- =AVERAGEIF()\n- =COUNTIF()\n- Data > Subtotal\n- Power Query aggregations`
+                }
+            },
+            {
+                id: 'data-sampling',
+                title: 'Data Sampling',
+                description: 'Select a representative subset of data while preserving data integrity.',
+                languages: ['python', 'sql', 'r', 'js'],
+                learnUrl: 'https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sample.html',
+                searchTerm: 'data sampling techniques stratified random',
+                examples: {
+                    python: `# Random sampling\ndf_sample = df.sample(n=1000, random_state=42)\n\n# Percentage sampling\ndf_sample = df.sample(frac=0.1, random_state=42)\n\n# Stratified sampling\nfrom sklearn.model_selection import train_test_split\ndf_sample = df.groupby('category', group_keys=False).apply(lambda x: x.sample(frac=0.1))`,
+                    sql: `-- Random sampling\nSELECT * FROM table\nORDER BY RAND()\nLIMIT 1000;\n\n-- Percentage sampling\nSELECT * FROM table\nWHERE RAND() < 0.1;\n\n-- Systematic sampling\nSELECT * FROM (\n  SELECT *, ROW_NUMBER() OVER (ORDER BY id) as rn\n  FROM table\n) WHERE MOD(rn, 10) = 0;`,
+                    r: `# Random sampling\ndf_sample <- df[sample(nrow(df), 1000), ]\n\n# Using dplyr\ndf_sample <- df %>% sample_n(1000)\ndf_sample <- df %>% sample_frac(0.1)\n\n# Stratified\ndf_sample <- df %>% group_by(category) %>% sample_frac(0.1)`
+                }
+            }
+        ];
+
+        let completedConcepts = new Set();
+
+        function init() {
+            loadProgress();
+            renderConcepts();
+            updateProgress();
+        }
+
+        function renderConcepts() {
+            const grid = document.getElementById('conceptsGrid');
+            grid.innerHTML = '';
+
+            concepts.forEach(concept => {
+                const card = createCard(concept);
+                grid.appendChild(card);
+            });
+        }
+
+        function createCard(concept) {
+            const card = document.createElement('div');
+            card.className = `card ${completedConcepts.has(concept.id) ? 'completed' : ''}`;
+            card.id = concept.id;
+
+            const languageTags = concept.languages.map(lang => 
+                `<span class="tag tag-${lang}">${lang.toUpperCase()}</span>`
+            ).join('');
+
+            const examplesHtml = Object.entries(concept.examples).map(([lang, code]) => `
+                <div class="code-block">
+                    <span class="code-label">${lang.toUpperCase()}</span>
+                    <pre>${escapeHtml(code)}</pre>
+                </div>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3 class="card-title">${concept.title}</h3>
+                    <div class="checkbox ${completedConcepts.has(concept.id) ? 'checked' : ''}" 
+                         onclick="toggleComplete('${concept.id}', event)"></div>
+                </div>
+                <p class="card-description">${concept.description}</p>
+                <div class="tags">${languageTags}</div>
+                <div class="resources">
+                    <a href="${concept.learnUrl}" target="_blank" class="resource-btn btn-learn">📚 Learn More</a>
+                    <a href="https://www.google.com/search?q=${encodeURIComponent(concept.searchTerm)}" 
+                       target="_blank" class="resource-btn btn-search">🔍 Search Resources</a>
+                </div>
+                <div class="expandable">
+                    <button class="expand-btn" onclick="toggleExamples('${concept.id}', event)">
+                        💻 Show Code Examples
+                    </button>
+                    <div class="code-examples" id="examples-${concept.id}">
+                        ${examplesHtml}
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function toggleComplete(id, event) {
+            event.stopPropagation();
+            if (completedConcepts.has(id)) {
+                completedConcepts.delete(id);
+            } else {
+                completedConcepts.add(id);
+            }
+            saveProgress();
+            renderConcepts();
+            updateProgress();
+        }
+
+        function toggleExamples(id, event) {
+            event.stopPropagation();
+            const examples = document.getElementById(`examples-${id}`);
+            const btn = event.target;
+            
+            if (examples.classList.contains('visible')) {
+                examples.classList.remove('visible');
+                btn.textContent = '💻 Show Code Examples';
+            } else {
+                examples.classList.add('visible');
+                btn.textContent = '🔼 Hide Code Examples';
+            }
+        }
+
+        function updateProgress() {
+            const total = concepts.length;
+            const completed = completedConcepts.size;
+            const percentage = Math.round((completed / total) * 100);
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = `${percentage}% Complete (${completed}/${total})`;
+        }
+
+        function saveProgress() {
+            const progress = {
+                completed: Array.from(completedConcepts),
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('dataCleaningProgress', JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('dataCleaningProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                completedConcepts = new Set(progress.completed);
+            }
+        }
+
+        function exportProgress() {
+            const progress = {
+                completed: Array.from(completedConcepts),
+                total: concepts.length,
+                percentage: Math.round((completedConcepts.size / concepts.length) * 100),
+                timestamp: new Date().toISOString(),
+                concepts: concepts.filter(c => completedConcepts.has(c.id)).map(c => ({
+                    id: c.id,
+                    title: c.title
+                }))
+            };
+
+            const dataStr = JSON.stringify(progress, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `data-cleaning-progress-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            alert('✅ Progress exported successfully!');
+        }
+
+        function importProgress() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    try {
+                        const progress = JSON.parse(event.target.result);
+                        completedConcepts = new Set(progress.completed);
+                        saveProgress();
+                        renderConcepts();
+                        updateProgress();
+                        alert('✅ Progress imported successfully!');
+                    } catch (error) {
+                        alert('❌ Error importing progress. Please check the file format.');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                completedConcepts.clear();
+                saveProgress();
+                renderConcepts();
+                updateProgress();
+                alert('✅ Progress reset successfully!');
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize on page load
+        init();
+    </script>
+</body>
+</html>

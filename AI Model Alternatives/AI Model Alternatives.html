@@ -1,0 +1,206 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Alternatives</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        
+        <h1 class="text-3xl md:text-5xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+            Open-Source Alternatives to Closed AI Models
+        </h1>
+
+        <!-- The Graphic -->
+        <div class="mb-12 bg-gray-800 p-4 rounded-lg shadow-xl">
+            <h2 class="text-2xl font-semibold mb-4 text-center text-gray-300">The Graphic You Provided</h2>
+            <img src="20251114_210233.jpg" alt="Open-source alternatives to closed models" class="w-full max-w-lg mx-auto rounded-lg">
+            <p class="text-center text-sm text-gray-500 mt-2">Image from okara.ai</p>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="mb-12">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-center text-gray-300">Model Comparison Table</h2>
+            <div class="overflow-x-auto rounded-lg shadow-lg">
+                <table class="w-full min-w-max bg-gray-800">
+                    <thead class="bg-gray-700">
+                        <tr>
+                            <th class="p-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">Model Type</th>
+                            <th class="p-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">Closed Model</th>
+                            <th class="p-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">Open-Source Alternative</th>
+                            <th class="p-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">Main Features</th>
+                            <th class="p-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider">Cost (approx.)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        <!-- Row 1: General / Coding -->
+                        <tr class="hover:bg-gray-700/50 transition-colors">
+                            <td class="p-4 align-top text-blue-300 font-medium">General & Coding</td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold">claude sonnet 4.5</div>
+                                <div class="text-sm text-gray-400">(Anthropic)</div>
+                            </td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold">minimax m2</div>
+                                <div class="text-sm text-gray-400">(Minimax)</div>
+                            </td>
+                            <td class="p-4 align-top text-sm">
+                                <strong class="text-gray-300">Claude:</strong> Best-in-class for agentic coding, computer use, and complex reasoning.<br>
+                                <strong class="text-gray-300">Minimax:</strong> Open-source, highly efficient MoE model for coding and agent tasks.
+                            </td>
+                            <td class="p-4 align-top text-sm">
+                                <strong class="text-gray-300">Claude:</strong> $3/1M in, $15/1M out<br>
+                                <strong class="text-gray-300">Minimax:</strong> $0.30/1M in, $1.20/1M out (Open-source weights free)
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: Image Editing -->
+                        <tr class="hover:bg-gray-700/50 transition-colors">
+                            <td class="p-4 align-top text-green-300 font-medium">Image Editing</td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold">gemini 2.5 image</div>
+                                <div class="text-sm text-gray-400">(Google)</div>
+                            </td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold">qwen image edit</div>
+                                <div class="text-sm text-gray-400">(Alibaba)</div>
+                            </td>
+                            <td class="p-4 align-top text-sm">
+                                <strong class="text-gray-300">Gemini:</strong> Maintains subject identity, prompt-based editing, visual reasoning.<br>
+                                <strong class="text-gray-300">Qwen:</strong> Precise in-image text editing, semantic & appearance control.
+                            </td>
+                            <td class="p-4 align-top text-sm">
+                                <strong class="text-gray-300">Gemini:</strong> $0.039 / image<br>
+                                <strong class="text-gray-300">Qwen:</strong> $0.04 / image
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: Frontier Model -->
+                        <tr class="hover:bg-gray-700/50 transition-colors">
+                            <td class="p-4 align-top text-yellow-300 font-medium">Frontier Model</td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold">gpt-5</div>
+                                <div class="text-sm text-gray-400">(OpenAI)</div>
+                            </td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold">kimi k2</div>
+                                <div class="text-sm text-gray-400">(Moonshot AI)</div>
+                            </td>
+                            <td class="p-4 align-top text-sm">
+                                <strong class="text-gray-300">GPT-5:</strong> Adaptive thinking, personality presets, advanced reasoning.<br>
+                                <strong class="text-gray-300">Kimi:</strong> 1T parameter open-source MoE, strong coding and agent capabilities.
+                            </td>
+                            <td class="p-4 align-top text-sm">
+                                <strong class="text-gray-300">GPT-5:</strong> $1.25/1M in, $10/1M out<br>
+                                <strong class="text-gray-300">Kimi:</strong> Open-source / API pricing varies
+                            </td>
+                        </tr>
+
+                        <!-- Row 4: Code Generation -->
+                        <tr class="hover:bg-gray-700/50 transition-colors">
+                            <td class="p-4 align-top text-red-300 font-medium">Code Generation</td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold">grok code fast</div>
+                                <div class="text-sm text-gray-400">(xAI)</div>
+                            </td>
+                            <td class="p-4 align-top">
+                                <div class="font-bold">qwen 3 coder</div>
+                                <div class="text-sm text-gray-400">(Alibaba)</div>
+                            </td>
+                            <td class="p-4 align-top text-sm">
+                                <strong class="text-gray-300">Grok:</strong> Fast, low-cost, function calling, structured outputs.<br>
+                                <strong class="text-gray-300">Qwen:</strong> Open-source CLI agent, optimized for developer workflows.
+                            </td>
+                            <td class="p-4 align-top text-sm">
+                                <strong class="text-gray-300">Grok:</strong> $0.20/1M in, $1.50/1M out<br>
+                                <strong class="text-gray-300">Qwen:</strong> Free options (2,000 req/day)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Descriptions and Links -->
+        <div>
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-center text-gray-300">Model Details & Links</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Closed Models -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-blue-500/30">
+                    <h3 class="text-xl font-bold mb-4 text-blue-300">Closed Models</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold">Claude Sonnet 4.5</h4>
+                            <p class="text-sm text-gray-400 mb-2">A top-tier model from Anthropic, excelling at agentic coding, computer use, and complex reasoning tasks.</p>
+                            <a href="https://www.anthropic.com/claude/sonnet" target="_blank" class="text-blue-400 hover:text-blue-300 hover:underline">Go to Claude Sonnet →</a>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold">Gemini 2.5 Image</h4>
+                            <p class="text-sm text-gray-400 mb-2">Google's advanced image model (also known as Nano Banana) that can maintain subject identity, perform prompt-based editing, and use visual reasoning.</p>
+                            <a href="https://aistudio.google.com/models/gemini-2-5-flash-image" target="_blank" class="text-blue-400 hover:text-blue-300 hover:underline">Go to Gemini Image →</a>
+                        </div>
+<div>
+                            <h4 class="text-lg font-semibold">GPT-5</h4>
+                            <p class="text-sm text-gray-400 mb-2">OpenAI's latest frontier model (including the 5.1 update) featuring adaptive thinking, customizable personality presets, and improved instruction following.</p>
+                            <a href="https://www.leanware.co/insights/gpt-5-features-guide" target="_blank" class="text-blue-400 hover:text-blue-300 hover:underline">Learn about GPT-5 →</a>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold">Grok Code Fast</h4>
+                            <p class="text-sm text-gray-400 mb-2">A fast, low-cost coding model from xAI that supports function calling, structured outputs, and reasoning.</p>
+                            <a href="https://docs.x.ai/docs/models/grok-code-fast-1" target="_blank" class="text-blue-400 hover:text-blue-300 hover:underline">Go to Grok Code Docs →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open-Source Alternatives -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-purple-500/30">
+                    <h3 class="text-xl font-bold mb-4 text-purple-300">Open-Source Alternatives</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold">Minimax M2</h4>
+                            <p class="text-sm text-gray-400 mb-2">An efficient open-source MoE model (10B active params) built for elite performance in coding and agentic tasks at a fraction of the cost.</p>
+                            <a href="https://huggingface.co/MiniMaxAI/MiniMax-M2" target="_blank" class="text-purple-400 hover:text-purple-300 hover:underline">Get Minimax M2 (Hugging Face) →</a>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold">Qwen Image Edit</h4>
+                            <p class="text-sm text-gray-400 mb-2">An open-source model from Alibaba that specializes in precise text editing within images, along with semantic and appearance control.</p>
+                            <a href="https://huggingface.co/Qwen/Qwen-Image-Edit" target="_blank" class="text-purple-400 hover:text-purple-300 hover:underline">Get Qwen Image Edit (Hugging Face) →</a>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold">Kimi K2</h4>
+                            <p class="text-sm text-gray-400 mb-2">A 1-trillion parameter open-source MoE model from Moonshot AI, highly capable in frontier knowledge, reasoning, and coding.</p>
+                            <a href="https://huggingface.co/moonshotai/Kimi-K2-Instruct" target="_blank" class="text-purple-400 hover:text-purple-300 hover:underline">Get Kimi K2 (Hugging Face) →</a>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold">Qwen 3 Coder</h4>
+                            <p class="text-sm text-gray-400 mb-2">An open-source command-line AI workflow tool from Alibaba, optimized for Qwen3-Coder models to enhance developer workflows.</p>
+                            <a href="https://github.com/QwenLM/qwen-code" target="_blank" class="text-purple-400 hover:text-purple-300 hover:underline">Get Qwen 3 Coder (GitHub) →</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <center>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/rnqObDZ4C-U?si=H0iBrECfxYVuLZhe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+	    </center>
+        </div>
+
+        <!-- Original Prompt -->
+        <div class="mt-12 bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-300">Your Original Prompt</h2>
+            <pre class="bg-gray-900 p-4 rounded-md text-gray-400 text-sm whitespace-pre-wrap font-mono">Create an HTML/JavaScript app for each model, describe it, and a URL link to get each  model. Make a table, comparing each model by icon, name, main features, and cost. Include the graphic. Include the Prompt at the end. Interactively ask questions for anything that is not clear</pre>
+        </div>
+
+    </div>
+
+</body>
+</html>

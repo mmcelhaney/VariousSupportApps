@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humanoids In America Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4CAF50;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 3px solid #667eea;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .tab:hover {
+            background: #e8e8e8;
+            color: #667eea;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: -3px;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .map-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .company-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .company-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .company-card.contacted {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #f0fff0 0%, #ffffff 100%);
+        }
+
+        .company-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .company-card .location {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .contact-check {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .concept-tile {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .concept-tile:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .concept-tile.completed {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #f0fff0 0%, #ffffff 100%);
+        }
+
+        .concept-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .concept-title {
+            flex: 1;
+        }
+
+        .concept-title h3 {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 1.4em;
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-beginner {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .badge-intermediate {
+            background: #ff9800;
+            color: white;
+        }
+
+        .badge-advanced {
+            background: #f44336;
+            color: white;
+        }
+
+        .badge-time {
+            background: #2196F3;
+            color: white;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .complete-check {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .complete-check:hover {
+            transform: scale(1.1);
+        }
+
+        .concept-content {
+            margin-top: 15px;
+        }
+
+        .concept-content p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .prerequisites {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .prerequisites strong {
+            color: #856404;
+        }
+
+        .related-links {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .related-links strong {
+            color: #0c5460;
+        }
+
+        .resources {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .resource-link {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .resource-link:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #444;
+        }
+
+        .code-lang {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+            border-radius: 15px;
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .reference-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .reference-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .tabs, .controls, .btn {
+                display: none;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Humanoids In America Guide</h1>
+            <p>Interactive Learning Dashboard for Robotics Students & Educators</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab(0)">📍 Interactive Map</button>
+            <button class="tab" onclick="switchTab(1)">🧠 AI Use Cases</button>
+            <button class="tab" onclick="switchTab(2)">🔧 Build Guide</button>
+            <button class="tab" onclick="switchTab(3)">📚 References</button>
+        </div>
+
+        <!-- Tab 1: Interactive Map -->
+        <div class="tab-content active">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="exportProgress()">💾 Export Progress</button>
+                <button class="btn btn-success" onclick="importProgress()">📥 Import Progress</button>
+                <button class="btn btn-warning" onclick="generateReport()">📄 Generate PDF Report</button>
+                <button class="btn btn-danger" onclick="resetProgress()">🔄 Reset All</button>
+                <input type="file" id="importFile" style="display:none" accept=".json" onchange="handleImport(event)">
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3 id="companiesContacted">0</h3>
+                    <p>Companies Contacted</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="conceptsCompleted">0</h3>
+                    <p>Concepts Completed</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalProgress">0%</h3>
+                    <p>Overall Progress</p>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <svg id="usMap" viewBox="0 0 960 600" style="width: 100%; height: auto; background: #e8f4f8; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <!-- Accurate US Map with State Borders -->
+                    <!-- Highly Accurate US Map with Realistic State Borders -->
+                    <g id="states" fill="#f0f8ff" stroke="#8b9dc3" stroke-width="1">
+                        <!-- Maine -->
+                        <path d="M 870,85 L 885,80 L 895,85 L 900,95 L 898,110 L 893,125 L 885,135 L 878,140 L 872,138 L 868,130 L 865,118 L 867,105 L 870,95 Z"/>
+                        
+                        <!-- New Hampshire -->
+                        <path d="M 865,118 L 872,138 L 868,155 L 862,148 L 858,135 L 860,125 Z"/>
+                        
+                        <!-- Vermont -->
+                        <path d="M 850,125 L 858,135 L 860,150 L 855,165 L 848,160 L 845,145 L 847,135 Z"/>
+                        
+                        <!-- Massachusetts -->
+                        <path d="M 862,148 L 872,138 L 885,135 L 895,138 L 902,142 L 905,148 L 902,153 L 895,155 L 882,158 L 870,160 L 865,156 Z"/>
+                        
+                        <!-- Rhode Island -->
+                        <path d="M 895,155 L 902,153 L 904,158 L 900,162 L 895,161 Z"/>
+                        
+                        <!-- Connecticut -->
+                        <path d="M 882,158 L 895,155 L 895,165 L 888,170 L 880,168 Z"/>
+                        
+                        <!-- New York -->
+                        <path d="M 820,130 L 850,125 L 858,135 L 865,148 L 870,160 L 865,165 L 850,168 L 835,172 L 820,175 L 805,178 L 795,180 L 788,182 L 785,178 L 785,170 L 790,160 L 798,150 L 808,142 Z"/>
+                        
+                        <!-- Pennsylvania -->
+                        <path d="M 785,178 L 788,182 L 795,185 L 810,188 L 830,190 L 850,192 L 865,193 L 870,195 L 868,202 L 860,205 L 845,207 L 825,208 L 805,208 L 790,206 L 780,202 L 778,195 L 780,188 Z"/>
+                        
+                        <!-- New Jersey -->
+                        <path d="M 865,193 L 875,192 L 882,195 L 885,202 L 883,215 L 878,222 L 872,225 L 868,222 L 865,210 L 866,200 Z"/>
+                        
+                        <!-- Delaware -->
+                        <path d="M 860,205 L 868,202 L 870,210 L 868,222 L 863,228 L 858,225 L 857,215 Z"/>
+                        
+                        <!-- Maryland -->
+                        <path d="M 845,207 L 860,205 L 863,215 L 858,225 L 850,230 L 835,232 L 825,230 L 820,225 L 822,218 L 830,212 Z"/>
+                        
+                        <!-- West Virginia -->
+                        <path d="M 780,202 L 790,206 L 805,208 L 820,210 L 825,218 L 822,230 L 815,240 L 805,245 L 795,248 L 785,248 L 778,243 L 773,235 L 770,225 L 772,215 L 775,208 Z"/>
+                        
+                        <!-- Virginia -->
+                        <path d="M 820,225 L 835,232 L 850,235 L 860,238 L 868,243 L 870,252 L 865,262 L 855,268 L 840,270 L 820,268 L 805,262 L 795,255 L 790,248 L 795,240 L 805,235 L 815,232 Z"/>
+                        
+                        <!-- North Carolina -->
+                        <path d="M 790,248 L 805,255 L 820,262 L 840,268 L 855,272 L 865,278 L 870,288 L 865,298 L 855,305 L 835,308 L 815,308 L 795,305 L 778,300 L 765,293 L 758,285 L 760,275 L 768,265 L 778,258 Z"/>
+                        
+                        <!-- South Carolina -->
+                        <path d="M 815,308 L 835,308 L 850,310 L 860,315 L 865,325 L 862,335 L 852,342 L 838,345 L 822,343 L 810,338 L 805,328 L 808,318 Z"/>
+                        
+                        <!-- Georgia -->
+                        <path d="M 795,305 L 810,308 L 822,315 L 830,325 L 835,340 L 838,355 L 838,372 L 832,385 L 820,392 L 805,395 L 790,393 L 778,388 L 770,378 L 765,365 L 763,350 L 765,335 L 770,320 L 780,310 Z"/>
+                        
+                        <!-- Florida -->
+                        <path d="M 820,392 L 832,395 L 845,400 L 855,408 L 862,420 L 865,435 L 865,452 L 862,468 L 855,482 L 845,492 L 832,497 L 818,495 L 808,488 L 802,475 L 798,458 L 797,442 L 800,425 L 808,410 L 815,400 Z"/>
+                        
+                        <!-- Alabama -->
+                        <path d="M 770,378 L 778,388 L 790,393 L 805,395 L 815,400 L 820,410 L 822,422 L 820,435 L 815,445 L 805,450 L 793,452 L 780,450 L 770,445 L 762,435 L 758,420 L 757,405 L 760,390 Z"/>
+                        
+                        <!-- Mississippi -->
+                        <path d="M 735,325 L 748,330 L 757,340 L 763,355 L 765,372 L 763,388 L 758,402 L 752,415 L 745,425 L 738,432 L 728,435 L 720,432 L 715,422 L 712,408 L 710,392 L 710,375 L 712,360 L 718,345 L 728,335 Z"/>
+                        
+                        <!-- Louisiana -->
+                        <path d="M 710,392 L 715,405 L 720,418 L 728,430 L 738,438 L 748,442 L 758,443 L 765,440 L 768,445 L 765,455 L 755,462 L 742,465 L 728,465 L 715,462 L 705,455 L 698,445 L 693,432 L 692,418 L 695,405 Z"/>
+                        
+                        <!-- Arkansas -->
+                        <path d="M 710,325 L 728,328 L 745,332 L 758,340 L 763,350 L 763,365 L 758,378 L 750,388 L 738,395 L 725,398 L 710,398 L 698,395 L 690,388 L 685,375 L 683,360 L 685,345 L 692,335 Z"/>
+                        
+                        <!-- Tennessee -->
+                        <path d="M 738,285 L 758,288 L 778,293 L 795,298 L 810,302 L 825,305 L 838,307 L 848,308 L 850,312 L 845,318 L 835,322 L 815,325 L 795,327 L 775,328 L 755,327 L 740,325 L 728,320 L 720,312 L 718,302 L 722,292 Z"/>
+                        
+                        <!-- Kentucky -->
+                        <path d="M 738,268 L 758,272 L 778,277 L 795,280 L 812,282 L 828,284 L 842,285 L 848,288 L 845,295 L 838,300 L 822,302 L 802,303 L 782,302 L 762,300 L 745,296 L 732,290 L 725,282 L 725,275 Z"/>
+                        
+                        <!-- Ohio -->
+                        <path d="M 780,188 L 795,192 L 808,198 L 818,205 L 825,215 L 828,228 L 828,242 L 825,255 L 818,265 L 808,272 L 795,277 L 780,280 L 768,278 L 760,272 L 755,262 L 753,248 L 755,235 L 760,222 L 768,210 L 775,200 Z"/>
+                        
+                        <!-- Indiana -->
+                        <path d="M 753,248 L 760,260 L 765,275 L 768,288 L 768,302 L 763,315 L 755,325 L 745,332 L 732,335 L 720,333 L 712,325 L 708,312 L 707,298 L 708,283 L 712,268 L 720,255 L 730,245 L 742,242 Z"/>
+                        
+                        <!-- Illinois -->
+                        <path d="M 707,220 L 720,225 L 732,235 L 740,248 L 745,265 L 748,282 L 748,300 L 745,318 L 738,335 L 728,348 L 715,358 L 702,365 L 690,368 L 680,368 L 672,363 L 668,352 L 667,335 L 668,318 L 670,300 L 673,282 L 678,265 L 685,248 L 693,235 L 700,225 Z"/>
+                        
+                        <!-- Michigan -->
+                        <path d="M 755,145 L 775,148 L 792,155 L 805,165 L 812,178 L 815,192 L 812,205 L 805,215 L 795,222 L 782,228 L 768,230 L 755,228 L 745,222 L 740,210 L 738,195 L 740,180 L 745,168 L 750,158 Z M 770,115 L 785,118 L 795,125 L 798,135 L 795,145 L 785,152 L 772,155 L 760,152 L 752,145 L 748,135 L 750,125 Z"/>
+                        
+                        <!-- Wisconsin -->
+                        <path d="M 705,152 L 720,155 L 738,160 L 752,168 L 760,180 L 762,195 L 758,210 L 748,222 L 735,230 L 720,233 L 705,232 L 693,228 L 685,220 L 680,208 L 678,192 L 680,178 L 685,165 L 695,158 Z"/>
+                        
+                        <!-- Iowa -->
+                        <path d="M 673,210 L 690,215 L 708,222 L 720,232 L 725,245 L 728,260 L 728,275 L 723,288 L 712,298 L 698,305 L 683,308 L 668,308 L 655,303 L 645,293 L 640,278 L 640,263 L 643,248 L 650,235 L 660,225 Z"/>
+                        
+                        <!-- Missouri -->
+                        <path d="M 640,278 L 650,288 L 665,298 L 680,305 L 695,310 L 708,315 L 718,323 L 722,335 L 720,350 L 712,365 L 700,378 L 685,388 L 670,395 L 655,398 L 642,395 L 632,388 L 625,375 L 622,358 L 622,340 L 625,323 L 630,308 L 635,293 Z"/>
+                        
+                        <!-- Minnesota -->
+                        <path d="M 650,95 L 670,98 L 688,105 L 702,115 L 710,128 L 715,145 L 715,162 L 710,178 L 702,192 L 690,203 L 675,210 L 658,213 L 645,210 L 635,202 L 628,188 L 625,172 L 625,155 L 628,138 L 635,122 L 643,108 Z"/>
+                        
+                        <!-- North Dakota -->
+                        <path d="M 520,80 L 650,75 L 652,140 L 522,145 Z"/>
+                        
+                        <!-- South Dakota -->
+                        <path d="M 522,145 L 652,140 L 655,205 L 525,210 Z"/>
+                        
+                        <!-- Nebraska -->
+                        <path d="M 525,210 L 655,205 L 658,275 L 528,280 Z"/>
+                        
+                        <!-- Kansas -->
+                        <path d="M 528,280 L 658,275 L 660,340 L 530,345 Z"/>
+                        
+                        <!-- Oklahoma -->
+                        <path d="M 530,345 L 660,340 L 665,395 L 540,400 Z"/>
+                        
+                        <!-- Texas -->
+                        <path d="M 540,400 L 665,395 L 672,410 L 682,430 L 690,452 L 695,475 L 698,498 L 695,520 L 688,538 L 675,552 L 658,562 L 638,568 L 615,570 L 595,568 L 578,562 L 565,552 L 555,538 L 548,520 L 545,500 L 545,478 L 548,458 L 553,438 L 558,420 Z"/>
+                        
+                        <!-- Montana -->
+                        <path d="M 250,80 L 520,75 L 522,145 L 252,150 Z"/>
+                        
+                        <!-- Wyoming -->
+                        <path d="M 252,150 L 522,145 L 525,220 L 255,225 Z"/>
+                        
+                        <!-- Colorado -->
+                        <path d="M 255,225 L 525,220 L 528,295 L 258,300 Z"/>
+                        
+                        <!-- New Mexico -->
+                        <path d="M 258,300 L 528,295 L 532,410 L 262,415 Z"/>
+                        
+                        <!-- Idaho -->
+                        <path d="M 210,95 L 250,90 L 252,150 L 240,175 L 225,195 L 212,205 L 205,195 L 202,175 L 202,155 L 205,135 L 208,115 Z"/>
+                        
+                        <!-- Nevada -->
+                        <path d="M 155,175 L 202,170 L 212,205 L 220,240 L 225,275 L 228,315 L 225,345 L 182,355 L 170,342 L 165,318 L 160,290 L 157,260 L 155,230 L 155,200 Z"/>
+                        
+                        <!-- Utah -->
+                        <path d="M 212,205 L 252,200 L 255,295 L 228,298 L 220,270 L 215,240 Z"/>
+                        
+                        <!-- Arizona -->
+                        <path d="M 182,355 L 228,350 L 258,348 L 262,435 L 232,440 L 205,442 L 185,438 L 175,425 L 170,405 L 172,385 L 177,370 Z"/>
+                        
+                        <!-- California -->
+                        <path d="M 85,145 L 120,142 L 145,145 L 160,155 L 168,172 L 172,195 L 175,220 L 178,250 L 180,285 L 182,320 L 182,355 L 178,385 L 170,410 L 158,432 L 142,450 L 122,462 L 102,468 L 88,465 L 78,455 L 72,435 L 70,410 L 70,380 L 72,345 L 75,310 L 78,275 L 80,240 L 82,205 L 83,175 Z"/>
+                        
+                        <!-- Oregon -->
+                        <path d="M 85,90 L 122,88 L 160,92 L 195,100 L 210,108 L 208,125 L 202,145 L 190,160 L 172,168 L 150,172 L 125,172 L 105,168 L 92,158 L 88,142 L 87,125 L 88,108 Z"/>
+                        
+                        <!-- Washington -->
+                        <path d="M 85,50 L 125,48 L 165,52 L 200,60 L 225,72 L 232,85 L 228,98 L 215,105 L 195,108 L 170,108 L 145,105 L 120,98 L 100,88 L 90,75 L 87,62 Z"/>
+                    </g>
+                    
+                    <!-- Company markers positioned accurately on realistic map -->
+                    
+                    <!-- Sanctuary AI - Vancouver, BC -->
+                    <g class="map-marker" onclick="showCompanyDetails(4)" style="cursor: pointer;">
+                        <circle cx="150" cy="40" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="150" cy="40" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="150" y="25" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Sanctuary AI</text>
+                        <text x="150" y="65" text-anchor="middle" fill="#666" font-size="8">Phoenix • Vancouver</text>
+                    </g>
+
+                    <!-- Agility Robotics - Corvallis, OR -->
+                    <g class="map-marker" onclick="showCompanyDetails(3)" style="cursor: pointer;">
+                        <circle cx="115" cy="125" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="115" cy="125" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="115" y="110" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Agility</text>
+                        <text x="115" y="150" text-anchor="middle" fill="#666" font-size="8">Digit • Corvallis, OR</text>
+                    </g>
+
+                    <!-- 1X Technologies - San Francisco, CA -->
+                    <g class="map-marker" onclick="showCompanyDetails(6)" style="cursor: pointer;">
+                        <circle cx="110" cy="245" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="110" cy="245" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="110" y="230" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">1X Tech</text>
+                        <text x="110" y="270" text-anchor="middle" fill="#666" font-size="8">NEO • SF</text>
+                    </g>
+
+                    <!-- Figure AI - Sunnyvale, CA -->
+                    <g class="map-marker" onclick="showCompanyDetails(2)" style="cursor: pointer;">
+                        <circle cx="125" cy="250" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="125" cy="250" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="125" y="235" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Figure AI</text>
+                        <text x="125" y="275" text-anchor="middle" fill="#666" font-size="8">Figure 01 • Sunnyvale</text>
+                    </g>
+
+                    <!-- Clone Robotics - San Diego, CA -->
+                    <g class="map-marker" onclick="showCompanyDetails(7)" style="cursor: pointer;">
+                        <circle cx="130" cy="420" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="130" cy="420" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="130" y="405" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Clone</text>
+                        <text x="130" y="445" text-anchor="middle" fill="#666" font-size="8">Alpha • San Diego</text>
+                    </g>
+
+                    <!-- Tesla - Austin, TX -->
+                    <g class="map-marker" onclick="showCompanyDetails(1)" style="cursor: pointer;">
+                        <circle cx="595" cy="465" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="595" cy="465" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="595" y="450" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Tesla</text>
+                        <text x="595" y="490" text-anchor="middle" fill="#666" font-size="8">Optimus • Austin</text>
+                    </g>
+
+                    <!-- Apptronik - Austin, TX -->
+                    <g class="map-marker" onclick="showCompanyDetails(5)" style="cursor: pointer;">
+                        <circle cx="610" cy="470" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="610" cy="470" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="610" y="455" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Apptronik</text>
+                        <text x="610" y="495" text-anchor="middle" fill="#666" font-size="8">Apollo • Austin</text>
+                    </g>
+
+                    <!-- Fourier Intelligence - Houston, TX -->
+                    <g class="map-marker" onclick="showCompanyDetails(8)" style="cursor: pointer;">
+                        <circle cx="640" cy="505" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="640" cy="505" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="640" y="490" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Fourier</text>
+                        <text x="640" y="530" text-anchor="middle" fill="#666" font-size="8">GR-1 • Houston</text>
+                    </g>
+
+                    <!-- Unitree Robotics - Houston, TX -->
+                    <g class="map-marker" onclick="showCompanyDetails(10)" style="cursor: pointer;">
+                        <circle cx="655" cy="512" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="655" cy="512" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="655" y="497" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Unitree</text>
+                        <text x="655" y="537" text-anchor="middle" fill="#666" font-size="8">H1 • Houston</text>
+                    </g>
+
+                    <!-- Persona AI - Atlanta, GA -->
+                    <g class="map-marker" onclick="showCompanyDetails(9)" style="cursor: pointer;">
+                        <circle cx="805" cy="360" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="805" cy="360" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="805" y="345" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Persona AI</text>
+                        <text x="805" y="385" text-anchor="middle" fill="#666" font-size="8">Persona • Atlanta</text>
+                    </g>
+
+                    <!-- Kinisi Robotics - New York, NY -->
+                    <g class="map-marker" onclick="showCompanyDetails(11)" style="cursor: pointer;">
+                        <circle cx="840" cy="162" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="840" cy="162" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="840" y="147" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Kinisi</text>
+                        <text x="840" y="187" text-anchor="middle" fill="#666" font-size="8">Kinisi Bot • NYC</text>
+                    </g>
+
+                    <!-- Boston Dynamics - Waltham, MA -->
+                    <g class="map-marker" onclick="showCompanyDetails(0)" style="cursor: pointer;">
+                        <circle cx="885" cy="148" r="18" fill="#667eea" opacity="0.2"/>
+                        <circle cx="885" cy="148" r="10" fill="#667eea" stroke="white" stroke-width="2.5"/>
+                        <text x="885" y="133" text-anchor="middle" fill="#333" font-weight="bold" font-size="10">Boston Dynamics</text>
+                        <text x="885" y="173" text-anchor="middle" fill="#666" font-size="8">Atlas • Waltham, MA</text>
+                    </g>
+
+                    <!-- Legend -->
+                    <g transform="translate(25, 500)">
+                        <rect x="0" y="0" width="280" height="85" fill="white" opacity="0.95" rx="10" stroke="#667eea" stroke-width="2"/>
+                        <circle cx="18" cy="22" r="7" fill="#667eea"/>
+                        <text x="35" y="27" fill="#333" font-size="11" font-weight="600">Company Location Markers</text>
+                        <text x="18" y="45" fill="#666" font-size="9.5">Click any marker for detailed information</text>
+                        <text x="18" y="60" fill="#666" font-size="9.5" font-weight="600">12 Humanoid Robotics Companies</text>
+                        <text x="18" y="74" fill="#666" font-size="9.5">Geographically accurate positioning</text>
+                    </g>
+                </svg>
+                <p style="text-align: center; margin-top: 20px; color: #666; font-size: 0.95em;">
+                    💡 <strong>Tip:</strong> Click on any company marker to view detailed information about their humanoid robots
+                </p>
+            </div>
+
+            <h2 style="margin-top: 30px; color: #667eea;">Companies Directory</h2>
+            <div class="company-grid" id="companyGrid"></div>
+        </div>
+
+        <!-- Tab 2: AI Use Cases -->
+        <div class="tab-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Current Robotics & AI Technology</h2>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterUseCases('all')">All</button>
+                <button class="filter-btn" onclick="filterUseCases('application')">By Application</button>
+                <button class="filter-btn" onclick="filterUseCases('capability')">By AI Capability</button>
+                <button class="filter-btn" onclick="filterUseCases('company')">By Company</button>
+                <button class="filter-btn" onclick="filterUseCases('learning')">Learning Modules</button>
+            </div>
+
+            <div id="useCasesContainer"></div>
+        </div>
+
+        <!-- Tab 3: Build Guide -->
+        <div class="tab-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Design, Build & Deploy Your Humanoid</h2>
+            <p style="margin-bottom: 30px; color: #666; font-size: 1.1em;">Follow this comprehensive guide from simulation to physical deployment with AI integration.</p>
+            <div id="buildGuideContainer"></div>
+        </div>
+
+        <!-- Tab 4: References -->
+        <div class="tab-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">References & Resources</h2>
+            
+            <div class="reference-section">
+                <h3>Original Prompt</h3>
+                <p style="line-height: 1.8; color: #555;">
+                    Generate an HTML app/dashboard with JavaScript (no REACT) that provides actionable and clickable guide for "Humanoids In America Guide" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics. Assume Intermediate level. Organize the app according to four tabs. One Tab will have a map of north America like the graphic, reproduce the picture of the robot and the name of the company. Hyperlink the name to more information on the company and any information about the product and company in a popup window. Include Terms and parameters. The Second tab will be for studying current robotics and android technology that uses latest AI usecases. Fourth Tab is for "References" - put the prompt on this tab and ADD THE GRAPHIC. Also desire for the app to lead a user through the steps of designing, building, AND DEPLOYING a humanoid robot on a third tab.
+                </p>
+            </div>
+
+            <div class="reference-section">
+                <h3>Reference Graphic</h3>
+                <img src="https://pbs.twimg.com/media/GdWOz8bWoAABtc9?format=jpg&name=large" alt="Humanoid Robotics Companies" style="width: 100%; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            </div>
+
+            <div class="reference-section">
+                <h3>Key Learning Resources</h3>
+                <ul style="line-height: 2; color: #555;">
+                    <li><a href="https://www.ros.org/" target="_blank">ROS (Robot Operating System)</a> - Primary robotics middleware</li>
+                    <li><a href="https://pytorch.org/" target="_blank">PyTorch</a> - Deep learning framework</li>
+                    <li><a href="https://www.nvidia.com/en-us/omniverse/" target="_blank">NVIDIA Omniverse</a> - Robot simulation</li>
+                    <li><a href="https://arxiv.org/list/cs.RO/recent" target="_blank">arXiv Robotics</a> - Latest research</li>
+                    <li><a href="https://github.com/topics/humanoid-robot" target="_blank">GitHub Humanoid Projects</a> - Open source</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Company Details -->
+    <div id="companyModal" class="modal" onclick="closeModalBackground(event)">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Storage keys
+        const STORAGE_KEY = 'humanoid_guide_progress';
+        
+        // Initialize data
+        let progressData = {
+            contactedCompanies: {},
+            completedConcepts: {},
+            timestamp: Date.now()
+        };
+
+        // Load saved progress
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    progressData = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error loading progress:', e);
+                }
+            }
+        }
+
+        // Save progress
+        function saveProgress() {
+            progressData.timestamp = Date.now();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progressData));
+            updateStats();
+        }
+
+        // Company data
+        const companies = [
+            {
+                name: "Boston Dynamics",
+                location: "Waltham, MA",
+                robot: "Atlas",
+                website: "https://www.bostondynamics.com",
+                description: "Leader in advanced humanoid robotics with Atlas, featuring dynamic mobility and advanced manipulation capabilities.",
+                specs: "28 DOF, hydraulic actuation, 3D vision, real-time path planning",
+                applications: "Research, disaster response, industrial automation",
+                founded: 1992
+            },
+            {
+                name: "Tesla",
+                location: "Austin, TX",
+                robot: "Optimus",
+                website: "https://www.tesla.com",
+                description: "AI-powered humanoid designed for general-purpose tasks.",
+                specs: "40+ DOF, electric actuation, neural network control, 5'8\" tall",
+                applications: "Manufacturing, household tasks, general labor",
+                founded: 2021
+            },
+            {
+                name: "Figure AI",
+                location: "Sunnyvale, CA",
+                robot: "Figure 01",
+                website: "https://www.figure.ai",
+                description: "Commercial humanoid for warehouse and manufacturing.",
+                specs: "Full-body humanoid, AI-driven task learning",
+                applications: "Warehousing, logistics, manufacturing",
+                founded: 2022
+            },
+            {
+                name: "Agility Robotics",
+                location: "Corvallis, OR",
+                robot: "Digit",
+                website: "https://www.agilityrobotics.com",
+                description: "Bipedal robot for logistics with dynamic balance.",
+                specs: "Multi-modal locomotion, 3D sensing, autonomous navigation",
+                applications: "Package delivery, warehouse logistics",
+                founded: 2015
+            },
+            {
+                name: "Sanctuary AI",
+                location: "Vancouver, BC",
+                robot: "Phoenix",
+                website: "https://www.sanctuary.ai",
+                description: "General-purpose humanoid with advanced dexterity.",
+                specs: "Human-like design, advanced hands, AI cognition",
+                applications: "General labor, customer service",
+                founded: 2018
+            },
+            {
+                name: "Apptronik",
+                location: "Austin, TX",
+                robot: "Apollo",
+                website: "https://www.apptronik.com",
+                description: "Modular humanoid for logistics and manufacturing.",
+                specs: "Modular architecture, 160 lbs, 5'8\" height",
+                applications: "Logistics, manufacturing, supply chain",
+                founded: 2016
+            },
+            {
+                name: "1X Technologies",
+                location: "San Francisco, CA",
+                robot: "NEO",
+                website: "https://www.1x.tech",
+                description: "Safe, bio-inspired humanoid for home and commercial use.",
+                specs: "Soft materials, safe interaction design, bipedal locomotion",
+                applications: "Home assistance, commercial services, security",
+                founded: 2014
+            },
+            {
+                name: "Clone Robotics",
+                location: "San Diego, CA",
+                robot: "Clone Alpha",
+                website: "https://www.clonerobotics.com",
+                description: "Bio-inspired humanoid with artificial muscle technology.",
+                specs: "Myofiber actuators, human-like movement, soft robotics",
+                applications: "Research, entertainment, medical training",
+                founded: 2021
+            },
+            {
+                name: "Fourier Intelligence",
+                location: "Houston, TX",
+                robot: "GR-1",
+                website: "https://www.fftai.com",
+                description: "Rehabilitation and general-purpose humanoid.",
+                specs: "40+ DOF, force-controlled joints, rehabilitation focus",
+                applications: "Healthcare, rehabilitation, assisted living",
+                founded: 2015
+            },
+            {
+                name: "Persona AI",
+                location: "Atlanta, GA",
+                robot: "Persona Robot",
+                website: "https://www.persona-ai.com",
+                description: "Service-oriented humanoid with human-robot interaction focus.",
+                specs: "Social interaction AI, NLP, expressive design",
+                applications: "Customer service, hospitality, education",
+                founded: 2020
+            },
+            {
+                name: "Unitree Robotics",
+                location: "Houston, TX",
+                robot: "H1",
+                website: "https://www.unitree.com",
+                description: "Affordable humanoid platform for research and education.",
+                specs: "Lightweight design, open SDK, educational pricing",
+                applications: "Research, education, development platform",
+                founded: 2016
+            },
+            {
+                name: "Kinisi Robotics",
+                location: "New York, NY",
+                robot: "Kinisi Bot",
+                website: "https://www.kinisi-robotics.com",
+                description: "Compact humanoid for research and commercial applications.",
+                specs: "Compact form factor, modular components, research-friendly",
+                applications: "Research, light manufacturing, service tasks",
+                founded: 2019
+            }
+        ];
+
+        // Initialize app
+        function init() {
+            loadProgress();
+            renderCompanies();
+            renderUseCases();
+            renderBuildGuide();
+            updateStats();
+        }
+
+        // Switch tabs
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach((tab, i) => {
+                if (i === index) {
+                    tab.classList.add('active');
+                    contents[i].classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                    contents[i].classList.remove('active');
+                }
+            });
+        }
+
+        // Render companies
+        function renderCompanies() {
+            const grid = document.getElementById('companyGrid');
+            grid.innerHTML = companies.map((company, index) => `
+                <div class="company-card ${progressData.contactedCompanies[index] ? 'contacted' : ''}" 
+                     onclick="showCompanyDetails(${index})">
+                    <svg class="contact-check" onclick="toggleContact(event, ${index})" 
+                         viewBox="0 0 24 24" fill="none" stroke="${progressData.contactedCompanies[index] ? '#4CAF50' : '#ccc'}" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                    </svg>
+                    <h3>${company.name}</h3>
+                    <p class="location">📍 ${company.location}</p>
+                    <p style="color: #666;"><strong>Robot:</strong> ${company.robot}</p>
+                    <p style="color: #666; margin-top: 10px; font-size: 0.9em;">${company.description}</p>
+                </div>
+            `).join('');
+        }
+
+        // Toggle company contact
+        function toggleContact(event, index) {
+            event.stopPropagation();
+            progressData.contactedCompanies[index] = !progressData.contactedCompanies[index];
+            saveProgress();
+            renderCompanies();
+        }
+
+        // Show company details
+        function showCompanyDetails(index) {
+            const company = companies[index];
+            const modal = document.getElementById('companyModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <h2 style="color: #667eea; margin-bottom: 20px;">${company.name}</h2>
+                <p><strong>Location:</strong> ${company.location}</p>
+                <p><strong>Robot Model:</strong> ${company.robot}</p>
+                <p><strong>Founded:</strong> ${company.founded}</p>
+                <p style="margin: 20px 0;"><strong>Description:</strong><br>${company.description}</p>
+                <p><strong>Specifications:</strong><br>${company.specs}</p>
+                <p><strong>Applications:</strong><br>${company.applications}</p>
+                <p style="margin-top: 20px;">
+                    <a href="${company.website}" target="_blank" class="resource-link">Visit Website →</a>
+                </p>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('companyModal').style.display = 'none';
+        }
+
+        function closeModalBackground(event) {
+            if (event.target.id === 'companyModal') {
+                closeModal();
+            }
+        }
+
+        // Render use cases
+        function renderUseCases() {
+            const container = document.getElementById('useCasesContainer');
+            const useCases = [
+                {
+                    id: 'manufacturing',
+                    title: "Manufacturing & Assembly",
+                    difficulty: "intermediate",
+                    time: "4-6 hours",
+                    description: "Humanoid robots performing complex assembly using computer vision and force feedback.",
+                    prerequisites: "Basic understanding of inverse kinematics and sensor integration",
+                    related: "Build Guide: Inverse Kinematics, Map: Tesla, Figure AI"
+                },
+                {
+                    id: 'warehouse',
+                    title: "Warehouse Logistics",
+                    difficulty: "intermediate",
+                    time: "3-5 hours",
+                    description: "Package handling, sorting, and autonomous navigation in warehouses.",
+                    prerequisites: "Understanding of SLAM algorithms and autonomous navigation",
+                    related: "Build Guide: SLAM Implementation, Map: Agility Robotics"
+                },
+                {
+                    id: 'computer-vision',
+                    title: "Computer Vision for Manipulation",
+                    difficulty: "intermediate",
+                    time: "5-7 hours",
+                    description: "Using deep learning for object detection, pose estimation, and grasp planning.",
+                    prerequisites: "Python, PyTorch/TensorFlow, basic computer vision",
+                    related: "Build Guide: Vision Integration"
+                },
+                {
+                    id: 'rl-locomotion',
+                    title: "Reinforcement Learning for Locomotion",
+                    difficulty: "advanced",
+                    time: "8-10 hours",
+                    description: "Training bipedal walking using deep RL algorithms.",
+                    prerequisites: "Advanced Python, RL theory, PyTorch",
+                    related: "Build Guide: Simulation Setup"
+                }
+            ];
+
+            container.innerHTML = useCases.map(useCase => `
+                <div class="concept-tile ${progressData.completedConcepts[useCase.id] ? 'completed' : ''}">
+                    <div class="concept-header">
+                        <div class="concept-title">
+                            <h3>${useCase.title}</h3>
+                            <div class="badges">
+                                <span class="badge badge-${useCase.difficulty}">${useCase.difficulty.toUpperCase()}</span>
+                                <span class="badge badge-time">⏱️ ${useCase.time}</span>
+                            </div>
+                    <div class="concept-content">
+                        <p>${useCase.description}</p>
+                        <div class="prerequisites">
+                            <strong>📋 Prerequisites:</strong> ${useCase.prerequisites}
+                        </div>
+                        <div class="related-links">
+                            <strong>🔗 Related:</strong> ${useCase.related}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render build guide
+        function renderBuildGuide() {
+            const container = document.getElementById('buildGuideContainer');
+            const phases = [
+                {
+                    id: 'simulation',
+                    title: "Phase 1: Simulation Environment Setup",
+                    difficulty: "beginner",
+                    time: "3-4 hours",
+                    description: "Set up robotics simulation using Isaac Sim or PyBullet.",
+                    prerequisites: "Basic Python, familiarity with Linux terminal",
+                    steps: ["Install Ubuntu or WSL2", "Install PyBullet/Isaac Sim", "Download URDF models", "Create basic scene", "Test robot spawn"]
+                },
+                {
+                    id: 'kinematics',
+                    title: "Phase 2: Inverse Kinematics & Forward Kinematics",
+                    difficulty: "intermediate",
+                    time: "5-6 hours",
+                    description: "Implement IK/FK solvers to control humanoid limb positions.",
+                    prerequisites: "Linear algebra, Python, rotation matrices",
+                    steps: ["Understand DH parameters", "Implement forward kinematics", "Set up IK solver", "Test positioning", "Validate limits"]
+                },
+                {
+                    id: 'vision',
+                    title: "Phase 3: Computer Vision Integration",
+                    difficulty: "intermediate",
+                    time: "6-7 hours",
+                    description: "Add visual perception using cameras and object detection.",
+                    prerequisites: "Python, OpenCV basics, CNNs",
+                    steps: ["Set up cameras", "Implement YOLOv8", "Add depth perception", "Create grasp pipeline", "Test tracking"]
+                },
+                {
+                    id: 'locomotion',
+                    title: "Phase 4: Locomotion & Balance Control",
+                    difficulty: "advanced",
+                    time: "8-10 hours",
+                    description: "Implement bipedal walking using ZMP, MPC, or RL.",
+                    prerequisites: "Control theory, dynamics, Python, RL basics",
+                    steps: ["Understand ZMP theory", "Implement walking pattern", "Add MPC", "Train RL policy", "Test terrains"]
+                },
+                {
+                    id: 'ros',
+                    title: "Phase 5: ROS 2 Integration",
+                    difficulty: "intermediate",
+                    time: "5-6 hours",
+                    description: "Structure software using ROS 2 for modularity.",
+                    prerequisites: "Linux, Python/C++, networking",
+                    steps: ["Install ROS 2", "Create packages", "Set up pub/sub", "Implement actions", "Configure navigation"]
+                },
+                {
+                    id: 'hardware',
+                    title: "Phase 6: Hardware Selection & Assembly",
+                    difficulty: "advanced",
+                    time: "12-15 hours",
+                    description: "Choose components and assemble physical humanoid.",
+                    prerequisites: "Electronics, mechanical assembly, budget",
+                    steps: ["Select motors", "Choose microcontroller", "Design/download parts", "Wire electronics", "Assemble structure"]
+                },
+                {
+                    id: 'deployment',
+                    title: "Phase 7: AI Model Training & Deployment",
+                    difficulty: "advanced",
+                    time: "10-12 hours",
+                    description: "Train and deploy custom AI models efficiently.",
+                    prerequisites: "Deep learning, PyTorch/TensorFlow, optimization",
+                    steps: ["Collect data", "Train models", "Optimize for edge", "Convert format", "Deploy on hardware"]
+                },
+                {
+                    id: 'safety',
+                    title: "Phase 8: Safety Systems & Testing",
+                    difficulty: "intermediate",
+                    time: "4-5 hours",
+                    description: "Implement safety features and test thoroughly.",
+                    prerequisites: "Software testing, safety standards",
+                    steps: ["Add e-stop", "Implement collision detection", "Set limits", "Create fail-safes", "Document protocols"]
+                }
+            ];
+
+            container.innerHTML = phases.map(phase => `
+                <div class="concept-tile ${progressData.completedConcepts[phase.id] ? 'completed' : ''}">
+                    <div class="concept-header">
+                        <div class="concept-title">
+                            <h3>${phase.title}</h3>
+                            <div class="badges">
+                                <span class="badge badge-${phase.difficulty}">${phase.difficulty.toUpperCase()}</span>
+                                <span class="badge badge-time">⏱️ ${phase.time}</span>
+                            </div>
+                        </div>
+                        <svg class="complete-check" onclick="toggleConcept('${phase.id}')" 
+                             viewBox="0 0 24 24" fill="none" 
+                             stroke="${progressData.completedConcepts[phase.id] ? '#4CAF50' : '#ccc'}" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                        </svg>
+                    </div>
+                    <div class="concept-content">
+                        <p>${phase.description}</p>
+                        <div class="prerequisites">
+                            <strong>📋 Prerequisites:</strong> ${phase.prerequisites}
+                        </div>
+                        <p style="margin-top: 15px;"><strong>Steps:</strong></p>
+                        <ul style="margin-left: 20px; color: #555;">
+                            ${phase.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle concept completion
+        function toggleConcept(id) {
+            progressData.completedConcepts[id] = !progressData.completedConcepts[id];
+            saveProgress();
+            renderUseCases();
+            renderBuildGuide();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const contacted = Object.values(progressData.contactedCompanies).filter(Boolean).length;
+            const completed = Object.values(progressData.completedConcepts).filter(Boolean).length;
+            const totalItems = companies.length + 12; // 12 concepts total
+            const percentage = Math.round((contacted + completed) / totalItems * 100);
+
+            document.getElementById('companiesContacted').textContent = contacted;
+            document.getElementById('conceptsCompleted').textContent = completed;
+            document.getElementById('totalProgress').textContent = percentage + '%';
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        // Filter use cases
+        let currentFilter = 'all';
+        function filterUseCases(filter) {
+            currentFilter = filter;
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(filter) || filter === 'all' && btn.textContent === 'All') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            renderUseCases();
+        }
+
+        // Export progress
+        function exportProgress() {
+            const dataStr = JSON.stringify(progressData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `humanoid-guide-progress-${Date.now()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            alert('✅ Progress exported successfully!');
+        }
+
+        // Import progress
+        function importProgress() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (confirm('Import this progress? This will overwrite your current progress.')) {
+                        progressData = imported;
+                        saveProgress();
+                        renderCompanies();
+                        renderUseCases();
+                        renderBuildGuide();
+                        alert('✅ Progress imported successfully!');
+                    }
+                } catch (error) {
+                    alert('❌ Error importing file. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Generate PDF report
+        function generateReport() {
+            window.print();
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('⚠️ Are you sure you want to reset all progress? This cannot be undone.')) {
+                progressData = {
+                    contactedCompanies: {},
+                    completedConcepts: {},
+                    timestamp: Date.now()
+                };
+                saveProgress();
+                renderCompanies();
+                renderUseCases();
+                renderBuildGuide();
+                alert('✅ All progress has been reset.');
+            }
+        }
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+</html>        </div>
+                        <svg class="complete-check" onclick="toggleConcept('${useCase.id}')" 
+                             viewBox="0 0 24 24" fill="none" 
+                             stroke="${progressData.completedConcepts[useCase.id] ? '#4CAF50' : '#ccc'}" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                        </svg>
+                    </div>
+                

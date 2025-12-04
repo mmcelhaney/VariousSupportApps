@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDA Interactive Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .progress-overview {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .progress-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .progress-card h3 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .progress-card .percentage {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .stage {
+            margin-bottom: 40px;
+            border-left: 5px solid;
+            padding-left: 20px;
+        }
+
+        .stage.import { border-color: #4facfe; }
+        .stage.cleaning { border-color: #43e97b; }
+        .stage.exploration { border-color: #fa709a; }
+        .stage.visualization { border-color: #feca57; }
+        .stage.modeling { border-color: #a29bfe; }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .stage.import .stage-header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stage.cleaning .stage-header { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .stage.exploration .stage-header { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .stage.visualization .stage-header { background: linear-gradient(135deg, #feca57 0%, #ff6b6b 100%); }
+        .stage.modeling .stage-header { background: linear-gradient(135deg, #a29bfe 0%, #fd79a8 100%); }
+
+        .stage-header h2 {
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .stage-progress {
+            background: rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .techniques-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .technique-card {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .technique-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .technique-card.completed {
+            border-color: #43e97b;
+            background: #f0fff4;
+        }
+
+        .checkbox {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .checkbox.checked {
+            background: #43e97b;
+            border-color: #43e97b;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .technique-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            padding-right: 40px;
+        }
+
+        .technique-card p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .language-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .lang-tag {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+
+        .lang-tag.python { background: #3776ab; color: white; }
+        .lang-tag.sql { background: #f29111; color: white; }
+        .lang-tag.r { background: #276dc3; color: white; }
+        .lang-tag.javascript { background: #f7df1e; color: #333; }
+        .lang-tag.excel { background: #217346; color: white; }
+
+        .code-snippet {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            margin: 10px 0;
+            overflow-x: auto;
+            display: none;
+        }
+
+        .code-snippet.visible {
+            display: block;
+        }
+
+        .show-more-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .show-more-btn:hover {
+            background: #5568d3;
+        }
+
+        .resources {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .resources.visible {
+            display: block;
+        }
+
+        .resource-link {
+            display: inline-block;
+            margin: 5px 5px 5px 0;
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            text-decoration: none;
+            color: #667eea;
+            font-size: 0.8em;
+            transition: all 0.3s;
+        }
+
+        .resource-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .resource-type {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.7em;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .resource-type.docs { background: #e3f2fd; color: #1976d2; }
+        .resource-type.tutorial { background: #f3e5f5; color: #7b1fa2; }
+        .resource-type.video { background: #ffebee; color: #c62828; }
+        .resource-type.interactive { background: #e8f5e9; color: #2e7d32; }
+
+        .images-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 3px solid #667eea;
+        }
+
+        .images-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .image-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .prompt-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .prompt-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .prompt-section p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.9em;
+        }
+
+        .collapsed {
+            display: none;
+        }
+        table {
+    border-collapse: collapse;
+    /* Adjusted width constraints to accommodate larger images gracefully */
+    max-width: 600px; 
+    width: 100%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    /* Helps ensure columns remain equal width */
+    table-layout: fixed; 
+  }
+  th, td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    vertical-align: middle;
+  }
+  /* Crucial CSS to make sure 600px images fit inside the table cells */
+  td img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+  }
+  /* Style for the main title row */
+  .main-title {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 15px;
+  }
+  /* Style for standard headers */
+  .sub-header {
+      font-weight: bold;
+      background-color: #e9e9e9;
+      font-size: 1.1em;
+  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Exploratory Data Analysis Guide</h1>
+        <p class="subtitle">Interactive learning path for intermediate data analysts</p>
+        
+        <div class="progress-overview" id="progressOverview"></div>
+        
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Resources</button>
+            <button class="filter-btn" data-filter="docs">📚 Documentation</button>
+            <button class="filter-btn" data-filter="tutorial">📝 Tutorials</button>
+            <button class="filter-btn" data-filter="video">🎥 Videos</button>
+            <button class="filter-btn" data-filter="interactive">💻 Interactive</button>
+        </div>
+
+        <div id="stagesContainer"></div>
+
+        <div class="images-section">
+            <h2>📊 Reference Cheatsheets</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">Visual guides from the original prompt</p>
+            <table>
+              <thead>
+                <tr>
+                  <th colspan="2" class="main-title">EDA Infographics</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="GfdC5cFWEAAtMFo.jpg" alt="EDA Exploratory Data Analysis"></td>
+      <td><img src="GsHasRdWwAEG4EV.jpg" alt="4 Key Concepts of data Analytics you need to know"></td>
+    </tr>
+    <tr>
+      <td><img src="77d7592647ceb8fb993c1bee20333427.jpg" alt="10 Ways To Analyse Data"></td>
+      <td><img src="GgH0mVdbMAAeRjI.jpg" alt="Dealing With Outliers"></td>
+    </tr>
+    <tr>
+      <td><img src="Gsj8Cj9asAIOMGD.png" alt="Most Important Distributions in Data Science"></td>
+      <td><img src="GtAryxAWYAArgdg.jpg" alt="Probability Concepts for Data Science"></td>
+    </tr>
+    <tr>
+      <td><img src="20250924_203559.jpg" alt="Statistics Cheatsheet for Data Science"></td>
+      <td><img src="20251119_122038.jpg" alt="9 Must-Know Python-Pandas Operariona for Working With Data"></td>
+    </tr>
+  </tbody>
+</table>
+
+        </div>
+
+        <div class="prompt-section">
+            <h3>📋 Original Prompt</h3>
+            <p>Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Exploratory Data Analysis" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics. Include information and examples in Python, SQL, R, JavaScript and Excel. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete.</p>
+        </div>
+    </div>
+
+    <script>
+        const edaData = {
+            stages: [
+                {
+                    name: "Data Import",
+                    class: "import",
+                    techniques: [
+                        {
+                            name: "CSV Import",
+                            description: "Reading comma-separated value files into data structures",
+                            languages: ["python", "sql", "r", "javascript", "excel"],
+                            code: {
+                                python: "import pandas as pd\ndf = pd.read_csv('data.csv')\nprint(df.head())",
+                                sql: "LOAD DATA INFILE 'data.csv'\nINTO TABLE my_table\nFIELDS TERMINATED BY ','\nENCLOSED BY '\"'\nLINES TERMINATED BY '\\n'\nIGNORE 1 ROWS;",
+                                r: "df <- read.csv('data.csv')\nhead(df)",
+                                javascript: "// Using PapaParse library\nPapa.parse(file, {\n  complete: function(results) {\n    console.log(results.data);\n  }\n});",
+                                excel: "Data > From Text/CSV > Select file > Load"
+                            },
+                            resources: [
+                                { name: "Pandas read_csv Documentation", url: "https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html", type: "docs" },
+                                { name: "Working with CSV in Python", url: "https://realpython.com/python-csv/", type: "tutorial" },
+                                { name: "SQL LOAD DATA Tutorial", url: "https://www.youtube.com/results?search_query=sql+load+data+csv", type: "video" },
+                                { name: "Interactive CSV Import Course", url: "https://www.datacamp.com/courses/importing-data-in-python-part-1", type: "interactive" }
+                            ]
+                        },
+                        {
+                            name: "Excel/Database Connection",
+                            description: "Connecting to Excel files and relational databases",
+                            languages: ["python", "sql", "r"],
+                            code: {
+                                python: "# Excel\ndf = pd.read_excel('data.xlsx', sheet_name='Sheet1')\n\n# Database\nimport sqlite3\nconn = sqlite3.connect('database.db')\ndf = pd.read_sql_query('SELECT * FROM table', conn)",
+                                sql: "-- MySQL connection example\nmysql -h hostname -u username -p database_name",
+                                r: "# Excel\nlibrary(readxl)\ndf <- read_excel('data.xlsx')\n\n# Database\nlibrary(DBI)\ncon <- dbConnect(RSQLite::SQLite(), 'database.db')\ndf <- dbReadTable(con, 'table_name')"
+                            },
+                            resources: [
+                                { name: "Pandas Excel I/O", url: "#", type: "docs" },
+                                { name: "Database Connections in R", url: "#", type: "tutorial" },
+                                { name: "SQL Connection Masterclass", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "JSON/API Data",
+                            description: "Fetching and parsing JSON data from APIs",
+                            languages: ["python", "r", "javascript"],
+                            code: {
+                                python: "import requests\nimport pandas as pd\n\nresponse = requests.get('https://api.example.com/data')\ndata = response.json()\ndf = pd.DataFrame(data)",
+                                r: "library(httr)\nlibrary(jsonlite)\n\nresponse <- GET('https://api.example.com/data')\ndata <- fromJSON(content(response, 'text'))",
+                                javascript: "fetch('https://api.example.com/data')\n  .then(response => response.json())\n  .then(data => console.log(data));"
+                            },
+                            resources: [
+                                { name: "Working with APIs in Python", url: "#", type: "tutorial" },
+                                { name: "JSON Parsing Best Practices", url: "#", type: "docs" },
+                                { name: "REST API Tutorial", url: "#", type: "video" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Data Cleaning",
+                    class: "cleaning",
+                    techniques: [
+                        {
+                            name: "Missing Data Handling",
+                            description: "Identifying and dealing with null/missing values in datasets",
+                            languages: ["python", "sql", "r", "excel"],
+                            code: {
+                                python: "# Check missing values\ndf.isnull().sum()\n\n# Drop rows with missing values\ndf.dropna()\n\n# Fill missing values\ndf.fillna(df.mean())\ndf.fillna(method='ffill')  # Forward fill",
+                                sql: "-- Find NULL values\nSELECT * FROM table WHERE column IS NULL;\n\n-- Replace NULL with default\nUPDATE table SET column = COALESCE(column, 0);",
+                                r: "# Check missing values\nsum(is.na(df))\n\n# Remove missing\nna.omit(df)\n\n# Impute with mean\ndf$column[is.na(df$column)] <- mean(df$column, na.rm=TRUE)",
+                                excel: "=IF(ISBLANK(A1), \"Missing\", A1)\nHome > Find & Select > Go To Special > Blanks"
+                            },
+                            resources: [
+                                { name: "Pandas Missing Data Guide", url: "#", type: "docs" },
+                                { name: "Missing Data Imputation Strategies", url: "#", type: "tutorial" },
+                                { name: "Handling NULL in SQL", url: "#", type: "video" },
+                                { name: "DataCamp Missing Data Course", url: "#", type: "interactive" }
+                            ]
+                        },
+                        {
+                            name: "Outlier Detection",
+                            description: "Identifying anomalous data points using statistical methods",
+                            languages: ["python", "r", "excel"],
+                            code: {
+                                python: "# IQR Method\nQ1 = df['column'].quantile(0.25)\nQ3 = df['column'].quantile(0.75)\nIQR = Q3 - Q1\noutliers = df[(df['column'] < Q1 - 1.5*IQR) | (df['column'] > Q3 + 1.5*IQR)]\n\n# Z-score method\nfrom scipy import stats\nz_scores = stats.zscore(df['column'])\nabs_z_scores = abs(z_scores)\noutliers = df[abs_z_scores > 3]",
+                                r: "# IQR Method\nQ1 <- quantile(df$column, 0.25)\nQ3 <- quantile(df$column, 0.75)\nIQR <- Q3 - Q1\noutliers <- df[df$column < Q1 - 1.5*IQR | df$column > Q3 + 1.5*IQR, ]",
+                                excel: "=IF(OR(A1<QUARTILE($A:$A,1)-1.5*IQR, A1>QUARTILE($A:$A,3)+1.5*IQR), \"Outlier\", \"Normal\")"
+                            },
+                            resources: [
+                                { name: "Outlier Detection Techniques", url: "#", type: "tutorial" },
+                                { name: "Statistical Methods for Outliers", url: "#", type: "docs" },
+                                { name: "Outlier Detection in Practice", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "Data Type Conversion",
+                            description: "Converting data between different types and formats",
+                            languages: ["python", "sql", "r"],
+                            code: {
+                                python: "# Convert to datetime\ndf['date'] = pd.to_datetime(df['date'])\n\n# Convert to numeric\ndf['column'] = pd.to_numeric(df['column'], errors='coerce')\n\n# Convert to category\ndf['category'] = df['category'].astype('category')",
+                                sql: "-- Convert to date\nCAST(column AS DATE)\n\n-- Convert to integer\nCAST(column AS INTEGER)\n\n-- Convert to string\nCAST(column AS VARCHAR(50))",
+                                r: "# Convert to date\ndf$date <- as.Date(df$date)\n\n# Convert to numeric\ndf$column <- as.numeric(df$column)\n\n# Convert to factor\ndf$category <- as.factor(df$category)"
+                            },
+                            resources: [
+                                { name: "Pandas Data Types", url: "#", type: "docs" },
+                                { name: "SQL CAST and CONVERT", url: "#", type: "tutorial" },
+                                { name: "R Data Type Conversion", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "Duplicate Removal",
+                            description: "Identifying and removing duplicate records",
+                            languages: ["python", "sql", "r", "excel"],
+                            code: {
+                                python: "# Find duplicates\ndf.duplicated().sum()\n\n# Remove duplicates\ndf.drop_duplicates()\n\n# Remove based on specific columns\ndf.drop_duplicates(subset=['col1', 'col2'])",
+                                sql: "-- Find duplicates\nSELECT column, COUNT(*) FROM table\nGROUP BY column HAVING COUNT(*) > 1;\n\n-- Remove duplicates\nDELETE FROM table\nWHERE id NOT IN (\n  SELECT MIN(id) FROM table GROUP BY column\n);",
+                                r: "# Remove duplicates\ndf <- df[!duplicated(df), ]\n\n# Remove based on columns\ndf <- df[!duplicated(df[c('col1', 'col2')]), ]",
+                                excel: "Data > Remove Duplicates > Select Columns > OK"
+                            },
+                            resources: [
+                                { name: "Handling Duplicates in Pandas", url: "#", type: "tutorial" },
+                                { name: "SQL Duplicate Detection", url: "#", type: "docs" },
+                                { name: "Data Deduplication Best Practices", url: "#", type: "video" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Data Exploration",
+                    class: "exploration",
+                    techniques: [
+                        {
+                            name: "Descriptive Statistics",
+                            description: "Computing mean, median, mode, standard deviation, and other summary statistics",
+                            languages: ["python", "sql", "r", "excel"],
+                            code: {
+                                python: "# Summary statistics\ndf.describe()\n\n# Specific measures\ndf['column'].mean()\ndf['column'].median()\ndf['column'].mode()\ndf['column'].std()\ndf['column'].var()",
+                                sql: "SELECT \n  AVG(column) as mean,\n  PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY column) as median,\n  STDDEV(column) as std_dev,\n  MIN(column), MAX(column)\nFROM table;",
+                                r: "# Summary statistics\nsummary(df)\n\n# Specific measures\nmean(df$column)\nmedian(df$column)\nsd(df$column)\nvar(df$column)",
+                                excel: "=AVERAGE(A:A)\n=MEDIAN(A:A)\n=MODE(A:A)\n=STDEV.S(A:A)\nData > Data Analysis > Descriptive Statistics"
+                            },
+                            resources: [
+                                { name: "Pandas describe() Documentation", url: "#", type: "docs" },
+                                { name: "Descriptive Statistics Tutorial", url: "#", type: "tutorial" },
+                                { name: "Statistics for Data Science", url: "#", type: "video" },
+                                { name: "Interactive Statistics Course", url: "#", type: "interactive" }
+                            ]
+                        },
+                        {
+                            name: "Distribution Analysis",
+                            description: "Understanding data distribution through histograms and density plots",
+                            languages: ["python", "r", "excel"],
+                            code: {
+                                python: "import matplotlib.pyplot as plt\nimport seaborn as sns\n\n# Histogram\ndf['column'].hist(bins=30)\nplt.show()\n\n# Distribution plot\nsns.histplot(data=df, x='column', kde=True)\nplt.show()",
+                                r: "# Histogram\nhist(df$column, breaks=30, main='Distribution')\n\n# Density plot\nplot(density(df$column))",
+                                excel: "Insert > Charts > Histogram\nData Analysis > Histogram"
+                            },
+                            resources: [
+                                { name: "Seaborn Distribution Plots", url: "#", type: "docs" },
+                                { name: "Understanding Data Distributions", url: "#", type: "tutorial" },
+                                { name: "Visualization with Matplotlib", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "Correlation Analysis",
+                            description: "Measuring relationships between variables",
+                            languages: ["python", "sql", "r", "excel"],
+                            code: {
+                                python: "# Correlation matrix\ncorr_matrix = df.corr()\n\n# Visualize with heatmap\nimport seaborn as sns\nsns.heatmap(corr_matrix, annot=True, cmap='coolwarm')\nplt.show()\n\n# Pearson correlation\ndf['col1'].corr(df['col2'])",
+                                sql: "-- Pearson correlation (approximation)\nSELECT \n  (COUNT(*) * SUM(x*y) - SUM(x)*SUM(y)) / \n  SQRT((COUNT(*)*SUM(x*x) - SUM(x)*SUM(x)) * \n       (COUNT(*)*SUM(y*y) - SUM(y)*SUM(y))) as correlation\nFROM table;",
+                                r: "# Correlation matrix\ncor(df)\n\n# Visualize\nlibrary(corrplot)\ncorrplot(cor(df), method='circle')\n\n# Specific correlation\ncor(df$col1, df$col2)",
+                                excel: "=CORREL(A:A, B:B)\nData Analysis > Correlation"
+                            },
+                            resources: [
+                                { name: "Correlation in Pandas", url: "#", type: "docs" },
+                                { name: "Understanding Correlation", url: "#", type: "tutorial" },
+                                { name: "Correlation vs Causation", url: "#", type: "video" },
+                                { name: "Statistics Interactive Lab", url: "#", type: "interactive" }
+                            ]
+                        },
+                        {
+                            name: "Groupby & Aggregation",
+                            description: "Grouping data and computing aggregate statistics",
+                            languages: ["python", "sql", "r"],
+                            code: {
+                                python: "# Group by single column\ndf.groupby('category')['value'].mean()\n\n# Multiple aggregations\ndf.groupby('category').agg({\n    'value': ['mean', 'sum', 'count'],\n    'price': ['min', 'max']\n})\n\n# Group by multiple columns\ndf.groupby(['cat1', 'cat2'])['value'].sum()",
+                                sql: "-- Group by with aggregation\nSELECT category, \n       AVG(value) as avg_value,\n       SUM(value) as total,\n       COUNT(*) as count\nFROM table\nGROUP BY category;",
+                                r: "# Group by and summarize\nlibrary(dplyr)\ndf %>%\n  group_by(category) %>%\n  summarise(\n    mean_value = mean(value),\n    total = sum(value),\n    count = n()\n  )"
+                            },
+                            resources: [
+                                { name: "Pandas GroupBy Documentation", url: "#", type: "docs" },
+                                { name: "SQL GROUP BY Tutorial", url: "#", type: "tutorial" },
+                                { name: "dplyr GroupBy Operations", url: "#", type: "video" },
+                                { name: "Aggregation Practice Problems", url: "#", type: "interactive" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Data Visualization",
+                    class: "visualization",
+                    techniques: [
+                        {
+                            name: "Scatter Plots",
+                            description: "Visualizing relationships between two continuous variables",
+                            languages: ["python", "r", "excel"],
+                            code: {
+                                python: "import matplotlib.pyplot as plt\nimport seaborn as sns\n\n# Basic scatter\nplt.scatter(df['x'], df['y'])\nplt.xlabel('X Variable')\nplt.ylabel('Y Variable')\nplt.show()\n\n# Seaborn with regression\nsns.regplot(data=df, x='x', y='y')",
+                                r: "# Base R scatter plot\nplot(df$x, df$y, main='Scatter Plot',\n     xlab='X Variable', ylab='Y Variable')\n\n# ggplot2\nlibrary(ggplot2)\nggplot(df, aes(x=x, y=y)) + geom_point()",
+                                excel: "Select data > Insert > Scatter Chart"
+                            },
+                            resources: [
+                                { name: "Matplotlib Scatter Plots", url: "#", type: "docs" },
+                                { name: "Creating Effective Scatter Plots", url: "#", type: "tutorial" },
+                                { name: "ggplot2 Visualization Guide", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "Bar Charts",
+                            description: "Comparing categorical data with bar visualizations",
+                            languages: ["python", "r", "javascript", "excel"],
+                            code: {
+                                python: "# Vertical bar chart\ndf['category'].value_counts().plot(kind='bar')\nplt.show()\n\n# Horizontal bar chart\ndf.groupby('category')['value'].mean().plot(kind='barh')\nplt.show()",
+                                r: "# Base R bar plot\nbarplot(table(df$category))\n\n# ggplot2\nggplot(df, aes(x=category)) + geom_bar()",
+                                javascript: "// Using Chart.js\nconst ctx = document.getElementById('myChart');\nnew Chart(ctx, {\n  type: 'bar',\n  data: {\n    labels: ['A', 'B', 'C'],\n    datasets: [{\n      label: 'Values',\n      data: [12, 19, 3]\n    }]\n  }\n});",
+                                excel: "Select data > Insert > Bar Chart"
+                            },
+                            resources: [
+                                { name: "Pandas Plotting Guide", url: "#", type: "docs" },
+                                { name: "Chart.js Documentation", url: "#", type: "tutorial" },
+                                { name: "Data Visualization Best Practices", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "Box Plots",
+                            description: "Displaying distribution and identifying outliers",
+                            languages: ["python", "r", "excel"],
+                            code: {
+                                python: "import seaborn as sns\n\n# Single box plot\ndf.boxplot(column='value')\nplt.show()\n\n# Box plot by category\nsns.boxplot(data=df, x='category', y='value')\nplt.show()",
+                                r: "# Base R boxplot\nboxplot(df$value)\n\n# By category\nboxplot(value ~ category, data=df)\n\n# ggplot2\nggplot(df, aes(x=category, y=value)) + geom_boxplot()",
+                                excel: "Select data > Insert > Box and Whisker Chart"
+                            },
+                            resources: [
+                                { name: "Understanding Box Plots", url: "#", type: "tutorial" },
+                                { name: "Seaborn Box Plot Guide", url: "#", type: "docs" },
+                                { name: "Interpreting Box Plots", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "Heatmaps",
+                            description: "Visualizing matrix data with color intensity",
+                            languages: ["python", "r"],
+                            code: {
+                                python: "import seaborn as sns\n\n# Correlation heatmap\nsns.heatmap(df.corr(), annot=True, cmap='coolwarm',\n            center=0, square=True)\nplt.show()\n\n# Custom heatmap\nsns.heatmap(df.pivot_table(values='value',\n            index='row', columns='col'))",
+                                r: "# Using pheatmap\nlibrary(pheatmap)\npheatmap(cor(df))\n\n# ggplot2 heatmap\nggplot(df, aes(x=x, y=y, fill=value)) +\n  geom_tile() +\n  scale_fill_gradient2()"
+                            },
+                            resources: [
+                                { name: "Seaborn Heatmap Guide", url: "#", type: "docs" },
+                                { name: "Creating Effective Heatmaps", url: "#", type: "tutorial" },
+                                { name: "Correlation Visualization", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "Time Series Plots",
+                            description: "Visualizing trends and patterns over time",
+                            languages: ["python", "r", "javascript"],
+                            code: {
+                                python: "# Line plot over time\ndf.set_index('date')['value'].plot()\nplt.show()\n\n# Multiple time series\ndf.pivot(index='date', columns='category',\n         values='value').plot()\nplt.show()\n\n# With moving average\ndf['ma'] = df['value'].rolling(window=7).mean()\ndf.plot(x='date', y=['value', 'ma'])",
+                                r: "# Time series plot\nplot(df$date, df$value, type='l')\n\n# ggplot2\nggplot(df, aes(x=date, y=value)) +\n  geom_line() +\n  theme_minimal()",
+                                javascript: "// Using Plotly.js\nPlotly.newPlot('chart', [{\n  x: dates,\n  y: values,\n  type: 'scatter',\n  mode: 'lines'\n}]);"
+                            },
+                            resources: [
+                                { name: "Time Series Visualization", url: "#", type: "tutorial" },
+                                { name: "Pandas Time Series", url: "#", type: "docs" },
+                                { name: "Plotly Time Series", url: "#", type: "video" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Statistical Modeling",
+                    class: "modeling",
+                    techniques: [
+                        {
+                            name: "Linear Regression",
+                            description: "Modeling linear relationships between variables",
+                            languages: ["python", "sql", "r"],
+                            code: {
+                                python: "from sklearn.linear_model import LinearRegression\nimport numpy as np\n\n# Prepare data\nX = df[['feature1', 'feature2']].values\ny = df['target'].values\n\n# Fit model\nmodel = LinearRegression()\nmodel.fit(X, y)\n\n# Predictions\npredictions = model.predict(X)\n\n# R-squared score\nfrom sklearn.metrics import r2_score\nr2 = r2_score(y, predictions)",
+                                sql: "-- Simple linear regression (PostgreSQL)\nSELECT regr_slope(y, x) as slope,\n       regr_intercept(y, x) as intercept,\n       regr_r2(y, x) as r_squared\nFROM table;",
+                                r: "# Linear regression\nmodel <- lm(target ~ feature1 + feature2, data=df)\n\n# Summary\nsummary(model)\n\n# Predictions\npredictions <- predict(model, df)\n\n# Plot\nplot(df$feature1, df$target)\nabline(model)"
+                            },
+                            resources: [
+                                { name: "Scikit-learn Linear Regression", url: "#", type: "docs" },
+                                { name: "Linear Regression Tutorial", url: "#", type: "tutorial" },
+                                { name: "Regression Analysis Explained", url: "#", type: "video" },
+                                { name: "DataCamp Regression Course", url: "#", type: "interactive" }
+                            ]
+                        },
+                        {
+                            name: "Hypothesis Testing",
+                            description: "Statistical tests for comparing groups and validating assumptions",
+                            languages: ["python", "r"],
+                            code: {
+                                python: "from scipy import stats\n\n# T-test (two groups)\nt_stat, p_value = stats.ttest_ind(group1, group2)\n\n# Chi-square test\nchi2, p_value = stats.chi2_contingency(contingency_table)[:2]\n\n# ANOVA (multiple groups)\nf_stat, p_value = stats.f_oneway(group1, group2, group3)\n\n# Normality test\nstat, p_value = stats.shapiro(data)",
+                                r: "# T-test\nt.test(group1, group2)\n\n# Chi-square test\nchisq.test(table(df$var1, df$var2))\n\n# ANOVA\naov_result <- aov(value ~ category, data=df)\nsummary(aov_result)\n\n# Normality test\nshapiro.test(df$value)"
+                            },
+                            resources: [
+                                { name: "SciPy Stats Module", url: "#", type: "docs" },
+                                { name: "Hypothesis Testing Guide", url: "#", type: "tutorial" },
+                                { name: "Statistical Tests Explained", url: "#", type: "video" },
+                                { name: "Interactive Stats Course", url: "#", type: "interactive" }
+                            ]
+                        },
+                        {
+                            name: "Probability Distributions",
+                            description: "Working with normal, binomial, Poisson, and other distributions",
+                            languages: ["python", "r"],
+                            code: {
+                                python: "from scipy import stats\nimport numpy as np\n\n# Normal distribution\ndata = stats.norm.rvs(loc=0, scale=1, size=1000)\npdf = stats.norm.pdf(x, loc=0, scale=1)\n\n# Binomial distribution\ndata = stats.binom.rvs(n=10, p=0.5, size=1000)\n\n# Poisson distribution\ndata = stats.poisson.rvs(mu=3, size=1000)\n\n# Fit distribution to data\nparams = stats.norm.fit(data)",
+                                r: "# Normal distribution\ndata <- rnorm(1000, mean=0, sd=1)\ndensity <- dnorm(x, mean=0, sd=1)\n\n# Binomial distribution\ndata <- rbinom(1000, size=10, prob=0.5)\n\n# Poisson distribution\ndata <- rpois(1000, lambda=3)\n\n# Fit distribution\nlibrary(fitdistrplus)\nfit <- fitdist(data, 'norm')"
+                            },
+                            resources: [
+                                { name: "Probability Distributions in SciPy", url: "#", type: "docs" },
+                                { name: "Understanding Distributions", url: "#", type: "tutorial" },
+                                { name: "Probability Theory Crash Course", url: "#", type: "video" }
+                            ]
+                        },
+                        {
+                            name: "Feature Engineering",
+                            description: "Creating new features from existing data",
+                            languages: ["python", "sql", "r"],
+                            code: {
+                                python: "# Create interaction features\ndf['feature_interaction'] = df['f1'] * df['f2']\n\n# Polynomial features\nfrom sklearn.preprocessing import PolynomialFeatures\npoly = PolynomialFeatures(degree=2)\nX_poly = poly.fit_transform(X)\n\n# Binning continuous variables\ndf['age_group'] = pd.cut(df['age'],\n                          bins=[0, 18, 35, 60, 100],\n                          labels=['child', 'young', 'adult', 'senior'])\n\n# One-hot encoding\ndf_encoded = pd.get_dummies(df, columns=['category'])",
+                                sql: "-- Create calculated columns\nSELECT *,\n       feature1 * feature2 as interaction,\n       CASE \n         WHEN age < 18 THEN 'child'\n         WHEN age < 35 THEN 'young'\n         WHEN age < 60 THEN 'adult'\n         ELSE 'senior'\n       END as age_group\nFROM table;",
+                                r: "# Create new features\ndf$interaction <- df$f1 * df$f2\n\n# Binning\ndf$age_group <- cut(df$age,\n                     breaks=c(0, 18, 35, 60, 100),\n                     labels=c('child', 'young', 'adult', 'senior'))\n\n# One-hot encoding\nlibrary(caret)\ndummies <- dummyVars(~ category, data=df)\ndf_encoded <- predict(dummies, newdata=df)"
+                            },
+                            resources: [
+                                { name: "Feature Engineering Guide", url: "#", type: "tutorial" },
+                                { name: "Advanced Feature Creation", url: "#", type: "docs" },
+                                { name: "Feature Engineering Course", url: "#", type: "video" },
+                                { name: "Kaggle Feature Engineering", url: "#", type: "interactive" }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Initialize progress tracking
+        let progress = {};
+        
+        function loadProgress() {
+            const saved = localStorage.getItem('edaProgress');
+            if (saved) {
+                progress = JSON.parse(saved);
+            }
+        }
+
+        function saveProgress() {
+            localStorage.setItem('edaProgress', JSON.stringify(progress));
+            updateProgressDisplay();
+        }
+
+        function getTechniqueId(stageName, techniqueName) {
+            return `${stageName}-${techniqueName}`.replace(/\s+/g, '-').toLowerCase();
+        }
+
+        function isTechniqueCompleted(stageName, techniqueName) {
+            const id = getTechniqueId(stageName, techniqueName);
+            return progress[id] || false;
+        }
+
+        function toggleTechniqueCompletion(stageName, techniqueName) {
+            const id = getTechniqueId(stageName, techniqueName);
+            progress[id] = !progress[id];
+            saveProgress();
+        }
+
+        function getStageProgress(stage) {
+            const total = stage.techniques.length;
+            const completed = stage.techniques.filter(tech => 
+                isTechniqueCompleted(stage.name, tech.name)
+            ).length;
+            return { completed, total, percentage: Math.round((completed / total) * 100) };
+        }
+
+        function getTotalProgress() {
+            let totalTechniques = 0;
+            let completedTechniques = 0;
+            
+            edaData.stages.forEach(stage => {
+                totalTechniques += stage.techniques.length;
+                completedTechniques += stage.techniques.filter(tech =>
+                    isTechniqueCompleted(stage.name, tech.name)
+                ).length;
+            });
+            
+            return {
+                completed: completedTechniques,
+                total: totalTechniques,
+                percentage: Math.round((completedTechniques / totalTechniques) * 100)
+            };
+        }
+
+        function updateProgressDisplay() {
+            const total = getTotalProgress();
+            const overviewHtml = `
+                <div class="progress-card">
+                    <h3>Overall Progress</h3>
+                    <div class="percentage">${total.percentage}%</div>
+                    <div>${total.completed} / ${total.total} techniques</div>
+                </div>
+                ${edaData.stages.map(stage => {
+                    const stageProgress = getStageProgress(stage);
+                    return `
+                        <div class="progress-card">
+                            <h3>${stage.name}</h3>
+                            <div class="percentage">${stageProgress.percentage}%</div>
+                            <div>${stageProgress.completed} / ${stageProgress.total}</div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+            
+            document.getElementById('progressOverview').innerHTML = overviewHtml;
+            
+            // Update stage headers
+            edaData.stages.forEach(stage => {
+                const stageProgress = getStageProgress(stage);
+                const progressElement = document.querySelector(
+                    `.stage.${stage.class} .stage-progress`
+                );
+                if (progressElement) {
+                    progressElement.textContent = `${stageProgress.completed}/${stageProgress.total} (${stageProgress.percentage}%)`;
+                }
+            });
+        }
+
+        function renderStages() {
+            const container = document.getElementById('stagesContainer');
+            
+            const html = edaData.stages.map(stage => {
+                const stageProgress = getStageProgress(stage);
+                
+                return `
+                    <div class="stage ${stage.class}">
+                        <div class="stage-header" onclick="toggleStage('${stage.class}')">
+                            <h2>${stage.name}</h2>
+                            <div class="stage-progress">${stageProgress.completed}/${stageProgress.total} (${stageProgress.percentage}%)</div>
+                        </div>
+                        <div class="techniques-grid" id="techniques-${stage.class}">
+                            ${stage.techniques.map(technique => {
+                                const techniqueId = getTechniqueId(stage.name, technique.name);
+                                const isCompleted = isTechniqueCompleted(stage.name, technique.name);
+                                
+                                return `
+                                    <div class="technique-card ${isCompleted ? 'completed' : ''}" data-technique-id="${techniqueId}">
+                                        <div class="checkbox ${isCompleted ? 'checked' : ''}" 
+                                             onclick="toggleCompletion(event, '${stage.name}', '${technique.name}')"></div>
+                                        <h3>${technique.name}</h3>
+                                        <p>${technique.description}</p>
+                                        <div class="language-tags">
+                                            ${technique.languages.map(lang => 
+                                                `<span class="lang-tag ${lang}">${lang.toUpperCase()}</span>`
+                                            ).join('')}
+                                        </div>
+                                        <button class="show-more-btn" onclick="toggleDetails(event, '${techniqueId}')">
+                                            Show Code & Resources
+                                        </button>
+                                        <div class="code-snippet" id="code-${techniqueId}">
+                                            ${Object.entries(technique.code).map(([lang, code]) => `
+                                                <div style="margin-bottom: 15px;">
+                                                    <div style="color: #6ed4ff; font-weight: bold; margin-bottom: 5px;">
+                                                        ${lang.toUpperCase()}:
+                                                    </div>
+                                                    <pre style="margin: 0;">${code}</pre>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                        <div class="resources" id="resources-${techniqueId}">
+                                            <strong style="display: block; margin-bottom: 10px;">📚 Learning Resources:</strong>
+                                            ${technique.resources.map(resource => `
+                                                <a href="${resource.url}" class="resource-link" target="_blank">
+                                                    ${resource.name}
+                                                    <span class="resource-type ${resource.type}">${resource.type}</span>
+                                                </a>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+
+        function toggleStage(stageClass) {
+            const techniques = document.getElementById(`techniques-${stageClass}`);
+            techniques.classList.toggle('collapsed');
+        }
+
+        function toggleCompletion(event, stageName, techniqueName) {
+            event.stopPropagation();
+            toggleTechniqueCompletion(stageName, techniqueName);
+            
+            const techniqueId = getTechniqueId(stageName, techniqueName);
+            const card = document.querySelector(`[data-technique-id="${techniqueId}"]`);
+            const checkbox = card.querySelector('.checkbox');
+            
+            const isCompleted = isTechniqueCompleted(stageName, techniqueName);
+            
+            if (isCompleted) {
+                card.classList.add('completed');
+                checkbox.classList.add('checked');
+            } else {
+                card.classList.remove('completed');
+                checkbox.classList.remove('checked');
+            }
+        }
+
+        function toggleDetails(event, techniqueId) {
+            event.stopPropagation();
+            const codeSnippet = document.getElementById(`code-${techniqueId}`);
+            const resources = document.getElementById(`resources-${techniqueId}`);
+            const btn = event.target;
+            
+            codeSnippet.classList.toggle('visible');
+            resources.classList.toggle('visible');
+            
+            if (codeSnippet.classList.contains('visible')) {
+                btn.textContent = 'Hide Details';
+            } else {
+                btn.textContent = 'Show Code & Resources';
+            }
+        }
+
+        // Filter functionality
+        let currentFilter = 'all';
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                applyFilter();
+            });
+        });
+
+        function applyFilter() {
+            document.querySelectorAll('.resource-link').forEach(link => {
+                const resourceType = link.querySelector('.resource-type').textContent;
+                if (currentFilter === 'all' || resourceType === currentFilter) {
+                    link.style.display = 'inline-block';
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize
+        loadProgress();
+        renderStages();
+        updateProgressDisplay();
+    </script>
+</body>
+</html>

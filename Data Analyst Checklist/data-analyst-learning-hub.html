@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analyst Learning Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 10px; font-size: 2.5em; }
+        .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
+        .overall-progress { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px; border: 2px solid #e9ecef; }
+        .overall-progress h3 { color: #2c3e50; margin-bottom: 10px; }
+        .progress-bar-container { background: #e9ecef; height: 30px; border-radius: 15px; overflow: hidden; position: relative; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; min-width: 50px; }
+        .category { margin-bottom: 30px; }
+        .category-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .category-title { font-size: 1.3em; font-weight: bold; }
+        .category-progress { font-size: 0.9em; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; }
+        .tiles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .tile { background: white; border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; transition: all 0.3s ease; }
+        .tile:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: #667eea; }
+        .tile.completed { border-color: #2ecc71; background: #f0fdf4; }
+        .tile-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .checkbox { width: 24px; height: 24px; border: 2px solid #667eea; border-radius: 5px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: white; transition: all 0.3s ease; }
+        .checkbox.checked { background: #2ecc71; border-color: #2ecc71; }
+        .checkbox.checked::after { content: "✓"; color: white; font-weight: bold; font-size: 18px; }
+        .tile-title { font-size: 1.1em; color: #2c3e50; font-weight: bold; flex-grow: 1; cursor: pointer; }
+        .tile-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .tile.expanded .tile-content { max-height: 2000px; margin-top: 15px; padding-top: 15px; border-top: 2px solid #e9ecef; }
+        .section { margin-bottom: 12px; }
+        .section-title { font-weight: bold; color: #667eea; margin-bottom: 6px; font-size: 1em; }
+        .section-content { color: #555; line-height: 1.6; font-size: 0.95em; }
+        .resources-list { list-style: none; padding: 0; margin: 0; }
+        .resources-list li { margin-bottom: 6px; padding-left: 20px; position: relative; }
+        .resources-list li::before { content: "→"; position: absolute; left: 0; color: #667eea; font-weight: bold; }
+        .resources-list a { color: #667eea; text-decoration: none; font-weight: 500; }
+        .resources-list a:hover { text-decoration: underline; color: #764ba2; }
+        .code-example { background: #f8f9fa; padding: 12px; border-radius: 5px; font-family: 'Courier New', monospace; font-size: 0.85em; overflow-x: auto; border-left: 4px solid #667eea; margin: 8px 0; white-space: pre-wrap; line-height: 1.4; }
+        .notes-section { margin-top: 12px; }
+        .notes-textarea { width: 100%; min-height: 70px; padding: 10px; border: 2px solid #e9ecef; border-radius: 5px; font-family: inherit; font-size: 0.9em; resize: vertical; }
+        .notes-textarea:focus { outline: none; border-color: #667eea; }
+        .reset-button { background: #e74c3c; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-size: 1em; font-weight: bold; display: block; margin: 30px auto; transition: background 0.3s ease; }
+        .reset-button:hover { background: #c0392b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Data Analyst Learning Hub</h1>
+        <p class="subtitle">Your comprehensive roadmap to becoming a data analyst</p>
+        <div class="overall-progress">
+            <h3>Overall Progress</h3>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="overallProgress">0%</div>
+            </div>
+        </div>
+        <div id="categoriesContainer"></div>
+        <button class="reset-button" onclick="resetAll()">🔄 Reset All Progress</button>
+    </div>
+
+    <script>
+        const data = {
+            excel: {
+                title: "EXCEL",
+                items: [
+                    { title: "Lookups (VLOOKUP, XLOOKUP)", desc: "Master lookup functions to retrieve data efficiently.", resources: [{name: "ExcelJet VLOOKUP", url: "https://exceljet.net/excel-functions/excel-vlookup-function"}, {name: "Microsoft XLOOKUP", url: "https://support.microsoft.com/office/xlookup-function-b7fd680e-6d10-43e6-84f9-88eae8bf5929"}], code: "=XLOOKUP(A2, Products[ID], Products[Price])\n=INDEX(B:B, MATCH(A2, A:A, 0))", steps: "Practice with datasets | Learn error handling | Try nested lookups" },
+                    { title: "Pivot Tables", desc: "Create dynamic summaries and analyze large datasets.", resources: [{name: "Excel Easy Pivot", url: "https://www.excel-easy.com/data-analysis/pivot-tables.html"}], code: "Insert → PivotTable → Drag fields", steps: "Create from raw data | Add slicers | Create calculated fields" },
+                    { title: "Power Query", desc: "Automate data import and transformation.", resources: [{name: "MS Power Query", url: "https://learn.microsoft.com/power-query/"}], code: "Data → Get Data → Transform", steps: "Import sources | Clean data | Create queries" },
+                    { title: "Statistics", desc: "Statistical functions for analysis.", resources: [{name: "Real Statistics", url: "http://www.real-statistics.com/"}], code: "=AVERAGE(A:A)\n=MEDIAN(A:A)\n=STDEV.S(A:A)", steps: "Calculate summaries | Use Analysis Toolpak" }
+                ]
+            },
+            powerbi: {
+                title: "POWER BI ⭐",
+                items: [
+                    { title: "Power Query ETL", desc: "Transform data before loading.", resources: [{name: "MS Learn", url: "https://learn.microsoft.com/power-bi/transform-model/"}], code: "= Table.AddColumn(Source, \"Profit\", each [Revenue]-[Cost])", steps: "Connect sources | Transform data | Optimize" },
+                    { title: "DAX & Modeling", desc: "Create measures and relationships.", resources: [{name: "DAX Guide", url: "https://dax.guide/"}, {name: "SQLBI", url: "https://www.sqlbi.com/"}], code: "Total = SUM(Sales[Amount])\nYTD = TOTALYTD([Total], Cal[Date])", steps: "Build star schema | Create measures | Master CALCULATE" },
+                    { title: "Visualizations", desc: "Design interactive dashboards.", resources: [{name: "Power BI Docs", url: "https://learn.microsoft.com/power-bi/"}], steps: "Choose visuals | Apply design | Add interactivity" }
+                ]
+            },
+            sqlpython: {
+                title: "SQL / PYTHON ⭐",
+                items: [
+                    { title: "SQL Joins & CTEs", desc: "Combine tables and write readable queries.", resources: [{name: "SQL Joins", url: "https://sql-joins.leopard.in.ua/"}, {name: "Mode Analytics", url: "https://mode.com/sql-tutorial/"}], code: "WITH monthly AS (\n  SELECT DATE_TRUNC('month',date) m, SUM(amt) t\n  FROM sales GROUP BY 1\n)\nSELECT * FROM monthly WHERE t>10000", steps: "Practice joins | Master window functions | Solve challenges" },
+                    { title: "Pandas DataFrames", desc: "Python data manipulation.", resources: [{name: "Pandas Docs", url: "https://pandas.pydata.org/docs/"}, {name: "Kaggle", url: "https://www.kaggle.com/learn/pandas"}], code: "import pandas as pd\ndf = pd.read_csv('data.csv')\ndf[df['sales']>1000]\ndf.groupby('cat')['sales'].sum()", steps: "Load data | Filter | Groupby | Handle missing" },
+                    { title: "Python Visualization", desc: "Charts with matplotlib, seaborn, plotly.", resources: [{name: "Matplotlib", url: "https://matplotlib.org/"}, {name: "Seaborn", url: "https://seaborn.pydata.org/"}], code: "import matplotlib.pyplot as plt\nimport seaborn as sns\nsns.barplot(x='cat', y='sales', data=df)\nplt.show()", steps: "Create plots | Customize | Build dashboards" },
+                    { title: "Stored Procedures", desc: "Reusable SQL code blocks.", resources: [{name: "PostgreSQL", url: "https://www.postgresqltutorial.com/postgresql-stored-procedures/"}], code: "CREATE PROCEDURE GetSales\n  @Start DATE, @End DATE\nAS\n  SELECT * FROM sales\n  WHERE date BETWEEN @Start AND @End;", steps: "Write procedures | Handle errors | Document" }
+                ]
+            },
+            ai: {
+                title: "AI ENABLED",
+                items: [
+                    { title: "Google Skills", desc: "Advanced search techniques.", resources: [{name: "Search Operators", url: "https://ahrefs.com/blog/google-advanced-search-operators/"}], code: "site:stackoverflow.com python pandas\n\"exact phrase\" -exclude\nfiletype:pdf", steps: "Learn operators | Use quotes | Search sites" },
+                    { title: "Using ChatGPT/Claude", desc: "Leverage AI for code and learning.", resources: [{name: "Prompt Engineering", url: "https://www.promptingguide.ai/"}], steps: "Write clear prompts | Ask explanations | Verify code" },
+                    { title: "Continuous Learning", desc: "Stay updated with tools.", resources: [{name: "DataCamp", url: "https://www.datacamp.com/"}, {name: "Kaggle", url: "https://www.kaggle.com/learn"}], steps: "Follow blogs | Take courses | Join communities" },
+                    { title: "Problem Solving", desc: "Analytical thinking approaches.", resources: [{name: "LeetCode", url: "https://leetcode.com/problemset/database/"}], steps: "Break problems | Use pseudocode | Practice" }
+                ]
+            },
+            business: {
+                title: "BUSINESS ACUMEN",
+                items: [
+                    { title: "Revenue & Profit", desc: "Key financial metrics.", resources: [{name: "Investopedia", url: "https://www.investopedia.com/"}], steps: "Learn P&L | Calculate margins | Analyze trends" },
+                    { title: "Market Share", desc: "Competitive analysis metrics.", steps: "Calculate share | Compare competitors | Track changes" },
+                    { title: "Domain Knowledge", desc: "Learn 2+ business domains.", resources: [{name: "McKinsey Insights", url: "https://www.mckinsey.com/industries"}], steps: "Study reports | Learn KPIs | Read case studies" },
+                    { title: "Finance & Sales Metrics", desc: "CAC, LTV, churn, conversion.", steps: "Calculate CAC | Understand LTV | Track conversions" }
+                ]
+            },
+            communication: {
+                title: "COMMUNICATION",
+                items: [
+                    { title: "Present Insights", desc: "Tell stories with data.", resources: [{name: "Storytelling with Data", url: "https://www.storytellingwithdata.com/"}], steps: "Structure narrative | Focus insights | Practice" },
+                    { title: "Write Emails", desc: "Communicate findings effectively.", steps: "Key takeaway first | Use bullets | Clear ask" },
+                    { title: "Stakeholder MGMT", desc: "Work with different audiences.", steps: "Understand needs | Adjust complexity | Build relationships" },
+                    { title: "Project Tools", desc: "Jira, Asana, Trello.", resources: [{name: "Jira", url: "https://www.atlassian.com/software/jira"}, {name: "Asana", url: "https://asana.com/"}], steps: "Create plans | Track progress | Communicate" }
+                ]
+            },
+            resume: {
+                title: "RESUME",
+                items: [
+                    { title: "ATS Checked", desc: "Pass applicant tracking systems.", resources: [{name: "Jobscan", url: "https://www.jobscan.co/"}], steps: "Use keywords | Simple format | Test with checker" },
+                    { title: "Curated for JD", desc: "Tailor for each application.", steps: "Match keywords | Emphasize relevant | Quantify" },
+                    { title: "STAR Method", desc: "Situation, Task, Action, Result.", code: "Reduced time 75% (Result) by developing dashboard (Action) to replace manual process (Situation) for sales analysis (Task)", steps: "Action verbs | Quantify | Show impact" },
+                    { title: "Portfolio Link", desc: "Link to online portfolio.", steps: "Add GitHub | Personal site | Live dashboards" }
+                ]
+            },
+            linkedin: {
+                title: "LINKEDIN",
+                items: [
+                    { title: "Good DP + Banner", desc: "Professional photo and custom banner.", steps: "Professional photo | Custom banner | Contact info" },
+                    { title: "10 Endorsed Skills", desc: "Get skill endorsements.", steps: "Add skills | Endorse others | Ask colleagues" },
+                    { title: "3 Recommendations", desc: "Request recommendations.", steps: "Request from projects | Provide context | Give first" },
+                    { title: "Link to Portfolio", desc: "Include portfolio in profile.", steps: "Add to featured | Mention in headline | Share updates" }
+                ]
+            },
+            portfolio: {
+                title: "PORTFOLIO ⭐",
+                items: [
+                    { title: "4+ Projects", desc: "Diverse end-to-end projects.", resources: [{name: "Kaggle Datasets", url: "https://www.kaggle.com/datasets"}, {name: "Data.gov", url: "https://www.data.gov/"}], steps: "Different domains | Complete workflow | Document | Highlight insights" },
+                    { title: "1 Per Tool", desc: "Excel, Power BI, Python, SQL, Tableau.", steps: "Excel dashboard | Power BI report | Python notebook | SQL analysis | Tableau viz" },
+                    { title: "Insight Deck", desc: "Presentation decks.", resources: [{name: "Canva", url: "https://www.canva.com/"}], steps: "Clear narrative | Visualize findings | Recommendations" },
+                    { title: "Video Presentation", desc: "Record project walkthrough.", resources: [{name: "Loom", url: "https://www.loom.com/"}, {name: "OBS Studio", url: "https://obsproject.com/"}], steps: "Script points | Record screen | Under 5 min | Share LinkedIn" }
+                ]
+            }
+        };
+
+        function init() {
+            const container = document.getElementById('categoriesContainer');
+            Object.keys(data).forEach(catKey => {
+                const cat = data[catKey];
+                const catDiv = document.createElement('div');
+                catDiv.className = 'category';
+                catDiv.innerHTML = `<div class="category-header"><div class="category-title">${cat.title}</div><div class="category-progress" id="prog-${catKey}">0/${cat.items.length}</div></div><div class="tiles-grid" id="grid-${catKey}"></div>`;
+                container.appendChild(catDiv);
+                const grid = document.getElementById(`grid-${catKey}`);
+                cat.items.forEach((item, idx) => {
+                    const tileId = `${catKey}-${idx}`;
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.id = tileId;
+                    let resHTML = '';
+                    if (item.resources) {
+                        resHTML = '<div class="section"><div class="section-title">Resources:</div><ul class="resources-list">';
+                        item.resources.forEach(r => { resHTML += `<li><a href="${r.url}" target="_blank">${r.name}</a></li>`; });
+                        resHTML += '</ul></div>';
+                    }
+                    let codeHTML = item.code ? `<div class="section"><div class="section-title">Example:</div><div class="code-example">${item.code}</div></div>` : '';
+                    tile.innerHTML = `<div class="tile-header" onclick="toggleTile('${tileId}')"><div class="checkbox" onclick="toggleCheck('${tileId}', event)"></div><div class="tile-title">${item.title}</div></div><div class="tile-content"><div class="section"><div class="section-title">Description:</div><div class="section-content">${item.desc}</div></div>${resHTML}${codeHTML}<div class="section"><div class="section-title">Action Steps:</div><div class="section-content">${item.steps}</div></div><div class="notes-section"><div class="section-title">My Notes:</div><textarea class="notes-textarea" placeholder="Add your notes..." onchange="saveNote('${tileId}', this.value)"></textarea></div></div>`;
+                    grid.appendChild(tile);
+                });
+            });
+            loadData();
+            updateProgress();
+        }
+
+        function toggleTile(id) {
+            document.getElementById(id).classList.toggle('expanded');
+        }
+
+        function toggleCheck(id, e) {
+            e.stopPropagation();
+            const tile = document.getElementById(id);
+            const cb = tile.querySelector('.checkbox');
+            cb.classList.toggle('checked');
+            tile.classList.toggle('completed');
+            saveData();
+            updateProgress();
+        }
+
+        function saveNote(id, val) {
+            localStorage.setItem(`note-${id}`, val);
+        }
+
+        function saveData() {
+            const completed = [];
+            document.querySelectorAll('.checkbox.checked').forEach(cb => {
+                completed.push(cb.parentElement.parentElement.id);
+            });
+            localStorage.setItem('completed', JSON.stringify(completed));
+        }
+
+        function loadData() {
+            const completed = JSON.parse(localStorage.getItem('completed') || '[]');
+            completed.forEach(id => {
+                const tile = document.getElementById(id);
+                if (tile) {
+                    tile.querySelector('.checkbox').classList.add('checked');
+                    tile.classList.add('completed');
+                }
+            });
+            document.querySelectorAll('.notes-textarea').forEach(ta => {
+                const id = ta.closest('.tile').id;
+                const note = localStorage.getItem(`note-${id}`);
+                if (note) ta.value = note;
+            });
+        }
+
+        function updateProgress() {
+            let total = 0, done = 0;
+            Object.keys(data).forEach(catKey => {
+                const cat = data[catKey];
+                const catDone = document.querySelectorAll(`#grid-${catKey} .checkbox.checked`).length;
+                total += cat.items.length;
+                done += catDone;
+                document.getElementById(`prog-${catKey}`).textContent = `${catDone}/${cat.items.length}`;
+            });
+            const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+            const bar = document.getElementById('overallProgress');
+            bar.style.width = pct + '%';
+            bar.textContent = pct + '%';
+        }
+
+        function resetAll() {
+            if (confirm('Reset all progress? Cannot be undone.')) {
+                localStorage.clear();
+                document.querySelectorAll('.checkbox').forEach(cb => cb.classList.remove('checked'));
+                document.querySelectorAll('.tile').forEach(t => t.classList.remove('completed'));
+                document.querySelectorAll('.notes-textarea').forEach(t => t.value = '');
+                updateProgress();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
