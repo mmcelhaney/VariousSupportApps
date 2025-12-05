@@ -6,24 +6,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Index Landing Page</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f9; color: #333; }
-        .container { width: 90%; margin: 20px auto; }
-        h1 { text-align: center; color: #1e88e5; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-        .project-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .project-table th, .project-table td { padding: 10px; border: 1px solid #ddd; vertical-align: top; }
-        .project-table th { background-color: #e0f2f1; color: #004d40; text-align: center; font-size: 1.2em; }
-        .tile-cell { width: 50%; }
+        body { font-family: 'Arial', sans-serif; background-color: #f4f7f9; color: #333; margin: 0; padding: 0; }
+        .container { width: 95%; max-width: 1200px; margin: 20px auto; }
+        h1 { text-align: center; color: #1e88e5; padding-top: 10px; margin-bottom: 5px; }
+        
+        /* --- Contact Info Block --- */
+        .contact-info { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #ddd; 
+            padding-bottom: 15px;
+            font-size: 1.1em;
+            color: #555;
+        }
+        .contact-info br { margin-bottom: 5px; }
+        
+        /* --- Tabs Layout --- */
+        .tab { 
+            overflow: hidden; 
+            border: 1px solid #ccc; 
+            background-color: #f1f1f1; 
+            border-radius: 8px 8px 0 0;
+            display: flex;
+        }
+
+        .tab button {
+            background-color: inherit;
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        .tab button:hover { background-color: #ddd; }
+        .tab button.active { background-color: #ccc; }
+
+        .tabcontent {
+            display: none;
+            padding: 20px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+            background-color: #fff;
+            min-height: 500px;
+        }
+
+        /* --- Project Grid (Responsive 4-Column Grid) --- */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr); 
+            gap: 20px;
+            padding: 10px;
+        }
+
+        @media (min-width: 640px) {
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 800px) {
+            .project-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1100px) {
+            .project-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* --- Tile Styling --- */
         .tile { 
             background-color: #ffffff; 
             padding: 15px; 
-            margin-bottom: 10px; 
             border-radius: 8px; 
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 150px;
         }
-        .tile h3 { margin-top: 0; font-size: 1.1em; }
+        .tile:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); }
+
+        .tile h3 { margin-top: 0; font-size: 1.2em; }
         .tile h3 a { color: #1e88e5; text-decoration: none; }
         .tile h3 a:hover { text-decoration: underline; }
-        .tile p { font-size: 0.9em; color: #555; }
+        .tile p { font-size: 0.9em; color: #555; flex-grow: 1; }
         .tile button { 
             background-color: #4CAF50; 
             color: white; 
@@ -31,7 +104,6 @@
             padding: 8px 15px; 
             text-align: center; 
             text-decoration: none; 
-            display: inline-block; 
             font-size: 14px; 
             margin-top: 10px; 
             cursor: pointer; 
@@ -40,197 +112,253 @@
     </style>
     <script>
         
-            function downloadProject(projectName) {
-                // Download links to the pre-zipped file in the Admin directory.
-                // Since the landing page is at /Admin/LandingPage.html, this path is correct.
-                window.location.href = 'Admin/' + projectName + '.zip';
-            }
+            function downloadProject(projectName) {{
+                // Link to the pre-zipped file in the Admin directory.
+                window.location.href = './' + projectName + '.zip';
+            }}
+
+            function openTab(evt, tabName) {{
+                var i, tabcontent, tablinks;
+                
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {{
+                    tabcontent[i].style.display = "none";
+                }}
+                
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {{
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }}
+                
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }}
+            
+            // Set the first tab as default open on load
+            window.onload = function() {{
+                var firstTab = document.querySelector('.tablinks');
+                if (firstTab) {{
+                    firstTab.click();
+                }}
+            }};
         
     </script>
 </head>
 <body>
     <div class="container">
         <h1>Project Index Landing Page</h1>
-        <table class="project-table">
-            <thead>
-                <tr>
-                    <th>Traditional Projects</th><th>Vibe Projects</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/50 Websites To Find Unlimited Content/50 Websites To Find Unlimited Content.html" target="_blank">50 Websites To Find Unlimited Content</a></h3>
-                        <p>See and keep track of 50 websites for finding unlimited free content like research data and articles.</p>
-                        <button onclick="downloadProject('50 Websites To Find Unlimited Content')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/6 More Things to Add to Certification/career_dev_guide.html" target="_blank">6 More Things to Add to Certification</a></h3>
-                        <p>Your Interactive Career Development Guide</p>
-                        <button onclick="downloadProject('6 More Things to Add to Certification')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/AI Model Alternatives/AI Model Alternatives.html" target="_blank">AI Model Alternatives</a></h3>
-                        <p>Source showing which tools are free compared to paid tools.</p>
-                        <button onclick="downloadProject('AI Model Alternatives')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/AI Prompt Guide/ai-prompt-guide-gemini.html" target="_blank">AI Prompt Guide</a></h3>
-                        <p>Master the art of prompting AI models with interactive learning</p>
-                        <button onclick="downloadProject('AI Prompt Guide')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Choosing AI Tools/ai_tools_selector.html" target="_blank">Choosing AI Tools</a></h3>
-                        <p>Essential Python libraries and frameworks every developer should master for data analysis, machine learning, web development, and more.</p>
-                        <button onclick="downloadProject('Choosing AI Tools')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Data Analyst Checklist/data-analyst-learning-hub.html" target="_blank">Data Analyst Checklist</a></h3>
-                        <p>Want to be become a Data Analyst? Follow this guide.</p>
-                        <button onclick="downloadProject('Data Analyst Checklist')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Data Cleaning/data-cleaning-guide.html" target="_blank">Data Cleaning</a></h3>
-                        <p>Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Data Cleaning" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphic. Include information and examples in Python, SQL, R, JavaScript and Excel. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete.</p>
-                        <button onclick="downloadProject('Data Cleaning')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Data Engineer/data-engineer-guide.html" target="_blank">Data Engineer</a></h3>
-                        <p>Your Interactive Guide to Mastering Data Engineering</p>
-                        <button onclick="downloadProject('Data Engineer')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Data Science Checklist/datascience_portfolio_checklist .html" target="_blank">Data Science Checklist</a></h3>
-                        <p><strong>📅 Date:</strong> ${formattedDate}</p>
-                        <button onclick="downloadProject('Data Science Checklist')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Data Visualization/Viz Table Example.html" target="_blank">Data Visualization</a></h3>
-                        <p>This is a guide to visualization Data to make it easier to communicate information.</p>
-                        <button onclick="downloadProject('Data Visualization')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Database Type Selector/Database Type Selector.html" target="_blank">Database Type Selector</a></h3>
-                        <p>This app provides a directory of common database types and a simple recommender to help you choose the right one for your project. The directory is populated from the data in the graphics below.</p>
-                        <button onclick="downloadProject('Database Type Selector')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Ebook Guide/ebook-guide-app.html" target="_blank">Ebook Guide</a></h3>
-                        <p><em>Note: The original graphic should be displayed here. This is a placeholder.</em></p>
-                        <button onclick="downloadProject('Ebook Guide')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Exploratory Data Analysis (EDA)/eda-guide-app.html" target="_blank">Exploratory Data Analysis (EDA)</a></h3>
-                        <p>Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Exploratory Data Analysis" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics. Include information and examples in Python, SQL, R, JavaScript and Excel. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete.</p>
-                        <button onclick="downloadProject('Exploratory Data Analysis (EDA)')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Humanoid AI Guide/humanoid-robotics-guide_base-gemini.html" target="_blank">Humanoid AI Guide</a></h3>
-                        <p>Interactive Learning Dashboard for Robotics Students & Educators</p>
-                        <button onclick="downloadProject('Humanoid AI Guide')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/LLM Guide/llm-guide-app.html" target="_blank">LLM Guide</a></h3>
-                        <p>Your Complete Journey from Beginner to Building & Deploying Production LLMs</p>
-                        <button onclick="downloadProject('LLM Guide')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/LLM Selector/llm_selector_offline_vGemini.html" target="_blank">LLM Selector</a></h3>
-                        <p>Sorry, no tools matched your specific criteria. Please try different answers.</p>
-                        <button onclick="downloadProject('LLM Selector')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/Neural Networks/neural-net-guide.html" target="_blank">Neural Networks</a></h3>
-                        <p>Comprehensive Resource for Intermediate Practitioners</p>
-                        <button onclick="downloadProject('Neural Networks')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/SQL GUIDE/sql-guide-app-gemini.html" target="_blank">SQL GUIDE</a></h3>
-                        <p>Your comprehensive resource for mastering SQL - from basics to advanced concepts</p>
-                        <button onclick="downloadProject('SQL GUIDE')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../Top 11 Free AI Courses/Top 11 Free AI Courses.html" target="_blank">Top 11 Free AI Courses</a></h3>
-                        <p>Created by Claude AI | Data sourced from <a href="https://FreeGuides.cc" target="_blank">FreeGuides.cc</a></p>
-                        <button onclick="downloadProject('Top 11 Free AI Courses')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="#" target="_blank">Vector Database Selector</a></h3>
-                        <p>Tool for selecting the right vector database.</p>
-                        <button onclick="downloadProject('Vector Database Selector')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../ai-courses-tracker_v1/ai-courses-tracker.html" target="_blank">ai-courses-tracker_v1</a></h3>
-                        <p>Follow <span class="creator">Luis Rodriques</span> for more insights on AI and Technology</p>
-                        <button onclick="downloadProject('ai-courses-tracker_v1')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/ai-courses-tracker_v2/ai-course-tracker.html" target="_blank">ai-courses-tracker_v2</a></h3>
-                        <p>Create an app in HTML/JavaScript that lists the free courses listed in the attached graphics, describe the courses, a checkmark if the course offers a certificate, a link URL to get the course, and a clickable checkmark that gets persisted. Also include a comment field for each course. Display the graphics and include the prompt at the end.</p>
-                        <button onclick="downloadProject('ai-courses-tracker_v2')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/ai_agent_builder/ai_agent_builder.html" target="_blank">ai_agent_builder</a></h3>
-                        <p>Find the perfect agent framework and build your AI solution</p>
-                        <button onclick="downloadProject('ai_agent_builder')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/data-science-tracker/data-science-tracker.html" target="_blank">data-science-tracker</a></h3>
-                        <p>Generate an HTML app with JavaScript that provides actionable and clickable guides to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete. Before generating app, ask interactive questions, waiting for answers, to improve the quality of the app. Include the graphic at the end and this prompt.</p>
-                        <button onclick="downloadProject('data-science-tracker')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../python_ecosystem_tracker/python_ecosystem_tracker.html" target="_blank">python_ecosystem_tracker</a></h3>
-                        <p>Here is a guide to important libraries in Python and track progress in studying them</p>
-                        <button onclick="downloadProject('python_ecosystem_tracker')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../python_portfolio_projects/python_portfolio_projects.html" target="_blank">python_portfolio_projects</a></h3>
-                        <p>Build an intelligent system that suggests music based on user preferences and listening history.</p>
-                        <button onclick="downloadProject('python_portfolio_projects')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/sorting-complexity-app/sorting-complexity-app.html" target="_blank">sorting-complexity-app</a></h3>
-                        <p><strong>Simple Explanation:</strong> Like sorting playing cards in your hand - you pick one card at a time and insert it into its correct position among the already sorted cards.</p>
-                        <button onclick="downloadProject('sorting-complexity-app')">Download Project</button>
-                    </div>
-                    </td></tr><tr><td></td><td class="tile-cell">
-                    <div class="tile">
-                        <h3><a href="../VariousSupportApps/tech-trends-2026/tech-trends-2026.html" target="_blank">tech-trends-2026</a></h3>
-                        <p>Master the 8 Technologies That Will Define the Future</p>
-                        <button onclick="downloadProject('tech-trends-2026')">Download Project</button>
-                    </div>
-                    </td></tr>
-            </tbody>
-        </table>
+
+        <div class="contact-info">
+            Welcome to my Landing page for my portfolio. If you have any questions or suggestions please feel free to contact me. 
+            <br />Marcus McElhaney
+            <br />mmcelha@gmail.com
+        </div>
+
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'Traditional')">Traditional</button><button class="tablinks" onclick="openTab(event, 'Vibe')">Vibe</button>
+        </div>
+
+        
+            <div id="Traditional" class="tabcontent">
+                <div class="project-grid">
+                    
+                </div>
+            </div>
+            
+            <div id="Vibe" class="tabcontent">
+                <div class="project-grid">
+                    
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/50 Websites To Find Unlimited Content/50 Websites To Find Unlimited Content.html" target="_blank">50 Websites To Find Unlimited Content</a></h3>
+                    <p>50 Websites To Find Unlimited Content 50 Websites To Find Unlimited Content Curated academic, scientific, historical, and business resources with...</p>
+                    <button onclick="downloadProject('50 Websites To Find Unlimited Content')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/6 More Things to Add to Certification/career_dev_guide.html" target="_blank">6 More Things to Add to Certification</a></h3>
+                    <p>Your Interactive Career Development Guide</p>
+                    <button onclick="downloadProject('6 More Things to Add to Certification')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/AI Model Alternatives/AI Model Alternatives.html" target="_blank">AI Model Alternatives</a></h3>
+                    <p>Image from okara.ai</p>
+                    <button onclick="downloadProject('AI Model Alternatives')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/AI Prompt Guide/ai-prompt-guide-gemini.html" target="_blank">AI Prompt Guide</a></h3>
+                    <p>Master the art of prompting AI models with interactive learning</p>
+                    <button onclick="downloadProject('AI Prompt Guide')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Choosing AI Tools/ai_tools_selector.html" target="_blank">Choosing AI Tools</a></h3>
+                    <p>Your Comprehensive Guide to Free & Paid AI Tools</p>
+                    <button onclick="downloadProject('Choosing AI Tools')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Cuddle_Buddy_Form/cuddle_buddy_form.html" target="_blank">Cuddle_Buddy_Form</a></h3>
+                    <p>Official Cuddle Buddy Application NATIONAL CUDDLE BUDDY ASSOCIATION NATIONAL CUDDLE BUDDY ASSOCIATION Official Cuddle Buddy Application NAME LAST...</p>
+                    <button onclick="downloadProject('Cuddle_Buddy_Form')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Data Analyst Checklist/data-analyst-learning-hub.html" target="_blank">Data Analyst Checklist</a></h3>
+                    <p>Your comprehensive roadmap to becoming a data analyst</p>
+                    <button onclick="downloadProject('Data Analyst Checklist')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Data Cleaning/data-cleaning-guide.html" target="_blank">Data Cleaning</a></h3>
+                    <p>Your Personal Learning & Progress Tracker</p>
+                    <button onclick="downloadProject('Data Cleaning')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Data Engineer/data-engineer-guide.html" target="_blank">Data Engineer</a></h3>
+                    <p>Your Interactive Guide to Mastering Data Engineering</p>
+                    <button onclick="downloadProject('Data Engineer')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Data Science Checklist/datascience_portfolio_checklist .html" target="_blank">Data Science Checklist</a></h3>
+                    <p>Click on each resource link to learn more. Check the box when completed!</p>
+                    <button onclick="downloadProject('Data Science Checklist')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Data Visualization/Viz Table Example.html" target="_blank">Data Visualization</a></h3>
+                    <p>Visualization Infographics</p>
+                    <button onclick="downloadProject('Data Visualization')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Database Type Selector/Database Type Selector.html" target="_blank">Database Type Selector</a></h3>
+                    <p>This app provides a directory of common database types and a simple recommender to help you choose the right one for your project. The directory is populated from the data in the graphics below.</p>
+                    <button onclick="downloadProject('Database Type Selector')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Ebook Guide/ebook-guide-app.html" target="_blank">Ebook Guide</a></h3>
+                    <p>Edit and refine your prompt before sending it to ChatGPT.</p>
+                    <button onclick="downloadProject('Ebook Guide')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Exploratory Data Analysis (EDA)/eda-guide-app.html" target="_blank">Exploratory Data Analysis (EDA)</a></h3>
+                    <p>Interactive learning path for intermediate data analysts</p>
+                    <button onclick="downloadProject('Exploratory Data Analysis (EDA)')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Humanoid AI Guide/humanoid-robotics-guide_base-gemini.html" target="_blank">Humanoid AI Guide</a></h3>
+                    <p>Interactive Learning Dashboard for Robotics Students & Educators</p>
+                    <button onclick="downloadProject('Humanoid AI Guide')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/LLM Guide/llm-guide-app.html" target="_blank">LLM Guide</a></h3>
+                    <p>Your Complete Journey from Beginner to Building & Deploying Production LLMs</p>
+                    <button onclick="downloadProject('LLM Guide')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/LLM Selector/llm_selector_offline_vGemini.html" target="_blank">LLM Selector</a></h3>
+                    <p>AI Tool Selector - Find Your Perfect AI Tool</p>
+                    <button onclick="downloadProject('LLM Selector')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Machine Learning Roadmap/ml-build-guide.html" target="_blank">Machine Learning Roadmap</a></h3>
+                    <p>Your comprehensive roadmap to mastering ML - From Data to Deployment</p>
+                    <button onclick="downloadProject('Machine Learning Roadmap')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Neural Networks/neural-net-guide.html" target="_blank">Neural Networks</a></h3>
+                    <p>Comprehensive Resource for Intermediate Practitioners</p>
+                    <button onclick="downloadProject('Neural Networks')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="#" target="_blank">Post AI Examples</a></h3>
+                    <p>Summary is unavailable.</p>
+                    <button onclick="downloadProject('Post AI Examples')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/SQL GUIDE/sql-guide-app-gemini.html" target="_blank">SQL GUIDE</a></h3>
+                    <p>Your comprehensive resource for mastering SQL - from basics to advanced concepts</p>
+                    <button onclick="downloadProject('SQL GUIDE')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/Top 11 Free AI Courses/Top 11 Free AI Courses.html" target="_blank">Top 11 Free AI Courses</a></h3>
+                    <p>Learn Core AI Skills from the World's Top Experts for Free</p>
+                    <button onclick="downloadProject('Top 11 Free AI Courses')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="#" target="_blank">Vector Database Selector</a></h3>
+                    <p>Tool for selecting the right vector database.</p>
+                    <button onclick="downloadProject('Vector Database Selector')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/ai-courses-tracker_v1/ai-courses-tracker.html" target="_blank">ai-courses-tracker_v1</a></h3>
+                    <p>Follow Luis Rodriques for more insights on AI and Technology</p>
+                    <button onclick="downloadProject('ai-courses-tracker_v1')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/ai-courses-tracker_v2/ai-course-tracker.html" target="_blank">ai-courses-tracker_v2</a></h3>
+                    <p>Create an app in HTML/JavaScript that lists the free courses listed in the attached graphics, describe the courses, a checkmark if the course offers a certificate, a link URL to get the course, and a clickable checkmark that gets persisted. Also include a comment field for each course. Display the graphics and include the prompt at the end.</p>
+                    <button onclick="downloadProject('ai-courses-tracker_v2')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/ai_agent_builder/ai_agent_builder.html" target="_blank">ai_agent_builder</a></h3>
+                    <p>Find the perfect agent framework and build your AI solution</p>
+                    <button onclick="downloadProject('ai_agent_builder')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/data-science-tracker/data-science-tracker.html" target="_blank">data-science-tracker</a></h3>
+                    <p>📊 Original infographic would be displayed here</p>
+                    <button onclick="downloadProject('data-science-tracker')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/python_ecosystem_tracker/python_ecosystem_tracker.html" target="_blank">python_ecosystem_tracker</a></h3>
+                    <p>Skills Every Developer Should Master</p>
+                    <button onclick="downloadProject('python_ecosystem_tracker')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/python_portfolio_projects/python_portfolio_projects.html" target="_blank">python_portfolio_projects</a></h3>
+                    <p>your portfolio</p>
+                    <button onclick="downloadProject('python_portfolio_projects')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/sorting-complexity-app/sorting-complexity-app.html" target="_blank">sorting-complexity-app</a></h3>
+                    <p>Master algorithm complexity with interactive visualizations, code examples, and quizzes</p>
+                    <button onclick="downloadProject('sorting-complexity-app')">Download</button>
+                </div>
+                
+                <div class="tile">
+                    <h3><a href="../VariousSupportApps/tech-trends-2026/tech-trends-2026.html" target="_blank">tech-trends-2026</a></h3>
+                    <p>Master the 8 Technologies That Will Define the Future</p>
+                    <button onclick="downloadProject('tech-trends-2026')">Download</button>
+                </div>
+                
+                </div>
+            </div>
+            
+
     </div>
 </body>
 </html>
-
         
