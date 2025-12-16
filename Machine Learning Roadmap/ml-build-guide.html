@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Build Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn, .export-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .stage-indicator {
+            text-align: center;
+            font-size: 1.2em;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .tile {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 3px solid transparent;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+
+        .tile.completed {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+        }
+
+        .tile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .tile-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            accent-color: #28a745;
+        }
+
+        .tile-description {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .tile-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .code-label {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .resources-list {
+            list-style: none;
+        }
+
+        .resources-list li {
+            margin-bottom: 8px;
+        }
+
+        .resources-list a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .resources-list a:hover {
+            color: #e74c3c;
+            text-decoration: underline;
+        }
+
+        .resources-list a::before {
+            content: "🔗";
+        }
+
+        .action-steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .action-steps li {
+            counter-increment: step-counter;
+            margin-bottom: 12px;
+            padding-left: 35px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .action-steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85em;
+        }
+
+        .references-section {
+            padding: 30px;
+        }
+
+        .reference-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .reference-item h3 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .reference-item a {
+            color: #3498db;
+            word-break: break-all;
+        }
+
+        .graphic-tile {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .graphic-tile img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .prompt-section {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .tiles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Machine Learning Build Guide</h1>
+            <p>Your comprehensive roadmap to mastering ML - From Data to Deployment</p>
+        </div>
+
+        <div class="controls">
+            <div class="stage-indicator" id="stageIndicator">Stage 1: Data Collection & Preparation</div>
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="previousStage()" disabled>← Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextStage()">Next →</button>
+                <button class="nav-btn" onclick="showReferences()">References</button>
+            </div>
+            <button class="export-btn" onclick="exportProgress()">💾 Export Progress</button>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="content" id="content"></div>
+    </div>
+
+    <script>
+        const stages = [
+            {
+                name: "Data Collection & Preparation",
+                concepts: [
+                    {
+                        title: "Data Collection",
+                        description: "Data collection is the foundational step in machine learning where you gather relevant data from various sources. The quality and quantity of your data directly impacts model performance. You'll work with structured data (databases, spreadsheets), unstructured data (images, text, audio), and semi-structured data (JSON, XML). Key considerations include data relevance, volume, quality, and bias.",
+                        resources: [
+                            { name: "Google ML Data Preparation Guide", url: "https://developers.google.com/machine-learning/crash-course/numerical-data" },
+                            { name: "Kaggle Datasets Repository", url: "https://www.kaggle.com/datasets" },
+                            { name: "UCI Machine Learning Repository", url: "https://archive.ics.uci.edu/ml/index.php" },
+                            { name: "ProjectPro Data Preparation Guide", url: "https://www.projectpro.io/article/data-preparation-for-machine-learning/595" },
+                            { name: "Web Scraping with Python Tutorial", url: "https://realpython.com/beautiful-soup-web-scraper-python/" },
+                            { name: "Pandas Data Collection Tutorial", url: "https://pandas.pydata.org/docs/user_guide/io.html" },
+                            { name: "YouTube: Data Collection Best Practices", url: "https://www.youtube.com/results?search_query=machine+learning+data+collection+tutorial" },
+                            { name: "Coursera: Data Collection for ML", url: "https://www.coursera.org/learn/data-collection-processing" }
+                        ],
+                        actions: [
+                            "Identify your ML problem and determine what data you need",
+                            "Explore public datasets on Kaggle, UCI, and Google Dataset Search",
+                            "Set up data collection pipelines using Python (Pandas, requests library)",
+                            "Implement web scraping if needed (BeautifulSoup, Scrapy)",
+                            "Document data sources, collection methods, and any biases",
+                            "Ensure data privacy and compliance (GDPR, ethical considerations)"
+                        ],
+                        codeExamples: {
+                            python: `# Quick snippet: Load CSV data with Pandas
+import pandas as pd
+df = pd.read_csv('data.csv')
+print(df.head())
+print(df.info())`,
+                            sql: `-- Query data from database
+SELECT * FROM customers 
+WHERE registration_date >= '2023-01-01'
+LIMIT 1000;`,
+                            r: `# Load data in R
+library(readr)
+data <- read_csv("data.csv")
+head(data)`,
+                            javascript: `// Fetch data from API
+fetch('https://api.example.com/data')
+  .then(res => res.json())
+  .then(data => console.log(data));`
+                        },
+                        fullExamples: [
+                            { name: "Complete Web Scraping Project", url: "https://realpython.com/beautiful-soup-web-scraper-python/" },
+                            { name: "API Data Collection Pipeline", url: "https://www.dataquest.io/blog/python-api-tutorial/" }
+                        ]
+                    },
+                    {
+                        title: "Data Cleaning",
+                        description: "Data cleaning involves identifying and correcting errors, inconsistencies, and missing values in your dataset. This crucial step ensures data quality before modeling. Common issues include missing values, duplicates, outliers, inconsistent formatting, and structural errors. Clean data leads to better model performance and more reliable predictions.",
+                        resources: [
+                            { name: "Pandas Data Cleaning Guide", url: "https://pandas.pydata.org/docs/user_guide/missing_data.html" },
+                            { name: "Real Python: Data Cleaning Tutorial", url: "https://realpython.com/python-data-cleaning-numpy-pandas/" },
+                            { name: "DataCamp: Cleaning Data in Python", url: "https://www.datacamp.com/courses/cleaning-data-in-python" },
+                            { name: "Towards Data Science: Data Cleaning", url: "https://towardsdatascience.com/data-cleaning-with-python-and-pandas-detecting-missing-values-3e9c6ebcf78b" },
+                            { name: "YouTube: Data Cleaning Tutorial Series", url: "https://www.youtube.com/results?search_query=python+data+cleaning+tutorial" },
+                            { name: "Scikit-learn Preprocessing Guide", url: "https://scikit-learn.org/stable/modules/preprocessing.html" },
+                            { name: "Tidyverse Data Cleaning (R)", url: "https://www.tidyverse.org/" }
+                        ],
+                        actions: [
+                            "Identify and handle missing values (imputation, deletion, or forward-fill)",
+                            "Remove or flag duplicate records using Pandas drop_duplicates()",
+                            "Detect and handle outliers using IQR method or z-scores",
+                            "Standardize data formats (dates, text case, units)",
+                            "Fix structural errors (typos, inconsistent naming)",
+                            "Document all cleaning decisions and transformations"
+                        ],
+                        codeExamples: {
+                            python: `# Handle missing values
+df.dropna()  # Remove rows with missing values
+df.fillna(df.mean())  # Fill with mean
+df['col'].fillna(method='ffill')  # Forward fill
+
+# Remove duplicates
+df.drop_duplicates(inplace=True)`,
+                            sql: `-- Remove duplicates in SQL
+DELETE FROM table_name
+WHERE id NOT IN (
+  SELECT MIN(id) FROM table_name
+  GROUP BY key_column
+);`,
+                            r: `# Clean data in R
+library(dplyr)
+data <- data %>%
+  na.omit() %>%
+  distinct()`,
+                            javascript: `// Clean data in JS
+const cleanData = data.filter(row => 
+  row.value !== null && row.value !== undefined
+);`
+                        },
+                        fullExamples: [
+                            { name: "Complete Data Cleaning Pipeline", url: "https://github.com/dataquest/solutions/tree/master/Mission290Solutions" },
+                            { name: "Advanced Missing Value Techniques", url: "https://scikit-learn.org/stable/modules/impute.html" }
+                        ]
+                    },
+                    {
+                        title: "Feature Engineering",
+                        description: "Feature engineering is the process of creating, transforming, and selecting features to improve model performance. This involves extracting meaningful information from raw data, creating new features from existing ones, encoding categorical variables, and selecting the most relevant features. Good feature engineering can dramatically improve model accuracy and is often the difference between mediocre and excellent ML systems.",
+                        resources: [
+                            { name: "Feature Engineering for ML Book", url: "https://www.oreilly.com/library/view/feature-engineering-for/9781491953235/" },
+                            { name: "Scikit-learn Feature Engineering", url: "https://scikit-learn.org/stable/modules/preprocessing.html" },
+                            { name: "Kaggle Feature Engineering Course", url: "https://www.kaggle.com/learn/feature-engineering" },
+                            { name: "Towards Data Science: Feature Engineering Guide", url: "https://towardsdatascience.com/feature-engineering-for-machine-learning-3a5e293a5114" },
+                            { name: "YouTube: Feature Engineering Masterclass", url: "https://www.youtube.com/results?search_query=feature+engineering+machine+learning" },
+                            { name: "Feature Tools Documentation", url: "https://featuretools.alteryx.com/" },
+                            { name: "Pandas-profiling for EDA", url: "https://github.com/ydataai/ydata-profiling" }
+                        ],
+                        actions: [
+                            "Create interaction features (multiplication, ratios between features)",
+                            "Encode categorical variables (one-hot encoding, label encoding, target encoding)",
+                            "Engineer temporal features (day of week, month, season from dates)",
+                            "Aggregate and group features (mean, max, count by category)",
+                            "Apply mathematical transformations (log, square root, polynomial features)",
+                            "Use domain knowledge to create meaningful derived features",
+                            "Perform feature selection using correlation analysis, feature importance"
+                        ],
+                        codeExamples: {
+                            python: `# One-hot encoding
+pd.get_dummies(df, columns=['category'])
+
+# Create interaction features
+df['feature_interaction'] = df['feat1'] * df['feat2']
+
+# Log transformation
+import numpy as np
+df['log_price'] = np.log1p(df['price'])`,
+                            sql: `-- Create derived features in SQL
+SELECT 
+  customer_id,
+  COUNT(*) as purchase_count,
+  AVG(amount) as avg_purchase,
+  MAX(purchase_date) as last_purchase
+FROM transactions
+GROUP BY customer_id;`,
+                            r: `# Feature engineering in R
+library(caret)
+dummies <- dummyVars(~ category, data = df)
+df_encoded <- predict(dummies, newdata = df)`,
+                            javascript: `// Feature normalization
+const normalize = (arr) => {
+  const max = Math.max(...arr);
+  const min = Math.min(...arr);
+  return arr.map(x => (x - min) / (max - min));
+};`
+                        },
+                        fullExamples: [
+                            { name: "Automated Feature Engineering with FeatureTools", url: "https://featuretools.alteryx.com/en/stable/getting_started/using_entitysets.html" },
+                            { name: "Complete Feature Engineering Project", url: "https://www.kaggle.com/code/willkoehrsen/introduction-to-feature-engineering" }
+                        ]
+                    },
+                    {
+                        title: "Data Normalization & Scaling",
+                        description: "Normalization and scaling transform features to a common scale without distorting differences in ranges. This is crucial for algorithms sensitive to feature magnitudes (like neural networks, SVM, K-means). Common techniques include Min-Max scaling (0-1 range), Standardization (zero mean, unit variance), and Robust scaling (using median and IQR). Proper scaling can significantly improve convergence speed and model performance.",
+                        resources: [
+                            { name: "Scikit-learn Scaling Guide", url: "https://scikit-learn.org/stable/modules/preprocessing.html#standardization-or-mean-removal-and-variance-scaling" },
+                            { name: "Normalization vs Standardization", url: "https://www.analyticsvidhya.com/blog/2020/04/feature-scaling-machine-learning-normalization-standardization/" },
+                            { name: "DataCamp: Feature Scaling", url: "https://www.datacamp.com/tutorial/feature-scaling" },
+                            { name: "Machine Learning Mastery: Scaling Guide", url: "https://machinelearningmastery.com/standardscaler-and-minmaxscaler-transforms-in-python/" },
+                            { name: "YouTube: Feature Scaling Explained", url: "https://www.youtube.com/results?search_query=feature+scaling+machine+learning" },
+                            { name: "TensorFlow Data Preprocessing", url: "https://www.tensorflow.org/api_docs/python/tf/keras/layers/Normalization" }
+                        ],
+                        actions: [
+                            "Choose appropriate scaling method based on your algorithm",
+                            "Apply StandardScaler for algorithms assuming normal distribution",
+                            "Use MinMaxScaler when you need bounded values (0-1 or -1 to 1)",
+                            "Apply RobustScaler when dealing with outliers",
+                            "Fit scaler only on training data, then transform test data",
+                            "Save scaler object for deployment to ensure consistent transforms"
+                        ],
+                        codeExamples: {
+                            python: `# StandardScaler (mean=0, std=1)
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# MinMaxScaler (0 to 1)
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X_train)`,
+                            sql: `-- Normalize in SQL (Min-Max)
+SELECT 
+  (value - MIN(value) OVER()) / 
+  (MAX(value) OVER() - MIN(value) OVER()) 
+  as normalized_value
+FROM table_name;`,
+                            r: `# Scaling in R
+library(caret)
+preproc <- preProcess(train_data, 
+  method = c("center", "scale"))
+scaled_data <- predict(preproc, train_data)`,
+                            javascript: `// Simple normalization in JS
+function normalize(arr) {
+  const mean = arr.reduce((a,b)=>a+b)/arr.length;
+  const std = Math.sqrt(
+    arr.reduce((sq, n) => 
+      sq + Math.pow(n - mean, 2), 0) / arr.length
+  );
+  return arr.map(x => (x - mean) / std);
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete Scaling Pipeline with Scikit-learn", url: "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html" },
+                            { name: "Scaling in Deep Learning", url: "https://www.tensorflow.org/tutorials/structured_data/preprocessing_layers" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Exploratory Data Analysis (EDA)",
+                concepts: [
+                    {
+                        title: "Statistical Analysis",
+                        description: "Statistical analysis involves computing descriptive statistics to understand your data's central tendencies, spread, and distributions. This includes calculating mean, median, mode, standard deviation, quartiles, and identifying correlations between variables. Understanding these statistics helps you make informed decisions about data preprocessing and feature engineering.",
+                        resources: [
+                            { name: "NumPy Statistical Functions", url: "https://numpy.org/doc/stable/reference/routines.statistics.html" },
+                            { name: "Pandas Describe Tutorial", url: "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.describe.html" },
+                            { name: "Statistics for ML Course", url: "https://www.coursera.org/learn/machine-learning-probability-and-statistics" },
+                            { name: "Real Python: Statistics Tutorial", url: "https://realpython.com/python-statistics/" },
+                            { name: "Scipy Stats Documentation", url: "https://docs.scipy.org/doc/scipy/reference/stats.html" },
+                            { name: "YouTube: Statistical Analysis for ML", url: "https://www.youtube.com/results?search_query=statistical+analysis+machine+learning" }
+                        ],
+                        actions: [
+                            "Calculate descriptive statistics using df.describe() in Pandas",
+                            "Check for correlations using df.corr() and visualize with heatmaps",
+                            "Identify distribution shapes (normal, skewed, bimodal)",
+                            "Compute percentiles and quartiles to understand data spread",
+                            "Perform hypothesis testing when comparing groups",
+                            "Calculate variance and standard deviation for each feature"
+                        ],
+                        codeExamples: {
+                            python: `# Descriptive statistics
+print(df.describe())
+print(df.corr())
+
+# Distribution analysis
+df['column'].skew()  # Skewness
+df['column'].kurtosis()  # Kurtosis`,
+                            sql: `-- Statistical aggregates
+SELECT 
+  AVG(price) as mean_price,
+  STDDEV(price) as std_price,
+  PERCENTILE_CONT(0.5) WITHIN GROUP 
+    (ORDER BY price) as median_price
+FROM products;`,
+                            r: `# Statistical summary in R
+summary(data)
+cor(data[, numeric_cols])
+sd(data$column)`,
+                            javascript: `// Calculate mean and std
+const mean = arr => 
+  arr.reduce((a,b)=>a+b)/arr.length;
+const std = arr => {
+  const m = mean(arr);
+  return Math.sqrt(
+    arr.reduce((sq,n)=>sq+Math.pow(n-m,2),0)/arr.length
+  );
+};`
+                        },
+                        fullExamples: [
+                            { name: "Complete Statistical Analysis Project", url: "https://www.kaggle.com/code/ekami66/detailed-exploratory-data-analysis-with-python" }
+                        ]
+                    },
+                    {
+                        title: "Data Visualization",
+                        description: "Data visualization transforms complex datasets into visual representations that reveal patterns, trends, outliers, and relationships. Using libraries like Matplotlib, Seaborn, and Plotly, you can create histograms, scatter plots, box plots, heatmaps, and more. Good visualizations are essential for understanding data before modeling and communicating insights to stakeholders.",
+                        resources: [
+                            { name: "Matplotlib Documentation", url: "https://matplotlib.org/stable/tutorials/index.html" },
+                            { name: "Seaborn Tutorial Gallery", url: "https://seaborn.pydata.org/examples/index.html" },
+                            { name: "Plotly Python Graphing", url: "https://plotly.com/python/" },
+                            { name: "Python Graph Gallery", url: "https://www.python-graph-gallery.com/" },
+                            { name: "DataCamp: Data Visualization with Python", url: "https://www.datacamp.com/courses/introduction-to-data-visualization-with-python" },
+                            { name: "YouTube: Seaborn Tutorial", url: "https://www.youtube.com/results?search_query=seaborn+tutorial" },
+                            { name: "Tableau Public Resources", url: "https://public.tableau.com/app/resources/learn" }
+                        ],
+                        actions: [
+                            "Create histograms to visualize feature distributions",
+                            "Use scatter plots to identify relationships between variables",
+                            "Generate correlation heatmaps with Seaborn",
+                            "Create box plots to identify outliers",
+                            "Use pair plots to visualize multiple relationships",
+                            "Build interactive visualizations with Plotly for presentations"
+                        ],
+                        codeExamples: {
+                            python: `# Visualization with Seaborn
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Histogram
+sns.histplot(df['column'], kde=True)
+
+# Correlation heatmap
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+
+# Pair plot
+sns.pairplot(df, hue='target')
+plt.show()`,
+                            sql: `-- Query for visualization tool
+SELECT category, COUNT(*) as count,
+       AVG(value) as avg_value
+FROM data
+GROUP BY category
+ORDER BY count DESC;`,
+                            r: `# Visualization in R
+library(ggplot2)
+ggplot(data, aes(x=var1, y=var2)) + 
+  geom_point() + 
+  geom_smooth(method='lm')`,
+                            javascript: `// Plotly.js visualization
+Plotly.newPlot('chart', [{
+  x: xData,
+  y: yData,
+  type: 'scatter',
+  mode: 'markers'
+}]);`
+                        },
+                        fullExamples: [
+                            { name: "Complete EDA with Visualizations", url: "https://www.kaggle.com/code/parulpandey/a-complete-guide-to-exploratory-data-analysis" }
+                        ]
+                    },
+                    {
+                        title: "Pattern Recognition",
+                        description: "Pattern recognition in EDA involves identifying trends, seasonality, clusters, and anomalies in your data. This helps you understand underlying structures before applying ML algorithms. Techniques include time series decomposition, clustering visualization, anomaly detection, and identifying non-linear relationships.",
+                        resources: [
+                            { name: "Pattern Recognition Tutorial", url: "https://www.analyticsvidhya.com/blog/2019/10/comprehensive-guide-learn-time-series-analysis/" },
+                            { name: "Anomaly Detection Guide", url: "https://scikit-learn.org/stable/modules/outlier_detection.html" },
+                            { name: "Clustering Documentation", url: "https://scikit-learn.org/stable/modules/clustering.html" },
+                            { name: "Time Series Analysis with Python", url: "https://www.machinelearningplus.com/time-series/time-series-analysis-python/" },
+                            { name: "YouTube: Pattern Recognition in Data", url: "https://www.youtube.com/results?search_query=pattern+recognition+data+analysis" }
+                        ],
+                        actions: [
+                            "Identify temporal patterns using time series plots",
+                            "Apply K-means clustering to discover natural groupings",
+                            "Use PCA for dimensionality reduction and pattern visualization",
+                            "Detect anomalies using statistical methods (z-score, IQR)",
+                            "Analyze feature interactions through scatter matrix",
+                            "Document discovered patterns for feature engineering"
+                        ],
+                        codeExamples: {
+                            python: `# Detect anomalies with z-score
+from scipy import stats
+z_scores = np.abs(stats.zscore(df['column']))
+anomalies = df[z_scores > 3]
+
+# K-means clustering
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=3)
+df['cluster'] = kmeans.fit_predict(df[features])`,
+                            sql: `-- Identify patterns with window functions
+SELECT date, value,
+  AVG(value) OVER (ORDER BY date 
+    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) 
+  as moving_avg
+FROM time_series;`,
+                            r: `# Pattern detection in R
+library(cluster)
+kmeans_result <- kmeans(data[, vars], centers = 3)
+data$cluster <- kmeans_result$cluster`,
+                            javascript: `// Simple anomaly detection
+function detectAnomalies(data, threshold = 3) {
+  const mean = data.reduce((a,b)=>a+b)/data.length;
+  const std = Math.sqrt(
+    data.reduce((sq,n)=>sq+Math.pow(n-mean,2),0)/data.length
+  );
+  return data.filter(x => Math.abs((x-mean)/std) > threshold);
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete Anomaly Detection Project", url: "https://www.kaggle.com/code/victorambonati/unsupervised-anomaly-detection" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Model Building & Training",
+                concepts: [
+                    {
+                        title: "Algorithm Selection",
+                        description: "Choosing the right algorithm is crucial for ML success. Consider your problem type (classification, regression, clustering), data characteristics (size, dimensionality, linearity), and constraints (interpretability, speed). Common algorithms include Linear/Logistic Regression, Decision Trees, Random Forests, SVM, Neural Networks, and Gradient Boosting. Start simple and increase complexity as needed.",
+                        resources: [
+                            { name: "Scikit-learn Algorithm Cheat Sheet", url: "https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html" },
+                            { name: "Machine Learning Algorithms Guide", url: "https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/" },
+                            { name: "Towards Data Science: Algorithm Selection", url: "https://towardsdatascience.com/how-to-select-the-right-machine-learning-algorithm-for-your-problem-8f47feb8d3e1" },
+                            { name: "Google ML Crash Course", url: "https://developers.google.com/machine-learning/crash-course" },
+                            { name: "YouTube: ML Algorithms Explained", url: "https://www.youtube.com/results?search_query=machine+learning+algorithms+explained" },
+                            { name: "Fast.ai Practical Deep Learning", url: "https://course.fast.ai/" },
+                            { name: "Coursera: Machine Learning Specialization", url: "https://www.coursera.org/specializations/machine-learning-introduction" }
+                        ],
+                        actions: [
+                            "Define your problem type (classification, regression, clustering)",
+                            "Start with simple baseline models (Linear Regression, Logistic Regression)",
+                            "Consider data size: use simpler models for small datasets",
+                            "Evaluate interpretability needs (Decision Trees for explainability)",
+                            "Try ensemble methods (Random Forest, XGBoost) for better performance",
+                            "Experiment with neural networks for complex, non-linear patterns"
+                        ],
+                        codeExamples: {
+                            python: `# Classification example
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+
+# Simple model
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+
+# Ensemble model
+rf = RandomForestClassifier(n_estimators=100)
+rf.fit(X_train, y_train)`,
+                            sql: `-- Feature preparation for modeling
+CREATE TABLE model_data AS
+SELECT 
+  feature1, feature2, feature3,
+  target
+FROM cleaned_data
+WHERE split = 'train';`,
+                            r: `# Model training in R
+library(randomForest)
+model <- randomForest(
+  target ~ ., 
+  data = train_data,
+  ntree = 100
+)`,
+                            javascript: `// Simple ML with TensorFlow.js
+const model = tf.sequential();
+model.add(tf.layers.dense({
+  units: 1, 
+  inputShape: [features.length]
+}));
+model.compile({
+  optimizer: 'adam',
+  loss: 'meanSquaredError'
+});`
+                        },
+                        fullExamples: [
+                            { name: "Complete Model Selection Pipeline", url: "https://www.kaggle.com/code/arthurtok/introduction-to-ensembling-stacking-in-python" }
+                        ]
+                    },
+                    {
+                        title: "Train-Test Split & Cross-Validation",
+                        description: "Properly splitting data prevents overfitting and provides reliable performance estimates. The standard approach is 80/20 or 70/30 train-test split. Cross-validation (k-fold) provides more robust evaluation by training on multiple data subsets. Stratified splitting ensures balanced class distribution. Time series requires special temporal splits to avoid data leakage.",
+                        resources: [
+                            { name: "Scikit-learn Train-Test Split", url: "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html" },
+                            { name: "Cross-Validation Guide", url: "https://scikit-learn.org/stable/modules/cross_validation.html" },
+                            { name: "Machine Learning Mastery: CV Tutorial", url: "https://machinelearningmastery.com/k-fold-cross-validation/" },
+                            { name: "Towards Data Science: Cross-Validation", url: "https://towardsdatascience.com/cross-validation-in-machine-learning-72924a69872f" },
+                            { name: "Time Series CV", url: "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html" },
+                            { name: "YouTube: Train-Test Split Explained", url: "https://www.youtube.com/results?search_query=train+test+split+cross+validation" }
+                        ],
+                        actions: [
+                            "Split data into train (80%) and test (20%) sets",
+                            "Use stratified split for imbalanced classification problems",
+                            "Implement k-fold cross-validation (typically k=5 or k=10)",
+                            "For time series, use TimeSeriesSplit to maintain temporal order",
+                            "Never use test data during training or hyperparameter tuning",
+                            "Consider creating a validation set for hyperparameter tuning"
+                        ],
+                        codeExamples: {
+                            python: `# Train-test split
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# K-fold cross-validation
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(model, X, y, cv=5)
+print(f"CV Score: {scores.mean():.3f} (+/- {scores.std():.3f})")`,
+                            sql: `-- Create train/test split in SQL
+UPDATE dataset
+SET split_type = CASE 
+  WHEN RAND() < 0.8 THEN 'train'
+  ELSE 'test'
+END;`,
+                            r: `# Train-test split in R
+library(caret)
+trainIndex <- createDataPartition(
+  data$target, p = 0.8, list = FALSE
+)
+train <- data[trainIndex, ]
+test <- data[-trainIndex, ]`,
+                            javascript: `// Simple train-test split in JS
+function trainTestSplit(data, testSize = 0.2) {
+  const shuffled = data.sort(() => Math.random() - 0.5);
+  const splitIdx = Math.floor(data.length * (1 - testSize));
+  return {
+    train: shuffled.slice(0, splitIdx),
+    test: shuffled.slice(splitIdx)
+  };
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete CV Strategy Implementation", url: "https://www.kaggle.com/code/alexisbcook/cross-validation" }
+                        ]
+                    },
+                    {
+                        title: "Hyperparameter Tuning",
+                        description: "Hyperparameters control the learning process and model complexity. Tuning them optimizes model performance. Common methods include Grid Search (exhaustive), Random Search (sampling), and advanced techniques like Bayesian Optimization. Key hyperparameters vary by algorithm: learning rate, tree depth, regularization strength, number of estimators, etc.",
+                        resources: [
+                            { name: "Scikit-learn Hyperparameter Tuning", url: "https://scikit-learn.org/stable/modules/grid_search.html" },
+                            { name: "Optuna Hyperparameter Optimization", url: "https://optuna.readthedocs.io/" },
+                            { name: "Hyperopt Documentation", url: "http://hyperopt.github.io/hyperopt/" },
+                            { name: "Towards Data Science: Hyperparameter Tuning", url: "https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74" },
+                            { name: "Machine Learning Mastery: Tuning Guide", url: "https://machinelearningmastery.com/hyperparameter-optimization-with-random-search-and-grid-search/" },
+                            { name: "YouTube: Hyperparameter Optimization", url: "https://www.youtube.com/results?search_query=hyperparameter+tuning+machine+learning" },
+                            { name: "Ray Tune for Scalable Tuning", url: "https://docs.ray.io/en/latest/tune/index.html" }
+                        ],
+                        actions: [
+                            "Define hyperparameter search space for your algorithm",
+                            "Start with Random Search for efficient exploration",
+                            "Use Grid Search for final fine-tuning of promising regions",
+                            "Implement cross-validation during hyperparameter search",
+                            "Consider Bayesian Optimization for expensive models",
+                            "Track experiments with MLflow or Weights & Biases",
+                            "Document best hyperparameters and performance metrics"
+                        ],
+                        codeExamples: {
+                            python: `# Grid Search
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+
+param_grid = {
+    'n_estimators': [100, 200, 300],
+    'max_depth': [10, 20, 30],
+    'min_samples_split': [2, 5, 10]
+}
+
+grid_search = GridSearchCV(
+    RandomForestClassifier(),
+    param_grid,
+    cv=5,
+    scoring='accuracy'
+)
+grid_search.fit(X_train, y_train)
+print(f"Best params: {grid_search.best_params_}")`,
+                            sql: `-- Store tuning results
+CREATE TABLE hyperparameter_results (
+  experiment_id INT,
+  params JSON,
+  cv_score FLOAT,
+  test_score FLOAT
+);`,
+                            r: `# Hyperparameter tuning in R
+library(caret)
+tune_grid <- expand.grid(
+  mtry = c(2, 4, 6),
+  splitrule = c("gini", "extratrees"),
+  min.node.size = c(1, 3, 5)
+)
+model <- train(
+  target ~ .,
+  data = train_data,
+  method = "ranger",
+  tuneGrid = tune_grid
+)`,
+                            javascript: `// Simple grid search in JS
+function gridSearch(model, paramGrid) {
+  let bestScore = -Infinity;
+  let bestParams = {};
+  
+  paramGrid.forEach(params => {
+    const score = evaluateModel(model, params);
+    if (score > bestScore) {
+      bestScore = score;
+      bestParams = params;
+    }
+  });
+  
+  return { bestScore, bestParams };
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete Hyperparameter Tuning Project", url: "https://www.kaggle.com/code/willkoehrsen/intro-to-model-tuning-grid-and-random-search" },
+                            { name: "Bayesian Optimization Tutorial", url: "https://github.com/fmfn/BayesianOptimization" }
+                        ]
+                    },
+                    {
+                        title: "Regularization Techniques",
+                        description: "Regularization prevents overfitting by adding penalties to model complexity. L1 regularization (Lasso) performs feature selection by driving coefficients to zero. L2 regularization (Ridge) shrinks coefficients but keeps all features. Elastic Net combines both. Dropout is used in neural networks. Regularization strength is a key hyperparameter to tune.",
+                        resources: [
+                            { name: "Scikit-learn Regularization", url: "https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression" },
+                            { name: "Regularization Explained", url: "https://towardsdatascience.com/regularization-in-machine-learning-76441ddcf99a" },
+                            { name: "Ridge vs Lasso vs Elastic Net", url: "https://www.analyticsvidhya.com/blog/2016/01/ridge-lasso-regression-python-complete-tutorial/" },
+                            { name: "Dropout in Neural Networks", url: "https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout" },
+                            { name: "YouTube: Regularization Tutorial", url: "https://www.youtube.com/results?search_query=regularization+machine+learning" },
+                            { name: "Andrew Ng: Regularization", url: "https://www.coursera.org/learn/machine-learning" }
+                        ],
+                        actions: [
+                            "Apply L2 regularization (Ridge) as default for regression",
+                            "Use L1 regularization (Lasso) when feature selection is needed",
+                            "Try Elastic Net for combination of L1 and L2 benefits",
+                            "Tune regularization parameter (alpha) using cross-validation",
+                            "Add dropout layers in neural networks (typically 0.2-0.5)",
+                            "Use early stopping to prevent overfitting during training",
+                            "Monitor train vs validation performance to detect overfitting"
+                        ],
+                        codeExamples: {
+                            python: `# Ridge Regression (L2)
+from sklearn.linear_model import Ridge
+ridge = Ridge(alpha=1.0)
+ridge.fit(X_train, y_train)
+
+# Lasso Regression (L1)
+from sklearn.linear_model import Lasso
+lasso = Lasso(alpha=0.1)
+lasso.fit(X_train, y_train)
+
+# Elastic Net
+from sklearn.linear_model import ElasticNet
+elastic = ElasticNet(alpha=0.1, l1_ratio=0.5)
+elastic.fit(X_train, y_train)`,
+                            sql: `-- Feature importance tracking
+SELECT feature_name, 
+       AVG(coefficient) as avg_coef,
+       COUNT(CASE WHEN coefficient = 0 THEN 1 END) as zero_count
+FROM model_coefficients
+GROUP BY feature_name;`,
+                            r: `# Regularized regression in R
+library(glmnet)
+cv_model <- cv.glmnet(
+  x = as.matrix(X_train),
+  y = y_train,
+  alpha = 1  # 1 for Lasso, 0 for Ridge
+)
+best_lambda <- cv_model$lambda.min`,
+                            javascript: `// Simple L2 regularization
+function l2Loss(predictions, actual, weights, lambda = 0.01) {
+  const mse = predictions.reduce((sum, pred, i) => 
+    sum + Math.pow(pred - actual[i], 2), 0) / predictions.length;
+  const l2Penalty = lambda * weights.reduce((sum, w) => 
+    sum + w * w, 0);
+  return mse + l2Penalty;
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete Regularization Comparison", url: "https://www.kaggle.com/code/mnassrib/titanic-logistic-regression-with-python" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Model Evaluation",
+                concepts: [
+                    {
+                        title: "Classification Metrics",
+                        description: "Classification metrics evaluate model performance on categorical predictions. Accuracy measures overall correctness but can be misleading with imbalanced data. Precision measures positive prediction accuracy, Recall measures ability to find all positives. F1-score balances precision and recall. ROC-AUC evaluates performance across all thresholds. Confusion matrix provides detailed breakdown of predictions.",
+                        resources: [
+                            { name: "Scikit-learn Classification Metrics", url: "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics" },
+                            { name: "Confusion Matrix Guide", url: "https://www.analyticsvidhya.com/blog/2020/04/confusion-matrix-machine-learning/" },
+                            { name: "ROC-AUC Explained", url: "https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5" },
+                            { name: "Precision vs Recall", url: "https://developers.google.com/machine-learning/crash-course/classification/precision-and-recall" },
+                            { name: "YouTube: Classification Metrics", url: "https://www.youtube.com/results?search_query=classification+metrics+machine+learning" },
+                            { name: "Machine Learning Mastery: Metrics Guide", url: "https://machinelearningmastery.com/tour-of-evaluation-metrics-for-imbalanced-classification/" }
+                        ],
+                        actions: [
+                            "Calculate accuracy, precision, recall, and F1-score",
+                            "Generate confusion matrix to understand error types",
+                            "Plot ROC curve and calculate AUC score",
+                            "Use precision-recall curve for imbalanced datasets",
+                            "Consider business costs when choosing optimal threshold",
+                            "Report multiple metrics for comprehensive evaluation",
+                            "Stratify metrics by important subgroups if needed"
+                        ],
+                        codeExamples: {
+                            python: `# Classification metrics
+from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score,
+    f1_score, confusion_matrix, roc_auc_score, 
+    classification_report
+)
+
+y_pred = model.predict(X_test)
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.3f}")
+print(f"Precision: {precision_score(y_test, y_pred):.3f}")
+print(f"Recall: {recall_score(y_test, y_pred):.3f}")
+print(f"F1: {f1_score(y_test, y_pred):.3f}")
+print(f"ROC-AUC: {roc_auc_score(y_test, y_pred_proba):.3f}")
+
+print("\\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+print("\\nClassification Report:")
+print(classification_report(y_test, y_pred))`,
+                            sql: `-- Calculate metrics in SQL
+SELECT 
+  SUM(CASE WHEN pred = 1 AND actual = 1 THEN 1 ELSE 0 END) as true_pos,
+  SUM(CASE WHEN pred = 1 AND actual = 0 THEN 1 ELSE 0 END) as false_pos,
+  SUM(CASE WHEN pred = 0 AND actual = 1 THEN 1 ELSE 0 END) as false_neg,
+  SUM(CASE WHEN pred = 0 AND actual = 0 THEN 1 ELSE 0 END) as true_neg
+FROM predictions;`,
+                            r: `# Classification metrics in R
+library(caret)
+confusionMatrix(
+  as.factor(predictions),
+  as.factor(actual),
+  positive = "1"
+)
+
+library(pROC)
+roc_obj <- roc(actual, pred_proba)
+auc(roc_obj)`,
+                            javascript: `// Calculate accuracy
+function accuracy(predictions, actual) {
+  const correct = predictions.filter(
+    (pred, i) => pred === actual[i]
+  ).length;
+  return correct / predictions.length;
+}
+
+// Confusion matrix
+function confusionMatrix(predictions, actual) {
+  let tp = 0, fp = 0, tn = 0, fn = 0;
+  predictions.forEach((pred, i) => {
+    if (pred === 1 && actual[i] === 1) tp++;
+    if (pred === 1 && actual[i] === 0) fp++;
+    if (pred === 0 && actual[i] === 1) fn++;
+    if (pred === 0 && actual[i] === 0) tn++;
+  });
+  return { tp, fp, tn, fn };
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete Classification Evaluation", url: "https://www.kaggle.com/code/kashnitsky/topic-4-linear-models-part-5-validation" }
+                        ]
+                    },
+                    {
+                        title: "Regression Metrics",
+                        description: "Regression metrics evaluate continuous prediction accuracy. Mean Absolute Error (MAE) measures average absolute differences. Mean Squared Error (MSE) penalizes larger errors more. Root Mean Squared Error (RMSE) is MSE in original units. R² (coefficient of determination) measures variance explained by the model. Each metric has different properties and use cases.",
+                        resources: [
+                            { name: "Scikit-learn Regression Metrics", url: "https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics" },
+                            { name: "Understanding RMSE and MAE", url: "https://towardsdatascience.com/what-are-the-best-metrics-to-evaluate-your-regression-model-418ca481755b" },
+                            { name: "R-squared Explained", url: "https://www.analyticsvidhya.com/blog/2021/10/evaluation-metric-for-regression-models/" },
+                            { name: "Machine Learning Mastery: Regression Metrics", url: "https://machinelearningmastery.com/regression-metrics-for-machine-learning/" },
+                            { name: "YouTube: Regression Evaluation", url: "https://www.youtube.com/results?search_query=regression+metrics+machine+learning" }
+                        ],
+                        actions: [
+                            "Calculate MAE for interpretable average error",
+                            "Compute RMSE to penalize large errors",
+                            "Report R² to explain variance captured",
+                            "Use MAPE for percentage-based error understanding",
+                            "Visualize residuals to check for patterns",
+                            "Create prediction vs actual scatter plots",
+                            "Check residual distribution for normality"
+                        ],
+                        codeExamples: {
+                            python: `# Regression metrics
+from sklearn.metrics import (
+    mean_absolute_error, mean_squared_error,
+    r2_score, mean_absolute_percentage_error
+)
+import numpy as np
+
+y_pred = model.predict(X_test)
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
+mape = mean_absolute_percentage_error(y_test, y_pred)
+
+print(f"MAE: {mae:.3f}")
+print(f"RMSE: {rmse:.3f}")
+print(f"R²: {r2:.3f}")
+print(f"MAPE: {mape:.3f}")
+
+# Residual plot
+residuals = y_test - y_pred
+plt.scatter(y_pred, residuals)
+plt.axhline(y=0, color='r', linestyle='--')
+plt.xlabel('Predicted')
+plt.ylabel('Residuals')
+plt.show()`,
+                            sql: `-- Calculate regression metrics
+SELECT 
+  AVG(ABS(predicted - actual)) as mae,
+  SQRT(AVG(POW(predicted - actual, 2))) as rmse,
+  1 - (SUM(POW(predicted - actual, 2)) / 
+       SUM(POW(actual - AVG(actual) OVER(), 2))) as r2
+FROM predictions;`,
+                            r: `# Regression metrics in R
+library(Metrics)
+mae <- mae(actual, predictions)
+rmse <- rmse(actual, predictions)
+r2 <- cor(actual, predictions)^2
+
+# Residual plot
+plot(predictions, actual - predictions,
+     xlab = "Predicted",
+     ylab = "Residuals")
+abline(h = 0, col = "red")`,
+                            javascript: `// MAE calculation
+function mae(predictions, actual) {
+  const errors = predictions.map(
+    (pred, i) => Math.abs(pred - actual[i])
+  );
+  return errors.reduce((a, b) => a + b) / errors.length;
+}
+
+// RMSE calculation
+function rmse(predictions, actual) {
+  const squaredErrors = predictions.map(
+    (pred, i) => Math.pow(pred - actual[i], 2)
+  );
+  const mse = squaredErrors.reduce((a, b) => a + b) / 
+              squaredErrors.length;
+  return Math.sqrt(mse);
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete Regression Evaluation", url: "https://www.kaggle.com/code/rtatman/dashboards-for-visualizing-model-performance" }
+                        ]
+                    },
+                    {
+                        title: "Model Interpretation",
+                        description: "Model interpretation helps understand what drives predictions. Feature importance shows which features matter most. SHAP values provide detailed explanations for individual predictions. Partial dependence plots show feature effects. LIME explains individual predictions. Interpretability is crucial for trust, debugging, and regulatory compliance.",
+                        resources: [
+                            { name: "SHAP Documentation", url: "https://shap.readthedocs.io/" },
+                            { name: "LIME Tutorial", url: "https://github.com/marcotcr/lime" },
+                            { name: "Scikit-learn Feature Importance", url: "https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html" },
+                            { name: "Interpretable ML Book", url: "https://christophm.github.io/interpretable-ml-book/" },
+                            { name: "Towards Data Science: Model Interpretation", url: "https://towardsdatascience.com/interpretable-machine-learning-with-xgboost-9ec80d148d27" },
+                            { name: "YouTube: SHAP Explanation", url: "https://www.youtube.com/results?search_query=shap+values+machine+learning" },
+                            { name: "ELI5 Documentation", url: "https://eli5.readthedocs.io/" }
+                        ],
+                        actions: [
+                            "Extract feature importances from tree-based models",
+                            "Calculate SHAP values for detailed feature contributions",
+                            "Use LIME to explain individual predictions",
+                            "Create partial dependence plots for key features",
+                            "Visualize decision trees for transparent logic",
+                            "Generate summary plots showing feature impact distributions",
+                            "Document model behavior for stakeholders"
+                        ],
+                        codeExamples: {
+                            python: `# Feature importance
+import matplotlib.pyplot as plt
+
+# Tree-based model importance
+importances = model.feature_importances_
+indices = np.argsort(importances)[::-1]
+
+plt.figure(figsize=(10, 6))
+plt.bar(range(len(importances)), importances[indices])
+plt.xticks(range(len(importances)), 
+           [feature_names[i] for i in indices], 
+           rotation=45)
+plt.title('Feature Importances')
+plt.show()
+
+# SHAP values
+import shap
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X_test)
+shap.summary_plot(shap_values, X_test)
+
+# LIME for individual prediction
+from lime import lime_tabular
+explainer = lime_tabular.LimeTabularExplainer(
+    X_train, 
+    feature_names=feature_names,
+    mode='classification'
+)
+exp = explainer.explain_instance(
+    X_test[0], 
+    model.predict_proba
+)
+exp.show_in_notebook()`,
+                            sql: `-- Store feature importance
+CREATE TABLE feature_importance (
+  model_id INT,
+  feature_name VARCHAR(100),
+  importance_score FLOAT,
+  rank INT
+);`,
+                            r: `# Feature importance in R
+library(randomForest)
+importance <- importance(model)
+varImpPlot(model)
+
+library(iml)
+predictor <- Predictor$new(model, data = X, y = y)
+imp <- FeatureImp$new(predictor, loss = "mae")
+plot(imp)`,
+                            javascript: `// Simple feature importance visualization
+function plotFeatureImportance(features, importances) {
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  
+  // Sort by importance
+  const sorted = features.map((f, i) => ({
+    name: f,
+    importance: importances[i]
+  })).sort((a, b) => b.importance - a.importance);
+  
+  // Draw bars
+  sorted.forEach((item, i) => {
+    const barHeight = item.importance * canvas.height;
+    ctx.fillRect(i * 50, canvas.height - barHeight, 40, barHeight);
+  });
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete SHAP Analysis Project", url: "https://www.kaggle.com/code/dansbecker/shap-values" }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Model Deployment & MLOps",
+                concepts: [
+                    {
+                        title: "Model Serialization & Packaging",
+                        description: "Model serialization saves trained models to files for deployment. Common formats include pickle for scikit-learn, SavedModel for TensorFlow, and ONNX for cross-framework compatibility. Packaging includes the model, preprocessing pipelines, and dependencies. Proper serialization ensures your model can be loaded and used in production environments consistently.",
+                        resources: [
+                            { name: "Scikit-learn Model Persistence", url: "https://scikit-learn.org/stable/model_persistence.html" },
+                            { name: "TensorFlow SavedModel Guide", url: "https://www.tensorflow.org/guide/saved_model" },
+                            { name: "ONNX Documentation", url: "https://onnx.ai/" },
+                            { name: "Joblib for Model Saving", url: "https://joblib.readthedocs.io/" },
+                            { name: "MLflow Models", url: "https://mlflow.org/docs/latest/models.html" },
+                            { name: "YouTube: Model Serialization", url: "https://www.youtube.com/results?search_query=machine+learning+model+serialization" }
+                        ],
+                        actions: [
+                            "Save model using joblib or pickle for scikit-learn models",
+                            "Use model.save() for TensorFlow/Keras models",
+                            "Export to ONNX format for framework-agnostic deployment",
+                            "Package preprocessing pipelines with the model",
+                            "Version your models with semantic versioning (v1.0.0)",
+                            "Document model dependencies in requirements.txt",
+                            "Test model loading and inference before deployment"
+                        ],
+                        codeExamples: {
+                            python: `# Save scikit-learn model
+import joblib
+joblib.dump(model, 'model.pkl')
+
+# Load model
+loaded_model = joblib.load('model.pkl')
+
+# TensorFlow model
+model.save('my_model.h5')
+loaded_model = tf.keras.models.load_model('my_model.h5')
+
+# MLflow
+import mlflow.sklearn
+mlflow.sklearn.log_model(model, "model")`,
+                            sql: `-- Track model versions
+CREATE TABLE model_registry (
+  model_id VARCHAR(100),
+  version VARCHAR(20),
+  created_at TIMESTAMP,
+  s3_path VARCHAR(500),
+  metrics JSON
+);`,
+                            r: `# Save model in R
+library(caret)
+saveRDS(model, "model.rds")
+
+# Load model
+loaded_model <- readRDS("model.rds")`,
+                            javascript: `// Save TensorFlow.js model
+await model.save('file://./my-model');
+
+// Load model
+const loadedModel = await tf.loadLayersModel(
+  'file://./my-model/model.json'
+);`
+                        },
+                        fullExamples: [
+                            { name: "Complete Model Packaging Pipeline", url: "https://www.mlflow.org/docs/latest/models.html" }
+                        ]
+                    },
+                    {
+                        title: "API Development for Models",
+                        description: "Creating APIs allows models to serve predictions in production. Flask and FastAPI are popular Python frameworks for building RESTful APIs. APIs should handle input validation, error handling, logging, and monitoring. Consider batch vs real-time prediction endpoints. Proper API design ensures scalable, maintainable model serving.",
+                        resources: [
+                            { name: "FastAPI Documentation", url: "https://fastapi.tiangolo.com/" },
+                            { name: "Flask ML API Tutorial", url: "https://www.datacamp.com/tutorial/machine-learning-models-api-python" },
+                            { name: "TensorFlow Serving", url: "https://www.tensorflow.org/tfx/guide/serving" },
+                            { name: "Towards Data Science: ML API", url: "https://towardsdatascience.com/deploying-machine-learning-models-as-rest-api-with-flask-42a6f9c33ed4" },
+                            { name: "YouTube: FastAPI ML Tutorial", url: "https://www.youtube.com/results?search_query=fastapi+machine+learning+deployment" },
+                            { name: "BentoML Documentation", url: "https://docs.bentoml.com/" }
+                        ],
+                        actions: [
+                            "Build RESTful API using FastAPI or Flask",
+                            "Create /predict endpoint for inference requests",
+                            "Implement input validation with Pydantic models",
+                            "Add error handling and appropriate status codes",
+                            "Include health check endpoint for monitoring",
+                            "Add logging for requests and predictions",
+                            "Document API with Swagger/OpenAPI specs"
+                        ],
+                        codeExamples: {
+                            python: `# FastAPI ML API
+from fastapi import FastAPI
+from pydantic import BaseModel
+import joblib
+import numpy as np
+
+app = FastAPI()
+model = joblib.load('model.pkl')
+
+class PredictionInput(BaseModel):
+    features: list[float]
+
+class PredictionOutput(BaseModel):
+    prediction: float
+    probability: float = None
+
+@app.post("/predict", response_model=PredictionOutput)
+async def predict(input_data: PredictionInput):
+    features = np.array([input_data.features])
+    prediction = model.predict(features)[0]
+    probability = model.predict_proba(features)[0][1] if hasattr(model, 'predict_proba') else None
+    return PredictionOutput(prediction=prediction, probability=probability)
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}`,
+                            sql: `-- Log API requests
+CREATE TABLE api_logs (
+  request_id UUID,
+  timestamp TIMESTAMP,
+  endpoint VARCHAR(100),
+  input_data JSON,
+  prediction FLOAT,
+  response_time_ms INT
+);`,
+                            r: `# Plumber API in R
+library(plumber)
+
+#* @post /predict
+function(req) {
+  model <- readRDS("model.rds")
+  data <- jsonlite::fromJSON(req$postBody)
+  prediction <- predict(model, data)
+  list(prediction = prediction)
+}`,
+                            javascript: `// Express.js ML API
+const express = require('express');
+const tf = require('@tensorflow/tfjs-node');
+
+const app = express();
+app.use(express.json());
+
+let model;
+async function loadModel() {
+  model = await tf.loadLayersModel('file://./model/model.json');
+}
+
+app.post('/predict', async (req, res) => {
+  const input = tf.tensor2d([req.body.features]);
+  const prediction = model.predict(input);
+  const result = await prediction.data();
+  res.json({ prediction: result[0] });
+});
+
+loadModel().then(() => {
+  app.listen(3000, () => console.log('API running on port 3000'));
+});`
+                        },
+                        fullExamples: [
+                            { name: "Complete FastAPI ML Project", url: "https://github.com/tiangolo/fastapi/tree/master/docs_src/body" }
+                        ]
+                    },
+                    {
+                        title: "Containerization with Docker",
+                        description: "Docker containers package your model, dependencies, and runtime into a portable unit. This ensures consistency across development, testing, and production environments. Containers are lightweight, scalable, and work with orchestration tools like Kubernetes. Proper containerization is essential for modern MLOps practices.",
+                        resources: [
+                            { name: "Docker Documentation", url: "https://docs.docker.com/" },
+                            { name: "Docker for ML Tutorial", url: "https://www.datacamp.com/tutorial/docker-for-data-science-introduction" },
+                            { name: "Machine Learning Mastery: Docker Guide", url: "https://machinelearningmastery.com/deploy-machine-learning-model-to-production/" },
+                            { name: "Towards Data Science: ML with Docker", url: "https://towardsdatascience.com/how-to-deploy-a-machine-learning-model-with-fastapi-docker-and-github-actions-13374cbd638a" },
+                            { name: "YouTube: Docker ML Deployment", url: "https://www.youtube.com/results?search_query=docker+machine+learning+deployment" },
+                            { name: "Docker Hub ML Images", url: "https://hub.docker.com/" }
+                        ],
+                        actions: [
+                            "Create Dockerfile for your ML application",
+                            "Use official Python base images (python:3.9-slim)",
+                            "Install dependencies from requirements.txt",
+                            "Copy model files and application code",
+                            "Expose API port (typically 8000 or 5000)",
+                            "Build and test Docker image locally",
+                            "Push image to container registry (Docker Hub, ECR, GCR)"
+                        ],
+                        codeExamples: {
+                            python: `# Dockerfile for ML API
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY app.py .
+COPY model.pkl .
+
+# Expose port
+EXPOSE 8000
+
+# Run application
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]`,
+                            sql: `-- Track container deployments
+CREATE TABLE deployments (
+  deployment_id UUID,
+  image_tag VARCHAR(100),
+  environment VARCHAR(50),
+  deployed_at TIMESTAMP,
+  status VARCHAR(20)
+);`,
+                            r: `# Dockerfile for R ML API
+# FROM rocker/r-base:latest
+# RUN R -e "install.packages('plumber')"
+# COPY api.R /app/
+# EXPOSE 8000
+# CMD ["Rscript", "-e", "pr <- plumber::plumb('/app/api.R'); pr$run(host='0.0.0.0', port=8000)"]`,
+                            javascript: `// package.json for Node.js ML app
+{
+  "name": "ml-api",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "@tensorflow/tfjs-node": "^4.0.0"
+  }
+}`
+                        },
+                        fullExamples: [
+                            { name: "Complete Docker ML Deployment", url: "https://github.com/docker/awesome-compose/tree/master/fastapi" }
+                        ]
+                    },
+                    {
+                        title: "Cloud Deployment",
+                        description: "Cloud platforms provide scalable infrastructure for ML models. AWS SageMaker, Google Cloud AI Platform, and Azure ML offer managed services for deployment, monitoring, and scaling. You can also use container services like AWS ECS, Google Cloud Run, or Kubernetes. Cloud deployment enables automatic scaling, load balancing, and high availability.",
+                        resources: [
+                            { name: "AWS SageMaker Documentation", url: "https://docs.aws.amazon.com/sagemaker/" },
+                            { name: "Google Cloud AI Platform", url: "https://cloud.google.com/ai-platform/docs" },
+                            { name: "Azure Machine Learning", url: "https://azure.microsoft.com/en-us/products/machine-learning/" },
+                            { name: "AWS Lambda for ML", url: "https://aws.amazon.com/blogs/machine-learning/" },
+                            { name: "Google Cloud Run Tutorial", url: "https://cloud.google.com/run/docs" },
+                            { name: "YouTube: Cloud ML Deployment", url: "https://www.youtube.com/results?search_query=cloud+machine+learning+deployment" },
+                            { name: "Databricks MLOps Guide", url: "https://www.databricks.com/glossary/mlops" }
+                        ],
+                        actions: [
+                            "Choose cloud provider based on requirements (AWS, GCP, Azure)",
+                            "Set up cloud account and configure IAM permissions",
+                            "Push Docker image to cloud container registry",
+                            "Deploy using managed services (SageMaker, AI Platform)",
+                            "Configure auto-scaling based on traffic",
+                            "Set up load balancers for high availability",
+                            "Implement CI/CD pipeline for automated deployments",
+                            "Monitor costs and optimize resource usage"
+                        ],
+                        codeExamples: {
+                            python: `# AWS SageMaker deployment
+import sagemaker
+from sagemaker.sklearn import SKLearn
+
+sklearn_estimator = SKLearn(
+    entry_point='train.py',
+    role=role,
+    instance_type='ml.m5.xlarge',
+    framework_version='0.23-1'
+)
+
+# Deploy model
+predictor = sklearn_estimator.deploy(
+    initial_instance_count=1,
+    instance_type='ml.t2.medium'
+)
+
+# Make prediction
+result = predictor.predict(data)`,
+                            sql: `-- Track cloud deployments
+CREATE TABLE cloud_deployments (
+  deployment_id UUID,
+  cloud_provider VARCHAR(50),
+  service_type VARCHAR(100),
+  endpoint_url VARCHAR(500),
+  instance_type VARCHAR(50),
+  deployed_at TIMESTAMP
+);`,
+                            r: `# Deploy to cloud using vetiver
+library(vetiver)
+library(pins)
+
+# Create model board
+board <- board_rsconnect()
+
+# Version and deploy
+v <- vetiver_model(model, "my_model")
+vetiver_pin_write(board, v)`,
+                            javascript: `// Deploy to Google Cloud Run
+// gcloud run deploy ml-api \
+//   --image gcr.io/project-id/ml-api \
+//   --platform managed \
+//   --region us-central1 \
+//   --allow-unauthenticated`
+                        },
+                        fullExamples: [
+                            { name: "AWS SageMaker End-to-End Project", url: "https://github.com/aws/amazon-sagemaker-examples" },
+                            { name: "GCP AI Platform Tutorial", url: "https://cloud.google.com/ai-platform/training/docs/training-jobs" }
+                        ]
+                    },
+                    {
+                        title: "Monitoring & Logging",
+                        description: "Production models require continuous monitoring to ensure performance, detect data drift, and identify issues. Monitor prediction latency, throughput, error rates, and model accuracy. Log all predictions for audit trails. Set up alerts for anomalies. Tools like Prometheus, Grafana, and cloud-native monitoring help track model health in real-time.",
+                        resources: [
+                            { name: "Prometheus Documentation", url: "https://prometheus.io/docs/" },
+                            { name: "Grafana ML Dashboards", url: "https://grafana.com/" },
+                            { name: "MLflow Tracking", url: "https://mlflow.org/docs/latest/tracking.html" },
+                            { name: "Evidently AI for ML Monitoring", url: "https://www.evidentlyai.com/" },
+                            { name: "AWS CloudWatch", url: "https://aws.amazon.com/cloudwatch/" },
+                            { name: "YouTube: ML Model Monitoring", url: "https://www.youtube.com/results?search_query=machine+learning+model+monitoring" },
+                            { name: "Towards Data Science: Data Drift Detection", url: "https://towardsdatascience.com/data-drift-explainability-interpretable-shift-detection-with-nannyml-83421319d05f" }
+                        ],
+                        actions: [
+                            "Log all predictions with timestamps and input features",
+                            "Track prediction latency and throughput metrics",
+                            "Monitor model accuracy on recent predictions",
+                            "Detect data drift using statistical tests",
+                            "Set up alerts for performance degradation",
+                            "Create dashboards with Grafana or cloud tools",
+                            "Implement automated retraining triggers",
+                            "Store logs in centralized logging system"
+                        ],
+                        codeExamples: {
+                            python: `# Logging and monitoring
+import logging
+from datetime import datetime
+import prometheus_client as prom
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Prometheus metrics
+prediction_counter = prom.Counter('predictions_total', 'Total predictions')
+prediction_latency = prom.Histogram('prediction_latency_seconds', 'Prediction latency')
+
+@app.post("/predict")
+async def predict(input_data: PredictionInput):
+    start_time = datetime.now()
+    
+    # Make prediction
+    prediction = model.predict([input_data.features])[0]
+    
+    # Log and track
+    latency = (datetime.now() - start_time).total_seconds()
+    logger.info(f"Prediction: {prediction}, Latency: {latency}s")
+    prediction_counter.inc()
+    prediction_latency.observe(latency)
+    
+    # Store in database
+    store_prediction_log(input_data, prediction, latency)
+    
+    return {"prediction": prediction}
+
+# Data drift detection
+from evidently import ColumnMapping
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset
+
+report = Report(metrics=[DataDriftPreset()])
+report.run(reference_data=train_data, current_data=production_data)
+report.save_html("drift_report.html")`,
+                            sql: `-- Prediction logging table
+CREATE TABLE prediction_logs (
+  log_id UUID PRIMARY KEY,
+  timestamp TIMESTAMP,
+  model_version VARCHAR(20),
+  input_features JSON,
+  prediction FLOAT,
+  latency_ms INT,
+  user_id VARCHAR(100)
+);
+
+-- Monitor prediction distribution
+SELECT 
+  DATE_TRUNC('hour', timestamp) as hour,
+  AVG(prediction) as avg_prediction,
+  STDDEV(prediction) as std_prediction,
+  COUNT(*) as request_count
+FROM prediction_logs
+WHERE timestamp > NOW() - INTERVAL '24 hours'
+GROUP BY hour
+ORDER BY hour DESC;`,
+                            r: `# Monitoring in R
+library(logger)
+
+log_prediction <- function(input, prediction, latency) {
+  log_info(paste(
+    "Prediction:", prediction,
+    "Latency:", latency, "ms"
+  ))
+  
+  # Store in database
+  dbWriteTable(con, "prediction_logs", 
+    data.frame(
+      timestamp = Sys.time(),
+      input = toJSON(input),
+      prediction = prediction,
+      latency = latency
+    ),
+    append = TRUE
+  )
+}`,
+                            javascript: `// Logging with Winston
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: 'predictions.log' })
+  ]
+});
+
+app.post('/predict', async (req, res) => {
+  const startTime = Date.now();
+  const prediction = await model.predict(req.body.features);
+  const latency = Date.now() - startTime;
+  
+  logger.info({
+    timestamp: new Date().toISOString(),
+    input: req.body.features,
+    prediction: prediction,
+    latency: latency
+  });
+  
+  res.json({ prediction, latency });
+});`
+                        },
+                        fullExamples: [
+                            { name: "Complete ML Monitoring Setup", url: "https://www.evidentlyai.com/blog/ml-monitoring-do-i-need-data-drift" }
+                        ]
+                    },
+                    {
+                        title: "Model Retraining & CI/CD",
+                        description: "Models degrade over time due to data drift and changing patterns. Implement continuous training to automatically retrain models on new data. CI/CD pipelines automate testing, building, and deploying model updates. Use tools like GitHub Actions, Jenkins, or cloud-native CI/CD. Automated retraining ensures models stay accurate and relevant.",
+                        resources: [
+                            { name: "MLOps Principles Guide", url: "https://ml-ops.org/content/mlops-principles" },
+                            { name: "GitHub Actions for ML", url: "https://github.com/features/actions" },
+                            { name: "Jenkins ML Pipeline", url: "https://www.jenkins.io/" },
+                            { name: "Google Cloud MLOps", url: "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning" },
+                            { name: "Databricks MLOps Workflow", url: "https://docs.databricks.com/machine-learning/mlops/mlops-workflow.html" },
+                            { name: "YouTube: MLOps CI/CD", url: "https://www.youtube.com/results?search_query=mlops+ci+cd+pipeline" },
+                            { name: "DVC for ML Pipelines", url: "https://dvc.org/" }
+                        ],
+                        actions: [
+                            "Set up automated data pipeline to collect new training data",
+                            "Define retraining triggers (time-based, performance-based)",
+                            "Create CI/CD pipeline with GitHub Actions or Jenkins",
+                            "Automate model training and evaluation in pipeline",
+                            "Implement A/B testing for new model versions",
+                            "Use canary deployments to gradually roll out updates",
+                            "Version control training code and data with DVC",
+                            "Automate rollback if new model underperforms"
+                        ],
+                        codeExamples: {
+                            python: `# Automated retraining script
+import schedule
+from datetime import datetime, timedelta
+
+def should_retrain():
+    # Check if performance dropped
+    recent_accuracy = get_recent_accuracy()
+    if recent_accuracy < 0.85:
+        return True
+    
+    # Check time since last training
+    last_training = get_last_training_date()
+    if datetime.now() - last_training > timedelta(days=30):
+        return True
+    
+    return False
+
+def retrain_model():
+    logger.info("Starting model retraining...")
+    
+    # Fetch new data
+    new_data = fetch_recent_data()
+    
+    # Train new model
+    new_model = train_model(new_data)
+    
+    # Evaluate
+    metrics = evaluate_model(new_model, test_data)
+    
+    # Compare with current model
+    if metrics['accuracy'] > current_model_accuracy:
+        deploy_new_model(new_model)
+        logger.info(f"Deployed new model with accuracy: {metrics['accuracy']}")
+    else:
+        logger.warning("New model underperformed, keeping current model")
+
+# Schedule retraining
+schedule.every().monday.at("02:00").do(lambda: retrain_model() if should_retrain() else None)`,
+                            sql: `-- Track model training history
+CREATE TABLE training_history (
+  training_id UUID PRIMARY KEY,
+  model_version VARCHAR(20),
+  trained_at TIMESTAMP,
+  training_data_size INT,
+  metrics JSON,
+  deployed BOOLEAN,
+  git_commit VARCHAR(40)
+);`,
+                            r: `# Automated retraining in R
+library(targets)
+
+# Define retraining pipeline
+tar_plan(
+  tar_target(new_data, fetch_data()),
+  tar_target(preprocessed, preprocess(new_data)),
+  tar_target(model, train_model(preprocessed)),
+  tar_target(metrics, evaluate_model(model)),
+  tar_target(deployment, deploy_if_better(model, metrics))
+)`,
+                            javascript: `// GitHub Actions workflow (YAML)
+/*
+name: Retrain and Deploy ML Model
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Every Monday at 2 AM
+  workflow_dispatch:
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Retrain model
+        run: python train.py
+      
+      - name: Evaluate model
+        run: python evaluate.py
+      
+      - name: Deploy if better
+        run: python deploy.py
+        if: success()
+*/`
+                        },
+                        fullExamples: [
+                            { name: "Complete MLOps Pipeline with GitHub Actions", url: "https://github.com/iterative/example-get-started" },
+                            { name: "Continuous Training Implementation", url: "https://www.tensorflow.org/tfx/guide/continuous_training" }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let currentStageIndex = 0;
+        let completedConcepts = {};
+
+        function renderStage() {
+            const stage = stages[currentStageIndex];
+            const content = document.getElementById('content');
+            
+            document.getElementById('stageIndicator').textContent = 
+                `Stage ${currentStageIndex + 1}: ${stage.name}`;
+            
+            let tilesHTML = '<div class="tiles-grid">';
+            
+            stage.concepts.forEach((concept, index) => {
+                const conceptId = `stage${currentStageIndex}-concept${index}`;
+                const isCompleted = completedConcepts[conceptId] || false;
+                
+                tilesHTML += `
+                    <div class="tile ${isCompleted ? 'completed' : ''}" id="${conceptId}">
+                        <div class="tile-header">
+                            <div class="tile-title">${concept.title}</div>
+                            <div class="checkbox-container">
+                                <input type="checkbox" 
+                                       class="checkbox" 
+                                       ${isCompleted ? 'checked' : ''}
+                                       onchange="toggleComplete('${conceptId}')">
+                            </div>
+                        </div>
+                        
+                        <div class="tile-description">${concept.description}</div>
+                        
+                        <div class="tile-section">
+                            <div class="section-title">📚 Learning Resources</div>
+                            <ul class="resources-list">
+                                ${concept.resources.map(r => `
+                                    <li><a href="${r.url}" target="_blank">${r.name}</a></li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        
+                        ${concept.codeExamples ? `
+                        <div class="tile-section">
+                            <div class="section-title">💻 Code Examples</div>
+                            ${concept.codeExamples.python ? `
+                                <div class="code-label">Python</div>
+                                <div class="code-block">${escapeHtml(concept.codeExamples.python)}</div>
+                            ` : ''}
+                            ${concept.codeExamples.sql ? `
+                                <div class="code-label">SQL</div>
+                                <div class="code-block">${escapeHtml(concept.codeExamples.sql)}</div>
+                            ` : ''}
+                            ${concept.codeExamples.r ? `
+                                <div class="code-label">R</div>
+                                <div class="code-block">${escapeHtml(concept.codeExamples.r)}</div>
+                            ` : ''}
+                            ${concept.codeExamples.javascript ? `
+                                <div class="code-label">JavaScript</div>
+                                <div class="code-block">${escapeHtml(concept.codeExamples.javascript)}</div>
+                            ` : ''}
+                        </div>
+                        ` : ''}
+                        
+                        ${concept.fullExamples ? `
+                        <div class="tile-section">
+                            <div class="section-title">🎯 Complete Examples</div>
+                            <ul class="resources-list">
+                                ${concept.fullExamples.map(ex => `
+                                    <li><a href="${ex.url}" target="_blank">${ex.name}</a></li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="tile-section">
+                            <div class="section-title">✅ Action Steps</div>
+                            <ol class="action-steps">
+                                ${concept.actions.map(action => `<li>${action}</li>`).join('')}
+                            </ol>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            tilesHTML += '</div>';
+            content.innerHTML = tilesHTML;
+            
+            updateNavigation();
+            updateProgress();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleComplete(conceptId) {
+            completedConcepts[conceptId] = !completedConcepts[conceptId];
+            const tile = document.getElementById(conceptId);
+            if (completedConcepts[conceptId]) {
+                tile.classList.add('completed');
+            } else {
+                tile.classList.remove('completed');
+            }
+            updateProgress();
+            saveProgress();
+        }
+
+        function updateNavigation() {
+            document.getElementById('prevBtn').disabled = currentStageIndex === 0;
+            document.getElementById('nextBtn').disabled = currentStageIndex === stages.length - 1;
+        }
+
+        function updateProgress() {
+            let totalConcepts = 0;
+            let completedCount = 0;
+            
+            stages.forEach((stage, stageIdx) => {
+                stage.concepts.forEach((_, conceptIdx) => {
+                    totalConcepts++;
+                    const conceptId = `stage${stageIdx}-concept${conceptIdx}`;
+                    if (completedConcepts[conceptId]) {
+                        completedCount++;
+                    }
+                });
+            });
+            
+            const percentage = (completedCount / totalConcepts) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function previousStage() {
+            if (currentStageIndex > 0) {
+                currentStageIndex--;
+                renderStage();
+            }
+        }
+
+        function nextStage() {
+            if (currentStageIndex < stages.length - 1) {
+                currentStageIndex++;
+                renderStage();
+            }
+        }
+
+        function showReferences() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="references-section">
+                    <h2 style="color: #495057; margin-bottom: 30px;">📖 References & Resources</h2>
+                    
+                    <div class="graphic-tile">
+                        <h3 style="color: #495057; margin-bottom: 15px;">Original ML Build Guide Graphic</h3>
+                        <p style="color: #6c757d; margin-bottom: 20px;"><img src='GdjvVaWboAAQYAR.png' width='400' height='600' /></p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                            <p style="color: #6c757d;">The original machine learning build guide graphic provides a visual roadmap that this interactive guide follows.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="reference-item">
+                        <h3>Key External Resources</h3>
+                        <ul>
+                            <li><a href="https://scikit-learn.org/" target="_blank">Scikit-learn Official Documentation</a></li>
+                            <li><a href="https://www.tensorflow.org/" target="_blank">TensorFlow Official Documentation</a></li>
+                            <li><a href="https://pytorch.org/" target="_blank">PyTorch Official Documentation</a></li>
+                            <li><a href="https://www.kaggle.com/" target="_blank">Kaggle - Datasets and Competitions</a></li>
+                            <li><a href="https://developers.google.com/machine-learning/crash-course" target="_blank">Google Machine Learning Crash Course</a></li>
+                            <li><a href="https://www.coursera.org/specializations/machine-learning-introduction" target="_blank">Coursera Machine Learning Specialization</a></li>
+                            <li><a href="https://www.fast.ai/" target="_blank">Fast.ai Practical Deep Learning</a></li>
+                            <li><a href="https://mlflow.org/" target="_blank">MLflow for ML Lifecycle Management</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-item">
+                        <h3>Community & Learning Platforms</h3>
+                        <ul>
+                            <li><a href="https://towardsdatascience.com/" target="_blank">Towards Data Science</a></li>
+                            <li><a href="https://www.kdnuggets.com/" target="_blank">KDnuggets</a></li>
+                            <li><a href="https://machinelearningmastery.com/" target="_blank">Machine Learning Mastery</a></li>
+                            <li><a href="https://www.datacamp.com/" target="_blank">DataCamp</a></li>
+                            <li><a href="https://www.reddit.com/r/MachineLearning/" target="_blank">r/MachineLearning</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-item">
+                        <h3>Original Prompt</h3>
+                        <div class="prompt-section">Task: Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Machine Learning Build Guide" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts. Reference the graphic attached in the prompt. Assume Intermediate level. Assume vibrant and colorful style. Optimize for programmic interation. Include information and examples in Python, SQL, R, and JavaScript. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete. On each tile put the links to resources, descriptions, and action steps. Have tabs: "Roadmap" (convert the graphic, one tile per step on the roadmap. Before generating app, ask interactive questions, one-at-a-time, waiting for answers, to improve the quality of the app and make suggestions for improvement. Include a last tab (section if there is only one tab) called "References" where the sources are hyperlinked, list graphic (GdjvVaWboAAQYAR.png) as a tile on the tab. Use "Galley Image Template.html" as the model for how to display the graphic. And include this prompt under the references. Constraint: Leverage real-time Google Search data to ensure the information is up-to-date. Format: Provide the response as a bulleted list of 5 key facts, citing the source URL for each fact at the end.</div>
+                    </div>
+                    
+                    <button class="nav-btn" onclick="renderStage()" style="margin-top: 30px;">← Back to Roadmap</button>
+                </div>
+            `;
+        }
+
+        function saveProgress() {
+            localStorage.setItem('mlBuildGuideProgress', JSON.stringify(completedConcepts));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('mlBuildGuideProgress');
+            if (saved) {
+                completedConcepts = JSON.parse(saved);
+            }
+        }
+
+        function exportProgress() {
+            const totalConcepts = stages.reduce((sum, stage) => sum + stage.concepts.length, 0);
+            const completedCount = Object.values(completedConcepts).filter(Boolean).length;
+            const percentage = ((completedCount / totalConcepts) * 100).toFixed(1);
+            
+            let report = `Machine Learning Build Guide - Progress Report\n`;
+            report += `Generated: ${new Date().toLocaleString()}\n`;
+            report += `Overall Progress: ${completedCount}/${totalConcepts} (${percentage}%)\n\n`;
+            report += `${'='.repeat(60)}\n\n`;
+            
+            stages.forEach((stage, stageIdx) => {
+                const stageCompleted = stage.concepts.filter((_, conceptIdx) => 
+                    completedConcepts[`stage${stageIdx}-concept${conceptIdx}`]
+                ).length;
+                
+                report += `Stage ${stageIdx + 1}: ${stage.name}\n`;
+                report += `Progress: ${stageCompleted}/${stage.concepts.length}\n\n`;
+                
+                stage.concepts.forEach((concept, conceptIdx) => {
+                    const conceptId = `stage${stageIdx}-concept${conceptIdx}`;
+                    const status = completedConcepts[conceptId] ? '✓' : '○';
+                    report += `  ${status} ${concept.title}\n`;
+                });
+                
+                report += `\n`;
+            });
+            
+            report += `${'='.repeat(60)}\n`;
+            report += `\nNext Steps:\n`;
+            
+            // Find next incomplete concept
+            for (let stageIdx = 0; stageIdx < stages.length; stageIdx++) {
+                const stage = stages[stageIdx];
+                for (let conceptIdx = 0; conceptIdx < stage.concepts.length; conceptIdx++) {
+                    const conceptId = `stage${stageIdx}-concept${conceptIdx}`;
+                    if (!completedConcepts[conceptId]) {
+                        report += `- Continue with: ${stage.concepts[conceptIdx].title} (${stage.name})\n`;
+                        break;
+                    }
+                }
+            }
+            
+            // Download as text file
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ml-build-guide-progress-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize app
+        loadProgress();
+        renderStage();
+    </script>
+</body>
+</html>

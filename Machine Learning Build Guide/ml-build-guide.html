@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Build Guide - Project Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-280px);
+            margin-right: -280px;
+        }
+
+        .sidebar h2 {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            text-align: center;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #00d4ff, #0099ff);
+            border-left: 3px solid #00ff88;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+            transition: width 0.5s ease;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background: white;
+            overflow-y: auto;
+            position: relative;
+            width: 100%;
+        }
+
+        .toggle-sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-sidebar:hover {
+            background: #00d4ff;
+            transform: scale(1.1);
+        }
+
+        .content-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 60px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .content-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00ff88, #00cc6f);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .content-body {
+            padding: 40px 60px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Concept Tiles */
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .concept-tile {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .concept-tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            border-color: #00d4ff;
+        }
+
+        .tile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .tile-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-not-started { background: #f0f0f0; color: #666; }
+        .status-in-progress { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-blocked { background: #f8d7da; color: #721c24; }
+
+        .custom-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #00ff88;
+        }
+
+        .tile-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .tile-notes {
+            margin: 15px 0;
+        }
+
+        .tile-notes textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+
+        .tile-notes textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+
+        /* Code Tabs */
+        .code-tabs {
+            display: flex;
+            gap: 5px;
+            margin: 15px 0 10px 0;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .code-tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            background: #f5f5f5;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .code-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .code-content {
+            display: none;
+        }
+
+        .code-content.active {
+            display: block;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .code-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-top: 15px;
+            display: block;
+        }
+
+        /* Resources */
+        .resources {
+            margin-top: 15px;
+        }
+
+        .resource-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .resource-link {
+            display: block;
+            padding: 8px 12px;
+            background: #f0f7ff;
+            margin: 5px 0;
+            border-radius: 6px;
+            color: #0066cc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .resource-link:hover {
+            background: #e0f0ff;
+            transform: translateX(5px);
+        }
+
+        .resource-type {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+            font-size: 0.75em;
+            margin-right: 8px;
+        }
+
+        /* Wizard Form */
+        .wizard-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .wizard-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+
+        .wizard-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .step-indicator {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .step-dots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.completed {
+            background: #00ff88;
+        }
+
+        .step-dot.active {
+            background: #00d4ff;
+            transform: scale(1.5);
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .dashboard-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .timeline {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            bottom: -25px;
+            width: 2px;
+            background: #e0e0e0;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .timeline-desc {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .timeline-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.85em;
+        }
+
+        .complexity-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .complexity-low { background: #d4edda; color: #155724; }
+        .complexity-medium { background: #fff3cd; color: #856404; }
+        .complexity-high { background: #f8d7da; color: #721c24; }
+
+        /* Reference Tab & Image Tiles */
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .reference-tile {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .reference-tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .thumbnail-wrapper {
+            position: relative;
+            height: 150px;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .tile-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .reference-tile:hover .tile-thumbnail {
+            transform: scale(1.1);
+        }
+
+        .thumbnail-wrapper .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .reference-tile:hover .overlay {
+            opacity: 1;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #ff6b6b;
+            transform: rotate(90deg);
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        /* AI Generation */
+        .ai-selector {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .ai-option {
+            flex: 1;
+            min-width: 150px;
+            padding: 20px;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-option:hover {
+            border-color: #00d4ff;
+            transform: scale(1.05);
+        }
+
+        .ai-option.selected {
+            border-color: #00d4ff;
+            background: #f0f9ff;
+        }
+
+        .ai-option h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .generated-workflow {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .workflow-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .task-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .task-item {
+            padding: 12px;
+            background: #f8f9fa;
+            margin: 8px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #00ff88;
+        }
+
+        .prompt-display {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                z-index: 999;
+                height: 100vh;
+            }
+
+            .content-header,
+            .content-body {
+                padding: 20px;
+            }
+
+            .tiles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+            <h2>🤖 ML Build Guide</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="overallProgress" style="width: 0%"></div>
+            </div>
+            <div id="progressText" style="text-align: center; margin-bottom: 20px; color: #00d4ff;">0% Complete</div>
+            
+            <div class="nav-item active" data-tab="dashboard">📊 Dashboard</div>
+            <div class="nav-item" data-tab="define">🎯 Define Problem</div>
+            <div class="nav-item" data-tab="ingestion">📥 Data Ingestion</div>
+            <div class="nav-item" data-tab="storage">💾 Storage Layer</div>
+            <div class="nav-item" data-tab="preparation">🔧 Data Preparation</div>
+            <div class="nav-item" data-tab="training">🎓 Model Training</div>
+            <div class="nav-item" data-tab="management">📦 Model Management</div>
+            <div class="nav-item" data-tab="deployment">🚀 Deployment</div>
+            <div class="nav-item" data-tab="serving">🌐 Model Serving</div>
+            <div class="nav-item" data-tab="api">🔌 API Integration</div>
+            <div class="nav-item" data-tab="generated">✨ Generated Workflow</div>
+            <div class="nav-item" data-tab="reference">📚 Reference</div>
+        </div>
+
+        <div class="main-content">
+            <button class="toggle-sidebar" id="toggleSidebar">☰</button>
+
+            <div class="content-header">
+                <h1>Machine Learning Build Guide</h1>
+                <p>Track your ML project from concept to production</p>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="exportBtn">📤 Export Project</button>
+                    <button class="btn btn-secondary" id="resetBtn">🔄 Reset All</button>
+                    <button class="btn btn-success" id="saveBtn">💾 Save Progress</button>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <div class="tab-content active" id="tab-dashboard">
+                    <h2>Project Dashboard</h2>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>Overall Progress</h3>
+                            <div class="dashboard-value" id="dashProgress">0%</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Tasks Completed</h3>
+                            <div class="dashboard-value" id="dashCompleted">0/0</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>In Progress</h3>
+                            <div class="dashboard-value" id="dashInProgress">0</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Blocked</h3>
+                            <div class="dashboard-value" id="dashBlocked">0</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline">
+                        <h3 style="color: #667eea; margin-bottom: 20px;">📅 Project Timeline</h3>
+                        <div id="timelineContainer"></div>
+                    </div>
+
+                    <div class="timeline">
+                        <h3 style="color: #667eea; margin-bottom: 20px;">⚡ Next Recommended Actions</h3>
+                        <div id="criticalPath"></div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-define">
+                    <h2>Define Your ML Problem</h2>
+                    <div class="wizard-container">
+                        <div class="step-indicator">
+                            <h3>Step <span id="currentStep">1</span> of 6</h3>
+                            <div class="step-dots">
+                                <div class="step-dot active"></div>
+                                <div class="step-dot"></div>
+                                <div class="step-dot"></div>
+                                <div class="step-dot"></div>
+                                <div class="step-dot"></div>
+                                <div class="step-dot"></div>
+                            </div>
+                        </div>
+
+                        <div class="wizard-step active" data-step="1">
+                            <div class="form-group">
+                                <label>What problem are you trying to solve?</label>
+                                <textarea id="problemDesc" rows="4" placeholder="Describe the business problem or opportunity..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="wizard-step" data-step="2">
+                            <div class="form-group">
+                                <label>What data do you have available?</label>
+                                <textarea id="dataDesc" rows="4" placeholder="Describe your data sources, formats, and volume..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Data Quality</label>
+                                <select id="dataQuality">
+                                    <option value="">Select...</option>
+                                    <option value="excellent">Excellent - Clean and well-structured</option>
+                                    <option value="good">Good - Minor cleaning needed</option>
+                                    <option value="fair">Fair - Significant preprocessing required</option>
+                                    <option value="poor">Poor - Major data quality issues</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="wizard-step" data-step="3">
+                            <div class="form-group">
+                                <label>What are you trying to predict or achieve?</label>
+                                <textarea id="goalDesc" rows="4" placeholder="Define your success criteria and target outcomes..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Success Metrics</label>
+                                <input type="text" id="successMetrics" placeholder="e.g., Accuracy > 95%, F1 Score > 0.85">
+                            </div>
+                        </div>
+
+                        <div class="wizard-step" data-step="4">
+                            <div class="form-group">
+                                <label>Timeline Constraints</label>
+                                <select id="timeline">
+                                    <option value="">Select...</option>
+                                    <option value="urgent">Urgent - 1-2 weeks</option>
+                                    <option value="short">Short - 1 month</option>
+                                    <option value="medium">Medium - 2-3 months</option>
+                                    <option value="long">Long - 3+ months</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Computational Resources</label>
+                                <select id="resources">
+                                    <option value="">Select...</option>
+                                    <option value="limited">Limited - Laptop/small instances</option>
+                                    <option value="moderate">Moderate - GPU access</option>
+                                    <option value="extensive">Extensive - Cloud clusters available</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="wizard-step" data-step="5">
+                            <div class="form-group">
+                                <label>Interpretability Requirements</label>
+                                <select id="interpretability">
+                                    <option value="">Select...</option>
+                                    <option value="high">High - Must explain decisions</option>
+                                    <option value="medium">Medium - Some explanation needed</option>
+                                    <option value="low">Low - Black box acceptable</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Deployment Environment</label>
+                                <select id="deployment">
+                                    <option value="">Select...</option>
+                                    <option value="cloud">Cloud (AWS, Azure, GCP)</option>
+                                    <option value="edge">Edge Devices</option>
+                                    <option value="mobile">Mobile Apps</option>
+                                    <option value="onprem">On-Premise</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="wizard-step" data-step="6">
+                            <div class="form-group">
+                                <label>Business Context & Constraints</label>
+                                <textarea id="businessContext" rows="4" placeholder="Budget, regulatory requirements, stakeholder needs..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Additional Context (Optional)</label>
+                                <textarea id="additionalContext" rows="4" placeholder="Any other relevant information..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="wizard-navigation">
+                            <button class="btn btn-secondary" id="prevBtn" style="visibility: hidden;">⬅ Previous</button>
+                            <button class="btn btn-primary" id="nextBtn">Next ➡</button>
+                            <button class="btn btn-success" id="analyzeBtn" style="display: none;">🔍 Analyze Project</button>
+                        </div>
+
+                        <div id="analysisResult" style="margin-top: 30px;"></div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-ingestion">
+                    <h2>📥 Data Ingestion</h2>
+                    <p>Raw data is ingested into the system from various sources</p>
+                    
+                    <div class="tiles-grid" id="ingestionTiles"></div>
+                </div>
+
+                <div class="tab-content" id="tab-storage">
+                    <h2>💾 Storage Layer</h2>
+                    <p>Data is stored in secure, scalable storage solutions</p>
+                    
+                    <div class="tiles-grid" id="storageTiles"></div>
+                </div>
+
+                <div class="tab-content" id="tab-preparation">
+                    <h2>🔧 Data Preparation</h2>
+                    <p>Data is cleaned, transformed, and prepared for training</p>
+                    
+                    <div class="tiles-grid" id="preparationTiles"></div>
+                </div>
+
+                <div class="tab-content" id="tab-training">
+                    <h2>🎓 Model Training</h2>
+                    <p>Machine learning models are trained using prepared data</p>
+                    
+                    <div class="tiles-grid" id="trainingTiles"></div>
+                </div>
+
+                <div class="tab-content" id="tab-management">
+                    <h2>📦 Model Management</h2>
+                    <p>Trained models are registered, versioned, and tracked</p>
+                    
+                    <div class="tiles-grid" id="managementTiles"></div>
+                </div>
+
+                <div class="tab-content" id="tab-deployment">
+                    <h2>🚀 Deployment Automation</h2>
+                    <p>Models are automatically deployed through CI/CD pipelines</p>
+                    
+                    <div class="tiles-grid" id="deploymentTiles"></div>
+                </div>
+
+                <div class="tab-content" id="tab-serving">
+                    <h2>🌐 Model Serving</h2>
+                    <p>Models are served via scalable endpoints</p>
+                    
+                    <div class="tiles-grid" id="servingTiles"></div>
+                </div>
+
+                <div class="tab-content" id="tab-api">
+                    <h2>🔌 API Integration</h2>
+                    <p>Applications integrate with model endpoints</p>
+                    
+                    <div class="tiles-grid" id="apiTiles"></div>
+                </div>
+
+                <div class="tab-content" id="tab-generated">
+                    <h2>✨ AI-Generated Workflow</h2>
+                    <p>Let AI analyze your project and generate a customized workflow</p>
+                    
+                    <div class="ai-selector">
+                        <div class="ai-option" data-ai="qwen">
+                            <h3>🔮 Qwen</h3>
+                            <p>Fast & efficient</p>
+                        </div>
+                        <div class="ai-option" data-ai="chatgpt">
+                            <h3>🤖 ChatGPT</h3>
+                            <p>Versatile & creative</p>
+                        </div>
+                        <div class="ai-option selected" data-ai="claude">
+                            <h3>🧠 Claude</h3>
+                            <p>Detailed & analytical</p>
+                        </div>
+                        <div class="ai-option" data-ai="gemini">
+                            <h3>💎 Gemini</h3>
+                            <p>Multimodal & powerful</p>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="generateWorkflowBtn" style="width: 100%; margin: 20px 0;">
+                        🚀 Generate Custom Workflow
+                    </button>
+
+                    <div id="generatedWorkflowContent"></div>
+
+                    <div style="margin-top: 30px;">
+                        <button class="btn btn-success" id="applyWorkflowBtn" style="display: none;">
+                            ✅ Apply This Workflow to Project
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-reference">
+                    <h2>📚 Reference Materials</h2>
+                    <p>Click any graphic to view full size</p>
+                    
+                    <div class="reference-grid">
+                        <div class="reference-tile" data-image="1">
+                            <div class="thumbnail-wrapper">
+                                <img src="20251004_134609.jpg" alt="Production ML System" class="tile-thumbnail">
+                                <div class="overlay">🔍 View</div>
+                            </div>
+                            <p style="margin-top: 10px; font-weight: 600;">ML Pipeline</p>
+                        </div>
+
+                        <div class="reference-tile" data-image="2">
+                            <div class="thumbnail-wrapper">
+                                <img src="20251028_225010.jpg" alt="ML Algorithms" class="tile-thumbnail">
+                                <div class="overlay">🔍 View</div>
+                            </div>
+                            <p style="margin-top: 10px; font-weight: 600;">Algorithm Guide</p>
+                        </div>
+
+                        <div class="reference-tile" data-image="3">
+                            <div class="thumbnail-wrapper">
+                                <img src="GlaWUXXbcAAXow5.png" alt="ML Categories" class="tile-thumbnail">
+                                <div class="overlay">🔍 View</div>
+                            </div>
+                            <p style="margin-top: 10px; font-weight: 600;">ML Taxonomy</p>
+                        </div>
+
+                        <div class="reference-tile" data-image="4">
+                            <div class="thumbnail-wrapper">
+                                <img src="GrSFKYXW0AErOFX.jpg" alt="ML Workflow" class="tile-thumbnail">
+                                <div class="overlay">🔍 View</div>
+                            </div>
+                            <p style="margin-top: 10px; font-weight: 600;">Development Flow</p>
+                        </div>
+
+                        <div class="reference-tile" data-image="5">
+                            <div class="thumbnail-wrapper">
+                                <img src="GYKiqNUaUAA3ehV.jpg" alt="Popular Models" class="tile-thumbnail">
+                                <div class="overlay">🔍 View</div>
+                            </div>
+                            <p style="margin-top: 10px; font-weight: 600;">Model Overview</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 50px; padding: 30px; background: #f8f9fa; border-radius: 15px;">
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📝 Original Prompt</h3>
+                        <div class="prompt-display">Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Machine Learning Build Guide" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics attached in the prompt. Assume Intermediate level. Assume vibrant and colorful style. Optimize for programmic iteration. Include information and examples in Python, SQL, R, and JavaScript. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete. 
+
+On each tile put the links to resources, descriptions, and action steps. Use the system layer flowchart, common algorithms, workflow, and popular models that will lead users from a prompt to building a Machine Learning app. 
+
+Multiple tabs: Define Problem (Allows the user to define functions and constraints with a prompt), A tab for each step in the workflow, a tab for auto generating the workflow using either Qwen, ChatGPT, Claude, or Gemini (Combo box) to generate the output. If any of the stages have actionable things to do, those things should be seen on the tab. Include any hyperlinked resources and examples. Add a last tab "Reference" that has each graphic in a table as tiles. Clicking a tile, cause the graphic to open in a pop up window. Below that should be this prompt.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <span class="modal-close" id="modalClose">&times;</span>
+            <div id="modalImageContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let appState = {
+            currentTab: 'dashboard',
+            wizardStep: 1,
+            selectedAI: 'claude',
+            projectData: {},
+            concepts: {},
+            progress: {
+                total: 0,
+                completed: 0,
+                inProgress: 0,
+                blocked: 0
+            }
+        };
+
+        // Load state from localStorage
+        function loadState() {
+            const saved = localStorage.getItem('mlBuildGuideState');
+            if (saved) {
+                appState = { ...appState, ...JSON.parse(saved) };
+                updateDashboard();
+            }
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('mlBuildGuideState', JSON.stringify(appState));
+        }
+
+        // Reset application
+        function resetApp() {
+            if (confirm('⚠️ This will delete all your progress. Are you sure?')) {
+                localStorage.removeItem('mlBuildGuideState');
+                location.reload();
+            }
+        }
+
+        // Export project data
+        function exportProject() {
+            const exportData = {
+                ...appState,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ml-project-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Concept Data
+        const conceptsData = {
+            ingestion: [
+                {
+                    id: 'data-sources',
+                    title: 'Data Sources',
+                    description: 'Connect to various data sources including databases, APIs, files, and streaming data.',
+                    resources: [
+                        { type: 'docs', title: 'AWS Data Pipeline Documentation', url: 'https://docs.aws.amazon.com/datapipeline/' },
+                        { type: 'tutorial', title: 'Building ETL Pipelines', url: 'https://realpython.com/python-boto3-aws-s3/' },
+                        { type: 'video', title: 'Data Ingestion Best Practices', url: 'https://www.youtube.com/results?search_query=data+ingestion+tutorial' }
+                    ],
+                    tasks: [
+                        'Identify all data sources',
+                        'Set up data connectors',
+                        'Configure authentication',
+                        'Test data extraction'
+                    ]
+                },
+                {
+                    id: 'batch-ingestion',
+                    title: 'Batch Ingestion',
+                    description: 'Process large volumes of data in scheduled batches for historical analysis.',
+                    resources: [
+                        { type: 'docs', title: 'Apache Airflow Documentation', url: 'https://airflow.apache.org/docs/' },
+                        { type: 'tutorial', title: 'Building Batch Pipelines', url: 'https://www.astronomer.io/guides/' }
+                    ],
+                    tasks: [
+                        'Design batch schedule',
+                        'Implement batch processing',
+                        'Set up monitoring',
+                        'Handle failures'
+                    ]
+                },
+                {
+                    id: 'stream-ingestion',
+                    title: 'Stream Ingestion',
+                    description: 'Process real-time data streams for immediate insights and actions.',
+                    resources: [
+                        { type: 'docs', title: 'Apache Kafka Documentation', url: 'https://kafka.apache.org/documentation/' },
+                        { type: 'tutorial', title: 'Real-time Data Streaming', url: 'https://www.confluent.io/blog/' }
+                    ],
+                    tasks: [
+                        'Set up streaming infrastructure',
+                        'Configure data producers',
+                        'Implement consumers',
+                        'Monitor stream health'
+                    ]
+                }
+            ],
+            storage: [
+                {
+                    id: 's3-storage',
+                    title: 'S3 Bucket Storage',
+                    description: 'Store data in scalable, secure cloud object storage for easy access.',
+                    resources: [
+                        { type: 'docs', title: 'AWS S3 Documentation', url: 'https://docs.aws.amazon.com/s3/' },
+                        { type: 'tutorial', title: 'S3 Best Practices', url: 'https://aws.amazon.com/s3/getting-started/' }
+                    ],
+                    tasks: [
+                        'Create S3 buckets',
+                        'Configure IAM permissions',
+                        'Set up lifecycle policies',
+                        'Enable versioning'
+                    ]
+                },
+                {
+                    id: 'data-lake',
+                    title: 'Data Lake',
+                    description: 'Build a centralized repository for structured and unstructured data.',
+                    resources: [
+                        { type: 'docs', title: 'AWS Lake Formation', url: 'https://docs.aws.amazon.com/lake-formation/' },
+                        { type: 'tutorial', title: 'Building Data Lakes', url: 'https://aws.amazon.com/big-data/datalakes-and-analytics/' }
+                    ],
+                    tasks: [
+                        'Design data lake architecture',
+                        'Set up data cataloging',
+                        'Implement access controls',
+                        'Optimize storage costs'
+                    ]
+                },
+                {
+                    id: 'databases',
+                    title: 'Databases',
+                    description: 'Store structured data in relational or NoSQL databases for efficient querying.',
+                    resources: [
+                        { type: 'docs', title: 'PostgreSQL Documentation', url: 'https://www.postgresql.org/docs/' },
+                        { type: 'tutorial', title: 'Database Design Tutorial', url: 'https://www.sqlitetutorial.net/' }
+                    ],
+                    tasks: [
+                        'Choose database type',
+                        'Design schema',
+                        'Set up replication',
+                        'Optimize queries'
+                    ]
+                }
+            ],
+            preparation: [
+                {
+                    id: 'data-cleaning',
+                    title: 'Data Cleaning',
+                    description: 'Remove errors, handle missing values, and fix inconsistencies in your data.',
+                    resources: [
+                        { type: 'docs', title: 'Pandas Documentation', url: 'https://pandas.pydata.org/docs/' },
+                        { type: 'tutorial', title: 'Data Cleaning Guide', url: 'https://realpython.com/python-data-cleaning-numpy-pandas/' }
+                    ],
+                    tasks: [
+                        'Identify data quality issues',
+                        'Handle missing values',
+                        'Remove duplicates',
+                        'Fix data types'
+                    ]
+                },
+                {
+                    id: 'feature-engineering',
+                    title: 'Feature Engineering',
+                    description: 'Create and transform features to improve model performance.',
+                    resources: [
+                        { type: 'docs', title: 'Scikit-learn Feature Engineering', url: 'https://scikit-learn.org/stable/modules/preprocessing.html' },
+                        { type: 'tutorial', title: 'Feature Engineering Techniques', url: 'https://www.kaggle.com/learn/feature-engineering' }
+                    ],
+                    tasks: [
+                        'Analyze feature importance',
+                        'Create derived features',
+                        'Encode categorical variables',
+                        'Scale numerical features'
+                    ]
+                },
+                {
+                    id: 'data-splitting',
+                    title: 'Data Splitting',
+                    description: 'Split data into training, validation, and test sets for proper model evaluation.',
+                    resources: [
+                        { type: 'docs', title: 'Train-Test Split Guide', url: 'https://scikit-learn.org/stable/modules/cross_validation.html' },
+                        { type: 'tutorial', title: 'Cross-Validation Strategies', url: 'https://machinelearningmastery.com/k-fold-cross-validation/' }
+                    ],
+                    tasks: [
+                        'Define split ratios',
+                        'Implement stratified sampling',
+                        'Create cross-validation folds',
+                        'Validate split distribution'
+                    ]
+                }
+            ],
+            training: [
+                {
+                    id: 'algorithm-selection',
+                    title: 'Algorithm Selection',
+                    description: 'Choose the right ML algorithm based on your problem type and data characteristics.',
+                    resources: [
+                        { type: 'docs', title: 'Scikit-learn Algorithm Cheatsheet', url: 'https://scikit-learn.org/stable/tutorial/machine_learning_map/' },
+                        { type: 'tutorial', title: 'Choosing ML Algorithms', url: 'https://www.analyticsvidhya.com/blog/2020/01/complete-guide-choose-algorithms-machine-learning/' }
+                    ],
+                    tasks: [
+                        'Analyze problem type',
+                        'Evaluate algorithm options',
+                        'Consider constraints',
+                        'Select baseline model'
+                    ]
+                },
+                {
+                    id: 'hyperparameter-tuning',
+                    title: 'Hyperparameter Tuning',
+                    description: 'Optimize model parameters to achieve best performance.',
+                    resources: [
+                        { type: 'docs', title: 'Optuna Documentation', url: 'https://optuna.readthedocs.io/' },
+                        { type: 'tutorial', title: 'Hyperparameter Optimization', url: 'https://www.kaggle.com/learn/intro-to-machine-learning' }
+                    ],
+                    tasks: [
+                        'Define parameter search space',
+                        'Choose optimization strategy',
+                        'Run experiments',
+                        'Analyze results'
+                    ]
+                },
+                {
+                    id: 'model-evaluation',
+                    title: 'Model Evaluation',
+                    description: 'Assess model performance using appropriate metrics and validation techniques.',
+                    resources: [
+                        { type: 'docs', title: 'Metrics Documentation', url: 'https://scikit-learn.org/stable/modules/model_evaluation.html' },
+                        { type: 'tutorial', title: 'Model Evaluation Guide', url: 'https://machinelearningmastery.com/metrics-evaluate-machine-learning-algorithms-python/' }
+                    ],
+                    tasks: [
+                        'Select evaluation metrics',
+                        'Perform cross-validation',
+                        'Analyze confusion matrix',
+                        'Compare model variants'
+                    ]
+                }
+            ],
+            management: [
+                {
+                    id: 'model-registry',
+                    title: 'Model Registry',
+                    description: 'Track and version all trained models in a central registry.',
+                    resources: [
+                        { type: 'docs', title: 'MLflow Model Registry', url: 'https://mlflow.org/docs/latest/model-registry.html' },
+                        { type: 'tutorial', title: 'Model Versioning Guide', url: 'https://www.mlflow.org/docs/latest/tutorials-and-examples/tutorial.html' }
+                    ],
+                    tasks: [
+                        'Set up model registry',
+                        'Register trained models',
+                        'Tag model versions',
+                        'Track model lineage'
+                    ]
+                },
+                {
+                    id: 'experiment-tracking',
+                    title: 'Experiment Tracking',
+                    description: 'Log and compare experiments to understand what works best.',
+                    resources: [
+                        { type: 'docs', title: 'Weights & Biases Documentation', url: 'https://docs.wandb.ai/' },
+                        { type: 'tutorial', title: 'Experiment Tracking Tutorial', url: 'https://www.wandb.com/tutorials' }
+                    ],
+                    tasks: [
+                        'Configure experiment tracking',
+                        'Log parameters and metrics',
+                        'Compare experiment runs',
+                        'Share results with team'
+                    ]
+                },
+                {
+                    id: 'model-monitoring',
+                    title: 'Model Monitoring',
+                    description: 'Monitor model performance and detect drift in production.',
+                    resources: [
+                        { type: 'docs', title: 'Amazon SageMaker Model Monitor', url: 'https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html' },
+                        { type: 'tutorial', title: 'ML Monitoring Guide', url: 'https://www.evidentlyai.com/blog' }
+                    ],
+                    tasks: [
+                        'Define monitoring metrics',
+                        'Set up alerts',
+                        'Track data drift',
+                        'Monitor model decay'
+                    ]
+                }
+            ],
+            deployment: [
+                {
+                    id: 'ci-cd-pipeline',
+                    title: 'CI/CD Pipeline',
+                    description: 'Automate model deployment with continuous integration and delivery.',
+                    resources: [
+                        { type: 'docs', title: 'GitHub Actions Documentation', url: 'https://docs.github.com/en/actions' },
+                        { type: 'tutorial', title: 'MLOps CI/CD Tutorial', url: 'https://github.com/graviraja/MLOps-Basics' }
+                    ],
+                    tasks: [
+                        'Design deployment pipeline',
+                        'Set up automated tests',
+                        'Configure deployment stages',
+                        'Implement rollback strategy'
+                    ]
+                },
+                {
+                    id: 'containerization',
+                    title: 'Containerization',
+                    description: 'Package models in containers for consistent deployment across environments.',
+                    resources: [
+                        { type: 'docs', title: 'Docker Documentation', url: 'https://docs.docker.com/' },
+                        { type: 'tutorial', title: 'Dockerizing ML Models', url: 'https://towardsdatascience.com/how-to-deploy-machine-learning-models-with-flask-docker-and-github-actions-e6b3e9e7e0d5' }
+                    ],
+                    tasks: [
+                        'Create Dockerfile',
+                        'Build container images',
+                        'Test containers locally',
+                        'Push to container registry'
+                    ]
+                },
+                {
+                    id: 'infrastructure-code',
+                    title: 'Infrastructure as Code',
+                    description: 'Manage deployment infrastructure using code for reproducibility.',
+                    resources: [
+                        { type: 'docs', title: 'Terraform Documentation', url: 'https://www.terraform.io/docs' },
+                        { type: 'tutorial', title: 'IaC for ML Tutorial', url: 'https://learn.hashicorp.com/terraform' }
+                    ],
+                    tasks: [
+                        'Define infrastructure requirements',
+                        'Write infrastructure code',
+                        'Version control configs',
+                        'Automate provisioning'
+                    ]
+                }
+            ],
+            serving: [
+                {
+                    id: 'rest-api',
+                    title: 'REST API',
+                    description: 'Serve models through RESTful APIs for synchronous predictions.',
+                    resources: [
+                        { type: 'docs', title: 'FastAPI Documentation', url: 'https://fastapi.tiangolo.com/' },
+                        { type: 'tutorial', title: 'Building ML APIs', url: 'https://testdriven.io/blog/fastapi-machine-learning/' }
+                    ],
+                    tasks: [
+                        'Design API endpoints',
+                        'Implement request validation',
+                        'Add authentication',
+                        'Document API'
+                    ]
+                },
+                {
+                    id: 'batch-inference',
+                    title: 'Batch Inference',
+                    description: 'Process large volumes of predictions in batch mode.',
+                    resources: [
+                        { type: 'docs', title: 'AWS Batch Documentation', url: 'https://docs.aws.amazon.com/batch/' },
+                        { type: 'tutorial', title: 'Batch Prediction Tutorial', url: 'https://aws.amazon.com/blogs/machine-learning/' }
+                    ],
+                    tasks: [
+                        'Design batch process',
+                        'Implement job scheduling',
+                        'Handle large datasets',
+                        'Store predictions'
+                    ]
+                },
+                {
+                    id: 'edge-deployment',
+                    title: 'Edge Deployment',
+                    description: 'Deploy models to edge devices for low-latency inference.',
+                    resources: [
+                        { type: 'docs', title: 'TensorFlow Lite Documentation', url: 'https://www.tensorflow.org/lite' },
+                        { type: 'tutorial', title: 'Edge ML Tutorial', url: 'https://www.tensorflow.org/lite/tutorials' }
+                    ],
+                    tasks: [
+                        'Optimize model for edge',
+                        'Convert model format',
+                        'Test on target device',
+                        'Monitor edge performance'
+                    ]
+                }
+            ],
+            api: [
+                {
+                    id: 'api-gateway',
+                    title: 'API Gateway',
+                    description: 'Route and manage API requests with rate limiting and authentication.',
+                    resources: [
+                        { type: 'docs', title: 'AWS API Gateway Documentation', url: 'https://docs.aws.amazon.com/apigateway/' },
+                        { type: 'tutorial', title: 'API Gateway Tutorial', url: 'https://aws.amazon.com/api-gateway/getting-started/' }
+                    ],
+                    tasks: [
+                        'Configure API Gateway',
+                        'Set up rate limiting',
+                        'Implement authentication',
+                        'Monitor API usage'
+                    ]
+                },
+                {
+                    id: 'client-sdks',
+                    title: 'Client SDKs',
+                    description: 'Provide easy-to-use SDKs for different programming languages.',
+                    resources: [
+                        { type: 'docs', title: 'SDK Design Best Practices', url: 'https://swagger.io/docs/' },
+                        { type: 'tutorial', title: 'Creating Client Libraries', url: 'https://openapi-generator.tech/' }
+                    ],
+                    tasks: [
+                        'Generate client SDKs',
+                        'Write SDK documentation',
+                        'Publish SDK packages',
+                        'Version SDK releases'
+                    ]
+                },
+                {
+                    id: 'webhooks',
+                    title: 'Webhooks',
+                    description: 'Enable event-driven integration with external systems.',
+                    resources: [
+                        { type: 'docs', title: 'Webhook Best Practices', url: 'https://webhook.site/#!/' },
+                        { type: 'tutorial', title: 'Implementing Webhooks', url: 'https://www.smashingmagazine.com/2021/04/guide-webhooks/' }
+                    ],
+                    tasks: [
+                        'Design webhook events',
+                        'Implement webhook handlers',
+                        'Add retry logic',
+                        'Secure webhook endpoints'
+                    ]
+                }
+            ]
+        };
+
+        // Code Examples
+        const codeExamples = {
+            'data-sources': {
+                python: {
+                    template: `# Data Source Connection Template
+import pandas as pd
+import psycopg2
+from sqlalchemy import create_engine
+
+# Database connection
+engine = create_engine('postgresql://user:pass@localhost:5432/mydb')
+df = pd.read_sql_query('SELECT * FROM table', engine)
+
+# CSV file
+df = pd.read_csv('data.csv')
+
+# API endpoint
+import requests
+response = requests.get('https://api.example.com/data')
+data = response.json()`,
+                    concept: `# Conceptual: Multiple Data Sources
+# 1. Structured: Databases (SQL, NoSQL)
+# 2. Semi-structured: JSON, XML, CSV
+# 3. Unstructured: Text, Images, Videos
+# 4. Streaming: Kafka, Kinesis
+# 5. APIs: REST, GraphQL`
+                },
+                sql: {
+                    template: `-- Query data from multiple sources
+SELECT *
+FROM source_table
+WHERE created_at > CURRENT_DATE - INTERVAL '7 days';
+
+-- Join multiple tables
+SELECT a.*, b.metrics
+FROM data_source a
+LEFT JOIN metrics b ON a.id = b.source_id;`,
+                    concept: `-- SQL Data Access Patterns
+-- 1. SELECT: Retrieve data
+-- 2. WHERE: Filter records
+-- 3. JOIN: Combine tables
+-- 4. GROUP BY: Aggregate data
+-- 5. WINDOW: Advanced analytics`
+                },
+                r: {
+                    template: `# R Data Source Connection
+library(DBI)
+library(RPostgreSQL)
+
+# Database connection
+con <- dbConnect(PostgreSQL(),
+                 dbname = "mydb",
+                 host = "localhost",
+                 port = 5432,
+                 user = "user",
+                 password = "pass")
+
+df <- dbGetQuery(con, "SELECT * FROM table")
+dbDisconnect(con)`,
+                    concept: `# R Data Import Concepts
+# 1. read.csv() - CSV files
+# 2. readRDS() - R objects
+# 3. dbConnect() - Databases
+# 4. httr::GET() - APIs
+# 5. data.table::fread() - Fast read`
+                },
+                javascript: {
+                    template: `// JavaScript Data Fetching
+const fetchData = async () => {
+    try {
+        const response = await fetch('https://api.example.com/data');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
+
+// Using axios
+const axios = require('axios');
+axios.get('https://api.example.com/data')
+    .then(response => console.log(response.data));`,
+                    concept: `// JavaScript Data Source Patterns
+// 1. fetch() - Native API calls
+// 2. axios - HTTP client library
+// 3. WebSocket - Real-time data
+// 4. GraphQL - Flexible queries
+// 5. IndexedDB - Browser storage`
+                }
+            },
+            'data-cleaning': {
+                python: {
+                    template: `# Data Cleaning with Pandas
+import pandas as pd
+import numpy as np
+
+# Handle missing values
+df.fillna(df.mean(), inplace=True)
+df.dropna(subset=['important_col'], inplace=True)
+
+# Remove duplicates
+df.drop_duplicates(inplace=True)
+
+# Fix data types
+df['date'] = pd.to_datetime(df['date'])
+df['category'] = df['category'].astype('category')
+
+# Handle outliers
+Q1 = df['value'].quantile(0.25)
+Q3 = df['value'].quantile(0.75)
+IQR = Q3 - Q1
+df = df[~((df['value'] < (Q1 - 1.5 * IQR)) | 
+          (df['value'] > (Q3 + 1.5 * IQR)))]`,
+                    concept: `# Data Cleaning Concepts
+# 1. Missing values: imputation, deletion
+# 2. Duplicates: identification, removal
+# 3. Outliers: detection, handling
+# 4. Inconsistencies: standardization
+# 5. Data types: conversion, validation`
+                },
+                sql: {
+                    template: `-- SQL Data Cleaning
+-- Remove duplicates
+DELETE FROM table_name
+WHERE id NOT IN (
+    SELECT MIN(id)
+    FROM table_name
+    GROUP BY unique_column
+);
+
+-- Handle NULL values
+UPDATE table_name
+SET column = COALESCE(column, default_value);
+
+-- Standardize text
+UPDATE table_name
+SET name = TRIM(UPPER(name));`,
+                    concept: `-- SQL Cleaning Patterns
+-- COALESCE: Handle NULLs
+-- TRIM: Remove whitespace
+-- CAST: Convert types
+-- DISTINCT: Remove duplicates
+-- CASE: Conditional logic`
+                },
+                r: {
+                    template: `# R Data Cleaning
+library(dplyr)
+library(tidyr)
+
+# Handle missing values
+df <- df %>%
+  mutate(across(where(is.numeric), ~replace_na(., mean(., na.rm = TRUE))))
+
+# Remove duplicates
+df <- df %>% distinct()
+
+# Detect outliers
+remove_outliers <- function(x) {
+  qnt <- quantile(x, probs=c(.25, .75), na.rm = TRUE)
+  H <- 1.5 * IQR(x, na.rm = TRUE)
+  x[x < (qnt[1] - H) | x > (qnt[2] + H)] <- NA
+  x
+}`,
+                    concept: `# R Tidyverse Cleaning
+# 1. drop_na() - Remove NAs
+# 2. fill() - Fill missing
+# 3. distinct() - Unique rows
+# 4. mutate() - Transform
+# 5. filter() - Subset data`
+                },
+                javascript: {
+                    template: `// JavaScript Data Cleaning
+const cleanData = (data) => {
+    return data
+        .filter(row => row !== null && row !== undefined)
+        .map(row => ({
+            ...row,
+            name: row.name.trim().toUpperCase(),
+            value: parseFloat(row.value) || 0
+        }))
+        .filter((row, index, self) =>
+            index === self.findIndex(t => t.id === row.id)
+        );
+};
+
+// Remove outliers
+const removeOutliers = (arr) => {
+    const sorted = [...arr].sort((a, b) => a - b);
+    const q1 = sorted[Math.floor(sorted.length * 0.25)];
+    const q3 = sorted[Math.floor(sorted.length * 0.75)];
+    const iqr = q3 - q1;
+    const lower = q1 - 1.5 * iqr;
+    const upper = q3 + 1.5 * iqr;
+    return arr.filter(x => x >= lower && x <= upper);
+};`,
+                    concept: `// JavaScript Cleaning Patterns
+// 1. filter() - Remove invalid
+// 2. map() - Transform data
+// 3. reduce() - Aggregate
+// 4. Set - Unique values
+// 5. trim() - Clean strings`
+                }
+            },
+            'algorithm-selection': {
+                python: {
+                    template: `# Algorithm Selection in Python
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import cross_val_score
+
+# Try multiple algorithms
+algorithms = {
+    'Logistic Regression': LogisticRegression(),
+    'Random Forest': RandomForestClassifier(),
+    'SVM': SVC()
+}
+
+# Compare performance
+for name, model in algorithms.items():
+    scores = cross_val_score(model, X, y, cv=5)
+    print(f'{name}: {scores.mean():.3f} (+/- {scores.std():.3f})')`,
+                    concept: `# Algorithm Selection Framework
+# 1. Problem type (classification/regression)
+# 2. Data size and dimensionality
+# 3. Feature types (numeric/categorical)
+# 4. Interpretability requirements
+# 5. Training time constraints`
+                },
+                sql: {
+                    template: `-- SQL for ML Feature Preparation
+SELECT 
+    user_id,
+    COUNT(*) as transaction_count,
+    AVG(amount) as avg_amount,
+    STDDEV(amount) as std_amount,
+    MAX(amount) as max_amount
+FROM transactions
+GROUP BY user_id;`,
+                    concept: `-- SQL Aggregations for Features
+-- COUNT: Frequency features
+-- AVG: Central tendency
+-- STDDEV: Variability
+-- MIN/MAX: Range features
+-- PERCENTILE: Distribution features`
+                },
+                r: {
+                    template: `# R Algorithm Comparison
+library(caret)
+
+# Define training control
+ctrl <- trainControl(method = "cv", number = 5)
+
+# Train multiple models
+models <- list(
+    lr = train(y ~ ., data = train_data, 
+               method = "glm", trControl = ctrl),
+    rf = train(y ~ ., data = train_data,
+               method = "rf", trControl = ctrl),
+    svm = train(y ~ ., data = train_data,
+                method = "svmRadial", trControl = ctrl)
+)
+
+# Compare results
+results <- resamples(models)
+summary(results)`,
+                    concept: `# R Caret Framework
+# 1. train() - Model training
+# 2. trainControl() - CV setup
+# 3. resamples() - Compare models
+# 4. confusionMatrix() - Evaluation
+# 5. varImp() - Feature importance`
+                },
+                javascript: {
+                    template: `// JavaScript ML with TensorFlow.js
+const tf = require('@tensorflow/tfjs-node');
+
+// Simple neural network
+const model = tf.sequential({
+    layers: [
+        tf.layers.dense({units: 64, activation: 'relu', inputShape: [10]}),
+        tf.layers.dense({units: 32, activation: 'relu'}),
+        tf.layers.dense({units: 1, activation: 'sigmoid'})
+    ]
+});
+
+model.compile({
+    optimizer: 'adam',
+    loss: 'binaryCrossentropy',
+    metrics: ['accuracy']
+});
+
+// Train model
+await model.fit(trainX, trainY, {
+    epochs: 50,
+    validationSplit: 0.2
+});`,
+                    concept: `// JavaScript ML Concepts
+// 1. tf.sequential - Layer stacking
+// 2. Dense layers - Fully connected
+// 3. Activation functions - Non-linearity
+// 4. Optimizers - Learning algorithms
+// 5. Loss functions - Error metrics`
+                }
+            }
+        };
+
+        // Initialize application
+        function initApp() {
+            loadState();
+            setupEventListeners();
+            initializeConcepts();
+            renderTimelineStages();
+            updateDashboard();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Sidebar toggle
+            document.getElementById('toggleSidebar').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+            });
+
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    switchTab(e.target.dataset.tab);
+                });
+            });
+
+            // Action buttons
+            document.getElementById('exportBtn').addEventListener('click', exportProject);
+            document.getElementById('resetBtn').addEventListener('click', resetApp);
+            document.getElementById('saveBtn').addEventListener('click', saveState);
+
+            // Wizard navigation
+            document.getElementById('nextBtn').addEventListener('click', nextWizardStep);
+            document.getElementById('prevBtn').addEventListener('click', prevWizardStep);
+            document.getElementById('analyzeBtn').addEventListener('click', analyzeProject);
+
+            // AI selection
+            document.querySelectorAll('.ai-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    document.querySelectorAll('.ai-option').forEach(o => o.classList.remove('selected'));
+                    e.currentTarget.classList.add('selected');
+                    appState.selectedAI = e.currentTarget.dataset.ai;
+                });
+            });
+
+            // Generate workflow
+            document.getElementById('generateWorkflowBtn').addEventListener('click', generateWorkflow);
+            
+            // Reference tiles
+            document.querySelectorAll('.reference-tile').forEach(tile => {
+                tile.addEventListener('click', (e) => {
+                    showImageModal(e.currentTarget.dataset.image);
+                });
+            });
+
+            // Modal close
+            document.getElementById('modalClose').addEventListener('click', () => {
+                document.getElementById('imageModal').classList.remove('active');
+            });
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            appState.currentTab = tabName;
+        }
+
+        // Wizard steps
+        function nextWizardStep() {
+            if (appState.wizardStep < 6) {
+                document.querySelector(`[data-step="${appState.wizardStep}"]`).classList.remove('active');
+                appState.wizardStep++;
+                document.querySelector(`[data-step="${appState.wizardStep}"]`).classList.add('active');
+                
+                updateWizardUI();
+            }
+        }
+
+        function prevWizardStep() {
+            if (appState.wizardStep > 1) {
+                document.querySelector(`[data-step="${appState.wizardStep}"]`).classList.remove('active');
+                appState.wizardStep--;
+                document.querySelector(`[data-step="${appState.wizardStep}"]`).classList.add('active');
+                
+                updateWizardUI();
+            }
+        }
+
+        function updateWizardUI() {
+            document.getElementById('currentStep').textContent = appState.wizardStep;
+            
+            // Update step dots
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+                if (index + 1 < appState.wizardStep) {
+                    dot.classList.add('completed');
+                } else if (index + 1 === appState.wizardStep) {
+                    dot.classList.add('active');
+                }
+            });
+
+            // Update button visibility
+            document.getElementById('prevBtn').style.visibility = appState.wizardStep > 1 ? 'visible' : 'hidden';
+            
+            if (appState.wizardStep === 6) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('analyzeBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('analyzeBtn').style.display = 'none';
+            }
+        }
+
+        // Analyze project
+        function analyzeProject() {
+            const projectData = {
+                problem: document.getElementById('problemDesc').value,
+                data: document.getElementById('dataDesc').value,
+                dataQuality: document.getElementById('dataQuality').value,
+                goal: document.getElementById('goalDesc').value,
+                metrics: document.getElementById('successMetrics').value,
+                timeline: document.getElementById('timeline').value,
+                resources: document.getElementById('resources').value,
+                interpretability: document.getElementById('interpretability').value,
+                deployment: document.getElementById('deployment').value,
+                businessContext: document.getElementById('businessContext').value,
+                additionalContext: document.getElementById('additionalContext').value
+            };
+
+            appState.projectData = projectData;
+
+            // Generate analysis
+            const analysis = generateProjectAnalysis(projectData);
+            
+            const resultHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">🎯 Project Analysis</h3>
+                    ${analysis}
+                    <button class="btn btn-primary" onclick="switchTab('ingestion')" style="margin-top: 20px;">
+                        🚀 Start Building
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('analysisResult').innerHTML = resultHTML;
+        }
+
+        function generateProjectAnalysis(data) {
+            let problemType = 'classification';
+            if (data.problem.toLowerCase().includes('predict') && data.problem.toLowerCase().includes('number')) {
+                problemType = 'regression';
+            } else if (data.problem.toLowerCase().includes('cluster') || data.problem.toLowerCase().includes('segment')) {
+                problemType = 'clustering';
+            }
+
+            let recommendedAlgorithms = [];
+            if (problemType === 'classification') {
+                recommendedAlgorithms = ['Logistic Regression', 'Random Forest', 'XGBoost', 'Neural Networks'];
+            } else if (problemType === 'regression') {
+                recommendedAlgorithms = ['Linear Regression', 'Random Forest', 'Gradient Boosting', 'SVR'];
+            } else {
+                recommendedAlgorithms = ['K-Means', 'DBSCAN', 'Hierarchical Clustering'];
+            }
+
+            return `
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #667eea;">Problem Type:</strong> ${problemType.charAt(0).toUpperCase() + problemType.slice(1)}
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #667eea;">Recommended Algorithms:</strong>
+                    <ul style="margin-top: 10px;">
+                        ${recommendedAlgorithms.map(algo => `<li>${algo}</li>`).join('')}
+                    </ul>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #667eea;">Estimated Timeline:</strong> ${getTimelineEstimate(data.timeline)}
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #667eea;">Key Considerations:</strong>
+                    <ul style="margin-top: 10px;">
+                        <li>Data quality: ${data.dataQuality || 'Not specified'}</li>
+                        <li>Interpretability: ${data.interpretability || 'Not specified'}</li>
+                        <li>Resources: ${data.resources || 'Not specified'}</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function getTimelineEstimate(timeline) {
+            const estimates = {
+                urgent: '1-2 weeks (Fast iteration, simpler models)',
+                short: '1 month (Balanced approach)',
+                medium: '2-3 months (Comprehensive development)',
+                long: '3+ months (Research & optimization)'
+            };
+            return estimates[timeline] || 'To be determined';
+        }
+
+        // Initialize concepts
+        function initializeConcepts() {
+            Object.keys(conceptsData).forEach(category => {
+                renderConceptTiles(category);
+            });
+        }
+
+        // Render concept tiles
+        function renderConceptTiles(category) {
+            const container = document.getElementById(`${category}Tiles`);
+            if (!container) return;
+
+            conceptsData[category].forEach(concept => {
+                const tile = createConceptTile(concept, category);
+                container.appendChild(tile);
+            });
+        }
+
+        // Create concept tile
+        function createConceptTile(concept, category) {
+            const tile = document.createElement('div');
+            tile.className = 'concept-tile';
+            tile.id = `tile-${concept.id}`;
+
+            const state = appState.concepts[concept.id] || { 
+                status: 'not-started', 
+                completed: false, 
+                notes: '' 
+            };
+
+            tile.innerHTML = `
+                <div class="tile-header">
+                    <div class="tile-title">${concept.title}</div>
+                    <div class="checkbox-container">
+                        <span class="status-badge status-${state.status.replace(' ', '-')}">${state.status.replace('-', ' ').toUpperCase()}</span>
+                        <input type="checkbox" class="custom-checkbox" ${state.completed ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="tile-description">${concept.description}</div>
+                
+                <div class="tile-notes">
+                    <label style="font-weight: 600; color: #667eea; margin-bottom: 5px; display: block;">📝 Notes:</label>
+                    <textarea placeholder="Add your notes here...">${state.notes}</textarea>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label style="font-weight: 600; color: #667eea; margin-bottom: 10px; display: block;">📋 Tasks:</label>
+                    <ul class="task-list">
+                        ${concept.tasks.map((task, idx) => `
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox" data-task-id="${idx}">
+                                <span>${task}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <div class="code-tabs">
+                    <div class="code-tab active" data-lang="python">Python</div>
+                    <div class="code-tab" data-lang="sql">SQL</div>
+                    <div class="code-tab" data-lang="r">R</div>
+                    <div class="code-tab" data-lang="javascript">JavaScript</div>
+                </div>
+
+                <div class="code-content active" data-lang="python">
+                    ${renderCodeExample(concept.id, 'python')}
+                </div>
+                <div class="code-content" data-lang="sql">
+                    ${renderCodeExample(concept.id, 'sql')}
+                </div>
+                <div class="code-content" data-lang="r">
+                    ${renderCodeExample(concept.id, 'r')}
+                </div>
+                <div class="code-content" data-lang="javascript">
+                    ${renderCodeExample(concept.id, 'javascript')}
+                </div>
+
+                <div class="resources">
+                    <strong style="color: #667eea; display: block; margin-bottom: 10px;">🔗 Resources:</strong>
+                    <div class="resource-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="docs">Docs</button>
+                        <button class="filter-btn" data-filter="tutorial">Tutorials</button>
+                        <button class="filter-btn" data-filter="video">Videos</button>
+                    </div>
+                    <div class="resource-links">
+                        ${concept.resources.map(resource => `
+                            <a href="${resource.url}" target="_blank" class="resource-link" data-type="${resource.type}">
+                                <span class="resource-type">${resource.type}</span>
+                                ${resource.title}
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners
+            const checkbox = tile.querySelector('.custom-checkbox');
+            checkbox.addEventListener('change', (e) => {
+                updateConceptStatus(concept.id, e.target.checked);
+            });
+
+            const textarea = tile.querySelector('textarea');
+            textarea.addEventListener('blur', (e) => {
+                saveConceptNotes(concept.id, e.target.value);
+            });
+
+            // Code tab switching
+            tile.querySelectorAll('.code-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    const lang = e.target.dataset.lang;
+                    tile.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+                    tile.querySelectorAll('.code-content').forEach(c => c.classList.remove('active'));
+                    e.target.classList.add('active');
+                    tile.querySelector(`.code-content[data-lang="${lang}"]`).classList.add('active');
+                });
+            });
+
+            // Resource filtering
+            tile.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    tile.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    filterResources(tile, e.target.dataset.filter);
+                });
+            });
+
+            return tile;
+        }
+
+        // Render code example
+        function renderCodeExample(conceptId, language) {
+            const examples = codeExamples[conceptId];
+            if (!examples || !examples[language]) {
+                return `<div class="code-block"># No ${language} example available yet</div>`;
+            }
+
+            return `
+                <span class="code-label">🚀 Ready-to-Run Template:</span>
+                <div class="code-block">${escapeHtml(examples[language].template)}</div>
+                <span class="code-label">💡 Conceptual Example:</span>
+                <div class="code-block">${escapeHtml(examples[language].concept)}</div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Update concept status
+        function updateConceptStatus(conceptId, completed) {
+            if (!appState.concepts[conceptId]) {
+                appState.concepts[conceptId] = { status: 'not-started', completed: false, notes: '' };
+            }
+            
+            appState.concepts[conceptId].completed = completed;
+            appState.concepts[conceptId].status = completed ? 'completed' : 'in-progress';
+            
+            const badge = document.querySelector(`#tile-${conceptId} .status-badge`);
+            badge.className = `status-badge status-${appState.concepts[conceptId].status}`;
+            badge.textContent = appState.concepts[conceptId].status.replace('-', ' ').toUpperCase();
+            
+            updateDashboard();
+            saveState();
+        }
+
+        // Save concept notes
+        function saveConceptNotes(conceptId, notes) {
+            if (!appState.concepts[conceptId]) {
+                appState.concepts[conceptId] = { status: 'not-started', completed: false, notes: '' };
+            }
+            appState.concepts[conceptId].notes = notes;
+            saveState();
+        }
+
+        // Filter resources
+        function filterResources(tile, filter) {
+            const links = tile.querySelectorAll('.resource-link');
+            links.forEach(link => {
+                if (filter === 'all' || link.dataset.type === filter) {
+                    link.style.display = 'block';
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            const concepts = Object.values(appState.concepts);
+            const total = Object.keys(conceptsData).reduce((sum, cat) => sum + conceptsData[cat].length, 0);
+            const completed = concepts.filter(c => c.completed).length;
+            const inProgress = concepts.filter(c => c.status === 'in-progress' && !c.completed).length;
+            const blocked = concepts.filter(c => c.status === 'blocked').length;
+            const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            appState.progress = { total, completed, inProgress, blocked };
+
+            // Update dashboard cards
+            document.getElementById('dashProgress').textContent = `${progress}%`;
+            document.getElementById('dashCompleted').textContent = `${completed}/${total}`;
+            document.getElementById('dashInProgress').textContent = inProgress;
+            document.getElementById('dashBlocked').textContent = blocked;
+
+            // Update progress bar
+            document.getElementById('overallProgress').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+
+            // Update critical path
+            updateCriticalPath();
+        }
+
+        // Render timeline stages
+        function renderTimelineStages() {
+            const stages = [
+                { name: 'Data Ingestion', complexity: 'low', duration: '1 week' },
+                { name: 'Storage Layer', complexity: 'low', duration: '3 days' },
+                { name: 'Data Preparation', complexity: 'medium', duration: '2 weeks' },
+                { name: 'Model Training', complexity: 'high', duration: '3 weeks' },
+                { name: 'Model Management', complexity: 'medium', duration: '1 week' },
+                { name: 'Deployment', complexity: 'high', duration: '2 weeks' },
+                { name: 'Model Serving', complexity: 'medium', duration: '1 week' },
+                { name: 'API Integration', complexity: 'low', duration: '3 days' }
+            ];
+
+            const container = document.getElementById('timelineContainer');
+            container.innerHTML = stages.map((stage, idx) => `
+                <div class="timeline-item">
+                    <div class="timeline-icon">${idx + 1}</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">${stage.name}</div>
+                        <div class="timeline-desc">Complete all tasks in this stage</div>
+                        <div class="timeline-meta">
+                            <span class="complexity-badge complexity-${stage.complexity}">
+                                ${stage.complexity.toUpperCase()} complexity
+                            </span>
+                            <span>⏱️ Est: ${stage.duration}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update critical path
+        function updateCriticalPath() {
+            const incomplete = [];
+            Object.keys(conceptsData).forEach(category => {
+                conceptsData[category].forEach(concept => {
+                    if (!appState.concepts[concept.id] || !appState.concepts[concept.id].completed) {
+                        incomplete.push({ ...concept, category });
+                    }
+                });
+            });
+
+            const next3 = incomplete.slice(0, 3);
+            const container = document.getElementById('criticalPath');
+            
+            if (next3.length === 0) {
+                container.innerHTML = '<p style="color: #00ff88; font-weight: 600;">🎉 All tasks completed! Great job!</p>';
+                return;
+            }
+
+            container.innerHTML = next3.map((item, idx) => `
+                <div class="timeline-item">
+                    <div class="timeline-icon">${idx + 1}</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">${item.title}</div>
+                        <div class="timeline-desc">${item.description}</div>
+                        <button class="btn btn-primary" onclick="switchTab('${item.category}')" 
+                                style="margin-top: 10px; padding: 8px 16px;">
+                            Go to Task →
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate workflow
+        function generateWorkflow() {
+            const ai = appState.selectedAI;
+            const problemData = appState.projectData;
+
+            const workflowHTML = `
+                <div class="generated-workflow">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">
+                        🤖 Generated by ${ai.charAt(0).toUpperCase() + ai.slice(1)}
+                    </h3>
+                    
+                    <div class="workflow-section">
+                        <h4 style="color: #667eea;">1. Data Pipeline</h4>
+                        <p>Based on your requirements, here's your recommended data pipeline:</p>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Set up data ingestion from ${problemData.data || 'your sources'}</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Configure ${problemData.deployment || 'cloud'} storage</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Implement data validation and quality checks</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="workflow-section">
+                        <h4 style="color: #667eea;">2. Data Preparation</h4>
+                        <p>Data quality level: ${problemData.dataQuality || 'to be assessed'}</p>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Clean and preprocess data</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Engineer features based on domain knowledge</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Split data (train/validation/test)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="workflow-section">
+                        <h4 style="color: #667eea;">3. Model Development</h4>
+                        <p>Timeline: ${problemData.timeline || 'flexible'} | Resources: ${problemData.resources || 'standard'}</p>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Start with baseline model</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Experiment with advanced algorithms</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Tune hyperparameters</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Validate against success metrics: ${problemData.metrics || 'TBD'}</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="workflow-section">
+                        <h4 style="color: #667eea;">4. Deployment Strategy</h4>
+                        <p>Target environment: ${problemData.deployment || 'cloud'} | Interpretability: ${problemData.interpretability || 'medium'}</p>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Set up model registry and versioning</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Create deployment pipeline</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Implement monitoring and alerting</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Plan for model retraining</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="workflow-section">
+                        <h4 style="color: #667eea;">5. Business Integration</h4>
+                        <p>Context: ${problemData.businessContext || 'Standard ML deployment'}</p>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Create API endpoints for model access</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Document model capabilities and limitations</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Train stakeholders on model usage</span>
+                            </li>
+                            <li class="task-item">
+                                <input type="checkbox" class="task-checkbox">
+                                <span>Establish feedback loops for continuous improvement</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('generatedWorkflowContent').innerHTML = workflowHTML;
+            const applyBtn = document.getElementById('applyWorkflowBtn');
+            applyBtn.style.display = 'block';
+            
+            applyBtn.onclick = function() {
+                alert("Workflow applied! Tasks have been noted in your project plan.");
+                switchTab('ingestion');
+            };
+        }
+
+        // Show image modal
+        function showImageModal(imageId) {
+            const modal = document.getElementById('imageModal');
+            const content = document.getElementById('modalImageContent');
+            
+            const imageDescriptions = {
+                '1': 'Production ML System on SageMaker - Complete workflow from data ingestion to user access',
+                '2': 'Machine Learning Algorithms Cheatsheet - Comprehensive guide to choosing the right algorithm',
+                '3': 'Machine Learning Categories Map - Visual taxonomy of ML approaches and techniques',
+                '4': 'Machine Learning Workflow - Standard process from data sources to model evaluation',
+                '5': 'Popular Machine Learning Models - Overview of supervised, unsupervised, and ensemble methods'
+            };
+
+            const imageFiles = {
+                '1': '20251004_134609.jpg',
+                '2': '20251028_225010.jpg',
+                '3': 'GlaWUXXbcAAXow5.png',
+                '4': 'GrSFKYXW0AErOFX.jpg',
+                '5': 'GYKiqNUaUAA3ehV.jpg'
+            };
+            
+            content.innerHTML = `
+                <h2 style="color: #667eea; margin-bottom: 20px;">${imageDescriptions[imageId]}</h2>
+                <div style="padding: 20px; background: #f0f0f0; border-radius: 10px; text-align: center; color: #666; border: 2px dashed #ccc;">
+                    <img src="${imageFiles[imageId]}" style="max-width: 100%; max-height: 80vh; height: auto; border-radius: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" alt="${imageDescriptions[imageId]}" />
+                </div>`;
+            
+            modal.classList.add('active');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

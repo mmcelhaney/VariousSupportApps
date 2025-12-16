@@ -1,0 +1,1 @@
+The purpose of this program is for managing and organizing Media files locally. 

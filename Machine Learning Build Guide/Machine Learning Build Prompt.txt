@@ -1,0 +1,14 @@
+InfographicApp Prompt
+
+Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Machine Learning Build Guide" to 
+resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics 
+attached in the prompt. Assume Intermediate level. Assume vibrant and colorful style. Optimize for programmic interation. 
+Include information and examples in Python, SQL, R, and JavaScript. Use a clickable tile for each concept and each 
+should have a clickable checkmark that I can use to mark the concept as complete. 
+On each tile put the links to resources, descriptions, and action steps. Use the the system layer flowchart, common algorithms, workflow, and popular models that will lead a users from a prompt to building a Machine Learning app. 
+Multiple tabs: Define Problem (Allows the user to define functions and contraints with a prompt), A tab for each step in the workflow, a tab for auto generating
+the workflow using either Quen, ChatGPT, Claude, or Gemini (Combo box) to generate the output. If any of the stages have actionable things to do, those things should
+be seen on the tab. Include any hyperlinked resources and examples. Add a last tab "Reference" that has each graphic in a table as tiles. Clicking a tile, cause the graphic 
+to open in a pop up window. Below that should be this prompt.
+Before generating app, ask interactive questions, one-at-a-time, waiting for answers, to improve the quality of the
+app and make suggestions for improvement.   
