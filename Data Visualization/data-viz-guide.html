@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization & Storytelling Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            width: 0%;
+        }
+        .controls { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            background: white;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .tabs { display: flex; background: #f8f9fa; border-bottom: 3px solid #e9ecef; }
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #6c757d;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+        .tab:hover { background: #e9ecef; }
+        .tab.active { color: #667eea; border-bottom-color: #667eea; background: white; }
+        .tab-content { display: none; padding: 30px; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .tile {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            color: white;
+        }
+        .tile:nth-child(3n+1) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .tile:nth-child(3n+2) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .tile:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .tile h3 { font-size: 1.3em; margin-bottom: 10px; }
+        .tile p { font-size: 0.9em; line-height: 1.5; }
+        .checkbox {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checkbox.checked { background: #28a745; color: white; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .close-btn { font-size: 2em; cursor: pointer; color: #6c757d; }
+        .close-btn:hover { color: #dc3545; }
+        .code-tabs { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .code-tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #6c757d;
+            transition: all 0.3s;
+        }
+        .code-tab:hover { background: #e9ecef; }
+        .code-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .code-content {
+            display: none;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+        }
+        .code-content.active { display: block; }
+        .suggestion-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        .suggestion-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .suggestion-output {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 100px;
+            color: #333;
+        }
+        .analysis-tree { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .decision-node {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .decision-node:hover { transform: translateX(5px); }
+        .section-header {
+            font-size: 1.5em;
+            color: #667eea;
+            margin: 20px 0 10px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+          table {
+    border-collapse: collapse;
+    /* Adjusted width constraints to accommodate larger images gracefully */
+    max-width: 1200px; 
+    width: 100%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    /* Helps ensure columns remain equal width */
+    table-layout: fixed; 
+  }
+  th, td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    vertical-align: middle;
+  }
+  /* Crucial CSS to make sure 600px images fit inside the table cells */
+  td img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+  }
+  /* Style for the main title row */
+  .main-title {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 15px;
+  }
+  /* Style for standard headers */
+  .sub-header {
+      font-weight: bold;
+      background-color: #e9e9e9;
+      font-size: 1.1em;
+  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Data Visualization & Storytelling Guide</h1>
+            <p>Intermediate Level - Complete Guide with Code Examples</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar">0%</div>
+            </div>
+            <div class="controls">
+                <button class="btn" id="exportBtn">📥 Export Progress</button>
+                <button class="btn" id="resetBtn">🔄 Reset Progress</button>
+            </div>
+        </div>
+
+        <div class="tabs" id="mainTabs">
+            <div class="tab active" data-tab="techniques">📈 Techniques</div>
+            <div class="tab" data-tab="plots">📊 Plots</div>
+            <div class="tab" data-tab="analysis">🎯 Analysis</div>
+            <div class="tab" data-tab="suggestion">💡 Suggestion</div>
+        </div>
+
+        <div id="techniques" class="tab-content active">
+            <h2 class="section-header">Visualization Techniques</h2>
+            <div class="tiles-grid" id="techniquesGrid"></div>
+        </div>
+
+        <div id="plots" class="tab-content">
+            <h2 class="section-header">Chart Types & Plots</h2>
+            <div class="tiles-grid" id="plotsGrid"></div>
+        </div>
+
+        <div id="analysis" class="tab-content">
+            <h2 class="section-header">How to Choose the Right Visualization</h2>
+            <div class="analysis-tree">
+                <h3>Decision Framework</h3>
+                <p style="margin: 15px 0; color: #6c757d;">Click on each step to explore visualization selection criteria:</p>
+                <div class="decision-node" data-analysis="datatype">
+                    <strong>Step 1:</strong> Identify Your Data Type
+                </div>
+                <div class="decision-node" data-analysis="purpose">
+                    <strong>Step 2:</strong> Define Your Purpose
+                </div>
+                <div class="decision-node" data-analysis="audience">
+                    <strong>Step 3:</strong> Consider Your Audience
+                </div>
+                <div class="decision-node" data-analysis="complexity">
+                    <strong>Step 4:</strong> Assess Data Complexity
+                </div>
+                <div class="decision-node" data-analysis="bestpractices">
+                    <strong>Step 5:</strong> Apply Best Practices
+                </div>
+            </div>
+        </div>
+
+        <div id="suggestion" class="tab-content">
+            <h2 class="section-header">Get Personalized Recommendations</h2>
+            <div class="suggestion-box">
+                <h3 style="color: white; margin-bottom: 15px;">Describe Your Use Case</h3>
+                <input type="text" class="suggestion-input" id="useCaseInput" 
+                       placeholder="E.g., I want to show sales trends over 5 years across 3 regions">
+                <button class="btn" id="suggestBtn" style="width: 100%; padding: 15px; font-size: 1.1em;">
+                    Get Recommendation
+                </button>
+            </div>
+            <div class="suggestion-output" id="suggestionOutput">
+                <p style="color: #6c757d; text-align: center;">Enter your use case to get recommendations.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <span class="close-btn" id="closeModal">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            techniques: [
+                { id: 'scatter', name: 'Scatter Plot', category: 'Relationship', 
+                  desc: 'Shows relationship between two continuous variables.',
+                  use: 'Finding correlations (e.g., marketing spend vs ROI)',
+                  py: 'plt.scatter(x, y)\nplt.show()', 
+                  r: 'ggplot(df, aes(x, y)) + geom_point()',
+                  js: 'new Chart(ctx, {type: "scatter", data: {...}})',
+                  sql: 'SELECT x, y, CORR(x, y) OVER() FROM table',
+                  excel: 'Insert > Scatter > Add trendline' },
+                { id: 'line', name: 'Line Chart', category: 'Trend',
+                  desc: 'Displays continuous data over time.',
+                  use: 'Time series like stock prices, website traffic',
+                  py: 'plt.plot(dates, values)\nplt.show()', 
+                  r: 'ggplot(df, aes(date, value)) + geom_line()',
+                  js: 'new Chart(ctx, {type: "line", data: {...}})',
+                  sql: 'SELECT DATE_TRUNC(\'month\', date), AVG(value) FROM table GROUP BY 1',
+                  excel: 'Select data > Insert > Line Chart' },
+                { id: 'bar', name: 'Bar Chart', category: 'Comparison',
+                  desc: 'Compares quantities across categories.',
+                  use: 'Compare sales across products or regions',
+                  py: 'plt.bar(categories, values)\nplt.show()', 
+                  r: 'ggplot(df, aes(cat, val)) + geom_bar(stat="identity")',
+                  js: 'new Chart(ctx, {type: "bar", data: {...}})',
+                  sql: 'SELECT category, SUM(sales) FROM table GROUP BY category',
+                  excel: 'Select data > Insert > Bar Chart' },
+                { id: 'pie', name: 'Pie Chart', category: 'Composition',
+                  desc: 'Shows proportions and percentages of a whole.',
+                  use: 'Budget breakdown, market share (limit to 5-7 slices)',
+                  py: 'plt.pie(sizes, labels=labels, autopct=\'%1.1f%%\')', 
+                  r: 'ggplot(df, aes(x="", y=val, fill=cat)) + coord_polar("y")',
+                  js: 'new Chart(ctx, {type: "pie", data: {...}})',
+                  sql: 'SELECT cat, ROUND(SUM(amt)*100.0/SUM(SUM(amt)) OVER(),2) FROM table GROUP BY cat',
+                  excel: 'Select data > Insert > Pie Chart > Add % labels' },
+                { id: 'heatmap', name: 'Heatmap', category: 'Multivariate',
+                  desc: 'Uses color intensity to represent data values in a matrix.',
+                  use: 'Correlation matrices, time-based patterns',
+                  py: 'sns.heatmap(data, annot=True, cmap="coolwarm")', 
+                  r: 'ggplot(df, aes(x, y, fill=val)) + geom_tile()',
+                  js: 'Plotly.newPlot(div, [{type: "heatmap", z: data}])',
+                  sql: 'SELECT * FROM data PIVOT(AVG(val) FOR col IN (...))',
+                  excel: 'Select matrix > Conditional Formatting > Color Scales' },
+                { id: 'histogram', name: 'Histogram', category: 'Distribution',
+                  desc: 'Shows frequency distribution of continuous data.',
+                  use: 'Age distribution, test scores, response times',
+                  py: 'plt.hist(data, bins=30, edgecolor="black")', 
+                  r: 'ggplot(df, aes(value)) + geom_histogram(bins=30)',
+                  js: 'new Chart(ctx, {type: "bar", data: {labels: bins, ...}})',
+                  sql: 'SELECT FLOOR(val/10)*10 as bin, COUNT(*) FROM table GROUP BY bin',
+                  excel: 'Insert > Histogram > Adjust bin width' },
+                { id: 'boxplot', name: 'Box Plot', category: 'Distribution',
+                  desc: 'Shows distribution summary with median, quartiles, outliers.',
+                  use: 'Compare salary ranges, test scores across groups',
+                  py: 'plt.boxplot(data, labels=groups)', 
+                  r: 'ggplot(df, aes(group, val)) + geom_boxplot()',
+                  js: 'Plotly.newPlot(div, [{type: "box", y: data}])',
+                  sql: 'SELECT cat, MIN(val), PERCENTILE_CONT(0.25) FROM table GROUP BY cat',
+                  excel: 'Insert > Box and Whisker Chart' },
+                { id: 'area', name: 'Area Chart', category: 'Trend',
+                  desc: 'Line chart with filled area below.',
+                  use: 'Cumulative values, stacked categories over time',
+                  py: 'plt.fill_between(dates, values, alpha=0.3)', 
+                  r: 'ggplot(df, aes(date, val)) + geom_area()',
+                  js: 'new Chart(ctx, {type: "line", data: {..., fill: true}})',
+                  sql: 'SELECT date, SUM(val) OVER (ORDER BY date) FROM table',
+                  excel: 'Insert > Area Chart > Choose stacked type' },
+                { id: 'bubble', name: 'Bubble Chart', category: 'Multivariate',
+                  desc: 'Scatter plot with third dimension as bubble size.',
+                  use: 'Compare revenue, profit, and market share together',
+                  py: 'plt.scatter(x, y, s=sizes, alpha=0.6)', 
+                  r: 'ggplot(df, aes(x, y, size=z)) + geom_point()',
+                  js: 'new Chart(ctx, {type: "bubble", data: [...]})',
+                  sql: 'SELECT x_var, y_var, size_var FROM table',
+                  excel: 'Insert > Scatter > Bubble' },
+                { id: 'waterfall', name: 'Waterfall Chart', category: 'Financial',
+                  desc: 'Shows cumulative effect of sequential values.',
+                  use: 'Financial analysis showing value contributions',
+                  py: '# Custom bar positioning', 
+                  r: '# Use waterfall package',
+                  js: '# Stacked bars with positioning',
+                  sql: 'SELECT cat, val, SUM(val) OVER (ORDER BY seq) FROM table',
+                  excel: 'Excel 2016+: Insert > Waterfall Chart' }
+            ],
+            plots: [
+                { id: 'violin', name: 'Violin Plot', category: 'Distribution',
+                  desc: 'Combines box plot with density plot.',
+                  use: 'More detail than box plot with distribution shape',
+                  py: 'plt.violinplot(data, showmeans=True)', 
+                  r: 'ggplot(df, aes(group, val)) + geom_violin()',
+                  js: 'Plotly.newPlot(div, [{type: "violin", y: data}])',
+                  sql: 'SELECT cat, val, density FROM table',
+                  excel: 'Not built-in. Use Power BI' },
+                { id: 'sunburst', name: 'Sunburst Chart', category: 'Hierarchical',
+                  desc: 'Circular hierarchical chart from center outward.',
+                  use: 'Hierarchical data: org structure, file systems',
+                  py: 'px.sunburst(df, path=["lvl1", "lvl2"], values="val")', 
+                  r: 'plot_ly(df, type="sunburst")',
+                  js: 'Plotly.newPlot(div, [{type: "sunburst", ...}])',
+                  sql: 'WITH RECURSIVE tree AS (...) SELECT *',
+                  excel: 'Excel 2016+: Insert > Sunburst' },
+                { id: 'sankey', name: 'Sankey Diagram', category: 'Flow',
+                  desc: 'Shows flow quantities with proportional widths.',
+                  use: 'Budget allocation, customer journeys',
+                  py: 'go.Figure(go.Sankey(node=..., link=...))', 
+                  r: 'sankeyNetwork(Links, Nodes)',
+                  js: 'Plotly.newPlot(div, [{type: "sankey", ...}])',
+                  sql: 'SELECT source, target, SUM(flow) GROUP BY source, target',
+                  excel: 'Not supported. Use Power BI' },
+                { id: 'treemap', name: 'Treemap', category: 'Hierarchical',
+                  desc: 'Nested rectangles showing hierarchical proportions.',
+                  use: 'Disk usage, budget breakdown, market share',
+                  py: 'px.treemap(df, path=["cat", "sub"], values="val")', 
+                  r: 'treemap(df, index=c("cat","sub"), vSize="val")',
+                  js: 'Plotly.newPlot(div, [{type: "treemap", ...}])',
+                  sql: 'SELECT parent, child, SUM(val) GROUP BY parent, child',
+                  excel: 'Excel 2016+: Insert > Treemap' },
+                { id: 'radar', name: 'Radar Chart', category: 'Multivariate',
+                  desc: 'Multivariate data on axes from same point.',
+                  use: 'Compare product features, skills',
+                  py: 'ax = plt.subplot(projection="polar")', 
+                  r: 'radarchart(df, axistype=1)',
+                  js: 'new Chart(ctx, {type: "radar", data: {...}})',
+                  sql: 'PIVOT metrics into columns',
+                  excel: 'Insert > Other Charts > Radar' },
+                { id: 'funnel', name: 'Funnel Chart', category: 'Flow',
+                  desc: 'Progressive reduction through stages.',
+                  use: 'Sales pipeline, conversion rates',
+                  py: 'go.Figure(go.Funnel(y=stages, x=values))', 
+                  r: 'plot_ly(df, type="funnel")',
+                  js: 'Plotly.newPlot(div, [{type: "funnel", ...}])',
+                  sql: 'SELECT stage, COUNT(*), conversion_rate GROUP BY stage',
+                  excel: 'Excel 2016+: Insert > Funnel' },
+                { id: 'correlation', name: 'Correlation Matrix', category: 'Analysis',
+                  desc: 'Grid showing correlations between variables.',
+                  use: 'Feature selection, identify relationships',
+                  py: 'sns.heatmap(df.corr(), annot=True)', 
+                  r: 'corrplot(cor(df), method="color")',
+                  js: 'Plotly heatmap with correlations',
+                  sql: 'SELECT CORR(col1, col2) FROM table',
+                  excel: 'Data Analysis > Correlation' },
+                { id: 'gantt', name: 'Gantt Chart', category: 'Timeline',
+                  desc: 'Project schedule with tasks and durations.',
+                  use: 'Project management, timeline visualization',
+                  py: 'plt.barh(tasks, durations, left=start_dates)', 
+                  r: 'ggplot + geom_segment',
+                  js: 'Horizontal bar chart with dates',
+                  sql: 'SELECT task, start_date, DATEDIFF(end, start) FROM project',
+                  excel: 'Stacked bar with helper columns' }
+            ]
+        };
+
+        let progress = JSON.parse(localStorage.getItem('vizProgress')) || {};
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updateProgressBar() {
+            const total = data.techniques.length + data.plots.length;
+            const completed = Object.values(progress).filter(Boolean).length;
+            const pct = Math.round((completed / total) * 100);
+            const bar = document.getElementById('progressBar');
+            bar.style.width = pct + '%';
+            bar.textContent = `${completed}/${total} (${pct}%)`;
+        }
+
+        function toggleProgress(id, checkboxEl) {
+            progress[id] = !progress[id];
+            checkboxEl.classList.toggle('checked');
+            checkboxEl.innerHTML = progress[id] ? '✓' : '';
+            localStorage.setItem('vizProgress', JSON.stringify(progress));
+            updateProgressBar();
+        }
+
+        function createTile(item, gridEl) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.innerHTML = `
+                <h3>${item.name}</h3>
+                <p>${item.desc}</p>
+                <p style="margin-top:10px;font-size:0.85em;opacity:0.9"><strong>Category:</strong> ${item.category}</p>
+            `;
+            
+            const cb = document.createElement('div');
+            cb.className = 'checkbox' + (progress[item.id] ? ' checked' : '');
+            cb.innerHTML = progress[item.id] ? '✓' : '';
+            cb.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleProgress(item.id, cb);
+            });
+            
+            tile.appendChild(cb);
+            tile.addEventListener('click', () => showModal(item));
+            gridEl.appendChild(tile);
+        }
+
+        function showModal(item) {
+            document.getElementById('modalTitle').textContent = item.name;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="margin-bottom:20px">
+                    <h3>Description</h3><p>${item.desc}</p>
+                    <h3 style="margin-top:15px">When to Use</h3><p>${item.use}</p>
+                </div>
+                <h3>Code Examples</h3>
+                <div class="code-tabs" id="codeTabs-${item.id}">
+                    <div class="code-tab active" data-lang="py">Python</div>
+                    <div class="code-tab" data-lang="r">R</div>
+                    <div class="code-tab" data-lang="js">JavaScript</div>
+                    <div class="code-tab" data-lang="sql">SQL</div>
+                    <div class="code-tab" data-lang="excel">Excel</div>
+                </div>
+                <div id="code-py" class="code-content active"><pre>${escapeHtml(item.py)}</pre></div>
+                <div id="code-r" class="code-content"><pre>${escapeHtml(item.r)}</pre></div>
+                <div id="code-js" class="code-content"><pre>${escapeHtml(item.js)}</pre></div>
+                <div id="code-sql" class="code-content"><pre>${escapeHtml(item.sql)}</pre></div>
+                <div id="code-excel" class="code-content"><pre>${escapeHtml(item.excel)}</pre></div>
+            `;
+            
+            document.querySelectorAll(`#codeTabs-${item.id} .code-tab`).forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll(`#codeTabs-${item.id} .code-tab`).forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.code-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById('code-' + this.dataset.lang).classList.add('active');
+                });
+            });
+            
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModalFunc() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function showAnalysisDetail(type) {
+            const details = {
+                datatype: '<h3>Categorical</h3><p>Discrete categories → Bar charts, pie charts</p><h3>Continuous</h3><p>Numerical values → Line charts, scatter plots, histograms</p><h3>Time Series</h3><p>Data indexed by time → Line charts, area charts</p>',
+                purpose: '<h3>Comparison</h3><p>Bar, column, bullet graph</p><h3>Trend</h3><p>Line, area, sparklines</p><h3>Relationship</h3><p>Scatter, bubble, correlation matrix</p><h3>Composition</h3><p>Pie, stacked bar, treemap</p><h3>Distribution</h3><p>Histogram, box plot, violin plot</p>',
+                audience: '<h3>Executives</h3><p>Simple charts, key insights</p><h3>Technical Teams</h3><p>Complex visualizations acceptable</p><h3>General Public</h3><p>Very simple, heavy annotation</p>',
+                complexity: '<h3>Simple (1-2 vars)</h3><p>Bar, pie, line</p><h3>Moderate (2-3 vars)</h3><p>Scatter, grouped bar</p><h3>Complex (3+ vars)</h3><p>Bubble, heatmap, small multiples</p>',
+                bestpractices: '<h3>Design Principles</h3><ul><li>Use appropriate margins</li><li>Easy-to-read fonts</li><li>Reduce clutter</li><li>Pick the right chart</li><li>Remove unnecessary elements</li></ul><h3>Storytelling</h3><ul><li>Provide context</li><li>Highlight key findings</li><li>Use color purposefully</li><li>Start Y-axis at zero for bar charts</li></ul>'
+            };
+            document.getElementById('modalTitle').textContent = 'Step: ' + type;
+            document.getElementById('modalBody').innerHTML = details[type] || '<p>Information not available.</p>';
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function getSuggestion() {
+            const input = document.getElementById('useCaseInput').value.toLowerCase();
+            const output = document.getElementById('suggestionOutput');
+            
+            if (!input.trim()) {
+                output.innerHTML = '<p style="color:#dc3545">Please enter a use case.</p>';
+                return;
+            }
+            
+            let rec = '';
+            if (input.includes('trend') || input.includes('over time') || input.includes('time series')) {
+                rec = '<h3 style="color:#667eea">Recommended: Line Chart</h3><p>Best for showing trends over time</p><p><strong>Use:</strong> Time series data with continuous progression</p>';
+            } else if (input.includes('compare') && (input.includes('categor') || input.includes('product') || input.includes('region'))) {
+                rec = '<h3 style="color:#667eea">Recommended: Bar Chart</h3><p>Best for comparing quantities across categories</p><p><strong>Use:</strong> Categorical data comparison</p>';
+            } else if (input.includes('relationship') || input.includes('correlation') || input.includes('vs')) {
+                rec = '<h3 style="color:#667eea">Recommended: Scatter Plot</h3><p>Best for showing relationships between two variables</p><p><strong>Use:</strong> Identify correlations and patterns</p>';
+            } else if (input.includes('proportion') || input.includes('percentage') || input.includes('breakdown')) {
+                rec = '<h3 style="color:#667eea">Recommended: Pie Chart</h3><p>Best for showing proportions of a whole</p><p><strong>Use:</strong> Part-to-whole relationships (5-7 categories max)</p>';
+            } else if (input.includes('distribution') || input.includes('spread')) {
+                rec = '<h3 style="color:#667eea">Recommended: Histogram</h3><p>Best for showing data distribution</p><p><strong>Use:</strong> Understand how values are distributed</p>';
+            } else if (input.includes('flow') || input.includes('funnel') || input.includes('conversion')) {
+                rec = '<h3 style="color:#667eea">Recommended: Funnel Chart</h3><p>Best for showing flow through process stages</p><p><strong>Use:</strong> Visualize conversion rates</p>';
+            } else if (input.includes('hierarch') || input.includes('nested')) {
+                rec = '<h3 style="color:#667eea">Recommended: Treemap</h3><p>Best for hierarchical data</p><p><strong>Use:</strong> Show nested relationships and proportions</p>';
+            } else {
+                rec = '<h3 style="color:#667eea">General Recommendations</h3><ol><li>Identify your data type</li><li>Define your purpose</li><li>Consider your audience</li><li>Start simple: bar, line, scatter cover 80% of needs</li><li>Iterate and test</li></ol><p>Try being more specific, e.g., "Compare sales across 5 regions" or "Show temperature trends over 12 months"</p>';
+            }
+            output.innerHTML = rec;
+        }
+
+        function exportProgress() {
+            const total = data.techniques.length + data.plots.length;
+            const completed = Object.values(progress).filter(Boolean).length;
+            const pct = Math.round((completed / total) * 100);
+            let report = `Data Visualization Progress Report\nDate: ${new Date().toLocaleDateString()}\n\nProgress: ${completed}/${total} (${pct}%)\n\n`;
+            report += '='.repeat(50) + '\n\nCompleted:\n';
+            [...data.techniques, ...data.plots].forEach(item => {
+                if (progress[item.id]) report += `✓ ${item.name} (${item.category})\n`;
+            });
+            report += '\nRemaining:\n';
+            [...data.techniques, ...data.plots].forEach(item => {
+                if (!progress[item.id]) report += `○ ${item.name} (${item.category})\n`;
+            });
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `viz-progress-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetProgress() {
+            if (confirm('Reset all progress? This cannot be undone.')) {
+                progress = {};
+                localStorage.removeItem('vizProgress');
+                document.querySelectorAll('.checkbox').forEach(cb => {
+                    cb.classList.remove('checked');
+                    cb.innerHTML = '';
+                });
+                updateProgressBar();
+                alert('Progress reset!');
+            }
+        }
+
+        function init() {
+            // Initialize techniques grid
+            const techGrid = document.getElementById('techniquesGrid');
+            data.techniques.forEach(item => createTile(item, techGrid));
+            
+            // Initialize plots grid
+            const plotsGrid = document.getElementById('plotsGrid');
+            data.plots.forEach(item => createTile(item, plotsGrid));
+            
+            // Update progress bar
+            updateProgressBar();
+            
+            // Setup tab switching
+            document.querySelectorAll('#mainTabs .tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+            
+            // Setup analysis decision nodes
+            document.querySelectorAll('.decision-node').forEach(node => {
+                node.addEventListener('click', function() {
+                    showAnalysisDetail(this.dataset.analysis);
+                });
+            });
+            
+            // Setup buttons
+            document.getElementById('exportBtn').addEventListener('click', exportProgress);
+            document.getElementById('resetBtn').addEventListener('click', resetProgress);
+            document.getElementById('suggestBtn').addEventListener('click', getSuggestion);
+            document.getElementById('closeModal').addEventListener('click', closeModalFunc);
+            
+            // Setup modal click outside to close
+            document.getElementById('modal').addEventListener('click', function(e) {
+                if (e.target === this) closeModalFunc();
+            });
+            
+            // Setup Enter key for suggestion input
+            document.getElementById('useCaseInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') getSuggestion();
+            });
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+    
+    <!-- Reference Section -->
+    <div style="background: #f8f9fa; padding: 30px; margin-top: 40px; border-top: 3px solid #667eea;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h2 style="color: #667eea; margin-bottom: 20px;">📚 About This Application</h2>
+            
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #764ba2; margin-bottom: 15px;">Reference Materials</h3>
+                <p style="line-height: 1.8; color: #333;">
+                    This interactive guide was built based on comprehensive data visualization cheatsheets and resources covering 100+ visualization techniques, best practices, and implementation examples across multiple programming languages and tools. The application synthesizes information from various data visualization guides including:
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2" class="main-title">Visualization Infographics</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img src="GgGZBAXWwAAM-eU.jpg" alt="Essential Charts for Data Storytelling"></td>
+                            <td><img src="Gsj80gzaEAAMVHU.png" alt="Data Storytelling"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="GdkYx9mWUAAtAbv.jpg" alt="How to Choose a Right Graph for Data Visualiization"></td>
+                            <td><img src="Gddz6d1W4AA4siT.jpg" alt="Best Practices"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="20251112_181117.jpg" alt="Python Data Visualization pg 1"></td>
+                            <td><img src="20251112_181045.jpg" alt="Python Data Visualization pg 2"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="20251107_204903.jpg" alt="100 Ways to Visualize Data"></td>
+                            <td><img src="20251119_113101.jpg" alt="Top 10 Data Visualization in Data Science"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="GjrptrLW4AA6OVs.jpg" alt="Data Visualization Tips"></td>
+                            <td><img src="GrG_rGUX0AEyb0J.jpg" alt="Data Visualization Essentials"></td>
+                        </tr>
+                        <tr>
+                            <td><img src="GsMwTH3XIAAwPTo.jpg" alt="Top 9 Tools For Data Visualization"></td>
+                            <td><img src="GYeDGXIWYAAmW8d.jpg" alt="Data Visualization Cheatsheet"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #764ba2; margin-bottom: 15px;">🎯 How to Use This Guide</h3>
+                <ol style="line-height: 2; color: #333;">
+                    <li><strong>Explore Techniques Tab:</strong> Browse fundamental visualization techniques with code examples in all languages</li>
+                    <li><strong>Discover Plots Tab:</strong> Learn about specialized and advanced plot types for specific use cases</li>
+                    <li><strong>Use Analysis Tab:</strong> Follow the decision framework to select the right visualization for your data</li>
+                    <li><strong>Get Suggestions Tab:</strong> Describe your use case and receive personalized recommendations</li>
+                    <li><strong>Track Progress:</strong> Check off concepts as you learn them, export your progress, or reset to start fresh</li>
+                </ol>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px;">💡 Pro Tips for Intermediate Users</h3>
+                <ul style="line-height: 2;">
+                    <li>Always consider your audience before choosing a visualization</li>
+                    <li>Start with simple charts and add complexity only when necessary</li>
+                    <li>Use color purposefully to highlight insights, not just for decoration</li>
+                    <li>Tell a story with your data - every chart should have a clear message</li>
+                    <li>Test your visualizations with others to ensure clarity</li>
+                    <li>Learn the strengths and limitations of each chart type</li>
+                    <li>Combine multiple visualizations in dashboards for comprehensive analysis</li>
+                    <li>Always cite your data sources and methodology</li>
+                </ul>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="color: #764ba2; margin-bottom: 15px;">📝 Original Prompt Used to Generate This App</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
+                    <p style="font-family: 'Courier New', monospace; color: #333; line-height: 1.8; white-space: pre-wrap;">Generate an HTML app with JavaScript (no REACT) that provides actionable and clickable guide for "Data Visualization and Storytelling" to resources for code snippets, tutorials, descriptions, illustrations for each of these concepts from the graphics. Make four tabs: "Techniques", "PLOTS", "Analysis" (how do u determine what technique to use), and "Suggestion" with a text box user types in what the use case is and then suggests the technique and how to do storytelling underneath the text box. Include information and examples in Python, SQL, R, JavaScript and Excel. Use a clickable tile for each concept and each should have a clickable checkmark that I can use to mark the concept as complete. Before generating app, ask interactive questions, one-at-a-time, waiting for answers, to improve the quality of the app. Include the graphics at the end and this prompt.</p>
+                </div>
+                <p style="margin-top: 15px; color: #666; font-style: italic;">
+                    This application was created through an interactive design process, gathering requirements for skill level (Intermediate), code display preferences (all languages with tabs), suggestion detail level (Comprehensive), progress tracking (with export/reset), and visual design (Modern and vibrant with colorful tiles, gradients, and animations).
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
