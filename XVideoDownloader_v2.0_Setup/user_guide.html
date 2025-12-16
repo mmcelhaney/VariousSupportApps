@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Video Downloader v2.0 - User Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1000px;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh; /* Fixed height for consistency */
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .slide-container {
+            position: relative;
+            flex-grow: 1;
+            overflow-y: auto; /* Allow scrolling within the slide if content is long */
+            background: #fff;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .slide h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .slide-content {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #555;
+            padding-bottom: 20px;
+        }
+
+        .screenshot {
+            background: #f5f5f5;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            max-width: 80%;
+        }
+
+        .screenshot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: #e0e0e0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .screenshot::after {
+            content: '● ● ●';
+            position: absolute;
+            top: 8px;
+            left: 15px;
+            color: #999;
+            font-size: 12px;
+            letter-spacing: 5px;
+        }
+
+        .mock-ui {
+            background: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .mock-button {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        .mock-button.secondary { background: #95a5a6; }
+        .mock-button.success { background: #27ae60; }
+
+        .mock-input {
+            border: 2px solid #ddd;
+            padding: 8px;
+            border-radius: 5px;
+            width: 200px;
+            margin: 10px 5px;
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            margin: 15px 0;
+            padding-left: 50px;
+            position: relative;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: -5px;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .progress-fill.animate { width: 75%; }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 2px solid #e0e0e0;
+            flex-shrink: 0;
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .slide-indicator {
+            display: flex;
+            gap: 8px;
+        }
+
+        .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .indicator-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        .warning-box, .success-box, .info-box {
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+
+        .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; color: #856404; }
+        .success-box { background: #d4edda; border-left: 4px solid #28a745; color: #155724; }
+        .info-box { background: #d1ecf1; border-left: 4px solid #17a2b8; color: #0c5460; }
+
+        .thread-display {
+            background: #2c3e50;
+            color: #2ecc71;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .animated-icon { font-size: 3em; animation: bounce 2s infinite; display: inline-block; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎥 X Video Downloader v2.0</h1>
+            <p>Complete User Guide & Workflow</p>
+        </div>
+
+        <div class="slide-container">
+            <div class="slide active" data-slide="0">
+                <h2>Welcome to X Video Downloader! 👋</h2>
+                <div class="slide-content">
+                    <p style="font-size: 1.2em; margin-bottom: 30px;">
+                        This interactive guide will walk you through the complete workflow of downloading videos from your X (Twitter) bookmarks.
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h3>⚡ Fast</h3>
+                            <p>Multi-threaded downloads</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>🔄 Automatic</h3>
+                            <p>Auto-unbookmarking</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>📊 Tracked</h3>
+                            <p>Detailed reports</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>💾 Organized</h3>
+                            <p>Smart file naming</p>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>💡 What You'll Learn:</strong>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>First-time setup process</li>
+                            <li>Logging in and authentication</li>
+                            <li>Configuring download settings</li>
+                            <li>Monitoring download progress</li>
+                            <li>Understanding reports and logs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-slide="1">
+                <h2>Step 1: First Launch & Setup Wizard 🚀</h2>
+                <div class="slide-content">
+                    <p>When you launch the application for the first time, the Setup Wizard will automatically start.</p>
+                    
+                    <div class="screenshot">
+                        <div class="mock-ui" style="width: 100%; max-width: 500px;">
+                            <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">
+                                Setup Wizard - Step 1 of 5
+                            </h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill animate">20%</div>
+                            </div>
+                            <p style="text-align: center; margin: 20px 0;">
+                                Checking system requirements...
+                            </p>
+                            <div style="text-align: center;">
+                                <button class="mock-button">Next →</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-list">
+                        <li><strong>Requirements Check:</strong> Verifies Python packages are installed</li>
+                        <li><strong>Playwright Install:</strong> Downloads browser automation tools (~300 MB)</li>
+                        <li><strong>Database Setup:</strong> Configure MySQL connection details</li>
+                        <li><strong>Webhook Config:</strong> Set up Zapier notifications (optional)</li>
+                        <li><strong>Completion:</strong> Settings saved, ready to use!</li>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⏱️ Time Required:</strong> First setup takes 5-10 minutes depending on your internet speed.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-slide="2">
+                <h2>Step 2: Login to X (Twitter) 🔐</h2>
+                <div class="slide-content">
+                    <p>After setup, you need to authenticate with X/Twitter to access your bookmarks.</p>
+                    
+                    <div class="screenshot">
+                        <div class="mock-ui" style="width: 100%; max-width: 600px;">
+                            <h3 style="color: #2c3e50; margin-bottom: 15px;">Authentication</h3>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                                <span style="color: red;">✗ Login Expired</span>
+                                <button class="mock-button">Re-Login</button>
+                            </div>
+                            <p style="margin-top: 20px; font-size: 0.9em; color: #666;">
+                                Click "Re-Login" to open Chrome and authenticate
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="step-list">
+                        <li><strong>Click "Re-Login"</strong> button in the application</li>
+                        <li><strong>Close ALL Chrome windows</strong> when prompted</li>
+                        <li><strong>Chrome opens automatically</strong> with your profile</li>
+                        <li><strong>Log in to X/Twitter</strong> if not already logged in</li>
+                        <li><strong>Navigate to bookmarks</strong> (https://x.com/i/bookmarks)</li>
+                        <li><strong>Click OK</strong> in the prompt when ready</li>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Important:</strong> Make sure you're on the bookmarks page before clicking OK.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-slide="3">
+                <h2>Step 3: Configure Download Settings ⚙️</h2>
+                <div class="slide-content">
+                    <p>Choose what videos to download and how many threads to use.</p>
+                    
+                    <div class="screenshot">
+                        <div class="mock-ui" style="width: 100%; max-width: 600px;">
+                            <h3 style="color: #2c3e50; margin-bottom: 20px;">Download Mode</h3>
+                            <div style="margin: 15px 0;">
+                                <label style="display: block; margin: 10px 0;"><input type="radio" name="mode" checked> <strong> Latest N Posts</strong></label>
+                                <label style="display: block; margin: 10px 0;"><input type="radio" name="mode"> <strong> Last N Days</strong></label>
+                            </div>
+                            <div style="margin: 20px 0;">
+                                <label>Max Posts: <input class="mock-input" value="50" style="width: 80px;"></label>
+                                <label>Threads: <input class="mock-input" value="5" style="width: 80px;"></label>
+                            </div>
+                            <div style="text-align: center; margin-top: 20px;">
+                                <button class="mock-button success">Run Script</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>💡 Recommendations:</strong>
+                        • <strong>Threads:</strong> 5 threads is optimal for most systems<br>
+                        • <strong>Show Browser:</strong> Enable to watch unbookmarking process
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-slide="4">
+                <h2>Step 4: Watch the Download Progress 📥</h2>
+                <div class="slide-content">
+                    <p>The application shows real-time progress as videos are being downloaded.</p>
+                    
+                    <div class="screenshot">
+                        <div class="mock-ui" style="width: 100%; max-width: 650px;">
+                            <h3 style="color: #2c3e50; margin-bottom: 15px;">Progress</h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill animate">Progress: 25/50 videos</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+                                <div><strong>Downloaded:</strong> <span style="color: #27ae60;">18</span></div>
+                                <div><strong>Failed:</strong> <span style="color: #e74c3c;">2</span></div>
+                            </div>
+                            <div class="thread-display">
+Thread 1: @elonmusk - 67.3% (2.1 MB/s)<br>
+Thread 2: @OpenAI - Complete ✓<br>
+Thread 3: @video_user - 23.8% (1.5 MB/s)<br>
+Thread 4: Checking database...<br>
+Thread 5: @another_user - 91.2% (3.2 MB/s) <span class="blink">▌</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-slide="5">
+                <h2>Step 5: Automatic Unbookmarking 🔖</h2>
+                <div class="slide-content">
+                    <p>After downloading, the application automatically unbookmarks successfully downloaded videos.</p>
+                    <div class="screenshot">
+                        <div class="mock-ui" style="width: 100%; max-width: 600px; text-align: center;">
+                            <div class="animated-icon">🌐</div>
+                            <h3 style="color: #2c3e50; margin: 20px 0;">Unbookmarking 18 posts...</h3>
+                            <div class="progress-bar"><div class="progress-fill animate">Phase 3: Verifying buttons...</div></div>
+                        </div>
+                    </div>
+                    <div class="success-box">
+                        <strong>✓ Smart Unbookmarking:</strong> The system ensures pages are fully loaded before unbookmarking to prevent failures.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-slide="6">
+                <h2>Step 6: View Results & Reports 📊</h2>
+                <div class="slide-content">
+                    <p>After completion, you'll see a summary and an HTML report is generated.</p>
+                    <div class="screenshot">
+                        <div class="mock-ui" style="width: 100%; max-width: 550px;">
+                            <h3 style="color: #27ae60; text-align: center;">✓ Processing Complete!</h3>
+                            <div style="background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 5px;">
+                                <strong>Successfully downloaded:</strong> 18<br>
+                                <strong>Failed:</strong> 2<br>
+                                <strong>Unbookmarked:</strong> 18/18
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <strong>💾 Files Location:</strong><br>
+                        • <strong>Videos:</strong> <code>downloads/</code> folder<br>
+                        • <strong>Reports:</strong> <code>logs/VideosMissed_[date].html</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-slide="7">
+                <h2>Tips & Troubleshooting 🔧</h2>
+                <div class="slide-content">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">💡 Pro Tips:</h3>
+                    <div class="step-list">
+                        <li><strong>Regular Use:</strong> Run daily/weekly to keep bookmarks clean</li>
+                        <li><strong>Check Reports:</strong> Review HTML reports for failures</li>
+                        <li><strong>Thread Count:</strong> Reduce to 3 if internet is unstable</li>
+                    </div>
+
+                    <h3 style="color: #e74c3c; margin: 20px 0 10px 0;">🚨 Common Issues:</h3>
+                    <div style="margin-left: 20px;">
+                        <p><strong>❌ "Login Expired"</strong> → Click "Re-Login" and authenticate again.</p>
+                        <p><strong>❌ "No video posts found"</strong> → Check your bookmarks actually contain videos.</p>
+                        <p><strong>❌ Downloads fail</strong> → Try reducing thread count.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" data-slide="8">
+                <h2>Quick Recap & Summary 🎯</h2>
+                <div class="slide-content">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div class="animated-icon">🎉</div>
+                        <h3 style="color: #667eea;">You're Ready to Use X Video Downloader!</h3>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card"><h3>1️⃣</h3><p>Setup</p></div>
+                        <div class="feature-card"><h3>2️⃣</h3><p>Login</p></div>
+                        <div class="feature-card"><h3>3️⃣</h3><p>Config</p></div>
+                        <div class="feature-card"><h3>4️⃣</h3><p>Run</p></div>
+                        <div class="feature-card"><h3>5️⃣</h3><p>Report</p></div>
+                    </div>
+
+                    <div class="success-box" style="margin-top: 30px;">
+                        <strong>✓ Benefits:</strong><br>
+                        • Save videos before they're deleted<br>
+                        • Automatically organize your downloads<br>
+                        • Keep your X/Twitter bookmarks clean
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="navigation">
+            <button class="nav-button" id="prevBtn" disabled>
+                <span>←</span> Previous
+            </button>
+            <div class="slide-indicator" id="dots">
+                </div>
+            <button class="nav-button" id="nextBtn">
+                Next <span>→</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Slideshow Logic
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const dotsContainer = document.getElementById('dots');
+        
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        // Create indicator dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('indicator-dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.indicator-dot');
+
+        function updateUI() {
+            // Update slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+
+            // Update dots
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[currentSlide].classList.add('active');
+
+            // Update buttons
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+            
+            // Change Next button text on last slide
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.innerHTML = 'Finish <span>✓</span>';
+                nextBtn.classList.add('success');
+            } else {
+                nextBtn.innerHTML = 'Next <span>→</span>';
+                nextBtn.classList.remove('success');
+            }
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides) {
+                currentSlide = index;
+                updateUI();
+            }
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateUI();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateUI();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextBtn.click();
+            if (e.key === 'ArrowLeft') prevBtn.click();
+        });
+    </script>
+</body>
+</html>

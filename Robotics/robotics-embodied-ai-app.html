@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robotics & Embodied AI Tutorial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@400;500&family=Fira+Code&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --electric-blue: #00d4ff;
+      --neon-purple: #b537f2;
+      --bright-orange: #ff6b6b;
+      --lime-green: #51cf66;
+      --bg-dark: #0f0f23;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --text-primary: #ffffff;
+      --text-secondary: #a8b2d1;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    
+    .header {
+      background: var(--primary-gradient);
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--card-bg);
+      border: 2px solid var(--electric-blue);
+      border-radius: 25px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      backdrop-filter: blur(10px);
+      outline: none;
+    }
+    
+    .filter-buttons, .utility-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary-gradient);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+    }
+    
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--electric-blue);
+      border: 2px solid var(--electric-blue);
+    }
+
+    .btn-secondary.active {
+      background: var(--electric-blue);
+      color: var(--bg-dark);
+    }
+    
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 1rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    
+    .tab {
+      padding: 0.8rem 1.5rem;
+      background: var(--card-bg);
+      border: 2px solid transparent;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .tab:hover {
+      border-color: var(--electric-blue);
+      transform: translateY(-2px);
+    }
+    
+    .tab.active {
+      background: var(--primary-gradient);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .content {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .content-section {
+      display: none;
+    }
+    
+    .content-section.active {
+      display: block;
+      animation: fadeIn 0.4s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s;
+    }
+    
+    .card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+      border-color: var(--electric-blue);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .card-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--electric-blue);
+    }
+    
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .icon-btn:hover {
+      transform: scale(1.2);
+    }
+    
+    .code-container {
+      background: #1e1e3f;
+      border-radius: 15px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    
+    .code-tabs {
+      display: flex;
+      background: #2a2a4a;
+      border-bottom: 2px solid var(--electric-blue);
+    }
+    
+    .code-tab {
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .code-tab.active {
+      background: #1e1e3f;
+      color: var(--electric-blue);
+    }
+    
+    .code-content {
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+    
+    pre {
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    
+    .links-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .link-card {
+      background: rgba(0, 212, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--electric-blue);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.3s;
+      display: block;
+      font-size: 0.9rem;
+    }
+    
+    .link-card:hover {
+      background: rgba(0, 212, 255, 0.2);
+      transform: translateY(-3px);
+    }
+    
+    .progress-container {
+      margin: 2rem 0;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 0.5rem;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--secondary-gradient);
+      transition: width 0.5s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      min-width: 50px;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: var(--bg-dark);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 2px solid var(--electric-blue);
+      box-shadow: 0 10px 50px rgba(102, 126, 234, 0.5);
+    }
+    
+    .modal-close {
+      float: right;
+      font-size: 2rem;
+      cursor: pointer;
+      color: var(--bright-orange);
+    }
+    
+    .journal-form {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--electric-blue);
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .stars {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 2rem;
+    }
+    
+    .star {
+      cursor: pointer;
+      color: #555;
+      transition: color 0.2s;
+    }
+    
+    .star.active {
+      color: #ffd700;
+    }
+
+    .framework-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      overflow-x: auto;
+      display: block;
+    }
+    
+    .framework-table th,
+    .framework-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .framework-table th {
+      background: var(--primary-gradient);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+    
+    .framework-table tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border-left: 4px solid var(--electric-blue);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-radius: 15px;
+    }
+
+    .step-number {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      background: var(--secondary-gradient);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      font-weight: 800;
+      margin-right: 1rem;
+    }
+
+    .journal-entry {
+        background: rgba(255,255,255,0.05);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        border-left: 3px solid var(--lime-green);
+    }
+
+    .reference-img {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 15px;
+      border: 2px solid var(--electric-blue);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .reference-img:hover {
+      transform: scale(1.02);
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .tabs {
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+      
+      .controls {
+        flex-direction: column;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🤖 Robotics & Embodied AI 🧠</h1>
+    <p>Your Complete Guide to Building Intelligent Robots</p>
+  </div>
+
+  <div class="controls">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="🔍 Search tutorials, concepts, frameworks..." onkeyup="handleSearch()" />
+    </div>
+    <div class="filter-buttons">
+      <button class="btn btn-secondary" id="filter-beginner" onclick="filterBy('beginner')">Beginner</button>
+      <button class="btn btn-secondary" id="filter-intermediate" onclick="filterBy('intermediate')">Intermediate</button>
+      <button class="btn btn-secondary" id="filter-advanced" onclick="filterBy('advanced')">Advanced</button>
+      <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+    </div>
+    <div class="utility-buttons">
+      <button class="btn btn-primary" onclick="openJournal()">📔 Journal</button>
+      <button class="btn btn-primary" onclick="showProgress()">📊 Progress</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('definitions')">📚 Definitions</div>
+    <div class="tab" onclick="switchTab('design')">🎨 Design</div>
+    <div class="tab" onclick="switchTab('process')">🚀 7-Step Process</div>
+    <div class="tab" onclick="switchTab('frameworks')">🛠️ Frameworks</div>
+    <div class="tab" onclick="switchTab('simulators')">🎮 Simulators</div>
+    <div class="tab" onclick="switchTab('resources')">📖 Resources</div>
+    <div class="tab" onclick="switchTab('reference')">🖼️ Reference</div>
+  </div>
+
+  <div class="content">
+    <div id="definitions" class="content-section active">
+      <h2>Core Definitions & Concepts</h2>
+      <div id="definitionsContent"></div>
+    </div>
+
+    <div id="design" class="content-section">
+      <h2>Robot Design Principles</h2>
+      <div id="designContent"></div>
+    </div>
+
+    <div id="process" class="content-section">
+      <h2>How to Build a Smart Robot Helper</h2>
+      <div id="processContent"></div>
+    </div>
+
+    <div id="frameworks" class="content-section">
+      <h2>Robot Building Kits & Frameworks</h2>
+      <div id="frameworksContent"></div>
+    </div>
+
+    <div id="simulators" class="content-section">
+      <h2>Robotics Simulators</h2>
+      <div id="simulatorsContent"></div>
+    </div>
+
+    <div id="resources" class="content-section">
+      <h2>Learning Resources</h2>
+      <div id="resourcesContent"></div>
+    </div>
+
+    <div id="reference" class="content-section">
+      <h2>Reference Graphics</h2>
+      <div id="referenceContent"></div>
+    </div>
+  </div>
+
+  <div id="journalModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal('journalModal')">&times;</span>
+      <h2>Learning Journal</h2>
+      <div class="journal-form">
+        <div class="form-group">
+          <label>Topic:</label>
+          <input type="text" id="journalTopic" placeholder="What did you study?" />
+        </div>
+        <div class="form-group">
+          <label>Time Spent (minutes):</label>
+          <input type="number" id="journalTime" placeholder="30" />
+        </div>
+        <div class="form-group">
+          <label>Confidence Level:</label>
+          <div class="stars" id="confidenceStars">
+            <span class="star" onclick="setConfidence(1)">★</span>
+            <span class="star" onclick="setConfidence(2)">★</span>
+            <span class="star" onclick="setConfidence(3)">★</span>
+            <span class="star" onclick="setConfidence(4)">★</span>
+            <span class="star" onclick="setConfidence(5)">★</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Notes:</label>
+          <textarea id="journalNotes" placeholder="Key takeaways, questions, insights..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="saveJournalEntry()">Save Entry</button>
+      </div>
+      <div id="journalEntries"></div>
+    </div>
+  </div>
+
+  <div id="progressModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal('progressModal')">&times;</span>
+      <h2>Your Learning Progress</h2>
+      <div id="progressContent"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- Data Store ---
+    const contentData = {
+      definitions: [
+        {
+          id: 'def-1',
+          title: 'Robotics vs Embodied AI',
+          description: 'Understanding the difference between traditional robotics and embodied artificial intelligence.',
+          details: `<p><strong>Robotics</strong>: Field of engineering and science focused on designing, building, and operating robots—physical machines that perform tasks automatically or with minimal human help.</p>
+          <p><strong>Embodied AI</strong>: AI systems integrated into physical entities (robots, drones) that interact directly with their environment using sensors and adaptive learning.</p>`,
+          tags: ['fundamental', 'beginner', 'AI'],
+          links: [
+            { title: 'What is Embodied AI? - NVIDIA', url: 'https://blogs.nvidia.com/blog/what-is-embodied-ai/' },
+            { title: 'Embodied AI Research', url: 'https://embodied-ai.org/' }
+          ],
+          bookmarked: false,
+          completed: false
+        },
+        {
+          id: 'def-2',
+          title: "Asimov's Three Laws of Robotics",
+          description: "Foundational ethical principles proposed by Isaac Asimov for governing robot behavior.",
+          details: `<p>1. A robot may not injure a human being or, through inaction, allow a human being to come to harm.<br>2. A robot must obey orders given by human beings except where such orders conflict with the First Law.<br>3. A robot must protect its own existence as long as such protection does not conflict with the First or Second Law.</p>`,
+          tags: ['ethics', 'beginner', 'theory'],
+          links: [{ title: 'Three Laws - Wikipedia', url: 'https://en.wikipedia.org/wiki/Three_Laws_of_Robotics' }],
+          bookmarked: false,
+          completed: false
+        },
+        {
+          id: 'def-3',
+          title: 'Kinematics',
+          description: 'Study of robot motion without considering forces - the geometry of movement.',
+          details: `<p><strong>Forward Kinematics</strong>: Calculating end-effector position from joint parameters.<br><strong>Inverse Kinematics</strong>: Determining joint parameters needed for a desired position.</p>`,
+          code: {
+            python: `import numpy as np
+def forward_kinematics(theta1, theta2, l1, l2):
+    x = l1 * np.cos(theta1) + l2 * np.cos(theta1 + theta2)
+    y = l1 * np.sin(theta1) + l2 * np.sin(theta1 + theta2)
+    return x, y`,
+            javascript: `function forwardKinematics(theta1, theta2, l1, l2) {
+    const x = l1 * Math.cos(theta1) + l2 * Math.cos(theta1 + theta2);
+    const y = l1 * Math.sin(theta1) + l2 * Math.sin(theta1 + theta2);
+    return {x, y};
+}`
+          },
+          tags: ['fundamental', 'intermediate', 'math'],
+          links: [{ title: 'Kinematics Guide', url: 'https://motion.cs.illinois.edu/RoboticSystems/Kinematics.html' }],
+          bookmarked: false,
+          completed: false
+        },
+        {
+          id: 'def-4',
+          title: 'Actuators',
+          description: 'The "muscles" of robots - devices that convert energy into physical motion.',
+          details: `<p>Types include Electric (DC/Servo motors), Hydraulic (high force), Pneumatic (air pressure), and Soft Actuators.</p>`,
+          tags: ['hardware', 'intermediate'],
+          links: [],
+          bookmarked: false,
+          completed: false
+        },
+        {
+          id: 'def-5',
+          title: 'Computer Vision in Robotics',
+          description: 'Enabling robots to see and understand their visual environment using AI.',
+          details: `<p>Includes Object Detection, Depth Perception (LiDAR/Stereo), and Motion Tracking.</p>`,
+          tags: ['AI', 'intermediate', 'perception'],
+          links: [],
+          bookmarked: false,
+          completed: false
+        },
+        {
+            id: 'def-7',
+            title: 'ROS (Robot Operating System)',
+            description: 'Open-source middleware framework for robot software development.',
+            details: `<p>A framework providing hardware abstraction, device drivers, libraries, visualizers, message-passing, and package management.</p>`,
+            tags: ['framework', 'intermediate', 'software'],
+            links: [{ title: 'ROS.org', url: 'https://www.ros.org/' }],
+            bookmarked: false,
+            completed: false
+        }
+      ],
+      design: [
+        {
+          id: 'design-1',
+          title: 'Robot Design Process',
+          description: 'Systematic approach from requirements to prototyping.',
+          details: `<ol><li>Requirements Analysis</li><li>Conceptual Design</li><li>Detailed Design</li><li>Prototyping</li><li>Testing & Iteration</li></ol>`,
+          tags: ['process', 'beginner'],
+          links: [],
+          bookmarked: false,
+          completed: false
+        }
+      ],
+      process: [
+        {
+          id: 'step-1',
+          step: 1,
+          title: 'Tell It What To Do',
+          subtitle: 'Define Rules, Goals, and Behaviors',
+          description: 'Establish the robot\'s purpose, operating rules, and desired behaviors.',
+          components: ['Rules: Safety constraints', 'Goals: Objectives', 'Persona: Interaction style'],
+          implementation: 'Create mission statements and success criteria.',
+          code: {
+            python: `class RobotGoals:
+    def __init__(self):
+        self.goals = {'primary': 'Assist humans'}
+        self.rules = ["Obey Asimov's Laws"]`
+          },
+          tags: ['process', 'beginner'],
+          links: [],
+          bookmarked: false,
+          completed: false
+        },
+        {
+          id: 'step-2',
+          step: 2,
+          title: 'LLM (Smart Brain)',
+          subtitle: 'Large Language Model Intelligence',
+          description: 'Integrate a Large Language Model for reasoning.',
+          components: ['Model Selection (GPT-4, Claude)', 'Prompt Engineering', 'Context Management'],
+          implementation: 'API integration and guardrails.',
+          tags: ['process', 'AI', 'intermediate'],
+          links: [],
+          bookmarked: false,
+          completed: false
+        },
+        {
+          id: 'step-3',
+          step: 3,
+          title: 'Give It Tools',
+          subtitle: 'Equip with Capabilities',
+          description: 'Provide the robot with tools/APIs (Calculator, Internet, Vision).',
+          components: ['Function Calling', 'External APIs', 'Sensors'],
+          implementation: 'Tool-use definitions.',
+          tags: ['process', 'intermediate'],
+          links: [],
+          bookmarked: false,
+          completed: false
+        }
+      ],
+      frameworks: [
+        {
+          id: 'fw-1',
+          name: 'OpenAI Agents API',
+          noCode: '✗',
+          llm: 'OpenAI (GPT-4)',
+          mcp: 'Remote',
+          tools: 'Predefined',
+          orchestration: 'Threads',
+          description: 'Official API for building AI agents.',
+          links: [{ title: 'Docs', url: 'https://platform.openai.com/' }]
+        },
+        {
+          id: 'fw-2',
+          name: 'LangChain',
+          noCode: '✗',
+          llm: 'Any',
+          mcp: 'Local/Remote',
+          tools: 'Custom',
+          orchestration: 'Manual',
+          description: 'Framework for LLM apps with chains and agents.',
+          links: [{ title: 'LangChain', url: 'https://python.langchain.com/' }]
+        },
+        {
+          id: 'fw-4',
+          name: 'ROS',
+          noCode: '✗',
+          llm: 'Via Packages',
+          mcp: 'Local',
+          tools: 'Hardware',
+          orchestration: 'Nodes',
+          description: 'Industry standard for robot hardware control.',
+          links: [{ title: 'ROS.org', url: 'https://www.ros.org/' }]
+        }
+      ],
+      simulators: [
+        {
+          id: 'sim-1',
+          name: 'Gazebo',
+          category: 'Downloadable',
+          type: 'Traditional',
+          description: 'Powerful 3D physics simulator with ROS integration.',
+          features: ['Physics engines', 'ROS integration'],
+          platforms: ['Linux'],
+          free: true,
+          bestFor: 'Research, ROS',
+          pros: ['Standard', 'Accurate'],
+          cons: ['Steep curve'],
+          links: [{ title: 'Website', url: 'https://gazebosim.org/' }],
+          bookmarked: false,
+          completed: false
+        },
+        {
+          id: 'sim-2',
+          name: 'Webots',
+          category: 'Downloadable',
+          type: 'Traditional',
+          description: 'Professional cross-platform robot simulator.',
+          features: ['Cross-platform', 'Easy setup'],
+          platforms: ['Windows', 'Linux', 'macOS'],
+          free: true,
+          bestFor: 'Education',
+          pros: ['User-friendly'],
+          cons: ['Less accurate physics'],
+          links: [{ title: 'Website', url: 'https://cyberbotics.com/' }],
+          bookmarked: false,
+          completed: false
+        }
+      ],
+      resources: [
+        {
+          id: 'res-1',
+          category: 'Documentation',
+          title: 'ROS Documentation',
+          description: 'Complete reference for Robot Operating System',
+          url: 'https://docs.ros.org/'
+        },
+        {
+          id: 'res-2',
+          category: 'Course',
+          title: 'Coursera - Robotics Specialization',
+          description: 'University of Pennsylvania robotics course series',
+          url: 'https://www.coursera.org/'
+        }
+      ]
+    };
+
+    // --- State Management ---
+    let currentTab = 'definitions';
+    let journalConfidence = 0;
+    let activeFilters = [];
+
+    // Load persisted state
+    function loadState() {
+      const saved = localStorage.getItem('roboticsAppState');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Merge saved completion/bookmark status into contentData
+        for (const cat in contentData) {
+          if(!Array.isArray(contentData[cat])) continue;
+          contentData[cat].forEach(item => {
+            if (parsed[item.id]) {
+              item.bookmarked = parsed[item.id].bookmarked;
+              item.completed = parsed[item.id].completed;
+            }
+          });
+        }
+      }
+    }
+
+    function saveState() {
+      const state = {};
+      for (const cat in contentData) {
+        if(!Array.isArray(contentData[cat])) continue;
+        contentData[cat].forEach(item => {
+          if (item.bookmarked || item.completed) {
+            state[item.id] = { bookmarked: item.bookmarked, completed: item.completed };
+          }
+        });
+      }
+      localStorage.setItem('roboticsAppState', JSON.stringify(state));
+    }
+
+    // --- Core Functions ---
+
+    function switchTab(tabName) {
+      const tabs = document.querySelectorAll('.tab');
+      const sections = document.querySelectorAll('.content-section');
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+      currentTab = tabName;
+      
+      renderContent(tabName);
+    }
+
+    function handleSearch() {
+      renderContent(currentTab);
+    }
+
+    function filterBy(level) {
+      const btn = document.getElementById('filter-' + level);
+      
+      if (activeFilters.includes(level)) {
+        activeFilters = activeFilters.filter(f => f !== level);
+        btn.classList.remove('active');
+      } else {
+        // Exclusive filtering for levels usually makes more sense, but here we toggle
+        // To make it simple: if you click one, it adds to filter. 
+        activeFilters.push(level);
+        btn.classList.add('active');
+      }
+      renderContent(currentTab);
+    }
+
+    function clearFilters() {
+      activeFilters = [];
+      document.querySelectorAll('.filter-buttons .btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('searchInput').value = '';
+      renderContent(currentTab);
+    }
+
+    function toggleBookmark(id) {
+      findAndToggle(id, 'bookmarked');
+      saveState();
+      renderContent(currentTab);
+    }
+
+    function toggleComplete(id) {
+      findAndToggle(id, 'completed');
+      saveState();
+      renderContent(currentTab);
+    }
+
+    function findAndToggle(id, prop) {
+      for (const cat in contentData) {
+        if (Array.isArray(contentData[cat])) {
+          const item = contentData[cat].find(i => i.id === id);
+          if (item) {
+            item[prop] = !item[prop];
+            return;
+          }
+        }
+      }
+    }
+
+    // --- Rendering ---
+
+    function renderContent(tabName) {
+      const container = document.getElementById(tabName + 'Content');
+      const data = contentData[tabName] || [];
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      
+      // Filter Logic
+      const filteredData = Array.isArray(data) ? data.filter(item => {
+        // 1. Check Search Term
+        let matchesSearch = true;
+        if (searchTerm) {
+          const text = (item.title + (item.description || '') + (item.details || '')).toLowerCase();
+          matchesSearch = text.includes(searchTerm);
+        }
+
+        // 2. Check Tags/Filters
+        let matchesFilter = true;
+        if (activeFilters.length > 0 && item.tags) {
+           matchesFilter = activeFilters.some(filter => item.tags.includes(filter));
+        } else if (activeFilters.length > 0 && !item.tags) {
+           matchesFilter = false; // If filters are active but item has no tags
+        }
+
+        return matchesSearch && matchesFilter;
+      }) : data; // If not array (empty), return as is
+
+      if (tabName === 'definitions' || tabName === 'design') {
+        container.innerHTML = filteredData.map(item => `
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">${item.title}</h3>
+              <div class="card-actions">
+                <button class="icon-btn" onclick="toggleBookmark('${item.id}')">${item.bookmarked ? '⭐' : '☆'}</button>
+                <button class="icon-btn" onclick="toggleComplete('${item.id}')">${item.completed ? '✅' : '☐'}</button>
+              </div>
+            </div>
+            <p>${item.description}</p>
+            ${item.details ? `<div style="margin-top: 1rem">${item.details}</div>` : ''}
+            ${item.code ? renderCodeTabs(item.code) : ''}
+            ${item.links && item.links.length > 0 ? renderLinks(item.links) : ''}
+          </div>
+        `).join('');
+      } else if (tabName === 'process') {
+        container.innerHTML = filteredData.map(item => `
+          <div class="step-card">
+            <h3><span class="step-number">${item.step}</span>${item.title}</h3>
+            <h4 style="color: var(--neon-purple); margin: 1rem 0;">${item.subtitle}</h4>
+            <p>${item.description}</p>
+            <div style="margin: 1rem 0;">
+              <strong>Key Components:</strong>
+              <ul>
+                ${item.components.map(c => `<li>${c}</li>`).join('')}
+              </ul>
+            </div>
+            <p><strong>Implementation:</strong> ${item.implementation}</p>
+            ${item.code ? renderCodeTabs(item.code) : ''}
+          </div>
+        `).join('');
+      } else if (tabName === 'frameworks') {
+        // Table view needs simpler filtering logic or re-rendering
+        // For simplicity in this fix, we just render the table rows based on filter
+        container.innerHTML = `
+          <table class="framework-table">
+            <thead>
+              <tr>
+                <th>Framework</th>
+                <th>No-Code</th>
+                <th>LLM</th>
+                <th>MCP</th>
+                <th>Tools</th>
+                <th>Orchestration</th>
+                <th>Links</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredData.map(fw => `
+                <tr>
+                  <td><strong>${fw.name}</strong><br><small>${fw.description}</small></td>
+                  <td>${fw.noCode}</td>
+                  <td>${fw.llm}</td>
+                  <td>${fw.mcp}</td>
+                  <td>${fw.tools}</td>
+                  <td>${fw.orchestration}</td>
+                  <td>${renderLinks(fw.links)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      } else if (tabName === 'simulators') {
+        container.innerHTML = filteredData.map(sim => `
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">${sim.name}</h3>
+              <div class="card-actions">
+                <span style="background: var(--lime-green); color: #000; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: bold;">
+                  ${sim.free === true ? 'FREE' : sim.free || 'PAID'}
+                </span>
+                <button class="icon-btn" onclick="toggleBookmark('${sim.id}')">${sim.bookmarked ? '⭐' : '☆'}</button>
+              </div>
+            </div>
+            <p><strong>Category:</strong> ${sim.category} | <strong>Type:</strong> ${sim.type}</p>
+            <p>${sim.description}</p>
+            <div style="margin: 1rem 0;">
+              <strong>Features:</strong>
+              <ul>
+                ${sim.features.map(f => `<li>${f}</li>`).join('')}
+              </ul>
+            </div>
+            <p><strong>Best For:</strong> ${sim.bestFor}</p>
+            ${renderLinks(sim.links)}
+          </div>
+        `).join('');
+      } else if (tabName === 'resources') {
+        container.innerHTML = filteredData.map(res => `
+          <div class="card">
+            <h3 class="card-title">${res.title}</h3>
+            <p><strong>Category:</strong> ${res.category}</p>
+            <p>${res.description}</p>
+            <a href="${res.url}" target="_blank" class="btn btn-primary" style="display: inline-block; margin-top: 1rem;">Visit Resource →</a>
+          </div>
+        `).join('');
+      } else if (tabName === 'reference') {
+        container.innerHTML = `
+          <div class="card">
+            <h3 class="card-title">How to Build a Smart Robot Helper</h3>
+            <p>Reference graphic showing the 7-step process. Click the thumbnail to view the full diagram.</p>
+            <div style="margin-top: 1rem;">
+                <img 
+                  src='X2Twitter.com_G7h5GvJa8AAK3vF.jpg' 
+                  alt='Robot Building Process' 
+                  class='reference-img' 
+                  style="width: 150px; height: 150px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 2px solid var(--electric-blue);"
+                  onclick="window.open('X2Twitter.com_G7h5GvJa8AAK3vF.jpg', '_blank')" 
+                />
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderLinks(links) {
+      if (!links || links.length === 0) return '';
+      return `<div class="links-grid">
+        ${links.map(link => `<a href="${link.url}" target="_blank" class="link-card">🔗 ${link.title}</a>`).join('')}
+      </div>`;
+    }
+
+    function renderCodeTabs(code) {
+      const languages = Object.keys(code);
+      const id = 'code-' + Math.random().toString(36).substr(2, 9);
+      
+      const buttons = languages.map((lang, i) => `
+        <button class="code-tab ${i === 0 ? 'active' : ''}" 
+                onclick="switchCodeTab('${id}', '${lang}', this)">
+          ${lang.toUpperCase()}
+        </button>
+      `).join('');
+
+      const contentDivs = languages.map((lang, i) => `
+        <div id="${id}-${lang}" class="code-content" style="display: ${i === 0 ? 'block' : 'none'}">
+          <pre>${escapeHtml(code[lang])}</pre>
+        </div>
+      `).join('');
+
+      return `
+        <div class="code-container">
+          <div class="code-tabs">${buttons}</div>
+          ${contentDivs}
+        </div>
+      `;
+    }
+
+    function switchCodeTab(groupId, lang, btn) {
+      // Toggle button classes
+      const tabContainer = btn.parentElement;
+      Array.from(tabContainer.children).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Toggle Content
+      const container = tabContainer.parentElement;
+      const allContent = container.querySelectorAll('.code-content');
+      allContent.forEach(div => div.style.display = 'none');
+      
+      const target = document.getElementById(`${groupId}-${lang}`);
+      if(target) target.style.display = 'block';
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // --- Journal & Progress Functions ---
+
+    function openJournal() {
+      document.getElementById('journalModal').classList.add('active');
+      renderJournalEntries();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function setConfidence(level) {
+      journalConfidence = level;
+      const stars = document.querySelectorAll('#confidenceStars .star');
+      stars.forEach((s, i) => {
+        if (i < level) s.classList.add('active');
+        else s.classList.remove('active');
+      });
+    }
+
+    function saveJournalEntry() {
+      const topic = document.getElementById('journalTopic').value;
+      const time = document.getElementById('journalTime').value;
+      const notes = document.getElementById('journalNotes').value;
+      
+      if (!topic) return alert("Please enter a topic");
+
+      const entry = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        topic,
+        time,
+        confidence: journalConfidence,
+        notes
+      };
+
+      const existing = JSON.parse(localStorage.getItem('roboticsJournal') || '[]');
+      existing.unshift(entry);
+      localStorage.setItem('roboticsJournal', JSON.stringify(existing));
+
+      // Reset Form
+      document.getElementById('journalTopic').value = '';
+      document.getElementById('journalTime').value = '';
+      document.getElementById('journalNotes').value = '';
+      setConfidence(0);
+
+      renderJournalEntries();
+    }
+
+    function renderJournalEntries() {
+      const entries = JSON.parse(localStorage.getItem('roboticsJournal') || '[]');
+      const container = document.getElementById('journalEntries');
+      
+      if (entries.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color: #888;">No entries yet.</p>';
+        return;
+      }
+
+      container.innerHTML = entries.map(e => `
+        <div class="journal-entry">
+          <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
+            <strong>${e.topic}</strong>
+            <span style="font-size:0.8rem; color: #aaa;">${e.date}</span>
+          </div>
+          <p>Time: ${e.time} mins | Confidence: ${'★'.repeat(e.confidence)}${'☆'.repeat(5-e.confidence)}</p>
+          <p style="margin-top:0.5rem; font-style:italic; color:#ccc;">"${e.notes}"</p>
+        </div>
+      `).join('');
+    }
+
+    function showProgress() {
+      document.getElementById('progressModal').classList.add('active');
+      const entries = JSON.parse(localStorage.getItem('roboticsJournal') || '[]');
+      
+      // Calculate Stats
+      const totalTime = entries.reduce((acc, curr) => acc + (parseInt(curr.time)||0), 0);
+      const totalEntries = entries.length;
+      
+      // Calculate Completion
+      let totalItems = 0;
+      let completedItems = 0;
+      for(let cat in contentData) {
+        if(Array.isArray(contentData[cat])) {
+          contentData[cat].forEach(i => {
+             if(i.completed !== undefined) {
+               totalItems++;
+               if(i.completed) completedItems++;
+             }
+          });
+        }
+      }
+      const completionPct = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+
+      document.getElementById('progressContent').innerHTML = `
+        <div style="text-align:center; margin-bottom: 2rem;">
+            <h3>Tutorial Completion</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${completionPct}%">${completionPct}%</div>
+            </div>
+            <p style="margin-top:0.5rem; color:#aaa;">${completedItems} of ${totalItems} items completed</p>
+        </div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="card" style="text-align:center;">
+                <h4 style="color:var(--electric-blue)">Total Study Time</h4>
+                <p style="font-size:2rem; font-weight:bold;">${totalTime} <span style="font-size:1rem;">min</span></p>
+            </div>
+            <div class="card" style="text-align:center;">
+                <h4 style="color:var(--electric-blue)">Journal Entries</h4>
+                <p style="font-size:2rem; font-weight:bold;">${totalEntries}</p>
+            </div>
+        </div>
+      `;
+    }
+
+    // Initialize
+    loadState();
+    renderContent('definitions');
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.classList.remove('active');
+      }
+    }
+  </script>
+</body>
+</html>
