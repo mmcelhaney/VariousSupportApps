@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Chatbot Theory - Interactive Tutorial</title>
+<style>
+/* Reset and Base Styles */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary-blue:#1E3A8A;--medium-blue:#3B82F6;--light-blue:#BFDBFE;--primary-orange:#F97316;--light-orange:#FED7AA;--dark-gray:#1F2937;--medium-gray:#6B7280;--light-gray:#F3F4F6;--white:#FFF;--card-bg:#FFF;--body-bg:#F3F4F6;--text-color:#1F2937}
+body.dark-mode{--body-bg:#111827;--card-bg:#1F2937;--text-color:#F9FAFB;--light-gray:#374151;--medium-gray:#9CA3AF;--dark-gray:#F9FAFB}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--body-bg);color:var(--text-color);transition:all .3s ease;line-height:1.6}
+
+/* Header & Nav */
+header{background:linear-gradient(135deg,var(--primary-blue),var(--medium-blue));color:#fff;padding:25px 40px;box-shadow:0 4px 6px rgba(0,0,0,.1);position:sticky;top:0;z-index:100}
+.header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+h1{font-size:28px;font-weight:700}
+.header-controls{display:flex;gap:10px}
+.header-controls button{background:rgba(255,255,255,.2);color:#fff;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;transition:background .3s}
+.header-controls button:hover{background:rgba(255,255,255,.3)}
+.tab-navigation{background:var(--card-bg);padding:0 40px;display:flex;gap:5px;overflow-x:auto;border-bottom:2px solid var(--light-blue);position:sticky;top:77px;z-index:99}
+.tab{background:none;border:none;padding:18px 22px;font-size:15px;font-weight:500;color:var(--medium-gray);cursor:pointer;border-bottom:3px solid transparent;transition:all .3s;white-space:nowrap}
+.tab:hover{color:var(--primary-blue);background:var(--light-blue)}
+.tab.active{color:var(--primary-blue);border-bottom-color:var(--primary-orange);font-weight:700}
+
+/* Layout & Cards */
+main{max-width:1400px;margin:30px auto;padding:0 40px 40px}
+.tab-header h2{font-size:32px;color:var(--primary-blue);margin-bottom:10px}
+.tab-header p{font-size:16px;color:var(--medium-gray);margin-bottom:20px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}
+.filter-btn{background:var(--card-bg);color:var(--text-color);border:2px solid var(--light-blue);padding:8px 18px;border-radius:20px;cursor:pointer;font-size:14px;transition:all .3s}
+.filter-btn:hover{border-color:var(--primary-orange);background:var(--light-orange)}
+.filter-btn.active{background:var(--primary-orange);color:#fff;border-color:var(--primary-orange)}
+.card{background:var(--card-bg);border-radius:12px;padding:25px;margin-bottom:20px;box-shadow:0 4px 6px rgba(0,0,0,.1);transition:transform .3s,box-shadow .3s}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 15px rgba(0,0,0,.15)}
+.definition-card{border-left:5px solid var(--primary-orange)}
+.platform-card{border-left:5px solid var(--medium-blue)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:15px}
+.card-header h3{font-size:22px;color:var(--primary-blue);margin-bottom:5px}
+.card-actions{display:flex;gap:10px;align-items:center}
+.bookmark-btn{background:none;border:none;font-size:20px;cursor:pointer;filter:grayscale(100%);transition:transform .2s}
+.bookmark-btn:hover{transform:scale(1.2)}
+.bookmark-btn.bookmarked{filter:grayscale(0%)}
+input[type="checkbox"]{width:20px;height:20px;cursor:pointer}
+.category-badge{display:inline-block;background:var(--light-blue);color:var(--primary-blue);padding:4px 12px;border-radius:15px;font-size:12px;font-weight:600;margin-bottom:10px}
+.distinction-box{background:var(--light-orange);border-left:4px solid var(--primary-orange);padding:12px;margin:15px 0;border-radius:6px;font-size:14px}
+
+/* Lists & Links */
+.examples ul{list-style:none;padding-left:0}
+.examples li{margin:6px 0;padding-left:20px;position:relative}
+.examples li:before{content:"→";position:absolute;left:0;color:var(--primary-orange);font-weight:bold}
+.examples a{color:var(--medium-blue);text-decoration:none}
+.examples a:hover{color:var(--primary-orange);text-decoration:underline}
+.definitions-grid,.platforms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:20px;margin-top:20px}
+
+/* Modals */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{background:var(--card-bg);border-radius:12px;padding:30px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:15px;right:15px;background:none;border:none;font-size:28px;cursor:pointer;color:var(--medium-gray);line-height:1}
+.modal-close:hover{color:var(--primary-orange)}
+
+/* Search & Form Elements */
+#searchInput{width:100%;padding:15px;border:2px solid var(--light-blue);border-radius:8px;font-size:16px;margin-bottom:20px;background:var(--card-bg);color:var(--text-color)}
+#searchInput:focus{outline:none;border-color:var(--primary-orange)}
+.search-result{padding:15px;border-bottom:1px solid var(--light-gray);cursor:pointer;transition:background .3s}
+.search-result:hover{background:var(--light-blue)}
+.code-block{background:#282c34;color:#abb2bf;padding:20px;border-radius:8px;overflow-x:auto;font-family:'Courier New',monospace;font-size:13px;line-height:1.6;margin:15px 0}
+.code-header{display:flex;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #3e4451}
+.language-badge{background:var(--primary-orange);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600}
+.copy-btn{background:var(--primary-orange);color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:12px}
+.copy-btn:hover{background:#ea580c}
+.btn-primary{display:inline-block;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;margin:5px;border:none;cursor:pointer;font-size:14px;background:var(--primary-orange);color:#fff}
+.btn-primary:hover{background:#ea580c}
+
+/* Progress & Graphics */
+.progress-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin:30px 0}
+.progress-item{background:var(--card-bg);padding:20px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,.1)}
+.progress-bar{height:12px;background:var(--light-gray);border-radius:10px;overflow:hidden;margin:10px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary-orange),var(--medium-blue));transition:width .5s;border-radius:10px}
+.progress-percent{text-align:right;font-size:14px;font-weight:700;color:var(--primary-orange)}
+.graphics-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-top:20px}
+.graphic-thumbnail{background:var(--card-bg);border-radius:12px;padding:20px;cursor:pointer;box-shadow:0 4px 6px rgba(0,0,0,.1);transition:transform .3s}
+.graphic-thumbnail:hover{transform:translateY(-5px)}
+/* Updated: Container for Image + Fallback */
+.graphic-image-container{height:180px;border-radius:8px;overflow:hidden;background:var(--light-gray);margin-bottom:15px;display:flex;align-items:center;justify-content:center;position:relative;}
+.graphic-img{width:100%;height:100%;object-fit:cover;display:block;}
+/* Fallback style for missing images */
+.graphic-fallback{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--light-blue),var(--light-orange));color:var(--primary-blue);}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--medium-gray)}
+.journal-entry{background:var(--card-bg);padding:20px;border-radius:12px;margin-bottom:15px;border-left:4px solid var(--primary-orange)}
+.journal-meta{display:flex;justify-content:space-between;margin-bottom:10px;font-size:14px;color:var(--medium-gray)}
+
+@media (max-width:768px){
+    header{padding:20px}.header-content{flex-direction:column}.tab-navigation{padding:0 20px}main{padding:0 20px 40px}.definitions-grid,.platforms-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="header-content">
+<h1>🤖 AI Chatbot Theory</h1>
+<div class="header-controls">
+<button id="searchBtn">🔍 Search</button>
+<button id="themeToggle">🌙 Dark</button>
+<button id="progressBtn">📊 Progress</button>
+</div>
+</div>
+</header>
+<nav class="tab-navigation">
+<button class="tab active" data-tab="definitions">Definitions</button>
+<button class="tab" data-tab="how-it-works">How It Works</button>
+<button class="tab" data-tab="use-cases">Use Cases</button>
+<button class="tab" data-tab="tools">Tools</button>
+<button class="tab" data-tab="design">Design</button>
+<button class="tab" data-tab="future">Future</button>
+<button class="tab" data-tab="journal">📓 Journal</button>
+<button class="tab" data-tab="bookmarks">⭐ Favorites</button>
+<button class="tab" data-tab="graphics">📊 Graphics</button>
+</nav>
+<main id="tabContent"></main>
+
+<div id="searchModal" class="modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('searchModal')">×</button>
+<h3 style="margin-bottom:20px;color:var(--primary-blue)">🔍 Search Everything</h3>
+<input type="text" id="searchInput" placeholder="Search for definitions, platforms, concepts...">
+<div id="searchResults"></div>
+</div>
+</div>
+
+<div id="progressModal" class="modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('progressModal')">×</button>
+<h3 style="margin-bottom:20px;color:var(--primary-blue)">📊 Your Learning Progress</h3>
+<div id="progressContent"></div>
+</div>
+</div>
+
+<div id="journalModal" class="modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('journalModal')">×</button>
+<h3 style="margin-bottom:20px;color:var(--primary-blue)">📓 Add Journal Entry</h3>
+<form id="journalForm" onsubmit="addJournalEntry(event)">
+<div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px;font-weight:600">Topics Studied:</label><input type="text" id="journalTopics" required style="width:100%;padding:10px;border:2px solid var(--light-blue);border-radius:6px;background:var(--card-bg);color:var(--text-color)" placeholder="e.g., RAG, LangChain"></div>
+<div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px;font-weight:600">Time (minutes):</label><input type="number" id="journalTime" required style="width:100%;padding:10px;border:2px solid var(--light-blue);border-radius:6px;background:var(--card-bg);color:var(--text-color)" placeholder="30"></div>
+<div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px;font-weight:600">Confidence (1-5): <span id="confidenceValue">3</span></label><input type="range" id="journalConfidence" min="1" max="5" value="3" oninput="document.getElementById('confidenceValue').textContent=this.value" style="width:100%"></div>
+<div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px;font-weight:600">Notes:</label><textarea id="journalNotes" rows="4" style="width:100%;padding:10px;border:2px solid var(--light-blue);border-radius:6px;background:var(--card-bg);color:var(--text-color);resize:vertical" placeholder="What did you learn?"></textarea></div>
+<button type="submit" class="btn-primary" style="width:100%">Save Entry</button>
+</form>
+</div>
+</div>
+
+<div id="graphicModal" class="modal">
+<div class="modal-content" style="max-width:900px; width:95%; text-align:center">
+<button class="modal-close" onclick="closeModal('graphicModal')">×</button>
+<div id="graphicContent"></div>
+</div>
+</div>
+
+<script>
+// --- State Management ---
+const state={currentTab:'definitions',darkMode:false,bookmarks:[],journalEntries:[],progress:{definitions:0,'how-it-works':0,'use-cases':0,tools:0,design:0,future:0},checkedItems:{definitions:[],tools:[]},currentFilter:'all'};
+
+// --- Data: Definitions ---
+const definitions=[
+{id:1,term:"Chatbot",category:"Core Concept",definition:"A conversational software application that simulates human dialogue using natural language processing to understand and respond to user queries.",distinction:"Unlike AI Agents, chatbots are conversational interfaces focused on answering questions. Unlike AI Copilots, they don't work inside other tools.",examples:[{text:"ChatGPT",url:"https://chat.openai.com"},{text:"Claude",url:"https://claude.ai"},{text:"Customer Service Bots",url:"https://www.tidio.com/chatbots/"}],relatedTerms:["AI Agent","AI Copilot","NLP"]},
+{id:2,term:"AI Agent",category:"Core Concept",definition:"An autonomous system that can perceive its environment, reason about goals, use tools, and take actions to achieve objectives without constant human intervention.",distinction:"AI Agents can execute multi-step processes and use external tools. They're proactive rather than reactive like chatbots.",examples:[{text:"AutoGPT",url:"https://github.com/Significant-Gravitas/AutoGPT"},{text:"LangChain Agents",url:"https://python.langchain.com/docs/concepts/agents/"}],relatedTerms:["Chatbot","Agentic AI","Tool Use"]},
+{id:3,term:"AI Copilot",category:"Core Concept",definition:"An AI assistant that works inside existing tools to help users complete tasks efficiently, providing contextual suggestions and automation.",distinction:"Copilots are embedded in workflows (like GitHub Copilot). They assist rather than replace, working alongside humans.",examples:[{text:"GitHub Copilot",url:"https://github.com/features/copilot"},{text:"Microsoft 365 Copilot",url:"https://www.microsoft.com/microsoft-365/copilot"}],relatedTerms:["Chatbot","AI Agent","Code Generation"]},
+{id:4,term:"Natural Language Processing (NLP)",category:"Technical",definition:"A branch of AI that enables computers to understand, interpret, and generate human language in a meaningful way.",examples:[{text:"Hugging Face NLP",url:"https://huggingface.co/docs/transformers/"},{text:"spaCy Library",url:"https://spacy.io/"}],relatedTerms:["NLU","Tokenization"]},
+{id:5,term:"Natural Language Understanding (NLU)",category:"Technical",definition:"A subset of NLP focused on extracting meaning, intent, entities, and context from text to understand what users want.",examples:[{text:"Dialogflow NLU",url:"https://cloud.google.com/dialogflow/docs/concepts/nlu"}],relatedTerms:["NLP","Intent Recognition"]},
+{id:6,term:"Large Language Model (LLM)",category:"Architecture",definition:"A deep learning model trained on massive text data that can understand and generate human-like text, forming the foundation of modern AI chatbots.",examples:[{text:"GPT-4",url:"https://openai.com/gpt-4"},{text:"Claude 4",url:"https://www.anthropic.com/claude"}],relatedTerms:["Transformer","Tokens"]},
+{id:7,term:"Retrieval-Augmented Generation (RAG)",category:"Architecture",definition:"A technique that enhances LLM responses by retrieving relevant information from external knowledge bases before generating answers.",examples:[{text:"RAG Paper",url:"https://arxiv.org/abs/2005.11401"},{text:"LangChain RAG",url:"https://python.langchain.com/docs/use_cases/question_answering/"}],relatedTerms:["Vector Database","Embeddings"]},
+{id:8,term:"Embeddings",category:"Technical",definition:"Numerical representations of text that capture semantic meaning, enabling AI systems to understand similarity between concepts.",examples:[{text:"OpenAI Embeddings",url:"https://platform.openai.com/docs/guides/embeddings"}],relatedTerms:["Vector Database","RAG"]},
+{id:9,term:"Vector Database",category:"Architecture",definition:"A specialized database that stores and retrieves embeddings efficiently, enabling fast semantic search for RAG systems.",examples:[{text:"Pinecone",url:"https://www.pinecone.io/"},{text:"Chroma",url:"https://www.trychroma.com/"}],relatedTerms:["RAG","Embeddings"]},
+{id:10,term:"Intent Recognition",category:"Technical",definition:"The process of determining what a user wants to accomplish from their input - identifying the goal behind their message.",examples:[{text:"Rasa Intent",url:"https://rasa.com/docs/rasa/training-data-format/"}],relatedTerms:["NLU","Entity Extraction"]},
+{id:11,term:"Prompt Engineering",category:"Technical",definition:"The practice of crafting effective instructions for AI models to generate desired outputs.",examples:[{text:"OpenAI Guide",url:"https://platform.openai.com/docs/guides/prompt-engineering"}],relatedTerms:["Few-Shot Learning"]},
+{id:12,term:"Context Window",category:"Technical",definition:"The maximum amount of text (measured in tokens) that an LLM can process at once, determining how much conversation history it can remember.",examples:[{text:"Token Limits",url:"https://help.openai.com/en/articles/4936856-what-are-tokens"}],relatedTerms:["Tokens","LLM"]}
+];
+
+// --- Data: Platforms ---
+const platforms=[
+{id:1,name:"ChatGPT",company:"OpenAI",website:"https://chat.openai.com",logo:"🤖",models:["GPT-4","GPT-4 Turbo"],category:["Chatbot"],pricing:{free:"GPT-4o mini",plus:"$20/month",pro:"$200/month"},features:["Conversational AI","Code generation","Image generation","Advanced Voice Mode","Web browsing","Custom GPTs"],strengths:["Most versatile","Strong creative writing","Extensive plugins","Multimodal"],weaknesses:["Can be verbose","Usage caps on free tier"],bestFor:["General AI assistance","Creative content","Code development"],stats:{weekly:"800M users",share:"59.5%"}},
+{id:2,name:"Claude",company:"Anthropic",website:"https://claude.ai",logo:"🔶",models:["Claude 4","Sonnet 4.5"],category:["Chatbot"],pricing:{free:"Limited",pro:"$20/month"},features:["1M token context","Superior reasoning","Artifacts","Vision capabilities","Code generation","Safety-focused"],strengths:["Best for coding","Long documents","Thoughtful responses","Massive context"],weaknesses:["No image generation","Slower responses"],bestFor:["Complex coding","Document analysis","Technical writing"],stats:{monthly:"35M users",share:"3.2%"}},
+{id:3,name:"Gemini",company:"Google",website:"https://gemini.google.com",logo:"✨",models:["Gemini 2.0 Flash"],category:["Chatbot"],pricing:{free:"Limited",advanced:"$19.99/month"},features:["Google Search integration","Gmail/Docs access","Multimodal","Real-time info","Workspace integration"],strengths:["Google ecosystem","Current information","Fast responses"],weaknesses:["Less creative","Privacy concerns"],bestFor:["Google users","Research","Workspace tasks"],stats:{monthly:"400M users",share:"13.4%"}},
+{id:4,name:"Grok",company:"xAI",website:"https://x.com/i/grok",logo:"⚡",models:["Grok 2"],category:["Chatbot"],pricing:{premium:"$8/month"},features:["X/Twitter data","Real-time trends","Less filtered","Image generation"],strengths:["Social media data","Current events","Unrestricted"],weaknesses:["Requires X Premium","Less sophisticated"],bestFor:["Social trends","X users","Quick lookups"],stats:{monthly:"20M users",share:"2.0%"}},
+{id:5,name:"Perplexity",company:"Perplexity AI",website:"https://www.perplexity.ai",logo:"🔍",models:["Multiple LLMs"],category:["Search"],pricing:{free:"Basic",pro:"$20/month"},features:["AI search","Citations","Real-time web","Multiple sources","File analysis"],strengths:["Best for research","Always cites sources","Fast","Accurate"],weaknesses:["Limited creativity","Less conversational"],bestFor:["Research","Fact-checking","Academic work"],stats:{monthly:"22M users",share:"6.2%"}}
+];  
+
+// --- Data: Graphics ---
+const graphics=[
+{id:1,title:"Chatbot Key Use Cases",desc:"Benefits: 24/7 availability, cost reduction, engagement",filename:"The-Rise-of-AI-Chatbots_-Enhancing-Customer-Support-in-the-Digital-Age-1024x617.jpg"},
+{id:2,title:"RAG Architecture",desc:"LangChain, vector databases, LLMs workflow",filename:"rag-chatbot-prototipo.jpg"},
+{id:3,title:"Chatbot Types",desc:"Rule-Based vs AI-Powered chatbots",filename:"artificial-intelligence-chatbots-infographic.png"},
+{id:4,title:"19 AI Platforms",desc:"Comprehensive comparison matrix",filename:"bmwv0p1gx58d1.png"},
+{id:5,title:"Copilot vs Chatbot vs Agent",desc:"Key distinctions",filename:"ai-chatbot-vs-ai-agent-discover-the-striking-dualities-infographic.png"},
+{id:6,title:"Chatbot vs Agent Comparison",desc:"Definitions and economic potential",filename:"comparison.png"},
+{id:7,title:"AI Chatbot Benefits",desc:"Business and customer benefits",filename:"Chatbot-key-use-cases-1024x674.png"},
+{id:8,title:"Customer Experience Stats",desc:"Adoption and ROI metrics",filename:"Chatbot's role in Customer Experience.png"},
+{id:9,title:"Chatbot UX Guide",desc:"Design considerations",filename:"chatbot ux guide.png"},
+{id:10,title:"Training Process",desc:"6-step optimization guide",filename:"how-to-train-and-optimize-your-ai-chatbot-graphic-for-ai-chatbots-blog.png"},
+{id:11,title:"How Chatbots Work",desc:"6-step operational workflow",filename:"how_does_an_ai_chatbot_work.png"},
+{id:12,title:"2025 Market Study",desc:"Platform rankings and statistics",filename:"AI Chatbots.jpeg"},
+{id:13,title:"Talking About Chatbots",desc:"NLP, NLU, limitations",filename:"talking-about-chatbots.png"},
+{id:14,title:"Future of Chatbots",desc:"Bot types and predictions",filename:"chatbots_finalc.jpg"}
+];
+
+// --- Core Logic ---
+function switchTab(tab){
+    state.currentTab=tab;
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+    renderTabContent(tab);
+}
+
+function renderTabContent(tab){
+    const content=document.getElementById('tabContent');
+    switch(tab){
+        case 'definitions':content.innerHTML=renderDefinitions();break;
+        case 'how-it-works':content.innerHTML=renderHowItWorks();break;
+        case 'use-cases':content.innerHTML=renderUseCases();break;
+        case 'tools':content.innerHTML=renderTools();break;
+        case 'design':content.innerHTML=renderDesign();break;
+        case 'future':content.innerHTML=renderFuture();break;
+        case 'journal':content.innerHTML=renderJournal();break;
+        case 'bookmarks':content.innerHTML=renderBookmarks();break;
+        case 'graphics':content.innerHTML=renderGraphics();break;
+    }
+}
+
+function renderDefinitions(){
+    let html='<div class="tab-header"><h2>📚 Definitions & Technical Terms</h2><p>Brief definitions with hyperlinked examples</p><div class="filters">';
+    ['all','Core Concept','Technical','Architecture'].forEach(f=>{
+        html+=`<button class="filter-btn ${state.currentFilter===f?'active':''}" onclick="filterDefinitions('${f}')">${f}</button>`;
+    });
+    html+='</div></div><div class="definitions-grid">';
+    definitions.filter(d=>state.currentFilter==='all'||d.category===state.currentFilter).forEach(d=>{
+        const isChecked=state.checkedItems.definitions.includes(d.id);
+        const isBookmarked=state.bookmarks.some(b=>b.id===d.id&&b.type==='definition');
+        html+=`<div class="card definition-card">
+        <div class="card-header">
+        <h3>${d.term}</h3>
+        <div class="card-actions">
+        <button class="bookmark-btn ${isBookmarked?'bookmarked':''}" onclick="toggleBookmark('definition',${d.id})">⭐</button>
+        <input type="checkbox" ${isChecked?'checked':''} onchange="toggleChecked('definitions',${d.id})">
+        </div>
+        </div>
+        <span class="category-badge">${d.category}</span>
+        <p>${d.definition}</p>
+        ${d.distinction?`<div class="distinction-box"><strong>Distinction:</strong> ${d.distinction}</div>`:''}
+        <div class="examples"><strong>Examples:</strong><ul>
+        ${d.examples.map(e=>`<li><a href="${e.url}" target="_blank">${e.text}</a></li>`).join('')}
+        </ul></div>
+        <div class="related-terms"><strong>Related:</strong> ${d.relatedTerms.join(', ')}</div>
+        </div>`;
+    });
+    html+='</div>';
+    return html;
+}
+
+function filterDefinitions(filter){
+    state.currentFilter=filter;
+    renderTabContent('definitions');
+}
+
+function renderTools(){
+    let html='<div class="tab-header"><h2>🛠️ AI Platforms & Tools</h2><p>Comprehensive guide to leading AI chatbot platforms</p></div><div class="platforms-grid">';
+    platforms.forEach(p=>{
+        const isChecked=state.checkedItems.tools.includes(p.id);
+        const isBookmarked=state.bookmarks.some(b=>b.id===p.id&&b.type==='platform');
+        html+=`<div class="card platform-card">
+        <div class="card-header">
+        <div><span style="font-size:32px">${p.logo}</span><h3>${p.name}</h3><p style="color:var(--medium-gray)">${p.company}</p></div>
+        <div class="card-actions">
+        <button class="bookmark-btn ${isBookmarked?'bookmarked':''}" onclick="toggleBookmark('platform',${p.id})">⭐</button>
+        <input type="checkbox" ${isChecked?'checked':''} onchange="toggleChecked('tools',${p.id})">
+        </div>
+        </div>
+        <div style="margin:10px 0">${p.category.map(c=>`<span class="category-badge">${c}</span>`).join(' ')}</div>
+        <div style="margin:10px 0"><strong>Models:</strong> ${p.models.join(', ')}</div>
+        <div style="margin:10px 0"><strong>💰 Pricing:</strong><ul style="margin-left:20px">
+        ${Object.entries(p.pricing).map(([k,v])=>`<li><strong>${k}:</strong> ${v}</li>`).join('')}
+        </ul></div>
+        <div style="margin:10px 0"><strong>✨ Features:</strong><ul style="margin-left:20px">
+        ${p.features.map(f=>`<li>${f}</li>`).join('')}
+        </ul></div>
+        <div style="margin:10px 0"><strong>✅ Strengths:</strong><ul style="margin-left:20px">
+        ${p.strengths.map(s=>`<li>${s}</li>`).join('')}
+        </ul></div>
+        <div style="margin:10px 0"><strong>⚠️ Weaknesses:</strong><ul style="margin-left:20px">
+        ${p.weaknesses.map(w=>`<li>${w}</li>`).join('')}
+        </ul></div>
+        <div style="margin:10px 0"><strong>🎯 Best For:</strong><ul style="margin-left:20px">
+        ${p.bestFor.map(b=>`<li>${b}</li>`).join('')}
+        </ul></div>
+        <div style="margin:10px 0"><strong>📊 Statistics:</strong>
+        ${Object.entries(p.stats).map(([k,v])=>`<p>${k}: ${v}</p>`).join('')}
+        </div>
+        <a href="${p.website}" target="_blank" class="btn-primary">Visit Website</a>
+        </div>`;
+    });
+    html+='</div>';
+    return html;
+}
+
+function renderHowItWorks(){
+    return `<div class="tab-header"><h2>⚙️ How AI Chatbots Work</h2><p>Technical processes and architecture</p></div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🔄 Chatbot Operational Workflow</h3>
+    <ol style="margin-left:20px;line-height:2">
+    <li><strong>Processing Inputs:</strong> User input is tokenized and converted into numerical format</li>
+    <li><strong>Understanding Requirements:</strong> NLU extracts intent, entities, and context</li>
+    <li><strong>Integrating Datasets:</strong> Relevant data is retrieved from knowledge bases</li>
+    <li><strong>Generating Response:</strong> LLM creates appropriate answer based on context</li>
+    <li><strong>Repeating Process:</strong> System maintains conversation flow</li>
+    <li><strong>Learning & Improving:</strong> Feedback improves future responses</li>
+    </ol></div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🎯 Training & Optimization</h3>
+    <ol style="margin-left:20px;line-height:2">
+    <li><strong>Define Role & Objectives:</strong> Clearly outline chatbot's purpose and KPIs</li>
+    <li><strong>Identify Target Audience:</strong> Determine who will use it and their goals</li>
+    <li><strong>Select Communication Channels:</strong> Choose deployment platforms</li>
+    <li><strong>Design to Align with Brand:</strong> Create consistent personality and tone</li>
+    <li><strong>Connect to Other Systems:</strong> Integrate with CRM, databases, APIs</li>
+    <li><strong>Deploy for Specific Tasks:</strong> Focus on automatable processes</li>
+    </ol></div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🏗️ RAG Architecture</h3>
+    <p style="margin-bottom:15px">Retrieval-Augmented Generation combines LLMs with external knowledge for accurate, contextual responses.</p>
+    <div style="background:var(--light-blue);padding:20px;border-radius:8px;margin:15px 0">
+    <strong>Components:</strong>
+    <ul style="margin:10px 0 10px 20px">
+    <li><strong>Data Sources:</strong> MySQL, PDFs, Excel, text files</li>
+    <li><strong>LangChain Framework:</strong> Orchestration layer</li>
+    <li><strong>Vector Database:</strong> Stores embeddings (Pinecone, Chroma)</li>
+    <li><strong>LLM:</strong> GPT-4, Claude, Falcon for generation</li>
+    <li><strong>User Interface:</strong> Where users interact</li>
+    </ul>
+    </div>
+    <div class="code-block">
+    <div class="code-header">
+    <span class="language-badge">Python</span>
+    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre># RAG Implementation with LangChain
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.chains import RetrievalQA
+from langchain.llms import OpenAI
+
+# Load documents
+loader = TextLoader("knowledge_base.txt")
+documents = loader.load()
+
+# Split into chunks
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+chunks = splitter.split_documents(documents)
+
+# Create embeddings
+embeddings = OpenAIEmbeddings()
+
+# Store in vector database
+vectorstore = Chroma.from_documents(
+    chunks, 
+    embeddings
+)
+
+# Create retrieval chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=OpenAI(temperature=0),
+    retriever=vectorstore.as_retriever(),
+    return_source_documents=True
+)
+
+# Query
+result = qa_chain({"query": "What is RAG?"})
+print(result["result"])</pre>
+    </div>
+    </div>`;
+}
+
+function renderUseCases(){
+    return `<div class="tab-header"><h2>💼 Use Cases & Benefits</h2><p>Business value and real-world applications</p></div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🎯 Key Benefits</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+    <div style="background:var(--light-blue);padding:20px;border-radius:8px">
+    <h4 style="color:var(--primary-blue)">⏰ 24/7 Availability</h4>
+    <p>Provide round-the-clock customer support without additional staffing costs</p>
+    </div>
+    <div style="background:var(--light-orange);padding:20px;border-radius:8px">
+    <h4 style="color:var(--primary-orange)">💰 Cost Reduction</h4>
+    <p>Save $300K annually on average, cutting 2.5B labor hours globally</p>
+    </div>
+    <div style="background:var(--light-blue);padding:20px;border-radius:8px">
+    <h4 style="color:var(--primary-blue)">📈 Increased Engagement</h4>
+    <p>Interactive experiences keep customers connected to your brand</p>
+    </div>
+    <div style="background:var(--light-orange);padding:20px;border-radius:8px">
+    <h4 style="color:var(--primary-orange)">⚙️ Process Automation</h4>
+    <p>Automate lead generation, scheduling, and routine queries</p>
+    </div>
+    <div style="background:var(--light-blue);padding:20px;border-radius:8px">
+    <h4 style="color:var(--primary-blue)">👥 Handle Multiple Tasks</h4>
+    <p>Serve thousands of customers simultaneously</p>
+    </div>
+    <div style="background:var(--light-orange);padding:20px;border-radius:8px">
+    <h4 style="color:var(--primary-orange)">😊 Improved Satisfaction</h4>
+    <p>Instant responses increase CSAT scores by 20-30%</p>
+    </div>
+    </div></div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🏭 Industry Applications</h3>
+    <div style="margin-top:15px">
+    <h4>Customer Service (37%)</h4>
+    <p>Answering questions, order tracking, troubleshooting</p>
+    <div class="progress-bar"><div class="progress-fill" style="width:37%"></div></div>
+    </div>
+    <div style="margin-top:15px">
+    <h4>Sales (41%)</h4>
+    <p>Lead qualification, product recommendations</p>
+    <div class="progress-bar"><div class="progress-fill" style="width:41%"></div></div>
+    </div>
+    <div style="margin-top:15px">
+    <h4>E-commerce (30%)</h4>
+    <p>Product discovery, personalized shopping</p>
+    <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+    </div>
+    <div style="margin-top:15px">
+    <h4>Healthcare (22%)</h4>
+    <p>Symptom checking, appointment scheduling</p>
+    <div class="progress-bar"><div class="progress-fill" style="width:22%"></div></div>
+    </div>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">📊 2025 Market Statistics</h3>
+    <ul style="margin-left:20px;line-height:2">
+    <li><strong>Market Size:</strong> $10.32B (2025) → $29.5B (2029)</li>
+    <li><strong>Growth Rate:</strong> 23-30% CAGR</li>
+    <li><strong>ChatGPT Users:</strong> 800M weekly, 5.8B monthly visits</li>
+    <li><strong>Global Adoption:</strong> 72% of companies use AI</li>
+    <li><strong>Cost Savings:</strong> $300K average per company annually</li>
+    <li><strong>Conversation Completion:</strong> 70% handled without humans</li>
+    <li><strong>Primary Channel:</strong> 25% of businesses by 2027</li>
+    </ul>
+    </div>`;
+}
+
+function renderDesign(){
+    return `<div class="tab-header"><h2>🎨 Design & UX Guidelines</h2><p>Best practices for chatbot design</p></div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🤖 Artificial Intelligence</h3>
+    <p>Clearly communicate that users are interacting with AI, not humans. Set appropriate expectations.</p>
+    <ul style="margin:15px 0 15px 20px">
+    <li>Use clear bot indicators (avatar, name, disclaimer)</li>
+    <li>Don't trick users into thinking bot is human</li>
+    <li>Be transparent about capabilities</li>
+    <li>Provide easy escalation to humans</li>
+    </ul>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">💬 Conversational Interface</h3>
+    <p>Design natural, human-like conversations that feel intuitive.</p>
+    <ul style="margin:15px 0 15px 20px">
+    <li>Use natural language, not robotic responses</li>
+    <li>Maintain context throughout conversation</li>
+    <li>Ask clarifying questions when needed</li>
+    <li>Provide helpful suggestions and quick replies</li>
+    <li>Break long responses into digestible chunks</li>
+    </ul>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🎯 Personalized Brand Experience</h3>
+    <p>Align chatbot personality with your brand identity.</p>
+    <ul style="margin:15px 0 15px 20px">
+    <li>Match brand voice (formal, casual, playful)</li>
+    <li>Use brand colors and visual elements</li>
+    <li>Incorporate brand values in responses</li>
+    <li>Customize avatar and bot name</li>
+    <li>Maintain consistency across channels</li>
+    </ul>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">📝 Define Your Purpose</h3>
+    <p>Establish clear objectives and scope.</p>
+    <ul style="margin:15px 0 15px 20px">
+    <li>Identify primary use cases and goals</li>
+    <li>Define what bot handles vs escalates</li>
+    <li>Set success metrics (resolution rate, CSAT)</li>
+    <li>Determine target audience needs</li>
+    <li>Establish boundaries and limitations</li>
+    </ul>
+    </div>`;
+}
+
+function renderFuture(){
+    return `<div class="tab-header"><h2>🚀 Future & Trends</h2><p>Emerging technologies and predictions</p></div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🎤 Voice Bots</h3>
+    <p>Voice-to-text and text-to-speech AI for natural spoken interactions.</p>
+    <ul style="margin:15px 0 15px 20px">
+    <li><strong>Examples:</strong> Alexa, Google Assistant, Advanced Voice Mode</li>
+    <li><strong>Impact:</strong> Hands-free, natural conversations</li>
+    <li><strong>Adoption:</strong> Growing in automotive, smart homes, accessibility</li>
+    </ul>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🤝 Hybrid Bots</h3>
+    <p>AI that seamlessly transfers to humans when needed.</p>
+    <ul style="margin:15px 0 15px 20px">
+    <li>Best of both: AI efficiency + human empathy</li>
+    <li>Smooth escalation without frustration</li>
+    <li>Context preservation across handoffs</li>
+    <li>Reduced agent workload</li>
+    </ul>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🎭 Multimodal AI</h3>
+    <p>AI processing multiple content types: text, images, video, audio.</p>
+    <ul style="margin:15px 0 15px 20px">
+    <li><strong>Current:</strong> GPT-4V, Gemini 2.0, Claude vision</li>
+    <li><strong>Future:</strong> Real-time video, 3D objects, AR integration</li>
+    </ul>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">🤖 Agentic AI</h3>
+    <p>Autonomous systems completing complex multi-step tasks.</p>
+    <ul style="margin:15px 0 15px 20px">
+    <li>Tool use and function calling</li>
+    <li>Multi-agent collaboration</li>
+    <li>Continuous learning</li>
+    <li><strong>Impact:</strong> $450B economic value by 2028</li>
+    </ul>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">📅 Timeline Predictions</h3>
+    <div style="margin-top:15px">
+    <h4 style="color:var(--primary-orange)">2025: $10.32B Market</h4>
+    <ul style="margin-left:20px">
+    <li>Mainstream adoption across industries</li>
+    <li>Messaging platform integration</li>
+    <li>Advanced personalization</li>
+    </ul>
+    </div>
+    <div style="margin-top:15px">
+    <h4 style="color:var(--primary-orange)">2026-2028</h4>
+    <ul style="margin-left:20px">
+    <li>AI agents as primary support (25% businesses)</li>
+    <li>Voice-first interfaces mainstream</li>
+    <li>Real-time translation everywhere</li>
+    <li>$450B economic value</li>
+    </ul>
+    </div>
+    <div style="margin-top:15px">
+    <h4 style="color:var(--primary-orange)">2029-2030: $29.5B Market</h4>
+    <ul style="margin-left:20px">
+    <li>Seamless human-AI collaboration</li>
+    <li>Genuine personality and memory</li>
+    <li>AR/VR integration</li>
+    <li>Mature ethical frameworks</li>
+    </ul>
+    </div>
+    </div>
+    <div class="card"><h3 style="color:var(--primary-blue);margin-bottom:15px">⚠️ Challenges</h3>
+    <ul style="margin:15px 0 15px 20px">
+    <li><strong>Ethical AI & Bias:</strong> Ensuring fairness and transparency</li>
+    <li><strong>Privacy & Security:</strong> Protecting user data</li>
+    <li><strong>Hallucinations:</strong> Preventing false information</li>
+    <li><strong>Job Displacement:</strong> Workforce adaptation needed</li>
+    <li><strong>Over-reliance:</strong> Maintaining critical thinking</li>
+    </ul>
+    </div>`;
+}
+
+function renderJournal(){
+    let html='<div class="tab-header"><h2>📓 Learning Journal</h2><p>Track your study sessions and progress</p><button class="btn-primary" onclick="openModal(\'journalModal\')">+ Add Entry</button></div>';
+    if(state.journalEntries.length===0){
+        html+='<div class="empty-state"><div class="empty-state-icon">📝</div><h3>No journal entries yet</h3><p>Click "Add Entry" to start tracking your learning journey!</p></div>';
+    }else{
+        state.journalEntries.forEach((e,i)=>{
+            html+=`<div class="journal-entry">
+            <div class="journal-meta">
+            <span>📅 ${new Date(e.date).toLocaleDateString()}</span>
+            <span>⏱️ ${e.time} min</span>
+            <span>⭐ Confidence: ${e.confidence}/5</span>
+            <button onclick="deleteJournalEntry(${i})" style="background:none;border:none;color:var(--primary-orange);cursor:pointer">🗑️</button>
+            </div>
+            <div><strong>Topics:</strong> ${e.topics}</div>
+            ${e.notes?`<div style="margin-top:10px;color:var(--medium-gray)">${e.notes}</div>`:''}
+            </div>`;
+        });
+        const totalTime=state.journalEntries.reduce((sum,e)=>sum+parseInt(e.time),0);
+        const avgConfidence=(state.journalEntries.reduce((sum,e)=>sum+parseInt(e.confidence),0)/state.journalEntries.length).toFixed(1);
+        html+=`<div class="card" style="background:linear-gradient(135deg,var(--light-blue),var(--light-orange))">
+        <h3 style="color:var(--primary-blue)">📊 Statistics</h3>
+        <p><strong>Total Entries:</strong> ${state.journalEntries.length}</p>
+        <p><strong>Total Time:</strong> ${totalTime} minutes (${(totalTime/60).toFixed(1)} hours)</p>
+        <p><strong>Average Confidence:</strong> ${avgConfidence}/5</p>
+        </div>`;
+    }
+    return html;
+}
+
+function renderBookmarks(){
+    let html='<div class="tab-header"><h2>⭐ Favorites</h2><p>Your bookmarked items</p></div>';
+    if(state.bookmarks.length===0){
+        html+='<div class="empty-state"><div class="empty-state-icon">⭐</div><h3>No favorites yet</h3><p>Click the star icon on any card to bookmark it!</p></div>';
+    }else{
+        state.bookmarks.forEach(b=>{
+            if(b.type==='definition'){
+                const d=definitions.find(def=>def.id===b.id);
+                html+=`<div class="card definition-card">
+                <div class="card-header"><h3>${d.term}</h3>
+                <button class="bookmark-btn bookmarked" onclick="toggleBookmark('definition',${d.id})">⭐</button>
+                </div>
+                <p>${d.definition}</p>
+                </div>`;
+            }else if(b.type==='platform'){
+                const p=platforms.find(plat=>plat.id===b.id);
+                html+=`<div class="card platform-card">
+                <div class="card-header"><h3>${p.logo} ${p.name}</h3>
+                <button class="bookmark-btn bookmarked" onclick="toggleBookmark('platform',${p.id})">⭐</button>
+                </div>
+                <p>${p.company}</p>
+                <a href="${p.website}" target="_blank" class="btn-primary">Visit</a>
+                </div>`;
+            }
+        });
+    }
+    return html;
+}
+
+function renderGraphics(){
+    let html='<div class="tab-header"><h2>📊 Reference Graphics</h2><p>Visual guides and infographics</p></div><div class="graphics-gallery">';
+    graphics.forEach(g=>{
+        html+=`<div class="graphic-thumbnail" onclick="openGraphicModal(${g.id})">
+        <div class="graphic-image-container">
+            <img src="${g.filename}" class="graphic-img" alt="${g.title}" onerror="this.style.display='none';this.parentElement.querySelector('.graphic-fallback').style.display='flex'">
+            <div class="graphic-fallback" style="display:none">
+                <span style="font-size:32px">📊</span>
+                <span style="font-size:10px;margin-top:5px;padding:0 10px;text-align:center">${g.filename}</span>
+            </div>
+        </div>
+        <h4>${g.title}</h4>
+        <p style="font-size:14px;color:var(--medium-gray)">${g.desc}</p>
+        </div>`;
+    });
+    html+='</div>';
+    return html;
+}
+
+function openGraphicModal(id){
+    const g = graphics.find(item => item.id === id);
+    if(!g) return;
+    
+    // Generates an image tag. If image is missing, it shows a large text placeholder instead.
+    const html = `
+        <h3 style="color:var(--primary-blue);margin-bottom:10px">${g.title}</h3>
+        <p style="color:var(--medium-gray);margin-bottom:20px">${g.desc}</p>
+        <div style="background:var(--body-bg);min-height:300px;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+            <img src="${g.filename}" style="max-width:100%;max-height:600px;display:block" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div style="display:none;flex-direction:column;align-items:center;padding:40px;text-align:center;color:var(--medium-gray)">
+                <span style="font-size:60px">🖼️</span>
+                <h4 style="margin:20px 0 10px">Image not found</h4>
+                <p>Ensure <strong>${g.filename}</strong> is in the same folder as this file.</p>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('graphicContent').innerHTML = html;
+    openModal('graphicModal');
+}
+
+// --- Interaction Handlers ---
+function toggleBookmark(type,id){
+    const idx=state.bookmarks.findIndex(b=>b.id===id&&b.type===type);
+    if(idx>-1){
+        state.bookmarks.splice(idx,1);
+    }else{
+        state.bookmarks.push({type,id,date:new Date().toISOString()});
+    }
+    renderTabContent(state.currentTab);
+}
+
+function toggleChecked(category,id){
+    const idx=state.checkedItems[category].indexOf(id);
+    if(idx>-1){
+        state.checkedItems[category].splice(idx,1);
+    }else{
+        state.checkedItems[category].push(id);
+    }
+    updateProgress(category);
+}
+
+function updateProgress(category){
+    let total,checked;
+    if(category==='definitions'){
+        total=definitions.length;
+        checked=state.checkedItems.definitions.length;
+    }else if(category==='tools'){
+        total=platforms.length;
+        checked=state.checkedItems.tools.length;
+    }
+    state.progress[category]=Math.round((checked/total)*100);
+}
+
+function openModal(id){
+    document.getElementById(id).classList.add('active');
+}
+
+function closeModal(id){
+    document.getElementById(id).classList.remove('active');
+}
+
+function handleSearch(){
+    const query=document.getElementById('searchInput').value.toLowerCase();
+    if(!query){
+        document.getElementById('searchResults').innerHTML='<p style="color:var(--medium-gray);text-align:center">Start typing to search...</p>';
+        return;
+    }
+    const results=[];
+    definitions.forEach(d=>{
+        if(d.term.toLowerCase().includes(query)||d.definition.toLowerCase().includes(query)){
+            results.push({type:'Definition',title:d.term,snippet:d.definition.substring(0,100)+'...',tab:'definitions'});
+        }
+    });
+    platforms.forEach(p=>{
+        if(p.name.toLowerCase().includes(query)||p.company.toLowerCase().includes(query)){
+            results.push({type:'Platform',title:p.name,snippet:p.company,tab:'tools'});
+        }
+    });
+    let html='';
+    if(results.length===0){
+        html='<p style="color:var(--medium-gray);text-align:center">No results found</p>';
+    }else{
+        results.forEach(r=>{
+            html+=`<div class="search-result" onclick="closeModal('searchModal');switchTab('${r.tab}')">
+            <div class="search-result-title">${r.title}</div>
+            <div class="search-result-type">${r.type}</div>
+            <div class="search-result-snippet">${r.snippet}</div>
+            </div>`;
+        });
+    }
+    document.getElementById('searchResults').innerHTML=html;
+}
+
+function showProgress(){
+    let html='<div class="progress-overview">';
+    Object.entries(state.progress).forEach(([key,val])=>{
+        html+=`<div class="progress-item">
+        <div class="progress-label">${key}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${val}%"></div></div>
+        <div class="progress-percent">${val}%</div>
+        </div>`;
+    });
+    html+='</div>';
+    const keys = Object.keys(state.progress);
+    const overall = keys.length ? Math.round(Object.values(state.progress).reduce((a,b)=>a+b,0)/keys.length) : 0;
+    
+    html+=`<div class="card" style="text-align:center;background:linear-gradient(135deg,var(--primary-blue),var(--medium-blue));color:#fff">
+    <h2>Overall Progress</h2>
+    <div style="font-size:48px;font-weight:700;margin:20px 0">${overall}%</div>
+    <p>Keep learning to reach 100%!</p>
+    </div>`;
+    document.getElementById('progressContent').innerHTML=html;
+    openModal('progressModal');
+}
+
+function addJournalEntry(e){
+    e.preventDefault();
+    const entry={
+        date:new Date().toISOString(),
+        topics:document.getElementById('journalTopics').value,
+        time:document.getElementById('journalTime').value,
+        confidence:document.getElementById('journalConfidence').value,
+        notes:document.getElementById('journalNotes').value
+    };
+    state.journalEntries.unshift(entry);
+    document.getElementById('journalForm').reset();
+    closeModal('journalModal');
+    switchTab('journal');
+}
+
+function deleteJournalEntry(idx){
+    if(confirm('Delete this journal entry?')){
+        state.journalEntries.splice(idx,1);
+        renderTabContent('journal');
+    }
+}
+
+function copyCode(btn){
+    const code=btn.parentElement.nextElementSibling.textContent;
+    navigator.clipboard.writeText(code).then(()=>{
+        btn.textContent='Copied!';
+        setTimeout(()=>btn.textContent='Copy',2000);
+    });
+}
+
+// --- Event Listeners ---
+document.querySelectorAll('.tab').forEach(btn=>{
+    btn.addEventListener('click',()=>switchTab(btn.dataset.tab));
+});
+
+document.getElementById('themeToggle').addEventListener('click',()=>{
+    state.darkMode=!state.darkMode;
+    document.body.classList.toggle('dark-mode');
+    document.getElementById('themeToggle').textContent=state.darkMode?'☀️ Light':'🌙 Dark';
+});
+
+document.getElementById('searchBtn').addEventListener('click',()=>openModal('searchModal'));
+document.getElementById('searchInput').addEventListener('input',handleSearch);
+document.getElementById('progressBtn').addEventListener('click',showProgress);
+
+document.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key==='k'){
+        e.preventDefault();
+        openModal('searchModal');
+        document.getElementById('searchInput').focus();
+    }
+    if(e.key==='Escape'){
+        closeModal('searchModal');
+        closeModal('progressModal');
+        closeModal('journalModal');
+        closeModal('graphicModal');
+    }
+});
+
+window.addEventListener('click',e=>{
+    if(e.target.classList.contains('modal')){
+        e.target.classList.remove('active');
+    }
+});
+
+// --- Initialization ---
+switchTab('definitions');
+</script>
+</body>
+</html>

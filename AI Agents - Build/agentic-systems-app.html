@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Agentic Systems Guide</title>
+    <style>
+        :root {
+            --primary-purple: #7C3AED;
+            --accent-blue: #3B82F6;
+            --teal: #06B6D4;
+            --orange: #F97316;
+            --dark-bg: #0F172A;
+            --card-bg: #1E293B;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --success: #10B981;
+            --warning: #FBBF24;
+            --error: #EF4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-blue));
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid rgba(124, 58, 237, 0.3);
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-purple) var(--card-bg);
+        }
+
+        .tabs::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .tabs::-webkit-scrollbar-thumb {
+            background-color: var(--primary-purple);
+            border-radius: 3px;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+        
+        .tab:hover {
+            background: rgba(124, 58, 237, 0.1);
+            color: var(--text-primary);
+        }
+        
+        .tab.active {
+            background: var(--primary-purple);
+            color: white;
+        }
+        
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 60vh;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-purple);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
+        }
+        
+        .card h2 {
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .card h3 {
+            color: var(--teal);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .cta-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-blue));
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--teal);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+        }
+        
+        .wizard {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-purple), var(--teal));
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        
+        .wizard-step {
+            display: none;
+        }
+        
+        .wizard-step.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-size: 1.8rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 1rem;
+            background: var(--dark-bg);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            border-color: var(--teal);
+        }
+
+        .input-group input.error,
+        .input-group textarea.error,
+        .input-group select.error {
+            border-color: var(--error);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .input-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--dark-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            background: rgba(124, 58, 237, 0.1);
+        }
+        
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary-purple);
+        }
+        
+        .wizard-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary-purple);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+        
+        .btn-danger:hover {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .code-block {
+            background: var(--dark-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+        
+        .language-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .language-tab {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .language-tab.active {
+            background: var(--primary-purple);
+            color: white;
+        }
+        
+        .code-content {
+            display: none;
+        }
+        
+        .code-content.active {
+            display: block;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--accent-blue);
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .copy-button:hover {
+            background: #2563eb;
+        }
+        
+        pre {
+            margin: 0;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        code {
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 1rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            outline: none;
+        }
+        
+        .search-box:focus {
+            border-color: var(--teal);
+        }
+        
+        .graphics-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .graphic-thumbnail {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .graphic-thumbnail:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-purple);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+            z-index: 10;
+        }
+        
+        .graphic-thumbnail img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: var(--dark-bg);
+        }
+        
+        .graphic-thumbnail h4 {
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: auto;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-purple);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--primary-purple);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-btn.prev {
+            left: 2rem;
+        }
+        
+        .nav-btn.next {
+            right: 2rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: var(--primary-purple);
+            position: sticky;
+            top: 0;
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:hover {
+            background: rgba(124, 58, 237, 0.1);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .badge-beginner {
+            background: var(--success);
+            color: white;
+        }
+        
+        .badge-intermediate {
+            background: var(--warning);
+            color: var(--dark-bg);
+        }
+        
+        .badge-advanced {
+            background: var(--orange);
+            color: white;
+        }
+        
+        .framework-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .framework-card:hover {
+            border-color: var(--primary-purple);
+            transform: translateY(-5px);
+        }
+        
+        .framework-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .framework-name {
+            font-size: 1.5rem;
+            color: var(--teal);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .link-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(124, 58, 237, 0.2);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .link-btn:hover {
+            background: var(--primary-purple);
+        }
+        
+        .pattern-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary-purple);
+        }
+        
+        .pattern-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .pattern-name {
+            font-size: 1.3rem;
+            color: var(--teal);
+        }
+        
+        .pattern-category {
+            padding: 0.25rem 0.75rem;
+            background: var(--primary-purple);
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .used-by {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .bookmark-btn {
+            background: transparent;
+            border: 1px solid var(--primary-purple);
+            color: var(--primary-purple);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .bookmark-btn:hover,
+        .bookmark-btn.bookmarked {
+            background: var(--primary-purple);
+            color: white;
+        }
+        
+        .progress-indicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--primary-purple);
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .progress-percentage {
+            font-size: 1.5rem;
+            color: var(--teal);
+            font-weight: bold;
+        }
+
+        .reset-link {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        
+        .reset-link:hover {
+            color: var(--error);
+        }
+        
+        @media (max-width: 768px) {
+            .tabs {
+                padding: 0.5rem;
+            }
+            
+            .tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                gap: 1.5rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .graphics-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+            
+            .nav-btn.prev {
+                left: 1rem;
+            }
+            
+            .nav-btn.next {
+                right: 1rem;
+            }
+            
+            .close-btn {
+                top: 1rem;
+                right: 1rem;
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Building Agentic Systems Guide</h1>
+        <p>Master AI Agents with RAG, Multimodal Processing & Advanced Tools</p>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" data-tab="home">🏠 Home</button>
+        <button class="tab" data-tab="builder">⭐ Agent Builder</button>
+        <button class="tab" data-tab="fundamentals">📚 Fundamentals</button>
+        <button class="tab" data-tab="patterns">🎨 Design Patterns</button>
+        <button class="tab" data-tab="frameworks">🔧 Frameworks</button>
+        <button class="tab" data-tab="advanced">🚀 Advanced Patterns</button>
+        <button class="tab" data-tab="techstack">💻 Tech Stack</button>
+        <button class="tab" data-tab="best-practices">✅ Best Practices</button>
+        <button class="tab" data-tab="tools">🛠️ Free Tools</button>
+        <button class="tab" data-tab="graphics">🖼️ Reference Graphics</button>
+    </div>
+    
+    <div class="content">
+        <div id="home" class="tab-content active">
+            <div class="hero">
+                <h1>Build Powerful AI Agents</h1>
+                <p>From fundamentals to production-ready agentic systems</p>
+                <button class="cta-button" onclick="openTab('builder')">Start Building Your Agent →</button>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Design Patterns</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Top Frameworks</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">RAG Techniques</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">44</div>
+                    <div class="stat-label">Reference Graphics</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 2rem;">
+                 <button class="btn btn-danger" onclick="resetProgress()">⚠️ Reset All Progress</button>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h2>🎯 Interactive Agent Builder</h2>
+                    <p>Step-by-step wizard that guides you through building your first AI agent. Get personalized recommendations for frameworks, patterns, and tools based on your use case.</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openTab('builder')">Launch Builder</button>
+                </div>
+                
+                <div class="card">
+                    <h2>📚 Master the Fundamentals</h2>
+                    <p>Learn what AI agents are, the 7 pillars of agentic AI, different agent types, and essential concepts to build a strong foundation.</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openTab('fundamentals')">Learn Fundamentals</button>
+                </div>
+                
+                <div class="card">
+                    <h2>🎨 Design Patterns Library</h2>
+                    <p>Explore 6 proven design patterns: ReAct, CodeAct, Multi-Agent, Self-Reflection, Agentic RAG, and Planning. Each with code examples in 5 languages.</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openTab('patterns')">Explore Patterns</button>
+                </div>
+                
+                <div class="card">
+                    <h2>🔧 Framework Comparison</h2>
+                    <p>Deep dive into LangChain, CrewAI, AutoGen, LangGraph and 6 more frameworks. Compare features, see code examples, and choose the right tool.</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openTab('frameworks')">Compare Frameworks</button>
+                </div>
+                
+                <div class="card">
+                    <h2>🚀 Advanced RAG & Multimodal</h2>
+                    <p>Learn 20 different RAG techniques, build multimodal agents, and implement cutting-edge agentic patterns for production systems.</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openTab('advanced')">Go Advanced</button>
+                </div>
+                
+                <div class="card">
+                    <h2>🖼️ 44 Reference Graphics</h2>
+                    <p>Visual guides, architecture diagrams, tech stacks, and infographics to support your learning journey. All clickable and downloadable.</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openTab('graphics')">View Gallery</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="builder" class="tab-content">
+            <div class="wizard">
+                <h1 style="text-align: center; margin-bottom: 2rem;">🤖 Interactive Agent Builder</h1>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">Follow this 4-step process to define your AI agent architecture.</p>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="wizardProgress" style="width: 25%"></div>
+                </div>
+                
+                <div class="wizard-step active" data-step="1">
+                    <div class="card">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Define Agent Purpose & Goals</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Describe what your agent should do: <span style="color:var(--error)">*</span></label>
+                            <textarea id="agentDescription" class="required" placeholder="Example: A sales assistant that qualifies leads, researches prospects, and drafts outreach emails"></textarea>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Who are your target users?</label>
+                            <input type="text" id="targetUsers" placeholder="e.g., Sales teams, Developers, Researchers">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>What problem are you solving?</label>
+                            <input type="text" id="problemSolving" placeholder="e.g., Reduce manual research time, Automate repetitive tasks">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>What deliverables should the agent produce?</label>
+                            <input type="text" id="deliverables" placeholder="e.g., Reports, Emails, Data analysis, Code">
+                        </div>
+                        <div class="error-message" id="step1Error">Please fill in the required description field.</div>
+                    </div>
+                </div>
+                
+                <div class="wizard-step" data-step="2">
+                    <div class="card">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Select Input Sources</div>
+                        </div>
+                        
+                        <p style="margin-bottom: 1rem; color: var(--text-secondary);">What types of data will your agent process?</p>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="text"> Text data
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="voice"> Voice/Audio
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="images"> Images/Video
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="api"> API connections
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="database"> Databases/CRMs
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="realtime"> Real-time data streams
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wizard-step" data-step="3">
+                    <div class="card">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Choose the Right LLM</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Select your LLM provider: <span style="color:var(--error)">*</span></label>
+                            <select id="llmProvider" class="required">
+                                <option value="">-- Select --</option>
+                                <option value="gpt4">GPT-4o (OpenAI) - Best all-around</option>
+                                <option value="claude">Claude Sonnet (Anthropic) - Best reasoning</option>
+                                <option value="gemini">Gemini Pro (Google) - Best multimodal</option>
+                                <option value="llama">Llama 3 (Meta) - Best open-source</option>
+                                <option value="mistral">Mistral (Mistral AI) - Fast & efficient</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Deployment preference:</label>
+                            <select id="deployment">
+                                <option value="hosted">Hosted API (OpenAI, Anthropic, etc.)</option>
+                                <option value="local">Local/Self-hosted</option>
+                                <option value="both">Both options</option>
+                            </select>
+                        </div>
+                        <div class="error-message" id="step3Error">Please select an LLM provider.</div>
+                        
+                        <p style="margin-top: 1rem; padding: 1rem; background: rgba(6, 182, 212, 0.1); border-left: 3px solid var(--teal); border-radius: 4px;">
+                            💡 <strong>Tip:</strong> For most use cases, GPT-4o or Claude Sonnet offer the best balance of performance and cost.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="wizard-step" data-step="4">
+                    <div class="card">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Design Agent Architecture</div>
+                        </div>
+                        
+                        <p style="margin-bottom: 1rem; color: var(--text-secondary);">Select the design pattern that best fits your use case:</p>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="radio" name="pattern" value="react" checked> <strong>ReAct</strong> - General purpose, reason then act
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="pattern" value="codeact"> <strong>CodeAct</strong> - Execute Python code for complex tasks
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="pattern" value="multiagent"> <strong>Multi-Agent</strong> - Multiple specialized agents collaborate
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="pattern" value="reflection"> <strong>Self-Reflection</strong> - Iterative improvement with critique
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="pattern" value="rag"> <strong>Agentic RAG</strong> - Retrieval + reasoning for Q&A
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="pattern" value="planning"> <strong>Planning</strong> - Break goals into steps
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wizard-buttons">
+                    <button class="btn btn-secondary" id="prevBtn" onclick="previousStep()" disabled>← Previous</button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next →</button>
+                </div>
+                
+                <div id="wizardComplete" style="display: none; text-align: center; padding: 3rem;">
+                    <h2 style="color: var(--success); margin-bottom: 1rem;">🎉 Agent Blueprint Complete!</h2>
+                    <p style="margin-bottom: 2rem;">Based on your selections, here are our recommendations:</p>
+                    <div id="recommendations" class="card" style="text-align: left;"></div>
+                    <button class="btn btn-primary" style="margin-top: 2rem;" onclick="downloadBlueprint()">📥 Download Blueprint (.txt)</button>
+                    <button class="btn btn-secondary" style="margin-top: 2rem;" onclick="resetProgress()">🔄 Start Over</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="fundamentals" class="tab-content">
+            <h1 style="margin-bottom: 2rem;">📚 Fundamentals of AI Agents</h1>
+            
+            <div class="card">
+                <h2>What is an AI Agent?</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">An intelligent system that can independently plan, make decisions, execute tasks, and adapt to changes—minimizing human involvement.</p>
+                
+                <h3>The 4 Pillars of Agent Architecture</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h3 style="margin-top: 0;">🧠 LLM (The Brain)</h3>
+                        <p>A powerful model capable of reasoning, planning, and generating step-by-step outputs.</p>
+                        <p><strong>Examples:</strong> GPT-4o, Claude Sonnet 4, Gemini 2.5 Pro, Llama 4</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0;">👁️ Perception (Senses)</h3>
+                        <p>Ability to understand inputs from multiple sources.</p>
+                        <p><strong>Types:</strong> Text, Images, Audio, Video, Chain of Thought</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0;">🛠️ Tools (Hands)</h3>
+                        <p>External capabilities that allow agents to act, fetch data, or control systems.</p>
+                        <p><strong>Examples:</strong> APIs, Vector Stores, Calculators, Web Search, Code execution</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0;">📓 Memory (Notebook)</h3>
+                        <p>Storage for past interactions and learnings.</p>
+                        <p><strong>Types:</strong> Short-term (session context) and Long-term (vector DBs, SQL, file store)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Types of AI Agents</h2>
+                
+                <div class="pattern-card" style="margin-bottom: 1.5rem;">
+                    <h3 style="margin-top: 0;">1. Self-Directed AI Agents</h3>
+                    <p>Fully self-directed systems capable of making decisions and executing actions without human input.</p>
+                    <p><strong>Workflow:</strong> Define goal → Perceive environment → Plan next actions → Execute tasks via APIs/tools → Observe and learn from results → Self-correct and improve</p>
+                </div>
+                
+                <div class="pattern-card" style="margin-bottom: 1.5rem;">
+                    <h3 style="margin-top: 0;">2. Collaborative Multi-Agent Systems</h3>
+                    <p>Multiple agents working together to solve complex tasks through communication and coordination.</p>
+                    <p><strong>Workflow:</strong> Assign roles to agents → Share context and data → Divide and parallelize sub-tasks → Exchange results and feedback → Merge outcomes → Produce optimized final output</p>
+                </div>
+                
+                <div class="pattern-card" style="margin-bottom: 1.5rem;">
+                    <h3 style="margin-top: 0;">3. Cognitive AI Agents</h3>
+                    <p>Agents that simulate human-like reasoning using memory, logic, and contextual understanding.</p>
+                    <p><strong>Workflow:</strong> Perceive input → Retrieve relevant memory/context → Reason and infer → Generate responses → Evaluate correctness → Store learnings for future tasks</p>
+                </div>
+                
+                <div class="pattern-card" style="margin-bottom: 1.5rem;">
+                    <h3 style="margin-top: 0;">4. Tool-Augmented AI Agents</h3>
+                    <p>Agents enhanced by external tools, APIs, and databases for extended capabilities.</p>
+                    <p><strong>Workflow:</strong> Receive task → Identify required tools → Connect via API or plugin → Fetch or process external data → Validate results → Return enriched response</p>
+                </div>
+                
+                <div class="pattern-card">
+                    <h3 style="margin-top: 0;">5. Reflective (Self-Improving) Agents</h3>
+                    <p>Agents that continuously learn from feedback and refine their own performance.</p>
+                    <p><strong>Workflow:</strong> Execute task → Analyze outcome → Identify improvement opportunities → Adjust reasoning or planning → Update memory and models → Improve accuracy over time</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>7 Pillars of Agentic AI</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3 style="margin-top: 0; color: var(--orange);">1. Autonomy</h3>
+                        <p>Agents operate independently & initiate actions without human input.</p>
+                        <p><strong>Tools:</strong> AutoGen, CrewAI, LangGraph, OpenAgents</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0; color: var(--warning);">2. Goal-Directed Planning</h3>
+                        <p>Agents decompose objectives into tasks & adapt plans to complete them.</p>
+                        <p><strong>Tools:</strong> AutoGPT, BabyAGI, ReAct, LangChain</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0; color: var(--accent-blue);">3. Communication & Collaboration</h3>
+                        <p>Agents interact with other agents or humans to complete shared tasks.</p>
+                        <p><strong>Tools:</strong> AutoGen, CrewAI, LangGraph, ChatDev</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0; color: var(--primary-purple);">4. Reasoning & Decision Making</h3>
+                        <p>Agents apply logic & contextual understanding to make smart decisions.</p>
+                        <p><strong>Tools:</strong> GPT-4o, Claude 3 Opus, Mistral, Chain-of-Thought</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0; color: var(--warning);">5. Tool Use & Environment Interaction</h3>
+                        <p>Agents use tools, APIs, browsers, and code to complete tasks.</p>
+                        <p><strong>Tools:</strong> LangChain Toolkits, Function Calling, BrowserPilot</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0; color: var(--teal);">6. Memory & Learning</h3>
+                        <p>Agents store and recall past events, context, and knowledge.</p>
+                        <p><strong>Tools:</strong> LangChain Memory, MemGPT, Pinecone, ChromaDB</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top: 0; color: var(--success);">7. Safety, Alignment & Evaluation</h3>
+                        <p>Agents behave ethically, reliably, and within defined boundaries.</p>
+                        <p><strong>Tools:</strong> Guardrails AI, Constitutional AI, TruLens</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="patterns" class="tab-content">
+            <h1 style="margin-bottom: 2rem;">🎨 Design Patterns for Agentic AI</h1>
+            
+            <input type="text" class="search-box" placeholder="🔍 Search patterns..." onkeyup="searchPatterns(this.value)">
+            
+            <div id="patternsList">
+                <div class="pattern-card" style="margin-bottom: 2rem;">
+                    <div class="pattern-header">
+                        <h2 class="pattern-name">ReAct Agent</h2>
+                        <span class="pattern-category">Single-Agent</span>
+                    </div>
+                    <p class="used-by">Used by: Most AI Agent Products</p>
+                    <p>A reasoning and acting framework where an agent alternates between reasoning (using LLMs) and acting (using tools like Google or email).</p>
+                    <p style="margin-top: 1rem;"><strong>When to use:</strong> General purpose tasks requiring flexible decision-making and tool use</p>
+                    
+                    <div class="code-block" style="margin-top: 1.5rem;">
+                        <div class="language-tabs">
+                            <button class="language-tab active" onclick="switchLanguage(this, 'react-python')">Python</button>
+                            <button class="language-tab" onclick="switchLanguage(this, 'react-javascript')">JavaScript</button>
+                            <button class="language-tab" onclick="switchLanguage(this, 'react-go')">Go</button>
+                        </div>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <div class="code-content active" id="react-python">
+                            <pre><code>from langchain.agents import create_react_agent
+from langchain_openai import ChatOpenAI
+from langchain.tools import WikipediaQueryRun
+
+llm = ChatOpenAI(model="gpt-4o")
+tools = [WikipediaQueryRun()]
+
+agent = create_react_agent(
+    llm=llm,
+    tools=tools,
+    prompt="You are a helpful research assistant"
+)
+
+result = agent.invoke({"input": "What is quantum computing?"})</code></pre>
+                        </div>
+                        <div class="code-content" id="react-javascript">
+                            <pre><code>import { ReActAgent } from "@langchain/agents";
+import { ChatOpenAI } from "@langchain/openai";
+
+const model = new ChatOpenAI({ model: "gpt-4o" });
+const agent = new ReActAgent({ model, tools: [] });
+
+const result = await agent.invoke({
+  input: "What is quantum computing?"
+});</code></pre>
+                        </div>
+                        <div class="code-content" id="react-go">
+                            <pre><code>package main
+
+import (
+    "github.com/tmc/langchaingo/agents"
+    "github.com/tmc/langchaingo/llms/openai"
+)
+
+func main() {
+    llm := openai.New()
+    agent := agents.NewReActAgent(llm, tools)
+    result := agent.Run("What is quantum computing?")
+}</code></pre>
+                        </div>
+                    </div>
+                    <button class="bookmark-btn" onclick="toggleBookmark('react')">🔖 Bookmark</button>
+                </div>
+                
+                <div class="pattern-card" style="margin-bottom: 2rem;">
+                    <div class="pattern-header">
+                        <h2 class="pattern-name">Multi-Agent Workflow</h2>
+                        <span class="pattern-category">Collaborative</span>
+                    </div>
+                    <p class="used-by">Used by: Gemini Deep Research</p>
+                    <p>A collaborative system where multiple specialized agents work together to build a comprehensive output with greater precision than single architectures.</p>
+                    <p style="margin-top: 1rem;"><strong>When to use:</strong> Complex tasks requiring specialized expertise, parallel processing</p>
+                    
+                    <div class="code-block" style="margin-top: 1.5rem;">
+                        <div class="language-tabs">
+                            <button class="language-tab active" onclick="switchLanguage(this, 'multi-python')">Python</button>
+                        </div>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <div class="code-content active" id="multi-python">
+                            <pre><code>from crewai import Agent, Task, Crew
+
+researcher = Agent(
+    role='Researcher',
+    goal='Gather comprehensive information',
+    tools=[search_tool]
+)
+
+analyst = Agent(
+    role='Data Analyst',
+    goal='Analyze and synthesize findings',
+    tools=[analysis_tool]
+)
+
+crew = Crew(
+    agents=[researcher, analyst],
+    tasks=[research_task, analysis_task]
+)
+
+result = crew.kickoff()</code></pre>
+                        </div>
+                    </div>
+                    <button class="bookmark-btn" onclick="toggleBookmark('multiagent')">🔖 Bookmark</button>
+                </div>
+                
+                <div class="pattern-card" style="margin-bottom: 2rem;">
+                    <div class="pattern-header">
+                        <h2 class="pattern-name">Agentic RAG</h2>
+                        <span class="pattern-category">Advanced RAG</span>
+                    </div>
+                    <p class="used-by">Used by: Perplexity</p>
+                    <p>Agentic RAG involves AI agents retrieving and evaluating relevant data to generate context-aware and well reasoned output using memory and tools.</p>
+                    <p style="margin-top: 1rem;"><strong>When to use:</strong> Question answering with citations, research tasks, fact-checking</p>
+                    
+                    <div class="code-block" style="margin-top: 1.5rem;">
+                        <div class="language-tabs">
+                            <button class="language-tab active" onclick="switchLanguage(this, 'rag-python')">Python</button>
+                        </div>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <div class="code-content active" id="rag-python">
+                            <pre><code>from langchain.agents import create_agent
+from langchain.tools.retriever import create_retriever_tool
+
+retriever_tool = create_retriever_tool(
+    retriever=vector_store.as_retriever(),
+    name="knowledge_base",
+    description="Search the knowledge base"
+)
+
+planner = create_agent(llm, [retriever_tool])
+
+result = planner.invoke({
+    "input": "Compare quantum computing approaches"
+})</code></pre>
+                        </div>
+                    </div>
+                    <button class="bookmark-btn" onclick="toggleBookmark('agenticrag')">🔖 Bookmark</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="frameworks" class="tab-content">
+            <h1 style="margin-bottom: 2rem;">🔧 Top Agent Frameworks</h1>
+            
+            <input type="text" class="search-box" placeholder="🔍 Search frameworks..." onkeyup="searchFrameworks(this.value)">
+            
+            <h2 style="margin: 2rem 0 1rem 0;">Featured Frameworks</h2>
+            <div id="frameworksList">
+                <div class="framework-card" style="margin-bottom: 2rem;">
+                    <div class="framework-header">
+                        <div>
+                            <h2 class="framework-name">LangChain</h2>
+                            <span class="badge badge-intermediate">Intermediate</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Modular framework to build custom LLM agents using reusable components</p>
+                    <p><strong>Best For:</strong> Building complex, multi-turn conversational agents using LLMs and custom tools</p>
+                    <p><strong>Languages:</strong> Python, JavaScript | <strong>Stars:</strong> 90k+</p>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Key Features:</h4>
+                    <ul class="feature-list">
+                        <li>Agent executors</li>
+                        <li>Memory modules</li>
+                        <li>Tool integration</li>
+                        <li>Built-in templates</li>
+                    </ul>
+                    
+                    <div class="links">
+                        <a href="https://python.langchain.com" target="_blank" class="link-btn">📖 Docs</a>
+                        <a href="https://github.com/langchain-ai/langchain" target="_blank" class="link-btn">💻 GitHub</a>
+                        <a href="https://youtube.com/c/langchain" target="_blank" class="link-btn">📺 Tutorials</a>
+                    </div>
+                </div>
+                
+                <div class="framework-card" style="margin-bottom: 2rem;">
+                    <div class="framework-header">
+                        <div>
+                            <h2 class="framework-name">CrewAI</h2>
+                            <span class="badge badge-beginner">Beginner</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Multi-agent system with role assignment and task coordination</p>
+                    <p><strong>Best For:</strong> Teams and creative enterprises, managing agents with specialized roles</p>
+                    <p><strong>Languages:</strong> Python | <strong>Pricing:</strong> Free + Enterprise</p>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Key Features:</h4>
+                    <ul class="feature-list">
+                        <li>Role distribution</li>
+                        <li>Agent teamwork</li>
+                        <li>Task dependencies</li>
+                        <li>Sequential/hierarchical processes</li>
+                    </ul>
+                    
+                    <div class="links">
+                        <a href="https://docs.crewai.com" target="_blank" class="link-btn">📖 Docs</a>
+                        <a href="https://github.com/crewAIInc/crewAI" target="_blank" class="link-btn">💻 GitHub</a>
+                        <a href="https://learn.crewai.com" target="_blank" class="link-btn">🎓 Learn</a>
+                    </div>
+                </div>
+                
+                <div class="framework-card" style="margin-bottom: 2rem;">
+                    <div class="framework-header">
+                        <div>
+                            <h2 class="framework-name">AutoGen (Microsoft)</h2>
+                            <span class="badge badge-advanced">Advanced</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Event-driven multi-agent framework for distributed systems</p>
+                    <p><strong>Best For:</strong> Experimental framework creating fully autonomous agents</p>
+                    <p><strong>Languages:</strong> Python, .NET | <strong>Pricing:</strong> Free (OSS)</p>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Key Features:</h4>
+                    <ul class="feature-list">
+                        <li>Asynchronous messaging</li>
+                        <li>Cross-language support</li>
+                        <li>Modular architecture</li>
+                        <li>Extensible with plugins</li>
+                    </ul>
+                    
+                    <div class="links">
+                        <a href="https://microsoft.github.io/autogen" target="_blank" class="link-btn">📖 Docs</a>
+                        <a href="https://github.com/microsoft/autogen" target="_blank" class="link-btn">💻 GitHub</a>
+                    </div>
+                </div>
+                
+                <div class="framework-card" style="margin-bottom: 2rem;">
+                    <div class="framework-header">
+                        <div>
+                            <h2 class="framework-name">LangGraph</h2>
+                            <span class="badge badge-intermediate">Intermediate</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Graph-based execution model for reactive stateful flows</p>
+                    <p><strong>Best For:</strong> Excellent for memory and long-heavy logic, complex multi-step workflows</p>
+                    <p><strong>Languages:</strong> Python, JavaScript | <strong>Pricing:</strong> Free + LangSmith</p>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Key Features:</h4>
+                    <ul class="feature-list">
+                        <li>Node-based task flow</li>
+                        <li>Cycles and retries</li>
+                        <li>Built-in persistence</li>
+                        <li>Human-in-the-loop</li>
+                    </ul>
+                    
+                    <div class="links">
+                        <a href="https://langchain-ai.github.io/langgraph" target="_blank" class="link-btn">📖 Docs</a>
+                        <a href="https://github.com/langchain-ai/langgraph" target="_blank" class="link-btn">💻 GitHub</a>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 style="margin: 3rem 0 1rem 0;">Framework Comparison Matrix</h2>
+            <div style="overflow-x: auto;">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Framework</th>
+                            <th>No-Code</th>
+                            <th>LLM Support</th>
+                            <th>MCP</th>
+                            <th>Tools</th>
+                            <th>Orchestration</th>
+                            <th>Best Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>LangChain</strong></td>
+                            <td>❌</td>
+                            <td>Remote</td>
+                            <td>✅</td>
+                            <td>Predefined (web, file, code)</td>
+                            <td>Tool-calling only</td>
+                            <td>Complex workflows with data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CrewAI</strong></td>
+                            <td>❌</td>
+                            <td>Remote</td>
+                            <td>✅</td>
+                            <td>Predefined (search, vision)</td>
+                            <td>Threads</td>
+                            <td>Agent teams with structure</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AutoGen</strong></td>
+                            <td>❌</td>
+                            <td>Remote</td>
+                            <td>❌</td>
+                            <td>Predefined</td>
+                            <td>Flow-based, native A2A</td>
+                            <td>Programming chaining</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LangGraph</strong></td>
+                            <td>❌</td>
+                            <td>Local, Remote</td>
+                            <td>✅</td>
+                            <td>LangChain Functions</td>
+                            <td>Graph (DAG)</td>
+                            <td>Visual agent chaining</td>
+                        </tr>
+                        <tr>
+                            <td><strong>n8n</strong></td>
+                            <td>✅</td>
+                            <td>Local, Remote</td>
+                            <td>✅</td>
+                            <td>100+ integrations</td>
+                            <td>Workflows, sub-workflows</td>
+                            <td>Multi-turn LLM planning tasks</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Make</strong></td>
+                            <td>✅</td>
+                            <td>Limited</td>
+                            <td>⚠️</td>
+                            <td>100+ integrations</td>
+                            <td>Scenarios, sub-scenarios</td>
+                            <td>Task automation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="graphics" class="tab-content">
+            <h1 style="margin-bottom: 2rem;">🖼️ Reference Graphics Gallery</h1>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">Click any graphic to view full size. Use arrow keys or buttons to navigate.</p>
+            
+            <input type="text" class="search-box" placeholder="🔍 Search graphics..." onkeyup="searchGraphics(this.value)">
+            
+            <div class="graphics-gallery" id="graphicsGallery">
+                </div>
+        </div>
+        
+        <div id="advanced" class="tab-content">
+            <h1 style="margin-bottom: 2rem;">🚀 Advanced Patterns: RAG & Multimodal</h1>
+            <div class="card">
+                <h2>RAG vs Agentic RAG</h2>
+                <p>Traditional RAG retrieves documents once and generates a response. Agentic RAG uses multiple specialized agents (Planning, Retrieval, Generator, Judge) that can iterate and improve results.</p>
+            </div>
+            <div class="card">
+                <h2>20 Different RAG Techniques</h2>
+                <p>Standard RAG, Corrective RAG, Speculative RAG, Fusion RAG, Agentic RAG, Self RAG, Interactive RAG, Contextual RAG, Multi-Source RAG, Hierarchical RAG, and more...</p>
+            </div>
+            <div class="card">
+                <h2>Multimodal Agents</h2>
+                <p>Build agents that process text, images, audio, and video using Vision Language Models (VLMs) like GPT-4V, Gemini, and Claude 3.5</p>
+            </div>
+        </div>
+        
+        <div id="techstack" class="tab-content">
+            <h1 style="margin-bottom: 2rem;">💻 Agentic AI Tech Stack</h1>
+            <div class="card"><h2>Layer 1: Deployment & Infrastructure</h2><p>Groq, AWS, Together.ai, Baseten, Modal, Fireworks AI, Replicate, Google Cloud</p></div>
+            <div class="card"><h2>Layer 2: Evaluation & Monitoring</h2><p>LangSmith, MLflow, Weights & Biases, Deepchecks, Fairlearn, Holistic AI</p></div>
+            <div class="card"><h2>Layer 3: Foundation Models</h2><p>Claude 4, GPT-4o, Gemini 2.5 Pro, Llama 4, Mistral AI, Cohere</p></div>
+            <div class="card"><h2>Layer 4: Orchestration Frameworks</h2><p>LangChain, DSPy, AutoGen, Adalflow, LlamaIndex, Haystack, LiteLLM, Dify</p></div>
+            <div class="card"><h2>Layer 5: Vector Databases</h2><p>Milvus, Qdrant, Redis, PGVector, Chroma, Pinecone, Weaviate, Vespa</p></div>
+            <div class="card"><h2>Layer 6: Embedding Models</h2><p>Voyage AI, NOMIC, FastText, OpenAI, spaCy, Cohere</p></div>
+            <div class="card"><h2>Layer 7: Data Ingestion</h2><p>Scrapy, Docling, BeautifulSoup, Firecrawl, LlamaParse, Amazon Textract</p></div>
+            <div class="card"><h2>Layer 8: Memory & Context</h2><p>Letta, Mem0, Zep, Chroma, Cognee, LangChain Memory, LlamaIndex</p></div>
+        </div>
+        
+        <div id="best-practices" class="tab-content">
+            <h1 style="margin-bottom: 2rem;">✅ Best Practices & Common Mistakes</h1>
+            <div class="card">
+                <h2>10 Mistakes to Avoid</h2>
+                <ol style="padding-left: 1.5rem;">
+                    <li>Skipping clear goal definition → Agent handles random tasks</li>
+                    <li>Poor prompt experience → Clunky, confusing agent</li>
+                    <li>No integration with external tools → Limited usefulness</li>
+                    <li>Not using a vector database → Agent doesn't recall</li>
+                    <li>Not using a database → Agent starts fresh every time</li>
+                    <li>Overloading with too many tools → Too much autonomy</li>
+                    <li>Foregoing modular design → Difficult to scale</li>
+                    <li>Ignoring evaluation metrics → Can't measure performance</li>
+                    <li>No feedback loop → Agent never improves</li>
+                    <li>Overlooking guardrails → Harmful outputs</li>
+                </ol>
+            </div>
+            <div class="card">
+                <h2>Model Selection Guide</h2>
+                <p>Use non-reasoning LLMs for planning by default. Provide clear tools. Test prompts with different models. Balance cost, speed, and task accuracy.</p>
+            </div>
+        </div>
+        
+        <div id="tools" class="tab-content">
+            <h1 style="margin-bottom: 2rem;">🛠️ Free Useful AI Tools</h1>
+            <div class="grid">
+                <div class="card"><h3>Chatbot I</h3><p>ChatGPT, Bard, Bing</p></div>
+                <div class="card"><h3>Chatbot II</h3><p>Forefront, Poe, Perplexity</p></div>
+                <div class="card"><h3>Design</h3><p>Adobe Firefly, Bing, Microsoft Designer</p></div>
+                <div class="card"><h3>Video</h3><p>Capcut, Descript, Visla.us</p></div>
+                <div class="card"><h3>Content</h3><p>Opus Clip, Cohesive, Copy.ai</p></div>
+                <div class="card"><h3>Presentation</h3><p>Tome, Decktopus, Gamma</p></div>
+                <div class="card"><h3>Productivity</h3><p>Saga.so, Taskade, Kickresume</p></div>
+                <div class="card"><h3>Code</h3><p>Codeium, AskCodi, CodeWhisperer</p></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="graphicModal">
+        <button class="close-btn" onclick="closeModal()">×</button>
+        <button class="nav-btn prev" onclick="navigateGraphic(-1)">‹</button>
+        <img class="modal-content" id="modalImage" src="" alt="">
+        <button class="nav-btn next" onclick="navigateGraphic(1)">›</button>
+    </div>
+    
+    <div class="progress-indicator" id="progressIndicator" style="display: none;">
+        <div class="progress-text">Your Progress</div>
+        <div class="progress-percentage">0%</div>
+        <span class="reset-link" onclick="resetProgress()">reset</span>
+    </div>
+    
+    <script>
+        // --- App State ---
+        let currentGraphicIndex = 0;
+        let currentWizardStep = 1;
+        const totalWizardSteps = 4;
+        let bookmarkedItems = [];
+
+        // UPDATED GRAPHICS DATA FROM CSV
+        const graphicsData = [
+            { Title: "Supercharge Your Workflow with Multi-Agents", Category: "General", filename: "20250928_173025.jpg" },
+            { Title: "How to Build an AI Agent", Category: "Guides", filename: "20251009_011445.jpg" },
+            { Title: "How to Build an AI Agent", Category: "Guides", filename: "20251017_201405.jpg" },
+            { Title: "Agenic AI Tech Stack", Category: "Frameworks", filename: "20251019_210203.jpg" },
+            { Title: "The Ultimate Tool Stack For AI Agents", Category: "Frameworks", filename: "20251026_162619.jpg" },
+            { Title: "What is an AI Agent?", Category: "General", filename: "20251027_003812.jpg" },
+            { Title: "Top 6 Agentic AI Design Patterns", Category: "Patterns", filename: "20251107_215310.jpg" },
+            { Title: "Build AI Agents from Scratch", Category: "Guides", filename: "20251112_105504.jpg" },
+            { Title: "13 Practical Steps for Creating AN AI Agent", Category: "Guides", filename: "20251112_112452.jpg" },
+            { Title: "AI Agents For Everything", Category: "General", filename: "20251112_175657.jpg" },
+            { Title: "6 Stage of AI Agent Development", Category: "General", filename: "20251112_180439.jpg" },
+            { Title: "How to Build Agenic AI Systems", Category: "Guides", filename: "20251118_224622.jpg" },
+            { Title: "Use this prompt to build your first AI Agent for content creation", Category: "Guides", filename: "20251125_131835.jpg" },
+            { Title: "Agentic AI Terminologies", Category: "Concepts", filename: "20251127_210551.jpg" },
+            { Title: "How AI Agents Use Memory Systems", Category: "General", filename: "20251128_112536.jpg" },
+            { Title: "How to Build Multimodal AI Agents", Category: "Guides", filename: "20251129_194025.jpg" },
+            { Title: "RAG Developer's Stack", Category: "Architecture", filename: "20251129_195843.jpg" },
+            { Title: "How to Build AI Agents from Scratch", Category: "Guides", filename: "20251130_173206.jpg" },
+            { Title: "Agenic Search Workflow", Category: "General", filename: "20251203_171732.jpg" },
+            { Title: "Top 4 Agenic Design Patterns", Category: "Patterns", filename: "20251205_082334.jpg" },
+            { Title: "Steps to Build Your First AI Agent", Category: "Guides", filename: "20251207_125349.jpg" },
+            { Title: "Top 6 Design Patterns for Agenic AI", Category: "Patterns", filename: "20251209_000730.jpg" },
+            { Title: "Top 5 Types of AI Agents", Category: "Concepts", filename: "20251210_092332.jpg" },
+            { Title: "7 Pillars of Agenic AI Systems", Category: "Concepts", filename: "20251210_092512.jpg" },
+            { Title: "RAG vs Agenic RAG", Category: "Architecture", filename: "20251212_141905.jpg" },
+            { Title: "AGENT SKILLS", Category: "General", filename: "20251212_192405.jpg" },
+            { Title: "Top 4 Agent Frameworks Powering AI Agents in 2025-26", Category: "Frameworks", filename: "c401-c8e4-4f6b-982a-3a664d9608e4.gif" },
+            { Title: "5 AI AGENTS", Category: "General", filename: "G0VoV7iWgAAxfsy.jpg" },
+            { Title: "Free Useful AI Tools", Category: "Frameworks", filename: "GfitKlQXgAAfQdO.jpg" },
+            { Title: "Function Calling & MCP for AI Agents", Category: "General", filename: "GtSFHw6agAAv8vQ.png" },
+            { Title: "How to Build an AI Agent", Category: "Guides", filename: "GttbPqoXQAEn25j.png" },
+            { Title: "An AI Applicaton Stack for Building RAG Apps", Category: "Architecture", filename: "GtVj9ZLbMAYckvf.jpg" },
+            { Title: "Top 8 AI Agent Frameworks & Tools", Category: "Frameworks", filename: "GuE_IbfXkAAjZd4.png" },
+            { Title: "RAG vs Agenic RAG", Category: "Architecture", filename: "GuYi1KbbEAAhlSP.jpg" },
+            { Title: "20 Different Types of RAG Techniques", Category: "Architecture", filename: "GvjKNXXakAAi4Nv.png" },
+            { Title: "Which LLM Should Power Your AI Agents?", Category: "General", filename: "GwrHgnJXEAATEY4.jpg" },
+            { Title: "10 Mistakes to Avoid While Creating an AI Agents", Category: "Best Practices", filename: "Gzvo9zvakAALPor.jpg" },
+            { Title: "4 Strategies for Multi-GPU Training", Category: "General", filename: "SaveTwitter.Net_GcqtVkNbcAAK4rM_(gif).gif" },
+            { Title: "Traditional RAG vs. HyDE", Category: "Architecture", filename: "SaveTwitter.Net_GdOxMEJaMAAWOh3_(gif).gif" },
+            { Title: "Top 15 AI Agent Builders in 2025", Category: "Guides", filename: "X2Twitter.com_G5dPuilXsAANi0L.jpg" },
+            { Title: "How to Build AI Agents from Scratch", Category: "Guides", filename: "X2Twitter.com_G7GNTIsXsAAOxFO.jpg" },
+            { Title: "AI AGENT vs RPA Vs API BaseD", Category: "General", filename: "X2Twitter.com_G7_Uzuib0AA8nn2.jpg" }
+        ];
+
+        // Safe LocalStorage Access
+        function safeJSONParse(key, defaultValue) {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : defaultValue;
+            } catch (e) {
+                console.warn('LocalStorage not available or corrupted:', e);
+                return defaultValue;
+            }
+        }
+
+        bookmarkedItems = safeJSONParse('bookmarks', []);
+        
+        // --- Reset Functionality ---
+        function resetProgress() {
+            if (confirm("Are you sure you want to reset all progress, bookmarks, and wizard data? This will return you to the home tab.")) {
+                localStorage.clear();
+                window.location.reload();
+            }
+        }
+
+        // --- Tab Switching ---
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            const activeTabBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            if(activeTabBtn) activeTabBtn.classList.add('active');
+            
+            tabContents.forEach(content => content.classList.remove('active'));
+            const activeContent = document.getElementById(tabName);
+            if(activeContent) activeContent.classList.add('active');
+            
+            try { localStorage.setItem('lastTab', tabName); } catch(e) {}
+            updateProgress();
+        }
+        
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => openTab(tab.dataset.tab));
+        });
+        
+        // --- Wizard Logic ---
+
+        function validateStep(step) {
+            let isValid = true;
+            const stepEl = document.querySelector(`.wizard-step[data-step="${step}"]`);
+            const inputs = stepEl.querySelectorAll('.required');
+            const errorMsg = stepEl.querySelector('.error-message');
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('error');
+                } else {
+                    input.classList.remove('error');
+                }
+            });
+
+            if (errorMsg) {
+                errorMsg.style.display = isValid ? 'none' : 'block';
+            }
+            return isValid;
+        }
+
+        function nextStep() {
+            if (!validateStep(currentWizardStep)) return;
+
+            if (currentWizardStep < totalWizardSteps) {
+                document.querySelector(`.wizard-step[data-step="${currentWizardStep}"]`).classList.remove('active');
+                currentWizardStep++;
+                document.querySelector(`.wizard-step[data-step="${currentWizardStep}"]`).classList.add('active');
+                updateWizardProgress();
+                
+                document.getElementById('prevBtn').disabled = false;
+                if (currentWizardStep === totalWizardSteps) {
+                    document.getElementById('nextBtn').textContent = 'Generate Blueprint';
+                }
+            } else {
+                completeWizard();
+            }
+        }
+        
+        function previousStep() {
+            if (currentWizardStep > 1) {
+                document.querySelector(`.wizard-step[data-step="${currentWizardStep}"]`).classList.remove('active');
+                currentWizardStep--;
+                document.querySelector(`.wizard-step[data-step="${currentWizardStep}"]`).classList.add('active');
+                updateWizardProgress();
+                
+                document.getElementById('nextBtn').textContent = 'Next →';
+                if (currentWizardStep === 1) {
+                    document.getElementById('prevBtn').disabled = true;
+                }
+            }
+        }
+        
+        function updateWizardProgress() {
+            const progress = (currentWizardStep / totalWizardSteps) * 100;
+            document.getElementById('wizardProgress').style.width = progress + '%';
+        }
+        
+        function completeWizard() {
+            document.querySelector('.wizard').style.display = 'none';
+            document.getElementById('wizardComplete').style.display = 'block';
+            
+            const agentDesc = document.getElementById('agentDescription').value;
+            const llm = document.getElementById('llmProvider').value;
+            const pattern = document.querySelector('input[name="pattern"]:checked')?.value || 'react';
+            
+            // Generate content
+            const framework = getRecommendedFramework(pattern);
+            const recommendations = `
+                <h3>📝 Recommendation Summary</h3>
+                <p style="margin-top:1rem;"><strong>Architecture:</strong> ${pattern.toUpperCase()}</p>
+                <p><strong>Recommended Framework:</strong> ${framework}</p>
+                <p><strong>LLM Engine:</strong> ${llm || 'GPT-4o'}</p>
+                
+                <h3 style="margin-top:1.5rem;">🚀 Implementation Plan</h3>
+                <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Initialize project with <strong>${framework}</strong>.</li>
+                    <li>Set up API keys for <strong>${llm}</strong>.</li>
+                    <li>Define the <em>System Prompt</em> based on your description: "${agentDesc.substring(0, 50)}...".</li>
+                    <li>Connect your selected input sources.</li>
+                    <li>Implement the <strong>${pattern}</strong> pattern logic.</li>
+                </ol>
+            `;
+            
+            document.getElementById('recommendations').innerHTML = recommendations;
+        }
+        
+        function getRecommendedFramework(pattern) {
+            const map = {
+                'react': 'LangChain',
+                'multiagent': 'CrewAI',
+                'rag': 'LangChain + Vector DB',
+                'planning': 'LangGraph',
+                'reflection': 'LangChain',
+                'codeact': 'LangChain + Code Executor'
+            };
+            return map[pattern] || 'LangChain';
+        }
+        
+        function downloadBlueprint() {
+            const agentDesc = document.getElementById('agentDescription').value;
+            const targetUsers = document.getElementById('targetUsers').value;
+            const llm = document.getElementById('llmProvider').value;
+            const pattern = document.querySelector('input[name="pattern"]:checked')?.value || 'react';
+            const inputs = getSelectedInputSources().join(', ');
+
+            const content = `
+AGENT BLUEPRINT
+===============
+Date: ${new Date().toLocaleDateString()}
+
+1. AGENT GOAL
+-------------
+Description: ${agentDesc}
+Target Users: ${targetUsers}
+
+2. TECHNICAL STACK
+------------------
+LLM Provider: ${llm}
+Architecture Pattern: ${pattern.toUpperCase()}
+Framework Recommendation: ${getRecommendedFramework(pattern)}
+Input Sources: ${inputs}
+
+3. IMPLEMENTATION STEPS
+-----------------------
+1. Set up environment for ${getRecommendedFramework(pattern)}
+2. Configure ${llm} API keys
+3. Create ${pattern} agent loop
+4. Integrate input sources: ${inputs}
+5. Test with target user group: ${targetUsers}
+            `;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'agent-blueprint.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // --- Code Block Utilities ---
+        function switchLanguage(button, contentId) {
+            const codeBlock = button.closest('.code-block');
+            const tabs = codeBlock.querySelectorAll('.language-tab');
+            const contents = codeBlock.querySelectorAll('.code-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            button.classList.add('active');
+            
+            contents.forEach(content => content.classList.remove('active'));
+            document.getElementById(contentId).classList.add('active');
+        }
+        
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const activeContent = codeBlock.querySelector('.code-content.active code');
+            const code = activeContent.textContent;
+            const originalText = button.textContent;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(code).then(success, fail);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = code;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    success();
+                } catch (err) {
+                    fail();
+                }
+                document.body.removeChild(textArea);
+            }
+
+            function success() {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = originalText, 2000);
+            }
+
+            function fail() {
+                button.textContent = 'Error';
+                setTimeout(() => button.textContent = originalText, 2000);
+            }
+        }
+        
+        // --- Bookmark Utilities ---
+        function toggleBookmark(itemId) {
+            const index = bookmarkedItems.indexOf(itemId);
+            if (index > -1) {
+                bookmarkedItems.splice(index, 1);
+            } else {
+                bookmarkedItems.push(itemId);
+            }
+            try {
+                localStorage.setItem('bookmarks', JSON.stringify(bookmarkedItems));
+            } catch(e) {}
+            updateBookmarkButtons();
+        }
+        
+        function updateBookmarkButtons() {
+            document.querySelectorAll('.bookmark-btn').forEach(btn => {
+                const match = btn.getAttribute('onclick').match(/'(\w+)'/);
+                if (match && match[1]) {
+                    const pattern = match[1];
+                    if (bookmarkedItems.includes(pattern)) {
+                        btn.classList.add('bookmarked');
+                        btn.textContent = '✅ Bookmarked';
+                    } else {
+                        btn.classList.remove('bookmarked');
+                        btn.textContent = '🔖 Bookmark';
+                    }
+                }
+            });
+        }
+        
+        // --- Graphics Loader (Revised) ---
+        function renderGraphicsGallery(graphics) {
+            const gallery = document.getElementById('graphicsGallery');
+            gallery.innerHTML = '';
+            
+            graphics.forEach((graphic, index) => {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'graphic-thumbnail';
+                
+                // SVG Placeholder (fallback if image fails)
+                const bgColor = index % 2 === 0 ? '#1E293B' : '#0F172A';
+                const strokeColor = '#7C3AED';
+                const svgContent = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="250" height="200" viewBox="0 0 250 200">
+                        <rect width="250" height="200" fill="${bgColor}"/>
+                        <rect x="25" y="25" width="200" height="150" fill="none" stroke="${strokeColor}" stroke-width="2" stroke-dasharray="5,5"/>
+                        <circle cx="125" cy="80" r="30" fill="none" stroke="#06B6D4" stroke-width="2"/>
+                        <line x1="80" y1="140" x2="170" y2="140" stroke="#F1F5F9" stroke-width="2"/>
+                        <rect x="90" y="120" width="70" height="40" fill="none" stroke="#F1F5F9" stroke-width="2"/>
+                        <text x="50%" y="180" text-anchor="middle" fill="#94A3B8" font-family="sans-serif" font-size="12">MISSING IMAGE FILE</text>
+                    </svg>
+                `;
+                const svgUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgContent);
+
+                // We try to use the filename from CSV. If it fails (onerror), we swap to the SVG placeholder
+                thumbnail.innerHTML = `
+                    <img src="${graphic.filename}" alt="${graphic.Title}" onerror="this.onerror=null; this.src='${svgUrl}'">
+                    <div style="padding:1rem; margin-top:auto;">
+                        <h4 style="margin-bottom:0.25rem;">${graphic.Title}</h4>
+                        <span style="font-size:0.75rem; color:#06B6D4; background:rgba(6, 182, 212, 0.1); padding:2px 8px; border-radius:4px;">${graphic.Category}</span>
+                    </div>
+                `;
+                
+                thumbnail.addEventListener('click', () => {
+                    openGraphicModal(index);
+                });
+                
+                gallery.appendChild(thumbnail);
+            });
+        }
+        
+        function openGraphicModal(index) {
+            currentGraphicIndex = index;
+            const modal = document.getElementById('graphicModal');
+            const img = document.getElementById('modalImage');
+            
+            const graphic = graphicsData[index];
+            const svgContent = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+                    <rect width="800" height="600" fill="#0F172A"/>
+                    <text x="50%" y="50%" text-anchor="middle" fill="#F1F5F9" font-family="sans-serif" font-size="24">${graphic.Title}</text>
+                    <text x="50%" y="55%" text-anchor="middle" fill="#94A3B8" font-family="sans-serif" font-size="16">File not found: ${graphic.filename}</text>
+                </svg>
+            `;
+            const svgUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgContent);
+            
+            img.src = graphic.filename;
+            img.onerror = function() { this.src = svgUrl; };
+            img.alt = graphic.Title;
+            
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('graphicModal').classList.remove('active');
+        }
+        
+        function navigateGraphic(direction) {
+            currentGraphicIndex = (currentGraphicIndex + direction + graphicsData.length) % graphicsData.length;
+            openGraphicModal(currentGraphicIndex);
+        }
+        
+        // Keyboard navigation for modal
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('graphicModal');
+            if (modal.classList.contains('active')) {
+                if (e.key === 'ArrowLeft') navigateGraphic(-1);
+                if (e.key === 'ArrowRight') navigateGraphic(1);
+                if (e.key === 'Escape') closeModal();
+            }
+        });
+        
+        // --- Search Functions ---
+        function searchPatterns(query) {
+            const patterns = document.querySelectorAll('#patternsList .pattern-card');
+            query = query.toLowerCase();
+            
+            patterns.forEach(pattern => {
+                const text = pattern.textContent.toLowerCase();
+                pattern.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+        
+        function searchFrameworks(query) {
+            const frameworks = document.querySelectorAll('#frameworksList .framework-card');
+            query = query.toLowerCase();
+            
+            frameworks.forEach(framework => {
+                const text = framework.textContent.toLowerCase();
+                framework.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+        
+        function searchGraphics(query) {
+            const graphics = document.querySelectorAll('.graphic-thumbnail');
+            query = query.toLowerCase();
+            
+            graphics.forEach(graphic => {
+                const text = graphic.textContent.toLowerCase();
+                graphic.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+        
+        // --- Progress Tracking ---
+        function updateProgress() {
+            const visitedTabs = safeJSONParse('visitedTabs', []);
+            const activeTabEl = document.querySelector('.tab.active');
+            
+            if (activeTabEl) {
+                const currentTab = activeTabEl.dataset.tab;
+                if (!visitedTabs.includes(currentTab)) {
+                    visitedTabs.push(currentTab);
+                    try {
+                        localStorage.setItem('visitedTabs', JSON.stringify(visitedTabs));
+                    } catch(e) {}
+                }
+            }
+            
+            const totalTabs = 10;
+            const progress = Math.round((visitedTabs.length / totalTabs) * 100);
+            
+            const indicator = document.getElementById('progressIndicator');
+            if (progress > 0 && progress < 100) {
+                indicator.style.display = 'flex';
+                indicator.querySelector('.progress-percentage').textContent = progress + '%';
+            } else if (progress === 100) {
+                indicator.innerHTML = `
+                    <div class="progress-text">Complete! 🎉</div>
+                    <div class="progress-percentage">100%</div>
+                    <span class="reset-link" onclick="resetProgress()">reset</span>
+                `;
+                indicator.style.display = 'flex';
+                setTimeout(() => {
+                   // indicator.style.display = 'none'; // Keep visible to allow reset
+                }, 5000);
+            }
+        }
+        
+        // --- Helper: Get Inputs ---
+        function getSelectedInputSources() {
+            const checkboxes = document.querySelectorAll('.wizard-step[data-step="2"] input[type="checkbox"]:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+        
+        // --- Input Persistence ---
+        function saveWizardProgress() {
+            const wizardData = {
+                step: currentWizardStep,
+                description: document.getElementById('agentDescription')?.value || '',
+                targetUsers: document.getElementById('targetUsers')?.value || '',
+                problemSolving: document.getElementById('problemSolving')?.value || '',
+                deliverables: document.getElementById('deliverables')?.value || '',
+                llmProvider: document.getElementById('llmProvider')?.value || '',
+                deployment: document.getElementById('deployment')?.value || '',
+                pattern: document.querySelector('input[name="pattern"]:checked')?.value || '',
+                inputSources: getSelectedInputSources()
+            };
+            
+            try {
+                localStorage.setItem('wizardProgress', JSON.stringify(wizardData));
+            } catch(e) {}
+        }
+
+        function loadWizardProgress() {
+            const saved = safeJSONParse('wizardProgress', null);
+            if (saved) {
+                if (saved.description) document.getElementById('agentDescription').value = saved.description;
+                if (saved.targetUsers) document.getElementById('targetUsers').value = saved.targetUsers;
+                if (saved.problemSolving) document.getElementById('problemSolving').value = saved.problemSolving;
+                if (saved.deliverables) document.getElementById('deliverables').value = saved.deliverables;
+                if (saved.llmProvider) document.getElementById('llmProvider').value = saved.llmProvider;
+                if (saved.deployment) document.getElementById('deployment').value = saved.deployment;
+                
+                if (saved.pattern) {
+                    const radio = document.querySelector(`input[name="pattern"][value="${saved.pattern}"]`);
+                    if (radio) radio.checked = true;
+                }
+                
+                // Restore checkboxes
+                if (saved.inputSources && Array.isArray(saved.inputSources)) {
+                    saved.inputSources.forEach(val => {
+                        const cb = document.querySelector(`.checkbox-item input[value="${val}"]`);
+                        if(cb) cb.checked = true;
+                    });
+                }
+            }
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load last viewed tab
+            const lastTab = localStorage.getItem('lastTab');
+            if (lastTab && lastTab !== 'home') {
+                openTab(lastTab);
+            }
+            
+            // Load Hardcoded Graphics
+            renderGraphicsGallery(graphicsData);
+            
+            updateBookmarkButtons();
+            updateProgress();
+            
+            // Modal outside click close
+            document.getElementById('graphicModal').addEventListener('click', (e) => {
+                if (e.target.id === 'graphicModal') {
+                    closeModal();
+                }
+            });
+            
+            // Listen for inputs to save state
+            document.addEventListener('input', (e) => {
+                if (e.target.closest('.wizard')) {
+                    saveWizardProgress();
+                    // Clear error if user starts typing in a required field
+                    if(e.target.classList.contains('required') && e.target.value.trim()) {
+                        e.target.classList.remove('error');
+                        const stepEl = e.target.closest('.wizard-step');
+                        if(stepEl) {
+                            const errorMsg = stepEl.querySelector('.error-message');
+                            if(errorMsg) errorMsg.style.display = 'none';
+                        }
+                    }
+                }
+            });
+
+            // Load saved wizard state
+            loadWizardProgress();
+
+            console.log('🤖 Building Agentic Systems Guide initialized!');
+        });
+        
+        // Export globals for inline handlers
+        window.openTab = openTab;
+        window.nextStep = nextStep;
+        window.previousStep = previousStep;
+        window.switchLanguage = switchLanguage;
+        window.copyCode = copyCode;
+        window.toggleBookmark = toggleBookmark;
+        window.closeModal = closeModal;
+        window.navigateGraphic = navigateGraphic;
+        window.searchPatterns = searchPatterns;
+        window.searchFrameworks = searchFrameworks;
+        window.searchGraphics = searchGraphics;
+        window.downloadBlueprint = downloadBlueprint;
+        window.resetProgress = resetProgress;
+    </script>
+</body>
+</html>
