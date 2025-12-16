@@ -1,0 +1,2534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents Tutorial - Interactive Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --electric-blue: #3B82F6;
+            --vibrant-purple: #A855F7;
+            --energetic-orange: #F97316;
+            --fresh-green: #10B981;
+            --hot-pink: #EC4899;
+            --gradient-1: linear-gradient(135deg, #3B82F6 0%, #A855F7 100%);
+            --gradient-2: linear-gradient(135deg, #F97316 0%, #EC4899 100%);
+            --gradient-3: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+            --white: #FFFFFF;
+            --light-bg: #F9FAFB;
+            --light-gray: #E5E7EB;
+            --gray: #6B7280;
+            --dark-gray: #1F2937;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--light-bg);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--gradient-1);
+            padding: 32px 24px;
+            color: white;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .controls-bar {
+            background: white;
+            padding: 16px 24px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 120px;
+            z-index: 99;
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 50px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--electric-blue);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .controls-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--dark-gray);
+            border: 2px solid var(--light-gray);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .code-toggle {
+            display: flex;
+            background: var(--light-bg);
+            border-radius: 24px;
+            padding: 4px;
+        }
+
+        .code-toggle button {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .code-toggle button.active {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--white);
+            padding: 16px 24px;
+            overflow-x: auto;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            background: var(--light-bg);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-button.active {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card h2 {
+            color: var(--electric-blue);
+            margin-bottom: 16px;
+            font-size: 28px;
+        }
+
+        .card h3 {
+            color: var(--vibrant-purple);
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .expandable {
+            margin-bottom: 16px;
+        }
+
+        .expandable-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .expandable-header:hover {
+            background: var(--light-gray);
+        }
+
+        .expandable-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .expandable-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .expandable-content.expanded {
+            max-height: 10000px;
+            opacity: 1;
+            padding: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--electric-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .feature-card h4 {
+            color: var(--electric-blue);
+            margin-bottom: 8px;
+        }
+
+        .code-block {
+            background: #1F2937;
+            color: #F9FAFB;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+
+        .code-python, .code-javascript {
+            display: none;
+        }
+
+        .code-python.active, .code-javascript.active {
+            display: block;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--light-bg);
+            color: var(--dark-gray);
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge.success {
+            background: var(--fresh-green);
+            color: white;
+        }
+
+        .badge.warning {
+            background: var(--energetic-orange);
+            color: white;
+        }
+
+        .badge.info {
+            background: var(--electric-blue);
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        th {
+            background: var(--gradient-1);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--light-bg);
+        }
+
+        .progress-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-3);
+            transition: width 0.5s ease;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-2);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-close:hover {
+            color: var(--dark-gray);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--electric-blue);
+        }
+
+        .star-rating {
+            font-size: 24px;
+            color: var(--light-gray);
+            cursor: pointer;
+        }
+
+        .star-rating .star.filled {
+            color: var(--energetic-orange);
+        }
+
+        .favorite-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .favorite-btn.active {
+            color: var(--hot-pink);
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+
+        .agent-category {
+            margin-bottom: 24px;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+        
+        /* Added styling for clickable agent names */
+        .agent-item a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            display: block;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .agent-item:hover a {
+            background: var(--light-gray);
+            color: var(--electric-blue);
+        }
+
+        .agent-item {
+            background: var(--light-bg);
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .learning-level {
+            border-left: 4px solid var(--electric-blue);
+            padding: 20px;
+            margin: 16px 0;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .learning-level.beginner {
+            border-left-color: var(--fresh-green);
+        }
+
+        .learning-level.intermediate {
+            border-left-color: var(--energetic-orange);
+        }
+
+        .learning-level.advanced {
+            border-left-color: var(--vibrant-purple);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .tabs {
+                overflow-x: scroll;
+            }
+            
+            .controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                min-width: 100%;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            margin: 4px 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 12px;
+        }
+
+        ul, ol {
+            margin-left: 24px;
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 AI Agents Tutorial</h1>
+        <p>Your Complete Guide to Building Intelligent AI Agents (2025 Edition)</p>
+    </div>
+
+    <div class="controls-bar">
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="🔍 Search agents, concepts, frameworks..." id="searchInput">
+        </div>
+        <div class="controls-group">
+            <div class="code-toggle">
+                <button class="active" onclick="setCodeLanguage('python')">🐍 Python</button>
+                <button onclick="setCodeLanguage('javascript')">💛 JavaScript</button>
+            </div>
+            <button class="btn btn-secondary" onclick="openModal('favorites')">⭐ Favorites</button>
+            <button class="btn btn-secondary" onclick="openModal('progress')">📊 Progress</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-button active" data-tab="fundamentals" onclick="switchTab('fundamentals')">
+            🎓 Fundamentals
+        </button>
+        <button class="tab-button" data-tab="concepts" onclick="switchTab('concepts')">
+            💡 Key Concepts
+        </button>
+        <button class="tab-button" data-tab="frameworks" onclick="switchTab('frameworks')">
+            🛠️ Frameworks & Tools
+        </button>
+        <button class="tab-button" data-tab="patterns" onclick="switchTab('patterns')">
+            🎨 Design Patterns
+        </button>
+        <button class="tab-button" data-tab="coding" onclick="switchTab('coding')">
+            💻 Coding Agents
+        </button>
+        <button class="tab-button" data-tab="learning" onclick="switchTab('learning')">
+            🗺️ Learning Path
+        </button>
+        <button class="tab-button" data-tab="usecases" onclick="switchTab('usecases')">
+            🚀 Use Cases
+        </button>
+        <button class="tab-button" data-tab="directory" onclick="switchTab('directory')">
+            📚 Agent Directory
+        </button>
+    </div>
+
+    <div class="container">
+        <div id="fundamentals" class="tab-content active">
+            <div class="progress-section">
+                <h3>Your Progress: Fundamentals</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="progress-fundamentals"></div>
+                </div>
+                <p>0% Complete</p>
+            </div>
+
+            <div class="card">
+                <h2>What is an AI Agent?</h2>
+                <button class="favorite-btn" onclick="toggleFavorite('what-is-agent')">☆</button>
+                
+                <div class="feature-card">
+                    <h4>Definition</h4>
+                    <p>An <span class="highlight">AI Agent</span> is a smart system that uses a language model to achieve a specific goal by understanding instructions, planning steps, and taking actions—often with help from tools or APIs.</p>
+                    <p>These agents don't just answer questions—they can perform real-world tasks like booking appointments, managing emails, or gathering data from apps, all through intelligent decision-making.</p>
+                    <p><strong>Think of it like a robot with a brain and a to-do list! 🤖</strong></p>
+                </div>
+
+                <h3>Core Components of an AI Agent</h3>
+                <div class="grid">
+                    <div class="feature-card">
+                        <h4>🧠 Language Model (The "Thinking Brain")</h4>
+                        <p><strong>What it is:</strong> The AI that understands your request and makes decisions for the agent</p>
+                        <p><strong>Examples:</strong></p>
+                        <span class="badge info">GPT-4</span>
+                        <span class="badge info">Claude 4</span>
+                        <span class="badge info">Gemini 2.5</span>
+                        <span class="badge info">DeepSeek</span>
+                        <span class="badge info">LLaMA 4</span>
+                        <p><strong>Functions:</strong> Text generation, reasoning, planning, decision-making</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🛠️ Tools (Add-ons that allow action)</h4>
+                        <p><strong>What they are:</strong> Extensions that let agents act in the real world—API calls, polling data, sending messages</p>
+                        <p><strong>Examples:</strong></p>
+                        <span class="badge success">Web Search</span>
+                        <span class="badge success">Database Queries</span>
+                        <span class="badge success">Email APIs</span>
+                        <span class="badge success">Code Interpreters</span>
+                        <p><strong>Why Important:</strong> LLMs alone can't fetch real-time info or update systems</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>⚙️ Orchestration Layer (The Logic System)</h4>
+                        <p><strong>What it is:</strong> The coordinator that decides how and when to use the model and tools, in what order</p>
+                        <p><strong>Key Patterns:</strong></p>
+                        <span class="badge warning">Chain-of-Thought (CoT)</span>
+                        <span class="badge warning">Tree-of-Thoughts (ToT)</span>
+                        <span class="badge warning">ReAct</span>
+                        <span class="badge warning">Reflection</span>
+                        <p><strong>Functions:</strong> Task decomposition, planning strategies, memory management, tool delegation</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>💾 Memory</h4>
+                        <p><strong>What it is:</strong> Agents retain information across turns—either short-term (in-context) or long-term (external storage)</p>
+                        <p><strong>Types:</strong></p>
+                        <ul>
+                            <li><strong>In-context memory (short-term):</strong> Within the LLM's context window</li>
+                            <li><strong>Out-of-context memory (long-term):</strong> Stored in vector/graph databases</li>
+                        </ul>
+                        <p><strong>Use Cases:</strong> Personalization, continuity, learning from feedback</p>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>3 Ways to Use AI (Click to expand)</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="grid">
+                            <div class="feature-card" style="border-left-color: var(--fresh-green)">
+                                <h4>Non-Agentic AI</h4>
+                                <p><strong>Definition:</strong> Basic prompt-response AI that delivers one-off outputs without memory, reasoning, or tool integration</p>
+                                <p><strong>How It Works:</strong> You enter a prompt, the AI responds instantly. No context carried forward</p>
+                                <p><strong>Use Cases:</strong> Summarizing reports, rewriting emails, generating headline ideas</p>
+                                <p><strong>✅ Pros:</strong> Quick, easy, no setup required</p>
+                                <p><strong>❌ Cons:</strong> No reasoning or memory, can't handle multi-step workflows</p>
+                                <p><strong>Tools:</strong> ChatGPT, Claude, Gemini in basic mode</p>
+                            </div>
+
+                            <div class="feature-card" style="border-left-color: var(--electric-blue)">
+                                <h4>AI Agent</h4>
+                                <p><strong>Definition:</strong> A focused AI worker designed to automate one repetitive task with consistency and accuracy</p>
+                                <p><strong>How It Works:</strong> You define a single task (e.g., "compile weekly reports"). The agent connects to tools and executes without human oversight</p>
+                                <p><strong>Use Cases:</strong> Syncing CRM data, automating email replies, extracting financial data</p>
+                                <p><strong>✅ Pros:</strong> Saves time, easy to configure, reliable for narrow responsibilities</p>
+                                <p><strong>❌ Cons:</strong> Rigid, task-bound, breaks with missing/malformed data</p>
+                                <p><strong>Tools:</strong> Zapier, LangChain, n8n, OpenAI Assistants API</p>
+                            </div>
+
+                            <div class="feature-card" style="border-left-color: var(--vibrant-purple)">
+                                <h4>Agentic AI</h4>
+                                <p><strong>Definition:</strong> A self-managing AI system that can plan, execute, and refine across multiple steps and tools</p>
+                                <p><strong>How It Works:</strong> You provide a broad goal (e.g., "launch a product"). The system breaks it into sub-tasks, connects to tools, and executes. Uses memory and feedback loops</p>
+                                <p><strong>Use Cases:</strong> Market research & strategy, multi-platform ad campaigns, building/testing onboarding flows</p>
+                                <p><strong>✅ Pros:</strong> Handles complex multi-step projects, integrates external tools and memory, produces consistent adaptive results</p>
+                                <p><strong>❌ Cons:</strong> Slower, more resource-intensive, requires human oversight</p>
+                                <p><strong>Tools:</strong> CrewAI, LangGraph, AutoGen, LlamaIndex workflows</p>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-top: 20px;">Comparison Table</h4>
+                        <table>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Automation</th>
+                                <th>AI Workflow</th>
+                                <th>AI Agent</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Definition</strong></td>
+                                <td>Rule-based execution</td>
+                                <td>LLM via API for tasks</td>
+                                <td>Non-deterministic autonomous tasks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Core Logic</strong></td>
+                                <td>Boolean Logic</td>
+                                <td>Boolean & Fuzzy Logic</td>
+                                <td>Fuzzy Logic & Autonomy</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tasks</strong></td>
+                                <td>Deterministic, predefined</td>
+                                <td>Deterministic with flexibility</td>
+                                <td>Non-deterministic, adaptive</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Example</strong></td>
+                                <td>Slack notification on new lead</td>
+                                <td>Analyze/score/route leads with ChatGPT</td>
+                                <td>Full internet search on leads, update records</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Types of AI Agents</h2>
+                <button class="favorite-btn" onclick="toggleFavorite('agent-types')">☆</button>
+                
+                <div class="grid">
+                    <div class="feature-card">
+                        <h4>👤 UI Interaction Agent</h4>
+                        <p>Streamlines your web browsing experience</p>
+                        <p><strong>Examples:</strong> Browser automation tools, form fillers</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>👷 Workflow Automation Agent</h4>
+                        <p>Performs repetitive automated tasks</p>
+                        <p><strong>Examples:</strong> Data entry, report generation</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🧑‍💼 Knowledge Retrieval Agent</h4>
+                        <p>Helps you maximize productivity with specialized tools</p>
+                        <p><strong>Examples:</strong> Document search, Q&A systems</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>👨‍💻 Coding Agent</h4>
+                        <p>Writes and maintains code</p>
+                        <p><strong>Examples:</strong> GitHub Copilot, Cursor, Windsurf</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🎧 Voice Agent</h4>
+                        <p>Executes specific commands through speech</p>
+                        <p><strong>Examples:</strong> Voice assistants, call centers</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🛠️ Tool-Specific Agent</h4>
+                        <p>Maximizes productivity with specialized tools</p>
+                        <p><strong>Examples:</strong> Salesforce agents, Slack bots</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="concepts" class="tab-content">
+            <div class="progress-section">
+                <h3>Your Progress: Key Concepts</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="progress-concepts"></div>
+                </div>
+                <p>0% Complete</p>
+            </div>
+
+            <div class="card">
+                <h2>RAG (Retrieval-Augmented Generation)</h2>
+                <button class="favorite-btn" onclick="toggleFavorite('rag')">☆</button>
+                
+                <div class="feature-card">
+                    <h4>What is RAG?</h4>
+                    <p><strong>Definition:</strong> RAG combines external information retrieval with generative AI to produce accurate, grounded, up-to-date responses</p>
+                    
+                    <h4 style="margin-top: 16px;">How it works:</h4>
+                    <ol>
+                        <li>User query → Retrieval Algorithm → External Knowledge</li>
+                        <li>Query + Retrieved Documents → Large Language Model</li>
+                        <li>LLM → Response</li>
+                    </ol>
+                    
+                    <p><strong>Benefits:</strong> Improved accuracy, reduced hallucinations, up-to-date information</p>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>📊 16 Types of RAG (Click to expand full table)</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Key Features</th>
+                                    <th>Benefits</th>
+                                    <th>Applications</th>
+                                </tr>
+                                <tr>
+                                    <td><strong>Standard RAG</strong></td>
+                                    <td>Basic retrieval and generation, RAG-Sequence</td>
+                                    <td>Improved accuracy, reduced hallucinations</td>
+                                    <td>General-purpose QA systems</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Agentic RAG</strong></td>
+                                    <td>Autonomous agents, tool use, dynamic retrieval</td>
+                                    <td>Handles complex tasks, proactive AI</td>
+                                    <td>Personal assistants, research aids</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Graph RAG</strong></td>
+                                    <td>Knowledge graphs, relational reasoning</td>
+                                    <td>Rich information, context handling</td>
+                                    <td>Expert systems, semantic search</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Modular RAG</strong></td>
+                                    <td>Independent modules for retrieval/reasoning/generation</td>
+                                    <td>Flexibility, scalability</td>
+                                    <td>Large collaborative projects</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Memory-Augmented RAG</strong></td>
+                                    <td>External memory storage and retrieval</td>
+                                    <td>Continuity, personalization</td>
+                                    <td>Long-term context chatbots</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Multi-Modal RAG</strong></td>
+                                    <td>Cross-modal retrieval (text, images, audio)</td>
+                                    <td>Richer response, accessibility</td>
+                                    <td>Image captioning, video summarization</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Federated RAG</strong></td>
+                                    <td>Decentralized data sources, privacy-preserving</td>
+                                    <td>Data security, compliance</td>
+                                    <td>Healthcare sensitive data</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Streaming RAG</strong></td>
+                                    <td>Real-time data retrieval</td>
+                                    <td>Up-to-date information, low latency</td>
+                                    <td>Live reporting, financial tickers</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Agentic RAG</h2>
+                <button class="favorite-btn" onclick="toggleFavorite('agentic-rag')">☆</button>
+                
+                <p><strong>Definition:</strong> An agent workflow that involves real-time data retrieval and generation. It uses autonomous agents to handle retrieval, planning, and tool execution.</p>
+                
+                <h3>How It Differs from Standard RAG</h3>
+                <div class="grid">
+                    <div class="feature-card">
+                        <h4>Standard RAG</h4>
+                        <p>User → Query → Embedding → Vector DB → Retrieved Info + Query → LLM → Output</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Agentic RAG</h4>
+                        <p>User → Query → Agent (with Memory, Planning, Tools) → Multiple Vector Searches, Web Search, etc. → LLM → Output</p>
+                    </div>
+                </div>
+
+                <h3>Key Components</h3>
+                <ul>
+                    <li><strong>Memory:</strong> Short-term and long-term memory for agent context</li>
+                    <li><strong>Planning:</strong> ReAct (Reason + Act), Chain-of-Thought (CoT)</li>
+                    <li><strong>Tools:</strong> Multiple vector searches, web search, email, custom APIs</li>
+                    <li><strong>Agent Loop:</strong> Think → Act → Learn → Repeat</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>Agent Memory Types</h2>
+                <button class="favorite-btn" onclick="toggleFavorite('memory-types')">☆</button>
+                
+                <div class="grid">
+                    <div class="feature-card" style="border-left-color: var(--energetic-orange)">
+                        <h4>In-context Memory (Short-term)</h4>
+                        <p>Refers to information available in the context window of the LLM</p>
+                        <p><strong>Storage:</strong> Temporarily during session</p>
+                        <p><strong>Tools:</strong> Redis, Postgres, in-memory storage</p>
+                    </div>
+
+                    <div class="feature-card" style="border-left-color: var(--vibrant-purple)">
+                        <h4>Out-of-context Memory (Long-term)</h4>
+                        <p>Refers to information stored in external storage, such as vector or graph databases</p>
+                        <p><strong>Storage:</strong> Persists across sessions</p>
+                        <p><strong>Tools:</strong> Pinecone, Weaviate, Chroma vector databases</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Agent Protocols</h2>
+                <button class="favorite-btn" onclick="toggleFavorite('protocols')">☆</button>
+                
+                <div class="grid">
+                    <div class="feature-card" style="border-left-color: var(--electric-blue)">
+                        <h4>MCP (Model Context Protocol)</h4>
+                        <p><strong>Created by:</strong> Anthropic</p>
+                        <p><strong>Purpose:</strong> Helps connect LLMs and agents to securely interact with external sources, data sources, and services</p>
+                        <p><strong>Example:</strong> An agent in Slack uses MCP to fetch latest state from Asana board, summarize in channel</p>
+                        <p><strong>Use Cases:</strong></p>
+                        <ul>
+                            <li>Database query interface</li>
+                            <li>Tool orchestration layer</li>
+                            <li>File system access</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card" style="border-left-color: var(--energetic-orange)">
+                        <h4>A2A (Agent2Agent) Protocol</h4>
+                        <p><strong>Created by:</strong> Google</p>
+                        <p><strong>Purpose:</strong> Enables direct communication between agents. Allows AI agents to securely communicate, coordinate tasks, and delegate across systems</p>
+                        <p><strong>Example:</strong> After retrieving data, agent uses A2A to pass to specialized "reporting agent"</p>
+                        <p><strong>Use Cases:</strong></p>
+                        <ul>
+                            <li>Task delegation orchestration</li>
+                            <li>Agent ecosystem collaboration</li>
+                            <li>Cross-platform coordination</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, #3B82F6 0%, #A855F7 100%); color: white;">
+                    <h4>🚀 Combined Power</h4>
+                    <p>When MCP and A2A are combined, they enable a powerful ecosystem of intelligent agents that can collaborate across tasks and platforms!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="frameworks" class="tab-content">
+            <div class="progress-section">
+                <h3>Your Progress: Frameworks & Tools</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="progress-frameworks"></div>
+                </div>
+                <p>0% Complete</p>
+            </div>
+
+            <div class="card">
+                <h2>Major Frameworks</h2>
+                
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>🦜 LangChain - General-purpose agent framework</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <button class="favorite-btn" onclick="toggleFavorite('langchain')">☆</button>
+                        
+                        <p><strong>Description:</strong> Platform for agent engineering. Modular abstractions for components necessary to work with language models</p>
+                        
+                        <p><strong>Best For:</strong> Rapid prototyping, diverse use cases, comprehensive tooling</p>
+                        
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li>Modular components (LLMs, retrievers, chains, agents)</li>
+                            <li>LangSmith for tracing and debugging</li>
+                            <li>LangGraph for stateful, multi-actor applications</li>
+                            <li>Extensive integrations with LLM providers, vector stores, tools</li>
+                        </ul>
+                        
+                        <p><strong>✅ Pros:</strong> Mature ecosystem, extensive documentation, active community</p>
+                        <p><strong>❌ Cons:</strong> Can be complex for simple use cases, learning curve</p>
+                        
+                        <p><strong>Languages:</strong> <span class="badge info">Python</span> <span class="badge info">JavaScript/TypeScript</span></p>
+                        
+                        <p><strong>🔗 Links:</strong></p>
+                        <ul>
+                            <li><a href="https://docs.langchain.com/" target="_blank">Documentation</a></li>
+                            <li><a href="https://github.com/langchain-ai/langchain" target="_blank">GitHub</a></li>
+                        </ul>
+
+                        <h4>Code Example:</h4>
+                        <div class="code-python active">
+                            <div class="code-block">from langchain.agents import AgentExecutor, create_react_agent
+from langchain.llms import OpenAI
+from langchain.tools import Tool
+
+# Define tools
+tools = [
+    Tool(name="Search", func=search_func, description="Search the web"),
+    Tool(name="Calculator", func=calc_func, description="Do math")
+]
+
+# Create agent
+llm = OpenAI(temperature=0)
+agent = create_react_agent(llm, tools, prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+# Run
+result = agent_executor.invoke({"input": "What's the weather in SF?"})</div>
+                        </div>
+                        
+                        <div class="code-javascript">
+                            <div class="code-block">import { ChatOpenAI } from "@langchain/openai";
+import { AgentExecutor, createReactAgent } from "langchain/agents";
+import { Tool } from "@langchain/core/tools";
+
+// Define tools
+const tools = [
+  new Tool({
+    name: "Search",
+    description: "Search the web",
+    func: async (input) => searchFunc(input),
+  }),
+];
+
+// Create agent
+const llm = new ChatOpenAI({ temperature: 0 });
+const agent = await createReactAgent({ llm, tools, prompt });
+const executor = new AgentExecutor({ agent, tools });
+
+// Run
+const result = await executor.invoke({ input: "What's the weather in SF?" });</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>🚢 CrewAI - Multi-agent orchestration framework</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <button class="favorite-btn" onclick="toggleFavorite('crewai')">☆</button>
+                        
+                        <p><strong>Description:</strong> Lean, lightning-fast Python framework for creating role-playing autonomous AI agents. Designed for collaborative intelligence</p>
+                        
+                        <p><strong>Best For:</strong> Multi-agent teams, role-based workflows, autonomous collaboration</p>
+                        
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li>Role-based agent architecture</li>
+                            <li>Crews (autonomous teams) and Flows (deterministic control)</li>
+                            <li>Built from scratch (no LangChain dependency)</li>
+                            <li>Over 100,000 certified developers</li>
+                        </ul>
+                        
+                        <p><strong>✅ Pros:</strong> Simple APIs, fast execution, reliable results, great for team simulations</p>
+                        <p><strong>❌ Cons:</strong> Relatively newer than LangChain, Python-only</p>
+                        
+                        <p><strong>Languages:</strong> <span class="badge info">Python</span></p>
+                        
+                        <p><strong>🔗 Links:</strong></p>
+                        <ul>
+                            <li><a href="https://docs.crewai.com/" target="_blank">Documentation</a></li>
+                            <li><a href="https://github.com/crewAIInc/crewAI" target="_blank">GitHub</a></li>
+                            <li><a href="https://www.crewai.com/" target="_blank">Website</a></li>
+                        </ul>
+
+                        <h4>Code Example:</h4>
+                        <div class="code-python active">
+                            <div class="code-block">from crewai import Agent, Task, Crew
+
+# Define agents with specific roles
+researcher = Agent(
+    role="Senior Researcher",
+    goal="Find and summarize latest AI news",
+    backstory="Expert in AI research",
+    tools=[search_tool]
+)
+
+writer = Agent(
+    role="Content Writer",
+    goal="Write engaging blog posts",
+    backstory="Skilled writer",
+    tools=[write_tool]
+)
+
+# Define tasks
+research_task = Task(
+    description="Research latest AI developments",
+    agent=researcher
+)
+
+write_task = Task(
+    description="Write blog post from research",
+    agent=writer
+)
+
+# Create and run crew
+crew = Crew(agents=[researcher, writer], tasks=[research_task, write_task])
+result = crew.kickoff()</div>
+                        </div>
+                        
+                        <div class="code-javascript">
+                            <div class="code-block">// CrewAI is Python-only
+// For JavaScript, consider using LangChain or AutoGen alternatives</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>🤖 AutoGen (Microsoft) - Multi-agent conversation framework</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <button class="favorite-btn" onclick="toggleFavorite('autogen')">☆</button>
+                        
+                        <p><strong>Description:</strong> Framework for building AI agents and multi-agent systems. Event-driven, asynchronous architecture</p>
+                        
+                        <p><strong>Best For:</strong> Complex multi-agent conversations, enterprise applications, research</p>
+                        
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li>ConversableAgent base class for all agents</li>
+                            <li>GroupChat for multi-agent orchestration</li>
+                            <li>AutoGen Studio (low-code GUI)</li>
+                            <li>Cross-language support (Python, .NET)</li>
+                        </ul>
+                        
+                        <p><strong>✅ Pros:</strong> Backed by Microsoft Research, robust architecture, great for research</p>
+                        <p><strong>❌ Cons:</strong> More complex than alternatives, still evolving</p>
+                        
+                        <p><strong>Languages:</strong> <span class="badge info">Python</span> <span class="badge info">C#/.NET</span></p>
+                        
+                        <p><strong>🔗 Links:</strong></p>
+                        <ul>
+                            <li><a href="https://microsoft.github.io/autogen/" target="_blank">Documentation</a></li>
+                            <li><a href="https://github.com/microsoft/autogen" target="_blank">GitHub</a></li>
+                        </ul>
+
+                        <h4>Code Example:</h4>
+                        <div class="code-python active">
+                            <div class="code-block">from autogen import AssistantAgent, UserProxyAgent
+
+# Create assistant agent
+assistant = AssistantAgent(
+    name="assistant",
+    llm_config={"model": "gpt-4", "api_key": api_key}
+)
+
+# Create user proxy agent
+user_proxy = UserProxyAgent(
+    name="user_proxy",
+    human_input_mode="NEVER",
+    code_execution_config={"work_dir": "coding"}
+)
+
+# Start conversation
+user_proxy.initiate_chat(
+    assistant,
+    message="Write Python code to analyze this data"
+)</div>
+                        </div>
+                        
+                        <div class="code-javascript">
+                            <div class="code-block">// AutoGen.js equivalent
+const { AssistantAgent, UserProxyAgent } = require('autogen');
+
+const assistant = new AssistantAgent({
+  name: "assistant",
+  llmConfig: { model: "gpt-4", apiKey: apiKey }
+});
+
+const userProxy = new UserProxyAgent({
+  name: "user_proxy",
+  humanInputMode: "NEVER"
+});
+
+await userProxy.initiateChat(
+  assistant,
+  "Write code to analyze this data"
+);</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Vector Databases</h2>
+                <button class="favorite-btn" onclick="toggleFavorite('vector-dbs')">☆</button>
+                
+                <table>
+                    <tr>
+                        <th>Database</th>
+                        <th>Type</th>
+                        <th>Best For</th>
+                        <th>Pricing</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Pinecone</strong></td>
+                        <td>Managed</td>
+                        <td>Production, scale</td>
+                        <td>Paid (free tier)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Weaviate</strong></td>
+                        <td>Open-source/Managed</td>
+                        <td>Flexibility, hybrid search</td>
+                        <td>Open-source + paid cloud</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Chroma</strong></td>
+                        <td>Open-source</td>
+                        <td>Local dev, simple use cases</td>
+                        <td>Free (open-source)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Qdrant</strong></td>
+                        <td>Open-source/Managed</td>
+                        <td>Performance, Rust-based</td>
+                        <td>Open-source + paid cloud</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Milvus</strong></td>
+                        <td>Open-source</td>
+                        <td>Large-scale, enterprise</td>
+                        <td>Free (open-source)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="patterns" class="tab-content">
+            <div class="progress-section">
+                <h3>Your Progress: Design Patterns</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="progress-patterns"></div>
+                </div>
+                <p>0% Complete</p>
+            </div>
+
+            <div class="card">
+                <h2>Core Agent Architectures</h2>
+                
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>🔄 ReAct Agent (Reason + Act)</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <button class="favorite-btn" onclick="toggleFavorite('react-pattern')">☆</button>
+                        
+                        <p><strong>Definition:</strong> A reasoning and acting framework that combines thought and action in interleaved manner</p>
+                        
+                        <h4>How It Works:</h4>
+                        <ol>
+                            <li>Query → Reasoning → Action → Tool → Result</li>
+                            <li>Agent alternates between thinking and acting</li>
+                            <li>Each action informs next reasoning step</li>
+                        </ol>
+                        
+                        <h4>Pattern Flow:</h4>
+                        <p>User Query → Agent: "I need to search" → Action: Use search tool → Observation: Get results → Agent: "Now I can answer" → Response</p>
+                        
+                        <p><strong>Used By:</strong> Most AI agent products, LangChain, AutoGen</p>
+                        <p><strong>Best For:</strong> Tasks requiring tools and iterative problem-solving</p>
+                        
+                        <p><strong>✅ Pros:</strong> Interpretable, works well with tools, handles complexity</p>
+                        <p><strong>❌ Cons:</strong> Can be slow with many iterations</p>
+
+                        <h4>Code Example:</h4>
+                        <div class="code-python active">
+                            <div class="code-block">from langchain.agents import create_react_agent, AgentExecutor
+
+# Define tools
+tools = [
+    Tool(name="Search", func=search, description="Search the web"),
+    Tool(name="Calculator", func=calculate, description="Do math")
+]
+
+# Create ReAct agent
+llm = OpenAI(temperature=0)
+agent = create_react_agent(llm, tools, react_prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+# Run
+result = agent_executor.invoke({
+    "input": "What's 25% of the population of Tokyo?"
+})</div>
+                        </div>
+                        
+                        <div class="code-javascript">
+                            <div class="code-block">import { createReactAgent } from "langchain/agents";
+
+const tools = [
+  { name: "Search", func: search, description: "Search the web" },
+  { name: "Calculator", func: calculate, description: "Do math" }
+];
+
+const agent = await createReactAgent({ llm, tools, prompt });
+const executor = new AgentExecutor({ agent, tools });
+
+const result = await executor.invoke({
+  input: "What's 25% of the population of Tokyo?"
+});</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>📋 Planning Pattern (Plan-and-Execute)</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <button class="favorite-btn" onclick="toggleFavorite('planning-pattern')">☆</button>
+                        
+                        <p><strong>Definition:</strong> Agent creates comprehensive plan first, then executes tasks sequentially</p>
+                        
+                        <h4>How It Works:</h4>
+                        <ol>
+                            <li>User → Planner creates detailed plan</li>
+                            <li>Planner writes steps</li>
+                            <li>Executor runs each step</li>
+                            <li>Results aggregate</li>
+                        </ol>
+                        
+                        <p><strong>Best For:</strong> Multi-step projects with dependencies</p>
+                        
+                        <p><strong>✅ Pros:</strong> Organized, clear structure, good for complex tasks</p>
+                        <p><strong>❌ Cons:</strong> Less flexible, upfront planning overhead</p>
+
+                        <h4>Code Example:</h4>
+                        <div class="code-python active">
+                            <div class="code-block">from langchain.agents import PlanAndExecute
+
+# Define planner and executor
+planner = create_planner(llm)
+executor = create_executor(llm, tools)
+
+# Create plan-and-execute agent
+agent = PlanAndExecute(planner=planner, executor=executor)
+
+# Run
+result = agent.run("Plan a trip to Japan including flights, hotels, activities")</div>
+                        </div>
+                        
+                        <div class="code-javascript">
+                            <div class="code-block">const planner = createPlanner(llm);
+const executor = createExecutor(llm, tools);
+
+const agent = new PlanAndExecute({ planner, executor });
+
+const result = await agent.run(
+  "Plan a trip to Japan including flights, hotels, activities"
+);</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>🔍 Reflection Pattern (Self-Reflection)</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <button class="favorite-btn" onclick="toggleFavorite('reflection-pattern')">☆</button>
+                        
+                        <p><strong>Definition:</strong> Agent evaluates its own output using feedback loops to improve</p>
+                        
+                        <h4>How It Works:</h4>
+                        <ol>
+                            <li>Agent generates first draft</li>
+                            <li>Agent critiques its own work</li>
+                            <li>Agent revises based on critique</li>
+                            <li>Repeat until quality threshold met</li>
+                        </ol>
+                        
+                        <p><strong>Best For:</strong> Quality-critical tasks, content creation</p>
+                        
+                        <p><strong>✅ Pros:</strong> Higher quality output, self-correcting</p>
+                        <p><strong>❌ Cons:</strong> Slower, requires additional LLM calls</p>
+
+                        <h4>Code Example:</h4>
+                        <div class="code-python active">
+                            <div class="code-block">def reflection_agent(task):
+    # Generate initial output
+    output = llm.generate(task)
+    
+    # Reflection loop
+    for _ in range(3):  # Max 3 iterations
+        critique = llm.generate(f"Critique this: {output}")
+        
+        if "acceptable" in critique.lower():
+            break
+        
+        # Revise based on critique
+        output = llm.generate(
+            f"Original: {output}\\nCritique: {critique}\\nRevise:"
+        )
+    
+    return output</div>
+                        </div>
+                        
+                        <div class="code-javascript">
+                            <div class="code-block">async function reflectionAgent(task) {
+  let output = await llm.generate(task);
+  
+  for (let i = 0; i < 3; i++) {
+    const critique = await llm.generate(`Critique this: ${output}`);
+    
+    if (critique.toLowerCase().includes("acceptable")) {
+      break;
+    }
+    
+    output = await llm.generate(
+      `Original: ${output}\nCritique: ${critique}\nRevise:`
+    );
+  }
+  
+  return output;
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        <span>👥 Multi-Agent Workflow</span>
+                        <span class="expandable-icon">▶</span>
+                    </div>
+                    <div class="expandable-content">
+                        <button class="favorite-btn" onclick="toggleFavorite('multi-agent-pattern')">☆</button>
+                        
+                        <p><strong>Definition:</strong> Multiple specialized agents work together to accomplish complex task</p>
+                        
+                        <h4>How It Works:</h4>
+                        <ol>
+                            <li>User query goes to aggregator/orchestrator</li>
+                            <li>Orchestrator delegates to specialized agents</li>
+                            <li>Each agent handles specific sub-task</li>
+                            <li>Results aggregate back to user</li>
+                        </ol>
+                        
+                        <p><strong>Used By:</strong> Gemini Deep Research, CrewAI, AutoGen</p>
+                        <p><strong>Best For:</strong> Complex tasks requiring different expertise</p>
+                        
+                        <p><strong>✅ Pros:</strong> Specialization, parallel processing, modular</p>
+                        <p><strong>❌ Cons:</strong> Complex orchestration, coordination overhead</p>
+
+                        <h4>Code Example (CrewAI):</h4>
+                        <div class="code-python active">
+                            <div class="code-block">from crewai import Agent, Task, Crew
+
+# Create specialized agents
+researcher = Agent(role="Researcher", goal="Find information")
+analyst = Agent(role="Analyst", goal="Analyze data")
+writer = Agent(role="Writer", goal="Write report")
+
+# Define tasks
+tasks = [
+    Task(description="Research topic", agent=researcher),
+    Task(description="Analyze findings", agent=analyst),
+    Task(description="Write report", agent=writer)
+]
+
+# Create crew
+crew = Crew(agents=[researcher, analyst, writer], tasks=tasks)
+result = crew.kickoff()</div>
+                        </div>
+                        
+                        <div class="code-javascript">
+                            <div class="code-block">// Multi-agent pattern in LangChain.js
+const researcher = createAgent({ role: "Researcher" });
+const analyst = createAgent({ role: "Analyst" });
+const writer = createAgent({ role: "Writer" });
+
+const orchestrator = new MultiAgentOrchestrator([
+  researcher, analyst, writer
+]);
+
+const result = await orchestrator.execute("Research and write report");</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="coding" class="tab-content">
+            <div class="progress-section">
+                <h3>Your Progress: Coding Agents</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="progress-coding"></div>
+                </div>
+                <p>0% Complete</p>
+            </div>
+
+            <div class="card">
+                <h2>Top 6 Coding Agents (2025)</h2>
+                
+                <div class="grid">
+                    <div class="feature-card">
+                        <button class="favorite-btn" onclick="toggleFavorite('lovable')">☆</button>
+                        <h4>💙 LOVABLE</h4>
+                        <p><strong>What it does:</strong> Converts plain English into working React code</p>
+                        <p><strong>Prompt example:</strong> "Build a landing page with login"</p>
+                        <p><strong>Best for:</strong> Frontend developers, React beginners</p>
+                        <p><strong>Pricing:</strong> Free tier + paid plans</p>
+                        <p><a href="https://lovable.dev/" target="_blank">🔗 Visit Lovable</a></p>
+                    </div>
+
+                    <div class="feature-card">
+                        <button class="favorite-btn" onclick="toggleFavorite('replit')">☆</button>
+                        <h4>🔄 REPLIT</h4>
+                        <p><strong>What it does:</strong> Real-time AI programmer that writes & debugs code</p>
+                        <p><strong>Prompt example:</strong> "Get instant help on JavaScript syntax issues"</p>
+                        <p><strong>Best for:</strong> Live coding, debugging, learning</p>
+                        <p><strong>Pricing:</strong> Free + paid tiers</p>
+                        <p><a href="https://replit.com/" target="_blank">🔗 Visit Replit</a></p>
+                    </div>
+
+                    <div class="feature-card">
+                        <button class="favorite-btn" onclick="toggleFavorite('cursor')">☆</button>
+                        <h4>🖱️ CURSOR</h4>
+                        <p><strong>What it does:</strong> AI-powered code editor with built-in chat</p>
+                        <p><strong>Prompt example:</strong> "Refactor this code to be more efficient"</p>
+                        <p><strong>Best for:</strong> Code reviews, pair programming</p>
+                        <p><strong>Pricing:</strong> Free + Pro plan</p>
+                        <p><a href="https://cursor.sh/" target="_blank">🔗 Visit Cursor</a></p>
+                    </div>
+
+                    <div class="feature-card">
+                        <button class="favorite-btn" onclick="toggleFavorite('windsurf')">☆</button>
+                        <h4>🏄 WINDSURF by Codeium</h4>
+                        <p><strong>What it does:</strong> Autonomous coding agent that builds full-stack apps</p>
+                        <p><strong>Prompt example:</strong> "Build a full-stack app with authentication"</p>
+                        <p><strong>Best for:</strong> Solo devs, startup founders</p>
+                        <p><strong>Pricing:</strong> Free trial + subscription</p>
+                        <p><a href="https://codeium.com/windsurf" target="_blank">🔗 Visit Windsurf</a></p>
+                    </div>
+
+                    <div class="feature-card">
+                        <button class="favorite-btn" onclick="toggleFavorite('bolt-new')">☆</button>
+                        <h4>⚡ BOLT.NEW</h4>
+                        <p><strong>What it does:</strong> Generates code from natural language</p>
+                        <p><strong>Prompt example:</strong> "Create a Python script that scrapes data"</p>
+                        <p><strong>Best for:</strong> Automation, scripting, data tasks</p>
+                        <p><strong>Pricing:</strong> Free + Pro</p>
+                        <p><a href="https://bolt.new/" target="_blank">🔗 Visit Bolt.new</a></p>
+                    </div>
+
+                    <div class="feature-card">
+                        <button class="favorite-btn" onclick="toggleFavorite('v0')">☆</button>
+                        <h4>🎨 V0 by Vercel</h4>
+                        <p><strong>What it does:</strong> Generates UI components from text descriptions</p>
+                        <p><strong>Prompt example:</strong> "Create a responsive pricing table"</p>
+                        <p><strong>Best for:</strong> Frontend developers, rapid prototyping, **Tailwind CSS/React**</p>
+                        <p><strong>Pricing:</strong> Free tier available</p>
+                        <p><a href="https://v0.dev/" target="_blank">🔗 Visit V0</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Best Practices for Coding Agents</h2>
+                
+                <h3>Prompting Tips</h3>
+                <ul>
+                    <li>✅ Be specific about **version,** language, and framework</li>
+                    <li>✅ Provide context about the project</li>
+                    <li>✅ Include example inputs/outputs</li>
+                    <li>✅ Specify code style preferences</li>
+                </ul>
+
+                <h3>Security Considerations</h3>
+                <ul>
+                    <li>🔒 Never share sensitive API keys in prompts</li>
+                    <li>🔍 Review generated code for vulnerabilities</li>
+                    <li>🛡️ Use code scanning tools</li>
+                    <li>⚠️ Don't blindly trust generated security code</li>
+                    <li>**👨‍💻 Finalize with Human Code Review and Testing**</li>
+                    <li>**📝 Verify output for code licensing and IP compliance**</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="learning" class="tab-content">
+            <div class="progress-section">
+                <h3>Your Progress: Learning Path</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="progress-learning"></div>
+                </div>
+                <p>0% Complete</p>
+            </div>
+
+            <div class="card">
+                <h2>7 Stages of AI Agent Mastery</h2>
+                
+                <div class="learning-level beginner">
+                    <h3>🟢 Level 1: Understand What an AI Agent Is (BEGINNER)</h3>
+                    <p><strong>Goal:</strong> For beginners exploring what AI agents are and why they matter</p>
+                    
+                    <h4>Topics:</h4>
+                    <ul>
+                        <li>Performance vs. rate</li>
+                        <li>Function calling basics</li>
+                        <li>Prompt engineering fundamentals</li>
+                        <li>Agent vs. skillful vs. agentic</li>
+                    </ul>
+                    
+                    <h4>Skills to Learn:</h4>
+                    <ul>
+                        <li>Understand AI agent basics</li>
+                        <li>Learn LLM fundamentals</li>
+                        <li>Grasp tool-calling concepts</li>
+                    </ul>
+                    
+                    <h4>Projects:</h4>
+                    <ul>
+                        <li><span class="badge success">ChatGPT Clone</span></li>
+                        <li><span class="badge success">Simple Q&A Bot</span></li>
+                        <li><span class="badge success">Basic Agent Demo</span> (Simulate a plan-and-execute loop)</li>
+                    </ul>
+                    
+                    <p><strong>⏱️ Time:</strong> 1-2 weeks</p>
+                </div>
+
+                <div class="learning-level beginner">
+                    <h3>🟢 Level 2: Learn Prompt Engineering & Role Design</h3>
+                    <p><strong>Goal:</strong> Design agent behavior with advanced prompts and predefined roles</p>
+                    
+                    <h4>Topics:</h4>
+                    <ul>
+                        <li>System vs. user prompts</li>
+                        <li>Prompt patterns</li>
+                        <li>Role definition</li>
+                        <li>Few-shot learning</li>
+                    </ul>
+                    
+                    <h4>Projects:</h4>
+                    <ul>
+                        <li><span class="badge success">OpenAI Playground experiments</span></li>
+                        <li><span class="badge success">Custom chatbots</span></li>
+                    </ul>
+                    
+                    <p><strong>⏱️ Time:</strong> 1-2 weeks</p>
+                </div>
+
+                <div class="learning-level beginner">
+                    <h3>🟢 Level 3: Add Memory & Context Handling</h3>
+                    <p><strong>Goal:</strong> Enable agents to store, recall, and use memory across conversations</p>
+                    
+                    <h4>Topics:</h4>
+                    <ul>
+                        <li>Short-term memory (in-context)</li>
+                        <li>Long-term memory (external storage)</li>
+                        <li>Persistent conversations</li>
+                        <li>Context window management</li>
+                    </ul>
+                    
+                    <h4>Projects:</h4>
+                    <ul>
+                        <li><span class="badge success">Long-term memory bots</span></li>
+                        <li><span class="badge success">Personal coach with memory</span></li>
+                    </ul>
+                    
+                    <p><strong>⏱️ Time:</strong> 2-3 weeks</p>
+                </div>
+
+                <div class="learning-level intermediate">
+                    <h3>🟠 Level 4: Enable Tool Use and Action Execution (INTERMEDIATE)</h3>
+                    <p><strong>Goal:</strong> Let agents execute real actions using tools and API calls</p>
+                    
+                    <h4>Topics:</h4>
+                    <ul>
+                        <li>Tool/function definition</li>
+                        <li>Function calling</li>
+                        <li>API integration</li>
+                        <li>External data sources</li>
+                    </ul>
+                    
+                    <h4>Projects:</h4>
+                    <ul>
+                        <li><span class="badge warning">Weather Tool Agent</span></li>
+                        <li><span class="badge warning">Email Tool</span></li>
+                        <li><span class="badge warning">Database Tool</span></li>
+                    </ul>
+                    
+                    <p><strong>⏱️ Time:</strong> 2-3 weeks</p>
+                </div>
+
+                <div class="learning-level intermediate">
+                    <h3>🟠 Level 5: Design Multi-Step Reasoning and Planning</h3>
+                    <p><strong>Goal:</strong> Build agents that plan, reason, and self-correct to achieve complex goals</p>
+                    
+                    <h4>Topics:</h4>
+                    <ul>
+                        <li>Task decomposition</li>
+                        <li>Chain-of-Thought</li>
+                        <li>Tree-of-Thoughts</li>
+                        <li>Planning loops</li>
+                        <li>Self-correction</li>
+                    </ul>
+                    
+                    <h4>Projects:</h4>
+                    <ul>
+                        <li><span class="badge warning">Research Agent</span></li>
+                        <li><span class="badge warning">Planner-Executor agents</span></li>
+                        <li><span class="badge warning">Reflection Agents</span></li>
+                    </ul>
+                    
+                    <p><strong>⏱️ Time:</strong> 3-4 weeks</p>
+                </div>
+
+                <div class="learning-level advanced">
+                    <h3>🟣 Level 6: Deploy Multi-Agent Systems (ADVANCED)</h3>
+                    <p><strong>Goal:</strong> Create groups of specialized agents that collaborate, delegate, and specialize</p>
+                    
+                    <h4>Topics:</h4>
+                    <ul>
+                        <li>Role-based agents</li>
+                        <li>Shared memory</li>
+                        <li>Inter-agent communication</li>
+                        <li>Task delegation</li>
+                        <li>Multi-agent debate</li>
+                        <li>**CrewAI Framework**</li>
+                    </ul>
+                    
+                    <h4>Projects:</h4>
+                    <ul>
+                        <li><span class="badge" style="background: var(--vibrant-purple); color: white;">CrewAI role-based crews</span> (Orchestrate a team of agents with specific roles, goals, and backstories)</li>
+                        <li><span class="badge" style="background: var(--vibrant-purple); color: white;">Research team workflow</span></li>
+                    </ul>
+                    
+                    <p><strong>⏱️ Time:</strong> 4-6 weeks</p>
+                </div>
+
+                <div class="learning-level advanced">
+                    <h3>🟣 Level 7: Build Agentic Ecosystems with Real Automation</h3>
+                    <p><strong>Goal:</strong> Launch enterprise-grade agent systems that integrate with real-world workflows</p>
+                    
+                    <h4>Topics:</h4>
+                    <ul>
+                        <li>Event-based agents</li>
+                        <li>Agent lifecycle management</li>
+                        <li>System monitoring</li>
+                        <li>Testing & Evaluation</li>
+                        <li>Governance & safety</li>
+                    </ul>
+                    
+                    <h4>Projects:</h4>
+                    <ul>
+                        <li><span class="badge" style="background: var(--vibrant-purple); color: white;">Business automation workflows</span></li>
+                        <li><span class="badge" style="background: var(--vibrant-purple); color: white;">Customer support automation</span></li>
+                    </ul>
+                    
+                    <p><strong>⏱️ Time:</strong> 6-8 weeks ongoing</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Skills Checklist</h2>
+                <p>Track your progress as you master AI agent development:</p>
+                
+                <h3>Foundation Skills</h3>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="skill-1"> <label for="skill-1">Prompt Engineering</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="skill-2"> <label for="skill-2">LLM Integration</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="skill-3"> <label for="skill-3">Memory Management</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="skill-4"> <label for="skill-4">API Integration</label>
+                </div>
+                
+                <h3>Advanced Skills</h3>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="skill-5"> <label for="skill-5">Agent Frameworks</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="skill-6"> <label for="skill-6">Vector Databases</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="skill-7"> <label for="skill-7">Multi-Agent Systems</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="skill-8"> <label for="skill-8">Production Deployment</label>
+                </div>
+            </div>
+        </div>
+
+        <div id="usecases" class="tab-content">
+            <div class="progress-section">
+                <h3>Your Progress: Use Cases</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="progress-usecases"></div>
+                </div>
+                <p>0% Complete</p>
+            </div>
+
+            <div class="card">
+                <h2>AI Use Cases to 10x Your Productivity</h2>
+                
+                <table>
+                    <tr>
+                        <th>AI Use Case</th>
+                        <th>Tool</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Content Creation</strong></td>
+                        <td>Jasper, Copy.ai</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Analysis</strong></td>
+                        <td>Julius AI, Code Interpreter</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customer Support</strong></td>
+                        <td>Retell AI, Vectorshift AI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lead Generation</strong></td>
+                        <td>Clay, Phantombuster</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Document Processing</strong></td>
+                        <td>ChatGPT, Grok</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email Automation</strong></td>
+                        <td>Instantly, Saleshandy</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Real-World Agent Applications</h2>
+                
+                <h3>Customer Support</h3>
+                <div class="grid">
+                    <div class="feature-card">
+                        <h4>Auto-booking meetings</h4>
+                        <p>Agents can schedule appointments, send calendar invites, and manage availability</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Writing follow-up emails</h4>
+                        <p>Automatically compose and send personalized follow-up messages</p>
+                    </div>
+                </div>
+
+                <h3>Business Operations</h3>
+                <div class="grid">
+                    <div class="feature-card">
+                        <h4>Running business workflows</h4>
+                        <p>End-to-end automation of complex business processes</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Market research</h4>
+                        <p>Gather competitive intelligence and market insights automatically</p>
+                    </div>
+                </div>
+
+                <h3>Development</h3>
+                <div class="grid">
+                    <div class="feature-card">
+                        <h4>Code generation</h4>
+                        <p>Automatically write, test, and debug code</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Documentation</h4>
+                        <p>Generate technical documentation from codebases</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>5-Step Process to Get Started</h2>
+                
+                <div class="learning-level beginner">
+                    <h3>Step 1: Identify AI Use Case</h3>
+                    <p><strong>When to automate:</strong> Repetitive tasks, data processing, content creation, customer service</p>
+                    <p><strong>Choose the right AI:</strong> ChatGPT for text & image, Claude for analysis & code, Gemini for multimodal</p>
+                </div>
+
+                <div class="learning-level beginner">
+                    <h3>Step 2: Select AI Model/Tool</h3>
+                    <p>Choose based on your use case from the comparison tables in previous tabs</p>
+                </div>
+
+                <div class="learning-level intermediate">
+                    <h3>Step 3: Design Agent Workflow</h3>
+                    <p><strong>Map the process:</strong> Define inputs/outputs & decision logic</p>
+                </div>
+
+                <div class="learning-level intermediate">
+                    <h3>Step 4: Connect APIs & Data</h3>
+                    <p><strong>Integration Setup:</strong> Link tools, databases & platforms</p>
+                </div>
+
+                <div class="learning-level advanced">
+                    <h3>Step 5: Deploy & Monitor</h3>
+                    <p><strong>Launch:</strong> Track performance, human evals, optimize results</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="directory" class="tab-content">
+            <div class="progress-section">
+                <h3>Your Progress: Agent Directory</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="progress-directory"></div>
+                </div>
+                <p>0% Complete</p>
+            </div>
+
+            <div class="card">
+                <h2>AI Agents Directory (100+ Agents)</h2>
+                <p>Explore specialized AI agents organized by category. Click on an agent name to search for more details.</p>
+                
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>💼 No-Code Business Workflow Agents (9 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Lindy+AI+Agent', '_blank'); return false;">Lindy</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Bardeen+AI+Agent', '_blank'); return false;">Bardeen</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Relevance+AI+Agent', '_blank'); return false;">Relevance AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Lovable+AI+Agent', '_blank'); return false;">Lovable</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Flowice+AI+Agent', '_blank'); return false;">Flowice AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Portals+AI+Agent', '_blank'); return false;">Portals AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Zapier+AI+Agents', '_blank'); return false;">Zapier AI Agents</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Virtualsync+AI+Agent', '_blank'); return false;">Virtualsync</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Make+AI+Agent', '_blank'); return false;">Make</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>🛠️ Low-Code Internal Tool Agents (9 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Budibase+AI+Agent', '_blank'); return false;">Budibase</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Dronahq+AI+Agent', '_blank'); return false;">Dronahq</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Retool+AI+Agent', '_blank'); return false;">Retool AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Tooljet+AI+Agent', '_blank'); return false;">Tooljet AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Appsmith+AI+Agent', '_blank'); return false;">Appsmith AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Interaratio+AI+Agent', '_blank'); return false;">Interaratio</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Pory.io+AI+Agent', '_blank'); return false;">Pory.io</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Jext+AI+Agent', '_blank'); return false;">Jext</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Superblocks+Admin+AI+Agent', '_blank'); return false;">Superblocks Admin AI</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>🔌 API & Integration-Focused Agents (10 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Portman+AI+Agent', '_blank'); return false;">Portman AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Marit+AI+Agent', '_blank'); return false;">Marit AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Tray.io+AI+Agent', '_blank'); return false;">Tray.io</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Stack+AI+Agent', '_blank'); return false;">Stack AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Pipedream+AI+Agent', '_blank'); return false;">Pipedream</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Lyzer+Agent+Studio+AI+Agent', '_blank'); return false;">Lyzer Agent Studio</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Questmate+AI+Agent', '_blank'); return false;">Questmate AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Zams+AI+Agent', '_blank'); return false;">Zams</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Workato+AI+Agent', '_blank'); return false;">Workato AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=n8n+AI+Agent', '_blank'); return false;">n8n</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>🎨 Solopreneur & Creator Agents (9 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Promptly+AI+Agent', '_blank'); return false;">Promptly</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Slated+AI+Agent', '_blank'); return false;">Slated AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Tugron+AI+Agent', '_blank'); return false;">Tugron AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=BerriAI+Agent', '_blank'); return false;">BerriAI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Copy+Monkey+AI+Agent', '_blank'); return false;">Copy Monkey</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Adflow+AI+Agent', '_blank'); return false;">Adflow AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Vzy+AI+Agent', '_blank'); return false;">Vzy AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Typestream+AI+Agent', '_blank'); return false;">Typestream AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Durable+AI+Agent', '_blank'); return false;">Durable AI</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>⚙️ Open Source Agent Frameworks (9 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=LangChain+Agents+Framework', '_blank'); return false;">LangChain Agents</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Flowise+AI+Framework', '_blank'); return false;">Flowise</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=AgentGPT+Framework', '_blank'); return false;">AgentGPT</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=CrewAI+Framework', '_blank'); return false;">CrewAI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Botpress+Framework', '_blank'); return false;">Botpress</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=SuperAgent+Framework', '_blank'); return false;">SuperAgent</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Bricklayer+AI+Framework', '_blank'); return false;">Bricklayer AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=OpenAgents+Framework', '_blank'); return false;">OpenAgents</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Dify+AI+Framework', '_blank'); return false;">Dify</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>📊 Data & Knowledge Agents (9 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=MindStudio+AI+Agent', '_blank'); return false;">MindStudio</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Genei+AI+Agent', '_blank'); return false;">Genei</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Humata+AI+Agent', '_blank'); return false;">Humata</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=AskViable+AI+Agent', '_blank'); return false;">AskViable</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Harpa+AI+Agent', '_blank'); return false;">Harpa AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Komo+AI+Agent', '_blank'); return false;">Komo AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Kadoa+AI+Agent', '_blank'); return false;">Kadoa</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Kanch+AI+Agent', '_blank'); return false;">Kanch AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Dataherald+AI+Agent', '_blank'); return false;">Dataherald</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>🤖 Autonomous & Reasoning Agents (9 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=ChatGPT+Agent', '_blank'); return false;">ChatGPT Agent</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=E2B+Agent', '_blank'); return false;">E2B Agent</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=AutoGPT', '_blank'); return false;">AutoGPT</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=AgentOps', '_blank'); return false;">AgentOps</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Dify+Autonomous+Agent', '_blank'); return false;">Dify</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Langroid+Autonomous+Agent', '_blank'); return false;">Langroid</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=CrewAI+Autonomous+Agent', '_blank'); return false;">CrewAI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=OpenDevin', '_blank'); return false;">OpenDevin</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=MetaGPT', '_blank'); return false;">MetaGPT</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>🏢 Enterprise Automation Agents (8 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Vertex+AI+Agent', '_blank'); return false;">Vertex AI Agent</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Automation+Anywhere+AI+Agent', '_blank'); return false;">Automation Anywhere AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Microsoft+Copilot+Agent', '_blank'); return false;">Microsoft Copilot</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Beam+AI+Agent', '_blank'); return false;">Beam AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=UIPath+AI+Centre', '_blank'); return false;">UIPath AI Centre</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Arcee+AI+Agent', '_blank'); return false;">Arcee AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Superblocks+AI+Agent', '_blank'); return false;">Superblocks AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=IBM+Watson+AI+Agent', '_blank'); return false;">IBM Watson AI</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-category">
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span>🎯 Voice-Based Agents (10 agents)</span>
+                            <span class="expandable-icon">▶</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="agent-grid">
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Synthflow+AI+Agent', '_blank'); return false;">Synthflow AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=PolyAI+Agent', '_blank'); return false;">PolyAI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Verage+AI+Studio+AI+Agent', '_blank'); return false;">Verage AI Studio</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Voyae+AI+Agent', '_blank'); return false;">Voyae</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Resemble+AI+Agent', '_blank'); return false;">Resemble AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Voiceflow+AI+Agent', '_blank'); return false;">Voiceflow</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Alan+AI+Agent', '_blank'); return false;">Alan AI</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Speechify+AI+Agent', '_blank'); return false;">Speechify</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=Vapi.ai+AI+Agent', '_blank'); return false;">Vapi.ai</a></div>
+                                <div class="agent-item"><a href="#" onclick="window.open('https://www.google.com/search?q=ElevenLabs+AI+Agent', '_blank'); return false;">ElevenLabs</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="floating-btn" onclick="openModal('journal')" title="Add Journal Entry">📝</button>
+
+    <div id="journalModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('journal')">&times;</span>
+            <h2>📝 Add Learning Journal Entry</h2>
+            <form id="journalForm">
+                <label>Tab:</label>
+                <input type="text" id="journalTab" readonly>
+                
+                <label>Time Spent (minutes):</label>
+                <input type="number" id="journalTime" min="1" placeholder="30">
+                
+                <label>Confidence Level:</label>
+                <div class="star-rating" id="confidenceRating">
+                    <span class="star" onclick="setRating(1)">☆</span>
+                    <span class="star" onclick="setRating(2)">☆</span>
+                    <span class="star" onclick="setRating(3)">☆</span>
+                    <span class="star" onclick="setRating(4)">☆</span>
+                    <span class="star" onclick="setRating(5)">☆</span>
+                </div>
+                
+                <label>Notes:</label>
+                <textarea id="journalNotes" rows="4" placeholder="What did you learn? Any challenges?"></textarea>
+                
+                <button type="button" class="btn btn-primary" onclick="saveJournal()">💾 Save Entry</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="favoritesModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('favorites')">&times;</span>
+            <h2>⭐ Your Favorites</h2>
+            <div id="favoritesList"></div>
+        </div>
+    </div>
+
+    <div id="progressModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('progress')">&times;</span>
+            <h2>📊 Your Learning Progress</h2>
+            <div id="progressDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentTab = 'fundamentals';
+        let codeLanguage = 'python';
+        let favorites = new Set();
+        let journalEntries = [];
+        let currentRating = 0;
+
+        // Initialize app
+        async function initApp() {
+            await loadUserData();
+            updateCodeLanguage();
+            setupSearch();
+        }
+
+        // Tab switching
+        function switchTab(tabId) {
+            currentTab = tabId;
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update active tab button
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Update journal modal tab field
+            const tabNames = {
+                'fundamentals': 'Fundamentals',
+                'concepts': 'Key Concepts',
+                'frameworks': 'Frameworks & Tools',
+                'patterns': 'Design Patterns',
+                'coding': 'Coding Agents',
+                'learning': 'Learning Path',
+                'usecases': 'Use Cases',
+                'directory': 'Agent Directory'
+            };
+            document.getElementById('journalTab').value = tabNames[tabId];
+            
+            // Save last tab
+            saveToStorage('lastTab', tabId);
+        }
+
+        // Code language toggle
+        function setCodeLanguage(lang) {
+            codeLanguage = lang;
+            
+            // Update toggle buttons
+            document.querySelectorAll('.code-toggle button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide code blocks
+            document.querySelectorAll('.code-python').forEach(el => {
+                el.classList.toggle('active', lang === 'python');
+            });
+            document.querySelectorAll('.code-javascript').forEach(el => {
+                el.classList.toggle('active', lang === 'javascript');
+            });
+            
+            saveToStorage('codeLanguage', lang);
+        }
+
+        function updateCodeLanguage() {
+            document.querySelectorAll('.code-python').forEach(el => {
+                el.classList.toggle('active', codeLanguage === 'python');
+            });
+            document.querySelectorAll('.code-javascript').forEach(el => {
+                el.classList.toggle('active', codeLanguage === 'javascript');
+            });
+        }
+
+        // Expandable sections
+        function toggleExpandable(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.expandable-icon');
+            
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+        }
+
+        // Favorites
+        function toggleFavorite(itemId) {
+            const btn = event.target;
+            
+            if (favorites.has(itemId)) {
+                favorites.delete(itemId);
+                btn.textContent = '☆';
+                btn.classList.remove('active');
+            } else {
+                favorites.add(itemId);
+                btn.textContent = '⭐';
+                btn.classList.add('active');
+            }
+            
+            saveToStorage('favorites', Array.from(favorites));
+        }
+
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                if (query.length < 2) return;
+                
+                // Simple search highlighting
+                document.querySelectorAll('.card h2, .card h3, .card h4, .card p').forEach(el => {
+                    const text = el.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        el.style.backgroundColor = '#fef3c7';
+                    } else {
+                        el.style.backgroundColor = '';
+                    }
+                });
+            });
+        }
+
+        // Modals
+        function openModal(type) {
+            const modals = {
+                'journal': 'journalModal',
+                'favorites': 'favoritesModal',
+                'progress': 'progressModal'
+            };
+            
+            const modalId = modals[type];
+            document.getElementById(modalId).classList.add('active');
+            
+            if (type === 'favorites') {
+                displayFavorites();
+            } else if (type === 'progress') {
+                displayProgress();
+            }
+        }
+
+        function closeModal(type) {
+            const modals = {
+                'journal': 'journalModal',
+                'favorites': 'favoritesModal',
+                'progress': 'progressModal'
+            };
+            
+            const modalId = modals[type];
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Journal
+        function setRating(rating) {
+            currentRating = rating;
+            const stars = document.querySelectorAll('#confidenceRating .star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('filled');
+                    star.textContent = '★';
+                } else {
+                    star.classList.remove('filled');
+                    star.textContent = '☆';
+                }
+            });
+        }
+
+        async function saveJournal() {
+            const entry = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                tab: document.getElementById('journalTab').value,
+                timeSpent: parseInt(document.getElementById('journalTime').value) || 0,
+                confidence: currentRating,
+                notes: document.getElementById('journalNotes').value
+            };
+            
+            journalEntries.push(entry);
+            await saveToStorage('journal', journalEntries);
+            
+            // Reset form
+            document.getElementById('journalTime').value = '';
+            document.getElementById('journalNotes').value = '';
+            setRating(0);
+            
+            closeModal('journal');
+            alert('📝 Journal entry saved!');
+        }
+
+        // Display favorites
+        function displayFavorites() {
+            const container = document.getElementById('favoritesList');
+            if (favorites.size === 0) {
+                container.innerHTML = '<p>No favorites yet. Click the ☆ icon next to items to add them!</p>';
+                return;
+            }
+            
+            container.innerHTML = '<ul>' + 
+                Array.from(favorites).map(fav => `<li>⭐ ${fav}</li>`).join('') + 
+                '</ul>';
+        }
+
+        // Display progress
+        function displayProgress() {
+            const container = document.getElementById('progressDetails');
+            const tabs = ['fundamentals', 'concepts', 'frameworks', 'patterns', 'coding', 'learning', 'usecases', 'directory'];
+            
+            let html = '<h3>Overall Progress</h3>';
+            tabs.forEach(tab => {
+                const progress = 0; // Would calculate based on completed items
+                html += `
+                    <div style="margin: 16px 0;">
+                        <p><strong>${tab.charAt(0).toUpperCase() + tab.slice(1)}:</strong> ${progress}%</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '<h3>Journal Entries</h3>';
+            html += `<p>Total entries: ${journalEntries.length}</p>`;
+            
+            container.innerHTML = html;
+        }
+
+        // Storage functions using window.storage
+        async function saveToStorage(key, value) {
+            try {
+                await window.storage.set(key, JSON.stringify(value));
+            } catch (error) {
+                console.log('Storage not available, using memory only');
+            }
+        }
+
+        async function loadFromStorage(key) {
+            try {
+                const result = await window.storage.get(key);
+                return result ? JSON.parse(result.value) : null;
+            } catch (error) {
+                console.log('Storage not available');
+                return null;
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const savedFavorites = await loadFromStorage('favorites');
+                if (savedFavorites) {
+                    favorites = new Set(savedFavorites);
+                    // Update UI for favorites
+                    favorites.forEach(fav => {
+                        const btn = document.querySelector(`[onclick*="${fav}"]`);
+                        if (btn) {
+                            btn.textContent = '⭐';
+                            btn.classList.add('active');
+                        }
+                    });
+                }
+                
+                const savedJournal = await loadFromStorage('journal');
+                if (savedJournal) {
+                    journalEntries = savedJournal;
+                }
+                
+                const savedLang = await loadFromStorage('codeLanguage');
+                if (savedLang) {
+                    codeLanguage = savedLang;
+                }
+                
+                const savedTab = await loadFromStorage('lastTab');
+                if (savedTab) {
+                    switchTab(savedTab);
+                }
+            } catch (error) {
+                console.log('Could not load user data');
+            }
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Initialize on load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
