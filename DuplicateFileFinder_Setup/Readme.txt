@@ -1,1 +1,1 @@
-This project creates a report in html showing which files (image and video) are duplicated in a selected directory. There is no download for the executable right now. If you want to see it or the code, please e-mail me. 
+This project creates a report in html showing which files (image and video) are duplicated in a selected directory. 
