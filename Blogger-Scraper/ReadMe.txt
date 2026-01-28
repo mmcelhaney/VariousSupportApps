@@ -1,0 +1,1 @@
+The Purpose of this App is to web scrape Blogger blogs. It downloads each posts grouped together in *.xml files by year. Nothing to download.
