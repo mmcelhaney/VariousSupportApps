@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master AI in 30 Days - Learning Calendar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f5f5f5; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { text-align: center; margin-bottom: 10px; color: #2c3e50; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 20px; font-size: 18px; }
+        .progress-section { margin-bottom: 20px; text-align: center; }
+        .progress-stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 15px; flex-wrap: wrap; }
+        .stat { font-size: 16px; color: #333; }
+        .stat-value { font-weight: bold; color: #007bff; font-size: 20px; }
+        .progress-bar-container { width: 100%; max-width: 600px; height: 30px; background-color: #e9ecef; border-radius: 15px; overflow: hidden; margin: 0 auto 15px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #20c997); transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; text-shadow: 0 1px 1px rgba(0,0,0,0.2); }
+        .action-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .action-btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; transition: all 0.2s; font-weight: 600; }
+        .action-btn:active { transform: scale(0.98); }
+        .reset-btn { background-color: #dc3545; color: white; }
+        .reset-btn:hover { background-color: #c82333; }
+        .print-btn { background-color: #6c757d; color: white; }
+        .print-btn:hover { background-color: #5a6268; }
+        .export-btn { background-color: #28a745; color: white; }
+        .export-btn:hover { background-color: #218838; }
+        .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; overflow-x: auto; }
+        .tab { padding: 12px 24px; cursor: pointer; background-color: transparent; border: none; font-size: 16px; color: #666; transition: all 0.3s; white-space: nowrap; }
+        .tab:hover { background-color: #f0f0f0; }
+        .tab.active { color: #007bff; border-bottom: 3px solid #007bff; margin-bottom: -2px; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 20px; }
+        .day-header { text-align: center; font-weight: bold; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #555; }
+        .calendar-day { aspect-ratio: 1; border: 2px solid #ddd; border-radius: 8px; padding: 10px; position: relative; cursor: pointer; transition: all 0.2s; background-color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .calendar-day:hover { border-color: #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: translateY(-2px); z-index: 2; }
+        .calendar-day.completed { background-color: #d4edda; border-color: #28a745; }
+        .calendar-day.inactive { background-color: #f8f9fa; cursor: default; opacity: 0.6; }
+        .calendar-day.inactive:hover { border-color: #ddd; box-shadow: none; transform: none; }
+        .checkmark-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #28a745; opacity: 0.3; pointer-events: none; display: none; }
+        .calendar-day.completed .checkmark-overlay { display: block; }
+        .date-display { position: absolute; top: 8px; left: 8px; font-size: 11px; color: #007bff; font-weight: bold; }
+        .day-number { position: absolute; top: 8px; right: 8px; font-size: 16px; color: #dc3545; font-weight: bold; }
+        .tool-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px; text-align: center; line-height: 1.2; margin-top: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .tool-name { font-size: 11px; text-align: center; margin-top: 8px; color: #333; font-weight: 600; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); overflow-y: auto; backdrop-filter: blur(2px); }
+        .modal-content { background-color: white; margin: 50px auto; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: slideDown 0.3s; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close { position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; transition: color 0.2s; }
+        .close:hover { color: #333; }
+        .completion-checkbox { margin: 20px 0; display: flex; align-items: center; gap: 10px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; }
+        .completion-checkbox input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
+        .completion-checkbox label { font-size: 16px; font-weight: 600; cursor: pointer; }
+        .modal-description { margin: 20px 0; line-height: 1.6; color: #444; font-size: 16px; }
+        .modal-action { margin: 20px 0; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; }
+        .modal-action h4 { color: #856404; margin-bottom: 8px; font-size: 16px; }
+        .modal-action p { color: #856404; line-height: 1.5; margin: 0; }
+        .modal-links { margin-top: 20px; }
+        .modal-links h3, .notes-section h3 { margin-bottom: 10px; color: #333; }
+        .link-item { display: block; color: #007bff; text-decoration: none; padding: 10px; border: 1px solid #eee; margin-bottom: 8px; border-radius: 4px; transition: background 0.2s; }
+        .link-item:hover { background-color: #f0f8ff; text-decoration: none; border-color: #b8daff; }
+        .notes-textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 14px; resize: vertical; }
+        .notes-textarea:focus { outline: none; border-color: #007bff; box-shadow: 0 0 0 2px rgba(0,123,255,0.25); }
+        .subtabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #ddd; overflow-x: auto; }
+        .subtab { padding: 10px 20px; cursor: pointer; background-color: transparent; border: none; font-size: 14px; color: #666; transition: all 0.3s; white-space: nowrap; }
+        .subtab:hover { background-color: #f0f0f0; }
+        .subtab.active { color: #007bff; border-bottom: 2px solid #007bff; }
+        .subtab-content { display: none; padding: 20px 0; }
+        .subtab-content.active { display: block; }
+        .thumbnail { width: 100%; max-width: 600px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.3s; display: block; margin: 0 auto; }
+        .thumbnail:hover { border-color: #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .image-modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); }
+        .image-modal.show { display: flex; align-items: center; justify-content: center; }
+        .image-modal-content { max-width: 95%; max-height: 95vh; object-fit: contain; }
+        .reference-list { list-style: none; }
+        .reference-list li { background: white; border: 1px solid #eee; margin-bottom: 10px; padding: 15px; border-radius: 6px; }
+        .reference-list strong { color: #333; display: block; margin-bottom: 5px; }
+        .reference-list a { color: #007bff; text-decoration: none; word-break: break-all; }
+        .reference-list a:hover { text-decoration: underline; }
+        @media (max-width: 768px) {
+            .calendar { grid-template-columns: repeat(2, 1fr); }
+            .day-header { display: none; }
+            .progress-stats { gap: 10px; flex-direction: column; align-items: center; }
+            .action-buttons { flex-direction: column; }
+            .action-btn { width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .calendar { grid-template-columns: 1fr; }
+            .calendar-day { flex-direction: row; justify-content: flex-start; aspect-ratio: auto; height: 80px; padding: 0 15px; }
+            .tool-icon { margin-top: 0; margin-right: 15px; }
+            .tool-name { margin-top: 0; text-align: left; font-size: 14px; }
+            .day-number { top: 50%; transform: translateY(-50%); }
+            .date-display { top: 5px; left: 10px; }
+            .checkmark-overlay { right: 40px; left: auto; top: 50%; transform: translateY(-50%); font-size: 30px; }
+        }
+        @media print {
+            .tabs, .action-buttons, .progress-section, .tab:not(.active) { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: none; }
+            .calendar-day:not(.completed) { opacity: 0.3; border: 1px solid #ccc; }
+            body { background-color: white; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Master AI in 30 DAYS</h1>
+        <div class="subtitle">One tool at a time</div>
+        <div class="progress-section">
+            <div class="progress-stats">
+                <div class="stat"><span class="stat-value" id="completedCount">0</span>/30 Days Completed</div>
+                <div class="stat">Progress: <span class="stat-value" id="percentComplete">0%</span></div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button class="action-btn reset-btn" onclick="resetProgress()">Reset Progress</button>
+            <button class="action-btn print-btn" onclick="printCalendar()">Print Calendar</button>
+            <button class="action-btn export-btn" onclick="exportChecklist()">Export Checklist</button>
+        </div>
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'calendar-tab')">Calendar</button>
+            <button class="tab" onclick="openTab(event, 'references-tab')">References</button>
+        </div>
+        <div id="calendar-tab" class="tab-content active">
+            <div class="calendar" id="calendar"></div>
+        </div>
+        <div id="references-tab" class="tab-content">
+            <div class="subtabs">
+                <button class="subtab active" onclick="openSubtab(event, 'graphics-subtab')">Graphics</button>
+                <button class="subtab" onclick="openSubtab(event, 'urls-subtab')">All Resource URLs</button>
+            </div>
+            <div id="graphics-subtab" class="subtab-content active">
+                <img src="20260105_001942.jpg" class="thumbnail" onclick="openImageModal('20260105_001942.jpg')" alt="Master AI in 30 Days">
+                <p style="text-align: left; margin-top: 10px; color: #666; font-size: 0.9em;">(Click image to expand)</p>
+            </div>
+            <div id="graphics-subtab" class="subtab-content active">
+                <img src="Gemini_Generated_Image_w32dodw32dodw32d.png" class="thumbnail" onclick="openImageModal('Gemini_Generated_Image_w32dodw32dodw32d.png')" alt="Master AI in 30 Days v2">
+                <p style="text-align: right; margin-top: 10px; color: #666; font-size: 0.9em;">(Click image to expand)</p>
+            </div>
+            <div id="urls-subtab" class="subtab-content">
+                <div id="urlListContainer"></div>
+            </div>
+        </div>
+    </div>
+    <div id="dayModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Day Content</h2>
+            <div class="completion-checkbox">
+                <input type="checkbox" id="completionCheckbox" onchange="toggleCompletion()">
+                <label for="completionCheckbox">Mark as Completed</label>
+            </div>
+            <div id="modalContent" class="modal-description"></div>
+            <div id="modalAction" class="modal-action" style="display: none;">
+                <h4>Try This Action:</h4>
+                <p id="modalActionText"></p>
+            </div>
+            <div id="modalLinks" class="modal-links"></div>
+            <div class="notes-section">
+                <h3>Personal Notes</h3>
+                <textarea id="notesTextarea" class="notes-textarea" placeholder="Add your notes, learnings, or thoughts about this tool..."></textarea>
+            </div>
+        </div>
+    </div>
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="close" style="position: fixed; top: 20px; right: 40px; color: white; font-size: 40px; cursor: pointer;">&times;</span>
+        <img class="image-modal-content" id="fullImage" src="" alt="Full size image">
+    </div>
+    <script>
+        const startDate = new Date(2026, 0, 6); 
+        startDate.setHours(0,0,0,0);
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        let currentDay = null;
+
+        const aiTools = {
+            1: { name: "ChatGPT", icon: "GPT", color: "#FF8C00", description: "Instruct the AI: 'Act as my content strategist. Best are my top 5 niche topics—let's brainstorm viral posts for my niche.'", action: "Ask it any content creation and planning questions, then plan its posts for any occasion.", urls: ["https://chat.openai.com", "https://openai.com/chatgpt"] },
+            2: { name: "Claude.ai", icon: "CLA", color: "#D2691E", description: "Provide a long document and prompt the AI: 'Read document in plain language and summarize in 9 weekly hooks posts with hooks and CofAs.'", action: "Read & analyze documents and deep research. Read this text and turn it into 10 short-word Facebook posts for my page.", urls: ["https://claude.ai"] },
+            3: { name: "GPT-Image II", icon: "IMG", color: "#4A90E2", description: "Create a chat cookbook in pop culture, foreign markets 'for sale' so.", action: "Turn text into thumbnails, ads, and product images. Create bundles to build, colorful style.", urls: ["https://chat.openai.com", "https://openai.com/dall-e"] },
+            4: { name: "Gemini", icon: "GEM", color: "#00BFA5", description: "Instruct the AI: 'Use me like a marketing contrast and give me 5 headline ideas for this office to emp to timeless, 3 mill ideas.'", action: "Let it be a creative assistant and organizer. Explain this topic in simple English, then give 5 good titles for my article.", urls: ["https://gemini.google.com"] },
+            5: { name: "Perplexity", icon: "PER", color: "#20B2AA", description: "Use its search capabilities to research 'AI trends at 2025', then prompt: 'Write post more simple 10 examples.'", action: "Use it for fast and detailed in-time research. Research 2025 AI trends for content creation + let me see simple examples from them in the posts.", urls: ["https://www.perplexity.ai"] },
+            6: { name: "NotebookLM", icon: "NB", color: "#9370DB", description: "Rotate your notes, PDFs, or transcripts and instruct the AI: 'Summarize the key points and convert books your homework.'", action: "Upload your notes, PDFs, or transcripts and chat with them. Turn these notes into a 5-day mini course on Google Sheets, books, and transcripts.", urls: ["https://notebooklm.google.com"] },
+            7: { name: "Siftu Chat", icon: "SIF", color: "#FFD700", description: "Type it like a personal coach: 'You are my social media coach, audit the last 10 years, and...'", action: "Get recommendations about AI coach or tools. You are my social media coach. Audit my last 30 posts and tell why they flopped.", urls: ["https://siftu.chat"] },
+            8: { name: "Midjourney", icon: "MID", color: "#C0C0C0", description: "Create an art-looking AI image: 'expert theme is blue and Gold.'", action: "Design high-quality, lyrical images on Discord. Using this AI 4K poster about 'types AI in content creation,' also include examples.", urls: ["https://www.midjourney.com", "https://discord.com/invite/midjourney"] },
+            9: { name: "GPT-Image I", icon: "IMG+", color: "#FF8C42", description: "Give the AI an existing image. Prompt: 'Make it elegant and scroll-stopping online.'", action: "Refine images with variations and edits. Using this image, remove the clutter, keeping it clean, improve keeping the stopping colors.", urls: ["https://chat.openai.com"] },
+            10: { name: "NAUT-GPT", icon: "NAU", color: "#4169E1", description: "Create a scientific-style image: 'expert theme in a black and gold.'", action: "Get info for scientific portraits and creative posters. Minimalist, grunge-style prompt image for 'content creation' for Meta & website.", urls: ["https://chat.openai.com"] },
+            11: { name: "Napkin.ai", icon: "NAN", color: "#E74C3C", description: "Get polished product mockups, using different color schemes.'", action: "Get polished, product mock-ups, and social graphics. Generate text for my 'AI for my beginner's' workshop, different color scheme.", urls: ["https://www.napkin.ai"] },
+            12: { name: "Gamma", icon: "GAM", color: "#27AE60", description: "Turn ideas into presentations. Create this 30-slide deck with a clean look.", action: "Turn ideas into decks, carousels, and docs like a pro. Turn this 10-day AI plan into a slide deck with 5-PT fonts & color palette.", urls: ["https://gamma.app"] },
+            13: { name: "Sora", icon: "SOR", color: "#3498DB", description: "Create a vertical video of a creative learning AI at night, with cinematic lighting and dramatic feel.", action: "Turn text/video into cinematic clips. A vertical video of a creative learning AI at night, 8 seconds long.", urls: ["https://openai.com/sora"] },
+            14: { name: "Kling", icon: "KLI", color: "#9B59B6", description: "10 second colorful video of person using AI tools on their screen.", action: "Create fun smooth, dynamic videos. 10-second vertical video, smartphone POV, someone typing AI prompts, inspired by Wes Anderson.", urls: ["https://klingai.com"] },
+            15: { name: "Runway", icon: "RUN", color: "#F39C12", description: "Edit your clips with AI. Remove background, add subtitles, and make the clip production-ready.", action: "Edit and remix your clips with AI. Remove background, add subtitles, expand frames - all using text, 30-day free trial.", urls: ["https://runwayml.com"] },
+            16: { name: "VEO", icon: "VEO", color: "#1ABC9C", description: "Create a short explainer video about 'Why every creator needs AI tools.'", action: "Test Google's video model for 8-min HQ explosion. Short explainer video about 'Why every creator needs AI tools' make it fun.", urls: ["https://deepmind.google/technologies/veo"] },
+            17: { name: "Sumo", icon: "SUM", color: "#E67E22", description: "Free AI for background removal. Upload a photo of a tutorial video. No hassles.", action: "Simple but potent and background removal tool. 30-second energetic track for a short AI tutorial video, upbeat + minimal.", urls: ["https://www.sumo.com"] },
+            18: { name: "ElevenLabs", icon: "11L", color: "#3498DB", description: "Create voiceover tests, confident narrator for a 22-minute motivational podcast.", action: "Make voiceovers and consistent creator voices. Turn this script into a calm, confident narrator voice - sounds like a pro podcast host.", urls: ["https://elevenlabs.io"] },
+            19: { name: "MS Copilot", icon: "COP", color: "#C0392B", description: "Summarize this document to 10 bullets and then create 2 email versions from it.", action: "Use it inside Office/Windows for daily work. Summarize this email thread and write 3 email 3 versions from it.", urls: ["https://copilot.microsoft.com"] },
+            20: { name: "Notion AI", icon: "NOT", color: "#2C3E50", description: "Look at my content database and create a one week tracking schedule.", action: "Organize your content, outline, and notes fast. Look at my content database and suggest the best posting schedule, based on engagement trends.", urls: ["https://www.notion.so/product/ai"] },
+            21: { name: "Google AI Studio", icon: "GAS", color: "#16A085", description: "Build a simple chatbot for your audience. Design a tool that can answer your online queries.", action: "Test AI design chatbots to your audience. Using a tech tool that can answer any AI course and capabilities ques.", urls: ["https://aistudio.google.com"] },
+            22: { name: "Lindy", icon: "LIN", color: "#8E44AD", description: "Create an agent that scans my inbox and handles urgent issues, and replies for you.", action: "Let agents handle repetitive tasks. Create an agent that scans my inbox, drafts replies by priority and logic.", urls: ["https://www.lindy.ai"] },
+            23: { name: "DeepSeek", icon: "DEE", color: "#9B59B6", description: "Review this script and suggest ways to improve it with AI tools.", action: "Analyze technical writings and research. Review this script and suggest 3 ways to make it more binge-worthy.", urls: ["https://www.deepseek.com"] },
+            24: { name: "Kimi K2", icon: "KIM", color: "#E91E63", description: "Great for complex planning projects. Analyze and create a weekly AI-powered action plan.", action: "Great for deep-complex research and long texts. Here is my 3-month goal. Analyze it and give me a weekly action plan using science-backed tactics.", urls: ["https://kimi.moonshot.cn"] },
+            25: { name: "Grok", icon: "GRK", color: "#F39C12", description: "Use it to track trends on X (formerly Twitter). Show me 10 top posts from this week and explain why they went viral.", action: "Use it to read trends and culture on X. Give me 10 viral AI post ideas from this week and explain why they worked.", urls: ["https://grok.x.ai"] },
+            26: { name: "Grok Imagine", icon: "GIM", color: "#E74C3C", description: "Turn ideas into quick memes. Create a meme about 'people still not using AI' in 2025. Make it 'Kit Kat' style + funny for Facebook.", action: "Turn ideas into quick memes and visuals. Create a meme about 'people still not using AI' in 2025. Fix AI 'Kit Kat' style + funny.", urls: ["https://grok.x.ai"] },
+            27: { name: "HeyGen", icon: "HEY", color: "#E67E22", description: "Turn scripts into videos. Make a 30-second speaking head video using your avatar and this script.", action: "Turn scripts into real videos. Make a 30-second talking head video using this script. Use a for my AI avatar.", urls: ["https://www.heygen.com"] },
+            28: { name: "InVideo", icon: "INV", color: "#C0392B", description: "Turn prompts and blogs into short videos. Convert this Facebook post into a 30-second video with voiceover and auto B-roll.", action: "Turn prompts and blogs into short videos. Convert this Facebook post into a 30-second video with voiceover and auto B-roll.", urls: ["https://invideo.io"] },
+            29: { name: "Voicenotes", icon: "VOI", color: "#16A085", description: "Capture ideas on the go. Record a voice note: 'Tell your AI I'm thinking about starting a newsletter on AI.'", action: "Capture ideas on the go. Record a voice note: 'Tell your AI I'm thinking about starting a newsletter on AI full post.'", urls: ["https://voicenotes.com"] },
+            30: { name: "Otter", icon: "OTT", color: "#9B59B6", description: "Record calls, coaching, and meetings, transcribe & summarize. Turn this call transcript into 5 concise, actionable bullet points.", action: "Record calls, coaching, and meetings, transcribe & summarize. Turn this call transcript into 5 concentric, short, action-able bullet posts.", urls: ["https://otter.ai"] }
+        };
+
+        function getProgress() {
+            try {
+                const stored = localStorage.getItem('aiCalendarProgress');
+                return stored ? JSON.parse(stored) : {};
+            } catch (e) {
+                console.warn('Storage not available', e);
+                return {};
+            }
+        }
+
+        function saveProgress(progress) {
+            try {
+                localStorage.setItem('aiCalendarProgress', JSON.stringify(progress));
+            } catch (e) {
+                console.error('Failed to save progress:', e);
+            }
+        }
+
+        function getNotes(day) {
+            try {
+                return localStorage.getItem(`aiCalendarNotes_${day}`) || '';
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function saveNotes(day, notes) {
+            try {
+                localStorage.setItem(`aiCalendarNotes_${day}`, notes);
+            } catch (e) {
+                console.error('Failed to save notes:', e);
+            }
+        }
+
+        function updateProgressDisplay() {
+            const progress = getProgress();
+            const completed = Object.values(progress).filter(v => v).length;
+            const percent = Math.round((completed / 30) * 100);
+            
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('percentComplete').textContent = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressBar').textContent = percent + '%';
+        }
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            
+            dayNames.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = day;
+                calendar.appendChild(header);
+            });
+
+            const progress = getProgress();
+            const firstDate = new Date(startDate);
+            const dayOfWeek = firstDate.getDay();
+            firstDate.setDate(firstDate.getDate() - dayOfWeek);
+
+            const lastDate = new Date(startDate);
+            lastDate.setDate(lastDate.getDate() + 29);
+            const lastDayOfWeek = lastDate.getDay();
+            const daysToShow = dayOfWeek + 30 + (6 - lastDayOfWeek);
+
+            for (let i = 0; i < daysToShow; i++) {
+                const currentDate = new Date(firstDate);
+                currentDate.setDate(currentDate.getDate() + i);
+                currentDate.setHours(0,0,0,0);
+
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+
+                const diffTime = currentDate - startDate;
+                const daysDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const conceptDay = daysDiff + 1;
+
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'date-display';
+                dateSpan.textContent = `${currentDate.getMonth() + 1}/${currentDate.getDate()}`;
+                dayDiv.appendChild(dateSpan);
+
+                if (conceptDay >= 1 && conceptDay <= 30) {
+                    const dayNumber = document.createElement('span');
+                    dayNumber.className = 'day-number';
+                    dayNumber.textContent = conceptDay;
+                    dayDiv.appendChild(dayNumber);
+                    
+                    const tool = aiTools[conceptDay];
+                    if (tool) {
+                        const iconDiv = document.createElement('div');
+                        iconDiv.className = 'tool-icon';
+                        iconDiv.style.backgroundColor = tool.color;
+                        iconDiv.textContent = tool.icon;
+                        dayDiv.appendChild(iconDiv);
+
+                        const nameDiv = document.createElement('div');
+                        nameDiv.className = 'tool-name';
+                        nameDiv.textContent = tool.name;
+                        dayDiv.appendChild(nameDiv);
+
+                        const checkmark = document.createElement('div');
+                        checkmark.className = 'checkmark-overlay';
+                        checkmark.textContent = '✓';
+                        dayDiv.appendChild(checkmark);
+
+                        if (progress[conceptDay]) {
+                            dayDiv.classList.add('completed');
+                        }
+                        
+                        dayDiv.onclick = () => openDayModal(conceptDay, currentDate);
+                    }
+                } else {
+                    dayDiv.classList.add('inactive');
+                }
+
+                calendar.appendChild(dayDiv);
+            }
+        }
+
+        function generateReferenceList() {
+            const container = document.getElementById('urlListContainer');
+            if(!container) return;
+            
+            const ul = document.createElement('ul');
+            ul.className = 'reference-list';
+            
+            Object.keys(aiTools).forEach(key => {
+                const tool = aiTools[key];
+                const li = document.createElement('li');
+                
+                let linksHtml = tool.urls.map(url => `<a href="${url}" target="_blank">${url}</a>`).join('<br>');
+                
+                li.innerHTML = `<strong>Day ${key}: ${tool.name}</strong>${linksHtml}`;
+                ul.appendChild(li);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(ul);
+        }
+
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let content of tabContents) {
+                content.classList.remove('active');
+            }
+
+            const tabs = document.getElementsByClassName('tab');
+            for (let tab of tabs) {
+                tab.classList.remove('active');
+            }
+
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function openSubtab(evt, subtabName) {
+            const subtabContents = document.getElementsByClassName('subtab-content');
+            for (let content of subtabContents) {
+                content.classList.remove('active');
+            }
+
+            const subtabs = document.getElementsByClassName('subtab');
+            for (let subtab of subtabs) {
+                subtab.classList.remove('active');
+            }
+
+            document.getElementById(subtabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function openDayModal(day, date) {
+            currentDay = day;
+            const modal = document.getElementById('dayModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            const actionDiv = document.getElementById('modalAction');
+            const actionText = document.getElementById('modalActionText');
+            const links = document.getElementById('modalLinks');
+            const checkbox = document.getElementById('completionCheckbox');
+            const notesArea = document.getElementById('notesTextarea');
+
+            const tool = aiTools[day];
+            const progress = getProgress();
+
+            title.textContent = `Day ${day} - ${tool.name}`;
+            content.textContent = tool.description;
+
+            if (tool.action && tool.action.trim()) {
+                actionText.textContent = tool.action;
+                actionDiv.style.display = 'block';
+            } else {
+                actionDiv.style.display = 'none';
+            }
+
+            checkbox.checked = progress[day] || false;
+            notesArea.value = getNotes(day);
+
+            notesArea.oninput = () => {
+                saveNotes(currentDay, notesArea.value);
+            };
+
+            links.innerHTML = '<h3>Resources:</h3>';
+            tool.urls.forEach(url => {
+                const link = document.createElement('a');
+                link.className = 'link-item';
+                link.href = url;
+                link.target = '_blank';
+                link.textContent = '🔗 ' + url;
+                links.appendChild(link);
+            });
+
+            modal.style.display = 'block';
+        }
+
+        function toggleCompletion() {
+            if (!currentDay) return;
+            
+            const progress = getProgress();
+            const checkbox = document.getElementById('completionCheckbox');
+            progress[currentDay] = checkbox.checked;
+            saveProgress(progress);
+            
+            generateCalendar();
+            updateProgressDisplay();
+        }
+
+        function closeModal() {
+            document.getElementById('dayModal').style.display = 'none';
+            currentDay = null;
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This will clear all completed days and notes.')) {
+                try {
+                    localStorage.removeItem('aiCalendarProgress');
+                    Object.keys(localStorage).forEach(key => {
+                        if(key.startsWith('aiCalendarNotes_')) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                    
+                    generateCalendar();
+                    updateProgressDisplay();
+                    alert('Progress has been reset!');
+                } catch (e) {
+                    console.error('Failed to reset:', e);
+                }
+            }
+        }
+
+        function printCalendar() {
+            window.print();
+        }
+
+        function exportChecklist() {
+            const progress = getProgress();
+            let checklist = 'Master AI in 30 Days - Progress Checklist\n';
+            checklist += '==========================================\n\n';
+            
+            for (let day = 1; day <= 30; day++) {
+                const tool = aiTools[day];
+                const status = progress[day] ? '[✓]' : '[ ]';
+                const notes = getNotes(day);
+                
+                checklist += `${status} Day ${day}: ${tool.name}\n`;
+                checklist += `   Description: ${tool.description}\n`;
+                if (tool.action && tool.action.trim()) {
+                    checklist += `   Action: ${tool.action}\n`;
+                }
+                if (notes) {
+                    checklist += `   Notes: ${notes}\n`;
+                }
+                checklist += '\n';
+            }
+
+            const completed = Object.values(progress).filter(v => v).length;
+            checklist += `\nTotal Progress: ${completed}/30 days (${Math.round((completed/30)*100)}%)\n`;
+
+            const blob = new Blob([checklist], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ai-learning-checklist.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function openImageModal(src) {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('fullImage');
+            img.src = src;
+            modal.classList.add('show');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            const dayModal = document.getElementById('dayModal');
+            if (event.target == dayModal) {
+                closeModal();
+            }
+        }
+
+        generateCalendar();
+        updateProgressDisplay();
+        generateReferenceList();
+    </script>
+</body>
+</html>
