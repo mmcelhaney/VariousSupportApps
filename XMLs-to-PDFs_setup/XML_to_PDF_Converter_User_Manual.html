@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML to PDF Converter - User Manual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #ffffff;
+            --bg-gray: #f9fafb;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background-color: var(--bg-gray);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--bg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" fill="white" fill-opacity="0.1"/></svg>') repeat;
+            opacity: 0.1;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 400;
+            position: relative;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--bg);
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            margin: 0;
+        }
+
+        nav a {
+            display: block;
+            padding: 18px 24px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: var(--bg-gray);
+        }
+
+        /* Content */
+        .content {
+            padding: 50px 60px;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--primary);
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-top: 35px;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: var(--text-light);
+            font-size: 1.05rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding-left: 8px;
+        }
+
+        ul li::marker {
+            color: var(--primary);
+        }
+
+        ol li::marker {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            padding: 20px 24px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border-left: 4px solid;
+            background: var(--bg-gray);
+        }
+
+        .info-box.info {
+            border-left-color: var(--info);
+            background: #eff6ff;
+        }
+
+        .info-box.success {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .info-box.warning {
+            border-left-color: var(--warning);
+            background: #fffbeb;
+        }
+
+        .info-box.error {
+            border-left-color: var(--error);
+            background: #fef2f2;
+        }
+
+        .info-box h4 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .icon {
+            font-size: 1.3rem;
+        }
+
+        /* Code and File Names */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: #f3f4f6;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: var(--primary-dark);
+            font-size: 0.9em;
+            border: 1px solid var(--border);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: var(--bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        thead {
+            background: var(--primary);
+            color: white;
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        tbody tr:hover {
+            background: var(--bg-gray);
+        }
+
+        /* Step boxes */
+        .step-box {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-right: 12px;
+        }
+
+        .step-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Quick Start */
+        .quick-start {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #bae6fd;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .quick-start h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .quick-steps {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quick-step {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-step-num {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Arrow Icon */
+        .arrow {
+            color: var(--text-light);
+            margin: 0 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav a {
+                border-bottom: 1px solid var(--border);
+                border-left: 3px solid transparent;
+            }
+
+            nav a:hover {
+                border-left-color: var(--primary);
+                border-bottom-color: var(--border);
+            }
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .feature-card h4 {
+            margin-top: 0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 XML to PDF Converter</h1>
+            <p class="subtitle">User Manual & Complete Guide</p>
+            <div class="version-badge">Version 1.0 • January 2026</div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#how-to-use">How to Use</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+                <li><a href="#tips">Tips & Performance</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>
+                    XML to PDF Converter is a Windows application that batch converts XML files to formatted PDF 
+                    documents with parallel processing for maximum speed.
+                </p>
+
+                <div class="info-box info">
+                    <h4><span class="icon">💡</span> Key Highlights</h4>
+                    <ul>
+                        <li>Batch convert multiple XML files simultaneously</li>
+                        <li>Parallel processing for fast conversion</li>
+                        <li>Formatted, professional-looking PDFs</li>
+                        <li>No additional software required</li>
+                        <li>100% offline operation - no internet needed</li>
+                    </ul>
+                </div>
+
+                <h3>System Requirements</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Requirement</th>
+                            <th>Specification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Operating System</td>
+                            <td>Windows 7 or later (Windows 10/11 recommended)</td>
+                        </tr>
+                        <tr>
+                            <td>Disk Space</td>
+                            <td>100 MB free space</td>
+                        </tr>
+                        <tr>
+                            <td>Additional Software</td>
+                            <td>None required (standalone executable)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="installation">
+                <h2>Installation</h2>
+
+                <h3>Option 1: Using the Installer (Recommended)</h3>
+                <div class="step-box">
+                    <div class="step-title">
+                        <span class="step-number">1</span>
+                        Download the Installer
+                    </div>
+                    <p>Download <code>XML_to_PDF_Installer.exe</code> from the distribution source.</p>
+                </div>
+
+                <div class="step-box">
+                    <div class="step-title">
+                        <span class="step-number">2</span>
+                        Run the Installer
+                    </div>
+                    <p>Double-click the installer file to begin the installation process.</p>
+                </div>
+
+                <div class="step-box">
+                    <div class="step-title">
+                        <span class="step-number">3</span>
+                        Follow Instructions
+                    </div>
+                    <p>Follow the on-screen instructions to complete the installation.</p>
+                </div>
+
+                <div class="step-box">
+                    <div class="step-title">
+                        <span class="step-number">4</span>
+                        Launch the Application
+                    </div>
+                    <p>Launch from Start Menu or Desktop shortcut.</p>
+                </div>
+
+                <h3>Option 2: Portable Version</h3>
+                <div class="info-box success">
+                    <h4><span class="icon">✅</span> No Installation Required</h4>
+                    <ol>
+                        <li>Download <code>XML_to_PDF_Converter.exe</code></li>
+                        <li>Place it in any folder on your computer</li>
+                        <li>Double-click to run (no installation needed)</li>
+                    </ol>
+                    <p>Perfect for USB drives or portable use!</p>
+                </div>
+            </section>
+
+            <section id="how-to-use">
+                <h2>How to Use</h2>
+
+                <div class="quick-start">
+                    <h3>🚀 Quick Start Summary</h3>
+                    <div class="quick-steps">
+                        <div class="quick-step">
+                            <div class="quick-step-num">1</div>
+                            <div>Run program</div>
+                        </div>
+                        <div class="quick-step">
+                            <div class="quick-step-num">2</div>
+                            <div>Click "Select XML Folder"</div>
+                        </div>
+                        <div class="quick-step">
+                            <div class="quick-step-num">3</div>
+                            <div>Choose your folder</div>
+                        </div>
+                        <div class="quick-step">
+                            <div class="quick-step-num">4</div>
+                            <div>Click "Convert All"</div>
+                        </div>
+                        <div class="quick-step">
+                            <div class="quick-step-num">5</div>
+                            <div>Find PDFs in the PDFs folder</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 20px; margin-bottom: 0;"><strong>For most users, these 5 steps are all you need!</strong></p>
+                </div>
+
+                <h3>Detailed Step-by-Step Guide</h3>
+
+                <h4>Step 1: Launch the Application</h4>
+                <ul>
+                    <li>Double-click the program icon</li>
+                    <li>The main window will appear</li>
+                </ul>
+
+                <h4>Step 2: Select Your XML Files</h4>
+                <ul>
+                    <li>Click the <strong>"Select XML Folder"</strong> button</li>
+                    <li>Browse to the folder containing your XML files</li>
+                    <li>Click "Select Folder"</li>
+                    <li>The folder path will be displayed in the interface</li>
+                </ul>
+
+                <h4>Step 3: Convert Files</h4>
+                <ul>
+                    <li>Click the <strong>"Convert All"</strong> button</li>
+                    <li>A progress bar shows conversion status</li>
+                    <li>Wait for the "Success" message</li>
+                </ul>
+
+                <h4>Step 4: Access Your PDFs</h4>
+                <ul>
+                    <li>PDFs are saved in a <code>PDFs</code> folder</li>
+                    <li>This folder is created in the same location as the program</li>
+                    <li>Each PDF has the same name as its source XML file</li>
+                </ul>
+
+                <h3>Understanding the Interface</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Title Bar</td>
+                            <td>Shows program name</td>
+                        </tr>
+                        <tr>
+                            <td>Select XML Folder Button</td>
+                            <td>Opens folder browser</td>
+                        </tr>
+                        <tr>
+                            <td>Folder Path Display</td>
+                            <td>Shows currently selected folder</td>
+                        </tr>
+                        <tr>
+                            <td>Progress Bar</td>
+                            <td>Shows conversion progress</td>
+                        </tr>
+                        <tr>
+                            <td>Status Label</td>
+                            <td>Displays current operation status</td>
+                        </tr>
+                        <tr>
+                            <td>Convert All Button</td>
+                            <td>Starts the conversion process</td>
+                        </tr>
+                        <tr>
+                            <td>Quit Button</td>
+                            <td>Closes the application</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="features">
+                <h2>Features</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><span class="icon">⚡</span> Parallel Processing</h4>
+                        <p>
+                            Uses multiple processor cores simultaneously to convert files faster. On a 4-core computer, 
+                            it can process multiple XML files at the same time, significantly reducing total conversion time.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="icon">🔍</span> Deep XML Scanning</h4>
+                        <p>
+                            The converter reads all elements, attributes, and text content from your XML files, 
+                            ensuring nothing is missed.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="icon">🎨</span> Formatted Output</h4>
+                        <p>
+                            PDFs include file name as title, color-coded XML elements (blue tags), attributes in italics, 
+                            clean readable formatting, and proper spacing between elements.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>PDF Output Features</h3>
+                <div class="info-box success">
+                    <h4><span class="icon">📄</span> What's Included in Each PDF</h4>
+                    <ul>
+                        <li>File name as title</li>
+                        <li>Color-coded XML elements (blue tags)</li>
+                        <li>Attributes in italics</li>
+                        <li>Clean, readable formatting</li>
+                        <li>Proper spacing between elements</li>
+                    </ul>
+                </div>
+
+                <h3>Output Location</h3>
+                <p>PDFs are always saved to: <code>[Program Location]/PDFs/</code></p>
+                
+                <p><strong>Example:</strong></p>
+                <ul>
+                    <li>Program at: <code>C:\Users\YourName\Documents\XML_to_PDF_Converter.exe</code></li>
+                    <li>PDFs saved to: <code>C:\Users\YourName\Documents\PDFs\</code></li>
+                </ul>
+
+                <h3>File Naming</h3>
+                <p>Output PDF files automatically use the same base name as input XML files:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Input XML</th>
+                            <th>Output PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>invoice_2024.xml</code></td>
+                            <td><code>invoice_2024.pdf</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>data.xml</code></td>
+                            <td><code>data.pdf</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="troubleshooting">
+                <h2>Troubleshooting</h2>
+
+                <h3>Common Issues & Solutions</h3>
+
+                <div class="info-box error">
+                    <h4><span class="icon">❌</span> Problem: "No XML files found" message</h4>
+                    <p><strong>Solution:</strong> Ensure the folder you selected contains files with .xml extension (case-insensitive).</p>
+                </div>
+
+                <div class="info-box error">
+                    <h4><span class="icon">❌</span> Problem: Empty or incomplete PDFs</h4>
+                    <p><strong>Solution:</strong> This typically means the XML file had no text content. The program will note "(No text content found)" in such cases.</p>
+                </div>
+
+                <div class="info-box error">
+                    <h4><span class="icon">❌</span> Problem: Conversion errors for specific files</h4>
+                    <p><strong>Solution:</strong></p>
+                    <ul>
+                        <li>Check that the XML file is valid (not corrupted)</li>
+                        <li>Ensure the file is not open in another program</li>
+                        <li>Check file permissions</li>
+                    </ul>
+                </div>
+
+                <div class="info-box error">
+                    <h4><span class="icon">❌</span> Problem: Program won't start</h4>
+                    <p><strong>Solution:</strong></p>
+                    <ul>
+                        <li>Ensure you have administrator rights</li>
+                        <li>Check Windows Defender or antivirus hasn't quarantined it</li>
+                        <li>Try running as administrator (right-click → Run as administrator)</li>
+                    </ul>
+                </div>
+
+                <div class="info-box error">
+                    <h4><span class="icon">❌</span> Problem: Slow conversion</h4>
+                    <p><strong>Solution:</strong></p>
+                    <ul>
+                        <li>Close other programs to free up system resources</li>
+                        <li>The program automatically uses optimal threading</li>
+                        <li>Very large XML files naturally take longer</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="tips">
+                <h2>Tips & Best Practices</h2>
+
+                <div class="info-box info">
+                    <h4><span class="icon">💡</span> Tips for Best Results</h4>
+                    <ol>
+                        <li><strong>Organize Your Files:</strong> Keep XML files you want to convert in a dedicated folder</li>
+                        <li><strong>File Names:</strong> Use descriptive XML file names as they become the PDF file names</li>
+                        <li><strong>Batch Processing:</strong> Convert multiple files at once for efficiency</li>
+                        <li><strong>Check Output:</strong> Always verify the PDFs folder after conversion</li>
+                        <li><strong>Backup:</strong> Keep original XML files - the program doesn't modify them</li>
+                    </ol>
+                </div>
+
+                <h3>Performance Notes</h3>
+                
+                <h4>Conversion Speed Depends On:</h4>
+                <ul>
+                    <li>Number of processor cores (more cores = faster)</li>
+                    <li>XML file size and complexity</li>
+                    <li>Number of files being converted</li>
+                    <li>Available system memory</li>
+                </ul>
+
+                <h4>Typical Performance:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File Size</th>
+                            <th>Conversion Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Small files (&lt; 100 KB)</td>
+                            <td>Nearly instant</td>
+                        </tr>
+                        <tr>
+                            <td>Medium files (100 KB - 1 MB)</td>
+                            <td>1-2 seconds each</td>
+                        </tr>
+                        <tr>
+                            <td>Large files (&gt; 1 MB)</td>
+                            <td>3-10 seconds each</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Data Safety</h3>
+                <div class="info-box success">
+                    <h4><span class="icon">🔒</span> Your Data is Safe</h4>
+                    <ul>
+                        <li>Original XML files are never modified</li>
+                        <li>All conversions are read-only operations</li>
+                        <li>PDFs are created as new files</li>
+                        <li>No data is sent over the internet</li>
+                        <li>No data is collected by the program</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>Support & Updates</h2>
+                
+                <p><strong>For issues or suggestions:</strong></p>
+                <ol>
+                    <li>Check this manual first</li>
+                    <li>Verify your XML files are valid</li>
+                    <li>Try converting one file at a time to isolate problems</li>
+                </ol>
+
+                <h3>Version Information</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Current Version</td>
+                            <td>1.0</td>
+                        </tr>
+                        <tr>
+                            <td>Release Date</td>
+                            <td>January 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Compatible With</td>
+                            <td>All valid XML files</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>License</h3>
+                <div class="info-box info">
+                    <p>This software is provided as-is for XML to PDF conversion purposes.</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <h3 style="margin-bottom: 15px;">XML to PDF Converter</h3>
+            <p>Version 1.0 • January 2026</p>
+            <p style="margin-top: 20px;">
+                For most users, 5 simple steps are all you need:<br>
+                Run → Select Folder → Choose → Convert → Done
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
