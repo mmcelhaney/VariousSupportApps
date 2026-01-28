@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate File Finder - User Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        nav {
+            background-color: #2c3e50;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #667eea;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        section {
+            margin-bottom: 50px;
+        }
+        
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .feature-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature-box h4 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        
+        .code-block {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            white-space: pre;
+        }
+        
+        .ui-mockup {
+            background-color: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .badge-exact {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .badge-similar {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #667eea;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .tip {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .checkmark {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Duplicate File Finder</h1>
+            <p>User Guide - Version 1.0.0</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#using">Using the App</a></li>
+                <li><a href="#results">Understanding Results</a></li>
+                <li><a href="#managing">Managing Duplicates</a></li>
+                <li><a href="#quarantine">Quarantine System</a></li>
+                <li><a href="#tips">Tips & Best Practices</a></li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </nav>
+        
+        <div class="content">
+            <section id="introduction">
+                <h2>1. Introduction</h2>
+                
+                <h3>What is Duplicate File Finder?</h3>
+                <p>Duplicate File Finder is a powerful tool that helps you identify and remove duplicate images and videos from your computer. It saves disk space and helps organize your media collection by finding:</p>
+                <ul>
+                    <li><strong>Exact duplicates</strong> - Files with identical content</li>
+                    <li><strong>Visual duplicates</strong> - Images/videos that look the same but may have been resized or edited</li>
+                    <li><strong>Similar files</strong> - Files with similar names that might be copies</li>
+                </ul>
+                
+                <h3>Key Features</h3>
+                
+                <div class="feature-box">
+                    <h4><span class="checkmark">✅</span> Smart Detection</h4>
+                    <ul>
+                        <li>Finds exact duplicate files using hash comparison</li>
+                        <li>Detects visually similar images (70-90% similarity threshold)</li>
+                        <li>Identifies files with similar naming patterns</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-box">
+                    <h4><span class="checkmark">✅</span> Safe & Reversible</h4>
+                    <ul>
+                        <li>Files moved to quarantine folder (not permanently deleted)</li>
+                        <li>Complete deletion log for every session</li>
+                        <li>Easy file restoration if needed</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-box">
+                    <h4><span class="checkmark">✅</span> User-Friendly Interface</h4>
+                    <ul>
+                        <li>Simple desktop application</li>
+                        <li>Interactive HTML reports with thumbnails</li>
+                        <li>Visual side-by-side comparison</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-box">
+                    <h4><span class="checkmark">✅</span> Comprehensive Format Support</h4>
+                    <ul>
+                        <li><strong>Images:</strong> JPG, JPEG, PNG, GIF, BMP, WebP, TIFF, ICO</li>
+                        <li><strong>Videos:</strong> MP4, AVI, MOV, MKV, WMV, FLV, WebM, M4V, MPG, MPEG</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="installation">
+                <h2>2. Installation</h2>
+                
+                <h3>System Requirements</h3>
+                <ul>
+                    <li><strong>Operating System:</strong> Windows 7 or later</li>
+                    <li><strong>RAM:</strong> 4GB minimum (8GB recommended for large scans)</li>
+                    <li><strong>Disk Space:</strong> 100MB for application + space for quarantine</li>
+                    <li><strong>Display:</strong> 1024x768 minimum resolution</li>
+                </ul>
+                
+                <h3>Installation Steps</h3>
+                
+                <h4>1. Download the Installer</h4>
+                <ul>
+                    <li>Download <code>DuplicateFileFinder_Setup_v1.0.0.exe</code></li>
+                    <li>Save to your Downloads folder</li>
+                </ul>
+                
+                <h4>2. Run the Installer</h4>
+                <ul>
+                    <li>Double-click the installer file</li>
+                    <li>Click "Yes" if Windows asks for permission</li>
+                    <li>Follow the installation wizard</li>
+                </ul>
+                
+                <h4>3. Choose Installation Location</h4>
+                <ul>
+                    <li><strong>Default:</strong> <code>C:\Program Files\Duplicate File Finder</code></li>
+                    <li>Or choose a custom location</li>
+                </ul>
+                
+                <h4>4. Select Additional Options</h4>
+                <ul>
+                    <li>☑️ Create desktop shortcut (recommended)</li>
+                    <li>☐ Create Quick Launch icon (optional)</li>
+                </ul>
+                
+                <h4>5. Complete Installation</h4>
+                <ul>
+                    <li>Click "Install" to begin</li>
+                    <li>Wait for installation to complete</li>
+                    <li>Click "Finish" to launch the application</li>
+                </ul>
+                
+                <h3>First Launch</h3>
+                <p>When you first launch the application, you'll see:</p>
+                <ul>
+                    <li>Main application window</li>
+                    <li>Folder selection area</li>
+                    <li>Scan button</li>
+                    <li>Information about how the tool works</li>
+                </ul>
+            </section>
+            
+            <section id="getting-started">
+                <h2>3. Getting Started</h2>
+                
+                <h3>Quick Start Guide</h3>
+                <p><strong>5 Simple Steps to Clean Your Duplicates:</strong></p>
+                
+                <h4>1. Launch Application</h4>
+                <ul>
+                    <li>Double-click the desktop icon, or</li>
+                    <li>Go to Start Menu → Duplicate File Finder</li>
+                </ul>
+                
+                <h4>2. Select Folder</h4>
+                <ul>
+                    <li>Click the "Browse..." button</li>
+                    <li>Choose a folder to scan</li>
+                    <li>Example: <code>C:\Users\YourName\Pictures</code></li>
+                </ul>
+                
+                <h4>3. Start Scan</h4>
+                <ul>
+                    <li>Click "Scan for Duplicates"</li>
+                    <li>Wait while the application scans</li>
+                    <li>Progress bar shows current status</li>
+                </ul>
+                
+                <h4>4. Review Results</h4>
+                <ul>
+                    <li>Report opens automatically in your browser</li>
+                    <li>Review duplicate groups</li>
+                    <li>Select files to delete</li>
+                </ul>
+                
+                <h4>5. Delete Duplicates</h4>
+                <ul>
+                    <li>Check boxes next to duplicates</li>
+                    <li>Click "Delete Selected"</li>
+                    <li>Files move to quarantine folder</li>
+                </ul>
+            </section>
+            
+            <section id="how-it-works">
+                <h2>4. How It Works</h2>
+                
+                <h3>Detection Methods</h3>
+                
+                <h4>1. Exact Duplicate Detection</h4>
+                <p>The application computes a unique "fingerprint" (MD5 hash) for each file:</p>
+                
+                <div class="code-block">File: photo.jpg → Hash: a3d5f8e9c2b1...
+File: photo_copy.jpg → Hash: a3d5f8e9c2b1...
+<span class="checkmark">✓</span> Match! These are exact duplicates</div>
+                
+                <p><strong>What this catches:</strong></p>
+                <ul>
+                    <li>Exact copies made with Copy/Paste</li>
+                    <li>Downloaded files saved multiple times</li>
+                    <li>Backups with different names</li>
+                </ul>
+                
+                <h4>2. Visual Similarity Detection</h4>
+                <p>For images and videos, the application analyzes visual content:</p>
+                
+                <div class="code-block">Original: vacation.jpg (1920x1080)
+Resized: vacation_thumb.jpg (800x600)
+Similarity: 92%
+<span class="checkmark">✓</span> Visually similar! Likely the same image</div>
+                
+                <p><strong>What this catches:</strong></p>
+                <ul>
+                    <li>Resized images (thumbnails, web versions)</li>
+                    <li>Cropped photos</li>
+                    <li>Edited images with filters</li>
+                    <li>Different quality compressions</li>
+                </ul>
+                
+                <p><strong>Similarity Thresholds:</strong></p>
+                <ul>
+                    <li><strong>High (85-90%):</strong> Resized or cropped versions</li>
+                    <li><strong>Low (70-85%):</strong> Edited or filtered versions</li>
+                </ul>
+                
+                <h4>3. Filename Pattern Matching</h4>
+                <p>The application recognizes common duplicate naming patterns:</p>
+                
+                <div class="code-block">photo.jpg
+photo (1).jpg ← Copy pattern
+photo_copy.jpg ← Copy suffix
+photo - copy.jpg ← Copy variation
+<span class="checkmark">✓</span> Name match! Likely related files</div>
+                
+                <p><strong>Patterns detected:</strong></p>
+                <ul>
+                    <li>Windows copy suffixes: <code>(1)</code>, <code>(2)</code>, <code>(3)</code></li>
+                    <li>Copy keywords: <code>_copy</code>, <code>- copy</code>, <code>-copy</code></li>
+                    <li>Numbered versions: <code>_1</code>, <code>_2</code></li>
+                </ul>
+                
+                <h3>File Selection Priority</h3>
+                <p>When grouping duplicates, the application selects the "original" based on:</p>
+                <ol>
+                    <li>Largest file size (higher quality)</li>
+                    <li>Oldest modification date (original creation)</li>
+                    <li>Oldest creation date (first appearance)</li>
+                </ol>
+                
+                <p><strong>Example:</strong></p>
+                <div class="code-block">File A: 2.5MB, created 2023-01-15 ← Original
+File B: 1.8MB, created 2023-06-20 ← Duplicate
+File C: 1.5MB, created 2023-09-10 ← Duplicate</div>
+            </section>
+            
+            <section id="using">
+                <h2>5. Using the Application</h2>
+                
+                <h3>Main Application Window</h3>
+                
+                <div class="ui-mockup">┌─────────────────────────────────────────┐
+│ Duplicate File Finder                   │
+├─────────────────────────────────────────┤
+│                                         │
+│ Select Folder to Scan:                  │
+│ [C:\Users\You\Pictures ] [Browse...]    │
+│                                         │
+│ [Scan for Duplicates]                   │
+│                                         │
+│ [████████████░░░░░░░░░░░] 60%           │
+│                                         │
+│ Status: Scanning files...               │
+│                                         │
+│ This tool will scan for duplicates...  │
+│ • Exact file content matching           │
+│ • Visual similarity detection           │
+│ • Similar filename patterns             │
+│                                         │
+└─────────────────────────────────────────┘</div>
+                
+                <h3>Scanning Process</h3>
+                
+                <h4>Phase 1: Directory Scan</h4>
+                <ul>
+                    <li>Searches all subfolders</li>
+                    <li>Counts total images and videos</li>
+                    <li>Displays file count</li>
+                </ul>
+                <div class="code-block">Status: Scanning directory...
+Found 1,547 media files</div>
+                
+                <h4>Phase 2: Hash Computation</h4>
+                <ul>
+                    <li>Calculates unique fingerprint for each file</li>
+                    <li>Fastest phase (typically 1-2 seconds per 100 files)</li>
+                </ul>
+                <div class="code-block">Status: Phase 1: Computing file hashes...
+Progress: [███████████░░░] 756/1547 files</div>
+                
+                <h4>Phase 3: Finding Exact Duplicates</h4>
+                <ul>
+                    <li>Groups files with identical hashes</li>
+                    <li>Very fast comparison</li>
+                </ul>
+                <div class="code-block">Status: Phase 2: Finding exact duplicates...</div>
+                
+                <h4>Phase 4: Visual Analysis</h4>
+                <ul>
+                    <li>Analyzes image/video content</li>
+                    <li>Slowest phase (5-10 seconds per 100 files)</li>
+                    <li>CPU and RAM intensive</li>
+                </ul>
+                <div class="code-block">Status: Phase 3: Checking visual similarity...
+Progress: [███████████░░░] 1200/1547 files</div>
+                
+                <h3>Scan Time Estimates</h3>
+                <table>
+                    <tr>
+                        <th>Files</th>
+                        <th>Approximate Time</th>
+                    </tr>
+                    <tr>
+                        <td>100</td>
+                        <td>30 seconds</td>
+                    </tr>
+                    <tr>
+                        <td>500</td>
+                        <td>2-3 minutes</td>
+                    </tr>
+                    <tr>
+                        <td>1,000</td>
+                        <td>5-8 minutes</td>
+                    </tr>
+                    <tr>
+                        <td>5,000</td>
+                        <td>20-30 minutes</td>
+                    </tr>
+                    <tr>
+                        <td>10,000</td>
+                        <td>45-60 minutes</td>
+                    </tr>
+                </table>
+                
+                <p><strong>Factors affecting speed:</strong></p>
+                <ul>
+                    <li>File sizes</li>
+                    <li>Hard drive speed (SSD vs HDD)</li>
+                    <li>CPU performance</li>
+                    <li>RAM available</li>
+                </ul>
+            </section>
+            
+            <section id="results">
+                <h2>6. Understanding Results</h2>
+                
+                <h3>HTML Report Overview</h3>
+                <p>After scanning, a report opens in your browser:</p>
+                
+                <div class="ui-mockup">┌────────────────────────────────────────────────┐
+│ Duplicate Files Report                         │
+│ Folder: C:\Users\You\Pictures                  │
+│ Generated: 2025-01-15 14:30:25                 │
+│ Groups Found: 15                               │
+├────────────────────────────────────────────────┤
+│ [Delete Selected] [Select All] [Reset] 0 files│
+├────────────────────────────────────────────────┤
+│ Group 1 [EXACT]                                │
+│ ┌─────────────┬─────────────────────────────┐ │
+│ │Original(Keep)│ Duplicates (2)             │ │
+│ │[✓] [IMG]    │ [☐] [IMG] vacation_copy.jpg│ │
+│ │vacation.jpg │ [☐] [IMG] vacation (1).jpg │ │
+│ └─────────────┴─────────────────────────────┘ │
+└────────────────────────────────────────────────┘</div>
+                
+                <h3>Report Sections</h3>
+                
+                <h4>Header Information</h4>
+                <ul>
+                    <li><strong>Folder:</strong> The scanned directory path</li>
+                    <li><strong>Generated:</strong> Timestamp of the scan</li>
+                    <li><strong>Groups Found:</strong> Number of duplicate sets</li>
+                </ul>
+                
+                <h4>Control Buttons</h4>
+                
+                <p><strong>Delete Selected</strong></p>
+                <ul>
+                    <li>Moves checked duplicates to quarantine</li>
+                    <li>Only enabled when files are selected</li>
+                    <li>Shows confirmation dialog</li>
+                </ul>
+                
+                <p><strong>Select All Duplicates</strong></p>
+                <ul>
+                    <li>Automatically checks all duplicate files</li>
+                    <li>Leaves originals unchecked</li>
+                    <li>Quick way to remove all duplicates</li>
+                </ul>
+                
+                <p><strong>Reset</strong></p>
+                <ul>
+                    <li>Closes the session</li>
+                    <li>Shuts down the application</li>
+                    <li>Closes the report</li>
+                </ul>
+                
+                <p><strong>Selected Count</strong></p>
+                <ul>
+                    <li>Shows how many files are selected</li>
+                    <li>Updates in real-time</li>
+                </ul>
+                
+                <h3>Duplicate Groups</h3>
+                
+                <h4>Left Column: Original (Keep)</h4>
+                <ul>
+                    <li>Always checked (will be kept)</li>
+                    <li>Checkbox is disabled</li>
+                    <li>Shows thumbnail preview</li>
+                    <li>Full file path</li>
+                    <li>File size in bytes</li>
+                </ul>
+                
+                <h4>Right Column: Duplicates</h4>
+                <ul>
+                    <li>Unchecked by default</li>
+                    <li>Check to delete</li>
+                    <li>Shows thumbnail preview</li>
+                    <li>Full file path</li>
+                    <li>File size in bytes</li>
+                </ul>
+                
+                <h3>Match Type Badges</h3>
+                
+                <p><span class="badge badge-exact">EXACT</span></p>
+                <ul>
+                    <li>Files are byte-for-byte identical</li>
+                    <li>100% confidence</li>
+                    <li>Safe to delete</li>
+                </ul>
+                
+                <p><span class="badge badge-similar">SIMILAR</span></p>
+                <ul>
+                    <li>Files are visually similar</li>
+                    <li>70-90% similarity</li>
+                    <li>Review before deleting</li>
+                </ul>
+            </section>
+            
+            <section id="managing">
+                <h2>7. Managing Duplicates</h2>
+                
+                <h3>Selecting Files to Delete</h3>
+                
+                <h4>Method 1: Manual Selection</h4>
+                <ol>
+                    <li>Review each duplicate group</li>
+                    <li>Check thumbnails to verify</li>
+                    <li>Click checkbox next to files to delete</li>
+                    <li>Selected count updates automatically</li>
+                </ol>
+                
+                <h4>Method 2: Select All</h4>
+                <ol>
+                    <li>Click "Select All Duplicates" button</li>
+                    <li>All duplicate files checked instantly</li>
+                    <li>Review selections if needed</li>
+                    <li>Uncheck any you want to keep</li>
+                </ol>
+                
+                <h4>Method 3: Selective Selection</h4>
+                <ol>
+                    <li>Use "Select All Duplicates"</li>
+                    <li>Uncheck specific files you want to keep</li>
+                    <li>Keep important versions</li>
+                </ol>
+                
+                <h3>Verifying Before Deletion</h3>
+                
+                <div class="tip">
+                    <h4>Check These Details:</h4>
+                    <p><strong><span class="checkmark">✅</span> Thumbnail Preview</strong></p>
+                    <ul>
+                        <li>Are the images identical?</li>
+                        <li>Is quality comparable?</li>
+                        <li>Any important differences?</li>
+                    </ul>
+                    
+                    <p><strong><span class="checkmark">✅</span> File Size</strong></p>
+                    <ul>
+                        <li>Keep the largest (best quality)</li>
+                        <li>Original is usually largest</li>
+                    </ul>
+                    
+                    <p><strong><span class="checkmark">✅</span> File Path</strong></p>
+                    <ul>
+                        <li>Where is the file located?</li>
+                        <li>Is it in an important folder?</li>
+                        <li>Is it backed up elsewhere?</li>
+                    </ul>
+                    
+                    <p><strong><span class="checkmark">✅</span> File Name</strong></p>
+                    <ul>
+                        <li>Does the name indicate purpose?</li>
+                        <li>Is it part of a sequence?</li>
+                        <li>Any special meaning?</li>
+                    </ul>
+                </div>
+                
+                <h3>Deletion Process</h3>
+                
+                <h4>Step 1: Select Files</h4>
+                <div class="code-block">Selected: 12 files selected
+[Delete Selected] ← Click here</div>
+                
+                <h4>Step 2: Click Delete</h4>
+                
+                <h4>Step 3: Confirm</h4>
+                <div class="ui-mockup">┌────────────────────────────────┐
+│ Are you sure you want to      │
+│ delete 12 file(s)?             │
+│ They will be moved to          │
+│ quarantine.                    │
+│                                │
+│ [Yes] [No]                     │
+└────────────────────────────────┘</div>
+                
+                <h4>Step 4: Progress</h4>
+                <div class="ui-mockup">┌────────────────────────────────┐
+│ Deleting Files...              │
+│                                │
+│ [████████████░░░░]             │
+│ 75%                            │
+└────────────────────────────────┘</div>
+                
+                <h4>Step 5: Results</h4>
+                <div class="ui-mockup">┌────────────────────────────────┐
+│ Deletion Complete!             │
+│                                │
+│ Successfully deleted: 12       │
+│ Failed: 0                      │
+│ Total processed: 12            │
+│                                │
+│ [OK]                           │
+└────────────────────────────────┘</div>
+                
+                <h3>After Deletion</h3>
+                <ul>
+                    <li>Deleted files removed from report</li>
+                    <li>Empty groups disappear</li>
+                    <li>Selected count resets to 0</li>
+                    <li>Can continue selecting and deleting</li>
+                </ul>
+            </section>
+            
+            <section id="quarantine">
+                <h2>8. Quarantine System</h2>
+                
+                <h3>What is Quarantine?</h3>
+                <p>Instead of permanently deleting files, Duplicate File Finder moves them to a safe quarantine folder. This allows you to:</p>
+                <ul>
+                    <li>Review deleted files</li>
+                    <li>Restore files if needed</li>
+                    <li>Permanently delete later when confident</li>
+                </ul>
+                
+                <h3>Quarantine Location</h3>
+                <p><strong>Default Path:</strong></p>
+                <div class="code-block">C:\Users\YourName\DuplicateFiles_Quarantine\</div>
+                
+                <p><strong>Structure:</strong></p>
+                <div class="code-block">DuplicateFiles_Quarantine/
+├── quarantine_20250115_143025/
+│   ├── deletion_log.txt
+│   ├── Pictures/
+│   │   ├── vacation_copy.jpg
+│   │   └── photo (1).jpg
+│   └── Downloads/
+│       └── image_copy.png
+│
+└── quarantine_20250115_151200/
+    ├── deletion_log.txt
+    └── ...</div>
+                
+                <h3>Quarantine Sessions</h3>
+                <p>Each deletion creates a new timestamped folder:</p>
+                <ul>
+                    <li><strong>Format:</strong> <code>quarantine_YYYYMMDD_HHMMSS</code></li>
+                    <li><strong>Example:</strong> <code>quarantine_20250115_143025</code>
+                        <ul>
+                            <li>Date: 2025-01-15</li>
+                            <li>Time: 14:30:25</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h3>Deletion Log</h3>
+                <p>Each session includes <code>deletion_log.txt</code>:</p>
+                
+                <div class="code-block">Deletion Log - 2025-01-15 14:30:25
+================================================================================
+MOVED: C:\Users\You\Pictures\vacation_copy.jpg
+   TO: C:\Users\You\DuplicateFiles_Quarantine\quarantine_20250115_143025\Users\You\Pictures\vacation_copy.jpg
+MOVED: C:\Users\You\Pictures\photo (1).jpg
+   TO: C:\Users\You\DuplicateFiles_Quarantine\quarantine_20250115_143025\Users\You\Pictures\photo (1).jpg
+FAILED: C:\Users\You\Pictures\locked_file.jpg
+ERROR: PermissionError: [WinError 32] The process cannot access the file...</div>
+                
+                <h3>Restoring Files</h3>
+                
+                <h4>Method 1: Manual Restoration</h4>
+                <ol>
+                    <li>Open quarantine folder</li>
+                    <li>Navigate to the session folder</li>
+                    <li>Find your file in the directory structure</li>
+                    <li>Copy or move back to original location</li>
+                </ol>
+                
+                <h4>Method 2: Bulk Restoration</h4>
+                <ol>
+                    <li>Open the session folder</li>
+                    <li>Select all files and folders</li>
+                    <li>Copy them</li>
+                    <li>Paste to appropriate locations</li>
+                </ol>
+                
+                <h3>Permanently Deleting Quarantine</h3>
+                <p>When you're confident files aren't needed:</p>
+                <ol>
+                    <li>Open File Explorer</li>
+                    <li>Navigate to <code>C:\Users\YourName\DuplicateFiles_Quarantine\</code></li>
+                    <li>Select old session folders</li>
+                    <li>Press <kbd>Shift + Delete</kbd> for permanent deletion</li>
+                    <li>Confirm deletion</li>
+                </ol>
+                
+                <div class="tip">
+                    <strong>Tip:</strong> Wait 30 days before permanently deleting to ensure you don't need any files.
+                </div>
+            </section>
+            
+            <section id="tips">
+                <h2>9. Tips & Best Practices</h2>
+                
+                <h3>Before Scanning</h3>
+                
+                <h4>1. Start Small</h4>
+                <ul>
+                    <li>Test on a small folder first (100-500 files)</li>
+                    <li>Learn how the tool works</li>
+                    <li>Build confidence before large scans</li>
+                </ul>
+                
+                <h4>2. Backup Important Files</h4>
+                <ul>
+                    <li>Create a backup of critical folders</li>
+                    <li>Use an external drive or cloud storage</li>
+                    <li>Better safe than sorry</li>
+                </ul>
+                
+                <h4>3. Close Other Applications</h4>
+                <ul>
+                    <li>Free up RAM for faster scanning</li>
+                    <li>Reduce CPU competition</li>
+                    <li>Prevent file locking issues</li>
+                </ul>
+                
+                <h4>4. Choose Appropriate Folders</h4>
+                
+                <div class="success">
+                    <p><strong>Good Choices:</strong></p>
+                    <ul>
+                        <li>Downloads folder</li>
+                        <li>Pictures libraries</li>
+                        <li>Video collections</li>
+                        <li>Camera uploads</li>
+                    </ul>
+                </div>
+                
+                <div class="warning">
+                    <p><strong>Avoid:</strong></p>
+                    <ul>
+                        <li>System folders (C:\Windows)</li>
+                        <li>Program Files</li>
+                        <li>Application data folders</li>
+                        <li>Currently open files</li>
+                    </ul>
+                </div>
+                
+                <h3>During Scanning</h3>
+                
+                <h4>1. Be Patient</h4>
+                <ul>
+                    <li>Large scans take time</li>
+                    <li>Don't close the application</li>
+                    <li>Let it complete all phases</li>
+                </ul>
+                
+                <h4>2. Monitor Progress</h4>
+                <ul>
+                    <li>Watch the status messages</li>
+                    <li>Note any error messages</li>
+                    <li>Progress bar shows completion</li>
+                </ul>
+                
+                <h4>3. Don't Use Computer Heavily</h4>
+                <ul>
+                    <li>Scanning is resource-intensive</li>
+                    <li>Heavy multitasking slows progress</li>
+                    <li>Let it work in the background</li>
+                </ul>
+                
+                <h3>Reviewing Results</h3>
+                
+                <h4>1. Check SIMILAR Matches Carefully</h4>
+                <ul>
+                    <li>These may not be identical</li>
+                    <li>Verify thumbnails</li>
+                    <li>Consider keeping both if uncertain</li>
+                </ul>
+                
+                <h4>2. Verify File Sizes</h4>
+                <ul>
+                    <li>Larger files are usually better quality</li>
+                    <li>Small differences might matter</li>
+                    <li>Check resolution if needed</li>
+                </ul>
+                
+                <h4>3. Review File Paths</h4>
+                <ul>
+                    <li>Files in backup folders are safe to delete</li>
+                    <li>Files in working folders need review</li>
+                    <li>Consider folder purpose</li>
+                </ul>
+                
+                <h4>4. Start Conservative</h4>
+                <ul>
+                    <li>Delete obvious duplicates first</li>
+                    <li>Run multiple small sessions</li>
+                    <li>Gain experience before aggressive deletion</li>
+                </ul>
+                
+                <h3>After Deletion</h3>
+                
+                <h4>1. Verify Quarantine</h4>
+                <ul>
+                    <li>Open quarantine folder</li>
+                    <li>Spot-check a few files</li>
+                    <li>Confirm they're actually duplicates</li>
+                </ul>
+                
+                <h4>2. Test Applications</h4>
+                <ul>
+                    <li>Open programs that used those files</li>
+                    <li>Ensure nothing breaks</li>
+                    <li>Check photo viewers, editors, etc.</li>
+                </ul>
+                
+                <h4>3. Wait Before Permanent Deletion</h4>
+                <ul>
+                    <li>Keep quarantine for 30 days</li>
+                    <li>Use your computer normally</li>
+                    <li>Delete permanently only when confident</li>
+                </ul>
+                
+                <h3>Optimization Tips</h3>
+                
+                <h4>For Faster Scans:</h4>
+                <ol>
+                    <li>Use SSD drives instead of HDD</li>
+                    <li>Close browser tabs to free RAM</li>
+                    <li>Scan during off-hours for dedicated resources</li>
+                    <li>Split large collections into smaller scans</li>
+                </ol>
+                
+                <h4>For Better Results:</h4>
+                <ol>
+                    <li>Organize before scanning - pre-sort obviously</li>
+                    <li>Remove obvious duplicates manually first</li>
+                    <li>Scan by file type - images separate from videos</li>
+                    <li>Regular maintenance - scan monthly</li>
+                </ol>
+            </section>
+            
+            <section id="troubleshooting">
+                <h2>10. Troubleshooting</h2>
+                
+                <h3>Common Issues</h3>
+                
+                <h4>Issue 1: "Server failed to start"</h4>
+                
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Error message on scan</li>
+                    <li>Application won't scan</li>
+                    <li>Port conflict mentioned</li>
+                </ul>
+                
+                <p><strong>Solutions:</strong></p>
+                <ol>
+                    <li><strong>Close other applications</strong>
+                        <ul>
+                            <li>Something might be using port 8765</li>
+                            <li>Close web servers, development tools</li>
+                        </ul>
+                    </li>
+                    <li><strong>Check firewall</strong>
+                        <ul>
+                            <li>Allow Duplicate File Finder</li>
+                            <li>Add exception if blocked</li>
+                        </ul>
+                    </li>
+                    <li><strong>Run as administrator</strong>
+                        <ul>
+                            <li>Right-click application</li>
+                            <li>Select "Run as administrator"</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <h4>Issue 2: "Cannot create quarantine folder"</h4>
+                
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Deletion fails</li>
+                    <li>Permission error</li>
+                    <li>Cannot write to folder</li>
+                </ul>
+                
+                <p><strong>Solutions:</strong></p>
+                <ol>
+                    <li><strong>Check disk space</strong>
+                        <ul>
+                            <li>Ensure enough free space</li>
+                            <li>At least 2x size of files to delete</li>
+                        </ul>
+                    </li>
+                    <li><strong>Verify permissions</strong>
+                        <ul>
+                            <li>Ensure write access to user folder</li>
+                            <li>Check <code>C:\Users\YourName</code> permissions</li>
+                        </ul>
+                    </li>
+                    <li><strong>Choose different quarantine location</strong>
+                        <ul>
+                            <li>Edit the quarantine path</li>
+                            <li>Use a different drive</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <h4>Issue 3: Scan is very slow</h4>
+                
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Hours for moderate folders</li>
+                    <li>Progress barely moves</li>
+                    <li>Computer freezes</li>
+                </ul>
+                
+                <p><strong>Solutions:</strong></p>
+                <ol>
+                    <li><strong>Close other applications</strong>
+                        <ul>
+                            <li>Free up RAM</li>
+                            <li>Reduce CPU usage</li>
+                        </ul>
+                    </li>
+                    <li><strong>Scan smaller folders</strong>
+                        <ul>
+                            <li>Split into multiple scans</li>
+                            <li>1000 files at a time max</li>
+                        </ul>
+                    </li>
+                    <li><strong>Upgrade hardware</strong>
+                        <ul>
+                            <li>Add more RAM (8GB+)</li>
+                            <li>Use SSD instead of HDD</li>
+                            <li>Upgrade CPU if very old</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <h4>Issue 4: "No duplicates found" but I know there are duplicates</h4>
+                
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Obvious duplicates missed</li>
+                    <li>Zero results unexpected</li>
+                </ul>
+                
+                <p><strong>Possible Causes:</strong></p>
+                <ol>
+                    <li><strong>Different file formats</strong>
+                        <ul>
+                            <li>photo.jpg vs photo.png</li>
+                            <li>Application only matches same format</li>
+                        </ul>
+                    </li>
+                    <li><strong>Below similarity threshold</strong>
+                        <ul>
+                            <li>Heavy editing</li>
+                            <li>Major cropping</li>
+                            <li>Increase threshold in settings</li>
+                        </ul>
+                    </li>
+                    <li><strong>File corruption</strong>
+                        <ul>
+                            <li>Cannot read file</li>
+                            <li>Skip corrupted files</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <p><strong>Solutions:</strong></p>
+                <ul>
+                    <li>Convert files to same format</li>
+                    <li>Manually review low-similarity files</li>
+                    <li>Re-download or restore files</li>
+                </ul>
+                
+                <h4>Issue 5: Wrong file selected as "original"</h4>
+                
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Lower quality kept</li>
+                    <li>Newer file marked as original</li>
+                    <li>Unexpected selection</li>
+                </ul>
+                
+                <p><strong>Explanation:</strong> Selection criteria: Size → Oldest Modified → Oldest Created</p>
+                
+                <p><strong>Solutions:</strong></p>
+                <ol>
+                    <li><strong>Manual review before deleting</strong>
+                        <ul>
+                            <li>Check file details</li>
+                            <li>Swap if needed</li>
+                        </ul>
+                    </li>
+                    <li><strong>Edit files before scanning</strong>
+                        <ul>
+                            <li>Rename preferred original</li>
+                            <li>Adjust file dates if necessary</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <h4>Issue 6: Browser report won't load</h4>
+                
+                <p><strong>Symptoms:</strong></p>
+                <ul>
+                    <li>Blank page</li>
+                    <li>Error in browser</li>
+                    <li>Report doesn't open</li>
+                </ul>
+                
+                <p><strong>Solutions:</strong></p>
+                <ol>
+                    <li><strong>Check default browser</strong>
+                        <ul>
+                            <li>Set Chrome, Firefox, or Edge as default</li>
+                            <li>Update browser to latest version</li>
+                        </ul>
+                    </li>
+                    <li><strong>Manually open report</strong>
+                        <ul>
+                            <li>Find HTML file in scan folder</li>
+                            <li>Right-click → Open with → Browser</li>
+                        </ul>
+                    </li>
+                    <li><strong>Check file permissions</strong>
+                        <ul>
+                            <li>Report might be blocked</li>
+                            <li>Unblock in file properties</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <h3>Error Messages</h3>
+                
+                <h4>"Error hashing file: [filename]"</h4>
+                <ul>
+                    <li>File is locked or in use</li>
+                    <li>Close applications using the file</li>
+                    <li>File might be corrupted</li>
+                </ul>
+                
+                <h4>"Error creating thumbnail: [filename]"</h4>
+                <ul>
+                    <li>File format not supported</li>
+                    <li>File is corrupted</li>
+                    <li>Continues scanning other files</li>
+                </ul>
+                
+                <h4>"Permission denied"</h4>
+                <ul>
+                    <li>Need administrator rights</li>
+                    <li>File/folder is read-only</li>
+                    <li>Run application as administrator</li>
+                </ul>
+                
+                <h4>"Out of memory"</h4>
+                <ul>
+                    <li>Too many files for available RAM</li>
+                    <li>Close other applications</li>
+                    <li>Scan smaller folder</li>
+                    <li>Upgrade RAM</li>
+                </ul>
+                
+                <h3>Getting Help</h3>
+                <p>If problems persist:</p>
+                <ol>
+                    <li><strong>Check the log</strong>
+                        <ul>
+                            <li>Look for error details</li>
+                            <li>Note specific file paths</li>
+                        </ul>
+                    </li>
+                    <li><strong>Try smaller test</strong>
+                        <ul>
+                            <li>Scan a small folder</li>
+                            <li>Isolate the problem</li>
+                        </ul>
+                    </li>
+                    <li><strong>Reinstall application</strong>
+                        <ul>
+                            <li>Uninstall completely</li>
+                            <li>Download latest version</li>
+                            <li>Install fresh</li>
+                        </ul>
+                    </li>
+                    <li><strong>Contact support</strong>
+                        <ul>
+                            <li>Visit support website</li>
+                            <li>Include error messages</li>
+                            <li>Describe steps to reproduce</li>
+                        </ul>
+                    </li>
+                </ol>
+            </section>
+            
+            <section id="faq">
+                <h2>11. FAQ</h2>
+                
+                <h3>General Questions</h3>
+                
+                <h4>Q: Is this safe to use?</h4>
+                <p><strong>A:</strong> Yes, files are moved to quarantine, not permanently deleted. You can always restore them.</p>
+                
+                <h4>Q: Do I need Python installed?</h4>
+                <p><strong>A:</strong> No, the application is standalone and includes everything needed.</p>
+                
+                <h4>Q: How much disk space will I save?</h4>
+                <p><strong>A:</strong> Depends on your collection. Users typically save 10-30% of their media storage.</p>
+                
+                <h4>Q: Can I scan multiple folders at once?</h4>
+                <p><strong>A:</strong> No, scan one folder at a time. You can include subfolders though.</p>
+                
+                <h4>Q: Will this slow down my computer?</h4>
+                <p><strong>A:</strong> During scanning, yes. Close the report and application when done.</p>
+                
+                <h3>Technical Questions</h3>
+                
+                <h4>Q: What algorithm does it use?</h4>
+                <p><strong>A:</strong> MD5 hashing for exact matches, perceptual hashing for visual similarity, and Levenshtein distance for names.</p>
+                
+                <h4>Q: Can it detect edited photos?</h4>
+                <p><strong>A:</strong> Yes, if similarity is 70-90%. Heavy editing may fall below threshold.</p>
+                
+                <h4>Q: Does it work with RAW images?</h4>
+                <p><strong>A:</strong> No, currently only supports JPG, PNG, GIF, BMP, WebP, TIFF, and ICO.</p>
+                
+                <h4>Q: Can it scan network drives?</h4>
+                <p><strong>A:</strong> Yes, but it will be much slower than local drives.</p>
+                
+                <h4>Q: Is my data sent anywhere?</h4>
+                <p><strong>A:</strong> No, everything runs locally. No internet connection used or required.</p>
+                
+                <h3>Usage Questions</h3>
+                
+                <h4>Q: Can I undo deletions?</h4>
+                <p><strong>A:</strong> Yes, restore files from the quarantine folder.</p>
+                
+                <h4>Q: How long should I keep quarantine files?</h4>
+                <p><strong>A:</strong> Recommend 30 days, then permanently delete if confident.</p>
+                
+                <h4>Q: Can I change the quarantine location?</h4>
+                <p><strong>A:</strong> Currently uses fixed location in user folder. Future versions may allow customization.</p>
+                
+                <h4>Q: Will it delete files I'm currently using?</h4>
+                <p><strong>A:</strong> No, locked files cannot be moved and will show an error.</p>
+                
+                <h4>Q: Can I stop a scan in progress?</h4>
+                <p><strong>A:</strong> Yes, close the application. No changes made until you delete files.</p>
+                
+                <h3>Results Questions</h3>
+                
+                <h4>Q: Why are some matches marked SIMILAR instead of EXACT?</h4>
+                <p><strong>A:</strong> They're visually similar but not byte-identical. May be resized, cropped, or edited.</p>
+                
+                <h4>Q: Should I delete SIMILAR matches?</h4>
+                <p><strong>A:</strong> Review carefully. They might be different enough to keep both.</p>
+                
+                <h4>Q: Why doesn't it find my obvious duplicates?</h4>
+                <p><strong>A:</strong> Check if they're different formats, below threshold, or in excluded folders.</p>
+                
+                <h4>Q: Can I adjust the similarity threshold?</h4>
+                <p><strong>A:</strong> Not in UI currently. Would require editing the source code.</p>
+                
+                <h4>Q: Why keep the largest file?</h4>
+                <p><strong>A:</strong> Larger usually means better quality/resolution.</p>
+                
+                <h3>Appendix</h3>
+                
+                <h4>Keyboard Shortcuts</h4>
+                <table>
+                    <tr>
+                        <th>Shortcut</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td>Alt+F4</td>
+                        <td>Close application</td>
+                    </tr>
+                    <tr>
+                        <td>Tab</td>
+                        <td>Navigate fields</td>
+                    </tr>
+                    <tr>
+                        <td>Enter</td>
+                        <td>Activate focused button</td>
+                    </tr>
+                    <tr>
+                        <td>Space</td>
+                        <td>Check/uncheck checkbox</td>
+                    </tr>
+                </table>
+                
+                <h4>Supported File Formats</h4>
+                
+                <p><strong>Images</strong></p>
+                <ul>
+                    <li>JPEG: .jpg, .jpeg</li>
+                    <li>PNG: .png</li>
+                    <li>GIF: .gif</li>
+                    <li>BMP: .bmp</li>
+                    <li>WebP: .webp</li>
+                    <li>TIFF: .tiff, .tif</li>
+                    <li>ICO: .ico</li>
+                </ul>
+                
+                <p><strong>Videos</strong></p>
+                <ul>
+                    <li>MP4: .mp4</li>
+                    <li>AVI: .avi</li>
+                    <li>MOV: .mov</li>
+                    <li>MKV: .mkv</li>
+                    <li>WMV: .wmv</li>
+                    <li>FLV: .flv</li>
+                    <li>WebM: .webm</li>
+                    <li>M4V: .m4v</li>
+                    <li>MPEG: .mpg, .mpeg</li>
+                </ul>
+                
+                <h4>File Size Limits</h4>
+                <ul>
+                    <li>No specific limit</li>
+                    <li>Limited by system RAM</li>
+                    <li>Very large files (&gt;1GB) may slow scanning</li>
+                </ul>
+                
+                <h4>System Resources</h4>
+                
+                <p><strong>Typical Usage:</strong></p>
+                <ul>
+                    <li>RAM: 200-500MB during scan</li>
+                    <li>CPU: 50-90% during visual analysis</li>
+                    <li>Disk: Minimal reads during scan</li>
+                </ul>
+                
+                <p><strong>Peak Usage:</strong></p>
+                <ul>
+                    <li>RAM: Up to 2GB for large collections</li>
+                    <li>CPU: 100% during intensive processing</li>
+                    <li>Disk: Heavy I/O during file moves</li>
+                </ul>
+                
+                <h4>Glossary</h4>
+                <ul>
+                    <li><strong>Exact Duplicate:</strong> Files with identical content (same hash)</li>
+                    <li><strong>Hash:</strong> Unique fingerprint calculated from file content</li>
+                    <li><strong>Perceptual Hash:</strong> Visual fingerprint for comparing image similarity</li>
+                    <li><strong>Quarantine:</strong> Temporary holding area for deleted files</li>
+                    <li><strong>Session:</strong> One complete scan and deletion cycle</li>
+                    <li><strong>Similarity Threshold:</strong> Percentage match required to group files</li>
+                    <li><strong>Thumbnail:</strong> Small preview image of file content</li>
+                    <li><strong>Visual Similarity:</strong> How closely two images appear alike</li>
+                </ul>
+                
+                <h4>Contact & Support</h4>
+                <ul>
+                    <li><strong>Application Version:</strong> 1.0.0</li>
+                    <li><strong>Website:</strong> https://yourwebsite.com</li>
+                    <li><strong>Email Support:</strong> support@yourwebsite.com</li>
+                    <li><strong>Documentation:</strong> https://yourwebsite.com/docs</li>
+                    <li><strong>Report Bugs:</strong> https://yourwebsite.com/support</li>
+                </ul>
+                
+                <h4>License</h4>
+                <p>Copyright (C) 2025 Your Company Name</p>
+                <p>This software is provided "as is" without warranty. See LICENSE.txt for full terms.</p>
+            </section>
+        </div>
+        
+        <footer>
+            <p><strong>Duplicate File Finder User Guide</strong></p>
+            <p>Version 1.0.0 | Last Updated: January 2025</p>
+            <p>Copyright (C) 2025 Your Company Name</p>
+        </footer>
+    </div>
+</body>
+</html>
