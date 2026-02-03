@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 More Days of AI - Mastery Calendar</title>
+    <style>
+        /* [Styles preserved from original ai_learning_calendar.html for consistency] */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f5f5f5; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { text-align: center; margin-bottom: 10px; color: #2c3e50; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 20px; font-size: 18px; }
+        .progress-section { margin-bottom: 20px; text-align: center; }
+        .progress-stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 15px; flex-wrap: wrap; }
+        .stat { font-size: 16px; color: #333; }
+        .stat-value { font-weight: bold; color: #007bff; font-size: 20px; }
+        .progress-bar-container { width: 100%; max-width: 600px; height: 30px; background-color: #e9ecef; border-radius: 15px; overflow: hidden; margin: 0 auto 15px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #20c997); transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; text-shadow: 0 1px 1px rgba(0,0,0,0.2); }
+        .action-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .action-btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; transition: all 0.2s; font-weight: 600; }
+        .reset-btn { background-color: #dc3545; color: white; }
+        .print-btn { background-color: #6c757d; color: white; }
+        .export-btn { background-color: #28a745; color: white; }
+        .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; overflow-x: auto; }
+        .tab { padding: 12px 24px; cursor: pointer; background-color: transparent; border: none; font-size: 16px; color: #666; transition: all 0.3s; white-space: nowrap; }
+        .tab.active { color: #007bff; border-bottom: 3px solid #007bff; margin-bottom: -2px; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 20px; }
+        .day-header { text-align: center; font-weight: bold; padding: 10px; background-color: #f8f9fa; border-radius: 4px; color: #555; }
+        .calendar-day { aspect-ratio: 1; border: 2px solid #ddd; border-radius: 8px; padding: 10px; position: relative; cursor: pointer; transition: all 0.2s; background-color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .calendar-day:hover { border-color: #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: translateY(-2px); z-index: 2; }
+        .calendar-day.completed { background-color: #d4edda; border-color: #28a745; }
+        .calendar-day.inactive { background-color: #f8f9fa; cursor: default; opacity: 0.6; }
+        .checkmark-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: #28a745; opacity: 0.3; pointer-events: none; display: none; }
+        .calendar-day.completed .checkmark-overlay { display: block; }
+        .date-display { position: absolute; top: 8px; left: 8px; font-size: 11px; color: #007bff; font-weight: bold; }
+        .day-number { position: absolute; top: 8px; right: 8px; font-size: 16px; color: #dc3545; font-weight: bold; }
+        .tool-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px; text-align: center; line-height: 1.2; margin-top: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .tool-name { font-size: 11px; text-align: center; margin-top: 8px; color: #333; font-weight: 600; line-height: 1.2; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); overflow-y: auto; }
+        .modal-content { background-color: white; margin: 50px auto; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; position: relative; }
+        .close { position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .completion-checkbox { margin: 20px 0; display: flex; align-items: center; gap: 10px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; }
+        .modal-description { margin: 20px 0; line-height: 1.6; color: #444; }
+        .modal-action { margin: 20px 0; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; }
+        .modal-links { margin-top: 20px; }
+        .link-item { display: block; color: #007bff; text-decoration: none; padding: 10px; border: 1px solid #eee; margin-bottom: 8px; border-radius: 4px; }
+        .notes-textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+        .thumbnail { width: 100%; max-width: 600px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; display: block; margin: 20px auto; }
+        @media (max-width: 768px) { .calendar { grid-template-columns: repeat(2, 1fr); } .day-header { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>30 More Days of AI Mastery</h1>
+        <div class="subtitle">February 5 - March 7, 2026</div>
+        
+        <div class="progress-section">
+            <div class="progress-stats">
+                <div class="stat"><span class="stat-value" id="completedCount">0</span>/30 Days Completed</div>
+                <div class="stat">Progress: <span class="stat-value" id="percentComplete">0%</span></div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn reset-btn" onclick="resetProgress()">Reset Progress</button>
+            <button class="action-btn print-btn" onclick="window.print()">Print Calendar</button>
+            <button class="action-btn export-btn" onclick="exportChecklist()">Export Checklist</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'calendar-tab')">Calendar</button>
+            <button class="tab" onclick="openTab(event, 'references-tab')">Graphics & Resources</button>
+        </div>
+
+        <div id="calendar-tab" class="tab-content active">
+            <div class="calendar" id="calendar"></div>
+        </div>
+
+        <div id="references-tab" class="tab-content">
+            <h3 style="margin-top:20px;">Reference Graphics</h3>
+            <img src="30 More Days of AI.png" class="thumbnail" onclick="openImageModal(this.src)" alt="30 More Days of AI">
+            <img src="30 More AI Toolset.png" class="thumbnail" onclick="openImageModal(this.src)" alt="30 More AI Toolset">
+            <div id="urlListContainer"></div>
+        </div>
+    </div>
+
+    <div id="dayModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Tool Details</h2>
+            <div class="completion-checkbox">
+                <input type="checkbox" id="completionCheckbox" onchange="toggleCompletion()">
+                <label for="completionCheckbox">Mark Day as Completed</label>
+            </div>
+            <div id="modalContent" class="modal-description"></div>
+            <div id="modalAction" class="modal-action">
+                <h4>Daily Task:</h4>
+                <p id="modalActionText"></p>
+            </div>
+            <div id="modalLinks" class="modal-links"></div>
+            <div class="notes-section">
+                <h3>Personal Learning Notes</h3>
+                <textarea id="notesTextarea" class="notes-textarea" placeholder="What did you learn today?"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Start date: February 5th, 2026
+        const startDate = new Date(2026, 1, 5); 
+        startDate.setHours(0,0,0,0);
+        
+        const aiTools = {
+            1: { name: "Replit", category: "Coding", icon: "REP", color: "#6200ea", description: "A collaborative coding platform and development environment.", action: "Create and run a simple 'Hello World' application in the browser-based environment without installing local software.", urls: ["https://x.com/VermaAakash3/status/1986398564436877372"] },
+            2: { name: "Databricks", category: "Data Science", icon: "DAT", color: "#ff3621", description: "Key AI tool for data engineering and analytics.", action: "Import a dataset and run a basic data analysis query or notebook within the platform.", urls: [] },
+            3: { name: "Anti-Gravity", category: "Coding", icon: "ANT", color: "#000000", description: "Anti-gravity IDE with a unique development interface.", action: "Set up a development environment and write a script to test the IDE's specific interface features.", urls: ["https://x.com/JulianGoldieSEO/status/1992020207884468340"] },
+            4: { name: "Codex", category: "Coding", icon: "CDX", color: "#00a67e", description: "AI model that translates natural language to code.", action: "Use a Codex-powered interface to translate natural language comments into executable code.", urls: [] },
+            5: { name: "Airflow", category: "Automation", icon: "AIR", color: "#017cee", description: "Platform to programmatically author, schedule and monitor workflows.", action: "Define a Directed Acyclic Graph (DAG) to schedule and monitor a simple data pipeline.", urls: [] },
+            6: { name: "Zapier", category: "Automation", icon: "ZAP", color: "#ff4f00", description: "Connects your apps and automates workflows.", action: "Create a 'Zap' that automatically saves email attachments to a cloud storage folder.", urls: [] },
+            7: { name: "n8n", category: "Automation", icon: "N8N", color: "#ff6d5a", description: "Workflow automation tool for AI Agents and Google Cloud.", action: "Build an automated workflow that uses the Gemini AI agent to process incoming data.", urls: ["https://x.com/_philschmid/status/1983897897092440363"] },
+            8: { name: "AirTable", category: "Database", icon: "ART", color: "#18bfff", description: "Low-code platform for building collaborative apps.", action: "Create a relational database base to track a project, utilizing its interface to link records between tables.", urls: [] },
+            9: { name: "Clawdbot", category: "Bot", icon: "CLA", color: "#7289da", description: "Customizable bot for automated assistance.", action: "Deploy the bot in its intended environment (e.g., Discord/Slack) and test its response commands.", urls: [] },
+            10: { name: "Pokee AI", category: "Productivity", icon: "POK", color: "#ffcc00", description: "AI assistant for daily routine automation.", action: "Interact with the bot to automate a simple daily routine or retrieve information.", urls: ["https://x.com/sripathiteja4/status/1982765704945480169"] },
+            11: { name: "Krea Nodes", category: "Visual", icon: "KRE", color: "#ff0080", description: "Generative visual tool with a node-based interface.", action: "Use the node-based or prompt interface to generate high-quality AI artwork.", urls: ["https://x.com/krea_ai/status/1986459811462926574"] },
+            12: { name: "OmniHuman", category: "Video", icon: "OMN", color: "#3d5afe", description: "Tool for generating realistic human avatars (v1.5).", action: "Generate a video of a realistic human avatar speaking a provided script.", urls: ["https://x.com/JaynitMakwana/status/1986753193943183543"] },
+            13: { name: "Meshy 6", category: "3D", icon: "MSH", color: "#00e5ff", description: "AI tool for generating 3D assets and texturing.", action: "Upload a 2D image or use a text prompt to generate a 3D model.", urls: ["https://x.com/Parul_Gautam7/status/1986736519370187030"] },
+            14: { name: "Veedstudio", category: "Video", icon: "VEE", color: "#00d1b2", description: "All-in-one video creation and editing platform.", action: "Upload a raw video and use the tool to automatically add subtitles and trim silence.", urls: ["https://x.com/AIStackLabX/status/1986731633240907977"] },
+            15: { name: "Scribe", category: "Documentation", icon: "SCR", color: "#ff5722", description: "Automatically generates documentation in real-time.", action: "Record yourself performing a browser task to automatically generate a step-by-step guide.", urls: ["https://x.com/hasantoxr/status/1988295161793978467"] },
+            16: { name: "Google Deepmind", category: "Research", icon: "GDM", color: "#4285f4", description: "Leading AI research laboratory publications and models.", action: "Read a recent research paper or technical blog post published by Deepmind to understand underlying models.", urls: ["https://x.com/ai_for_success/status/1986506102587204087"] },
+            17: { name: "Cursor 2.0 Composer", category: "Coding", icon: "CUR", color: "#333333", description: "AI-powered code editor and collaborative assistant.", action: "Write a code snippet (e.g., a Python calculator) by using natural language prompts to have the AI generate the code.", urls: ["https://x.com/NoahEpstein_/status/1986444423643996303"] },
+            18: { name: "Zerve AI", category: "Data Science", icon: "ZER", color: "#673ab7", description: "Development environment tailored for data science projects.", action: "Create a new data science project or 'canvas' to explore its collaborative coding features.", urls: ["https://x.com/premtechAI/status/1986454264856867028"] },
+            19: { name: "Doctly", category: "Productivity", icon: "DOC", color: "#4caf50", description: "AI tool focused on documentation and project assistance.", action: "Create or manage a documentation project using the tool's specific features.", urls: ["https://x.com/HeyAbhishekk/status/1986019179783475351"] },
+            20: { name: "Jupyter AI", category: "Data Science", icon: "JUP", color: "#f37626", description: "Generative AI capabilities for Jupyter notebooks.", action: "Install the extension in a Jupyter Notebook and use the chat interface to generate a data visualization code block.", urls: ["https://x.com/python_spaces/status/1985686143233352031"] },
+            21: { name: "Typeless", category: "Productivity", icon: "TYP", color: "#2196f3", description: "Productivity tool for meeting notes and summaries.", action: "Use the tool during a meeting to generate AI-assisted notes or summaries.", urls: ["https://x.com/LearnWithSubhan/status/1984117020091142247"] },
+            22: { name: "ImageKit.io", category: "API", icon: "IMG", color: "#00bcd4", description: "Real-time image processing and optimization API.", action: "Implement an API call to resize or optimize an image in real-time for a website.", urls: ["https://x.com/ImagekitIo/status/1948314656965308884"] },
+            23: { name: "Capcut", category: "Video", icon: "CAP", color: "#000000", description: "Powerful mobile and desktop video editor with AI features.", action: "Import a video clip and use an AI feature (like auto-captions) to edit it.", urls: ["https://x.com/AIwithSafia/status/1980553860738609477"] },
+            24: { name: "Hitem3D", category: "3D", icon: "HIT", color: "#e91e63", description: "Tool for 3D content and asset generation.", action: "Create a 3D asset or animation using the platform's specific generation tools.", urls: ["https://x.com/AI_GuruX/status/1978373626580910344"] },
+            25: { name: "Chalkist.io", category: "Visual", icon: "CHK", color: "#ff9800", description: "Tool for creating beautiful code snippets and visuals.", action: "Take a snippet of code and use the tool to turn it into a beautiful, shareable image.", urls: ["https://x.com/tom_doerr/status/1988034256614871306"] },
+            26: { name: "Langflow", category: "Coding", icon: "LAN", color: "#455a64", description: "Visual editor for building LLM applications.", action: "Visually design a simple chatbot flow by connecting different language model components on the canvas.", urls: ["https://x.com/DailyDoseOfDS_/status/1988539794293690739"] },
+            27: { name: "Maestro.org", category: "Workflow", icon: "MAE", color: "#00796b", description: "Orchestration platform for complex business processes.", action: "Orchestrate a complex business process or explore the platform's workflow definitions.", urls: [] },
+            28: { name: "Loveable", category: "Productivity", icon: "LOV", color: "#f06292", description: "Platform to generate app prototypes from descriptions.", action: "Use the platform to describe a simple app idea and have it generate a prototype.", urls: [] },
+            29: { name: "Gamaliel", category: "Bot", icon: "GAM", color: "#795548", description: "AI tool and bot with niche utility functions.", action: "Explore the tool's interface to identify its specific niche utility.", urls: ["https://x.com/sweetlew/status/1950619278119432353"] },
+            30: { name: "DocETL", category: "Data Science", icon: "ETL", color: "#388e3c", description: "Document data extraction and transformation tool.", action: "Set up a pipeline to extract specific data fields from a set of unstructured documents.", urls: ["https://x.com/mdancho84/status/1998067108320559277"] }
+        };
+
+        // Logic Functions
+        let currentDay = null;
+
+        function getProgress() {
+            const stored = localStorage.getItem('aiCalendarProgress2');
+            return stored ? JSON.parse(stored) : {};
+        }
+
+        function updateProgressDisplay() {
+            const progress = getProgress();
+            const completed = Object.values(progress).filter(v => v).length;
+            const percent = Math.round((completed / 30) * 100);
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('percentComplete').textContent = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressBar').textContent = percent + '%';
+        }
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(d => {
+                const h = document.createElement('div'); h.className = 'day-header'; h.textContent = d; calendar.appendChild(h);
+            });
+
+            const progress = getProgress();
+            const firstDate = new Date(startDate);
+            const padDays = firstDate.getDay();
+            
+            // Add padding days
+            for(let i=0; i<padDays; i++) {
+                const d = document.createElement('div'); d.className = 'calendar-day inactive'; calendar.appendChild(d);
+            }
+
+            // Add the 30 days
+            for(let i=1; i<=30; i++) {
+                const curr = new Date(startDate); curr.setDate(startDate.getDate() + (i-1));
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day' + (progress[i] ? ' completed' : '');
+                
+                dayDiv.innerHTML = `
+                    <span class="date-display">${curr.getMonth()+1}/${curr.getDate()}</span>
+                    <span class="day-number">${i}</span>
+                    <div class="tool-icon" style="background:${aiTools[i].color}">${aiTools[i].icon}</div>
+                    <div class="tool-name">${aiTools[i].name}</div>
+                    <div class="checkmark-overlay">✓</div>
+                `;
+                dayDiv.onclick = () => openDayModal(i);
+                calendar.appendChild(dayDiv);
+            }
+        }
+
+        function openDayModal(day) {
+            currentDay = day;
+            const tool = aiTools[day];
+            document.getElementById('modalTitle').textContent = `Day ${day}: ${tool.name}`;
+            document.getElementById('modalContent').textContent = tool.description;
+            document.getElementById('modalActionText').textContent = tool.action;
+            document.getElementById('completionCheckbox').checked = getProgress()[day] || false;
+            
+            const linkBox = document.getElementById('modalLinks');
+            linkBox.innerHTML = '<h3>Resources:</h3>';
+            if(tool.urls.length === 0) linkBox.innerHTML += '<p>No URLs provided.</p>';
+            tool.urls.forEach(u => {
+                linkBox.innerHTML += `<a href="${u}" target="_blank" class="link-item">🔗 View Resource</a>`;
+            });
+            
+            document.getElementById('dayModal').style.display = 'block';
+        }
+
+        function toggleCompletion() {
+            const p = getProgress();
+            p[currentDay] = document.getElementById('completionCheckbox').checked;
+            localStorage.setItem('aiCalendarProgress2', JSON.stringify(p));
+            generateCalendar();
+            updateProgressDisplay();
+        }
+
+        function closeModal() { document.getElementById('dayModal').style.display = 'none'; }
+        function openTab(e, name) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
+            e.currentTarget.classList.add('active');
+        }
+
+        // Initialize
+        generateCalendar();
+        updateProgressDisplay();
+    </script>
+</body>
+</html>
