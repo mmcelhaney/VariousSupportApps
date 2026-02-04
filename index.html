@@ -44,7 +44,7 @@
 
         /* --- Sub-tab specific styling --- */
         .sub-tab { background-color: #e9e9e9; border-radius: 0; border-bottom: 1px solid #ccc; }
-        .sub-tab button { font-size: 14px; padding: 10px; }
+        .sub-tab button { font-size: 13px; padding: 10px; flex-basis: 150px; }
         .sub-tab button.active { background-color: #fff; border-bottom: 2px solid #1e88e5; }
 
         .tabcontent, .subtabcontent {
@@ -59,7 +59,7 @@
         /* --- Project Grid --- */
         .project-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
             padding: 10px;
         }
@@ -73,13 +73,15 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 150px;
+            min-height: 180px;
         }
         .tile:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); }
+        .tile h3 { margin: 0 0 10px 0; font-size: 1.1em; }
         .tile h3 a { color: #1e88e5; text-decoration: none; }
+        .tile p { font-size: 0.85em; color: #555; margin-bottom: 15px; }
         .tile button { 
             background-color: #4CAF50; color: white; border: none; padding: 8px 15px; 
-            margin-top: 10px; cursor: pointer; border-radius: 4px;
+            cursor: pointer; border-radius: 4px; align-self: flex-start;
         }
     </style>
     <script>
@@ -96,9 +98,9 @@
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
 
-            // If opening HTML/JS, trigger the first sub-tab
             if (tabName === 'HTMLJavaScript') {
-                document.querySelector('.subtablinks').click();
+                const activeSub = document.querySelector('.subtablinks.active');
+                if (activeSub) activeSub.click(); else document.querySelector('.subtablinks').click();
             }
         }
 
@@ -145,53 +147,97 @@
 
             <div id="AI_Learning" class="subtabcontent">
                 <div class="project-grid">
-                    <div class="tile"><h3><a href="../VariousSupportApps/30 Days of AI/ai_learning_calendar.html">30 Days of AI</a></h3><p>Learning calendar.</p><button onclick="downloadProject('30 Days of AI')">Download</button></div>
-                    <div class="tile"><h3><a href="../VariousSupportApps/30 More Days of AI/30-more-ai-tools.html">30 More Days of AI</a></h3><p>Learning calendar.</p><button onclick="downloadProject('30 More Days of AI')">Download</button></div>
-                    <div class="tile"><h3><a href="../VariousSupportApps/AI Prompt Guide/ai-prompt-guide-gemini.html">AI Prompt Guide</a></h3><p>Master prompting.</p><button onclick="downloadProject('AI Prompt Guide')">Download</button></div>
-                    </div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/30 Days of AI/ai_learning_calendar.html">30 Days of AI</a></h3><p>A calendar to schedule learning AI tools</p><button onclick="downloadProject('30 Days of AI')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/30 More Days of AI/30-more-ai-tools.html">30 More Days of AI</a></h3><p>A calendar to schedule learning more AI tools</p><button onclick="downloadProject('30 More Days of AI')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/AI Prompt Guide/ai-prompt-guide-gemini.html">AI Prompt Guide</a></h3><p>Master the art of prompting AI models with interactive learning</p><button onclick="downloadProject('AI Prompt Guide')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/AI Model Alternatives/AI Model Alternatives.html">AI Model Alternatives</a></h3><p>Visual guide for different AI models.</p><button onclick="downloadProject('AI Model Alternatives')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/AI Chatbot Theory Guide/ai_chatbot_app.html">AI Chatbot Theory Guide</a></h3><p>Interactive tutorial on how chatbots work.</p><button onclick="downloadProject('AI Chatbot Theory Guide')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Choosing AI Tools/ai_tools_selector.html">Choosing AI Tools</a></h3><p>Your Comprehensive Guide to Free & Paid AI Tools</p><button onclick="downloadProject('Choosing AI Tools')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/LLM Selector/llm_selector_offline_vGemini.html">LLM Selector</a></h3><p>AI Tool Selector - Find Your Perfect AI Tool</p><button onclick="downloadProject('LLM Selector')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Top 11 Free AI Courses/Top 11 Free AI Courses.html">Top 11 Free AI Courses</a></h3><p>Learn Core AI Skills from the World's Top Experts for Free</p><button onclick="downloadProject('Top 11 Free AI Courses')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Ebook Guide/ebook-guide-app.html">Ebook Guide</a></h3><p>Edit and refine your prompt before sending it to ChatGPT.</p><button onclick="downloadProject('Ebook Guide')">Download</button></div>
+                </div>
             </div>
 
             <div id="AI_Dev" class="subtabcontent">
                 <div class="project-grid">
-                    <div class="tile"><h3><a href="../VariousSupportApps/AI Agents - Build/agentic-systems-app.html">AI Agents - Build</a></h3><p>Master AI Agents.</p><button onclick="downloadProject('AI Agents - Build')">Download</button></div>
-                    <div class="tile"><h3><a href="../VariousSupportApps/ai_agent_builder/ai_agent_builder.html">ai_agent_builder</a></h3><p>Build AI solutions.</p><button onclick="downloadProject('ai_agent_builder')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/AI Agents - Build/agentic-systems-app.html">AI Agents - Build</a></h3><p>Master AI Agents with RAG, Multimodal Processing & Advanced Tools</p><button onclick="downloadProject('AI Agents - Build')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Defining AI Agents/ai_agents_tutorial_app.html">Defining AI Agents</a></h3><p>Your Complete Guide to Building Intelligent AI Agents (2025 Edition)</p><button onclick="downloadProject('Defining AI Agents')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/ai_agent_builder/ai_agent_builder.html">ai_agent_builder</a></h3><p>Find the perfect agent framework and build your AI solution</p><button onclick="downloadProject('ai_agent_builder')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/LLM Guide/llm-guide-app.html">LLM Guide</a></h3><p>Your Complete Journey from Beginner to Building & Deploying Production LLMs</p><button onclick="downloadProject('LLM Guide')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/ReAct_AI_React/learning_react_app_v17.html">ReAct_AI_React</a></h3><p>Master React (JS) & ReAct (AI Reasoning Framework)</p><button onclick="downloadProject('ReAct_AI_React')">Download</button></div>
                 </div>
             </div>
 
             <div id="Data_Science" class="subtabcontent">
                 <div class="project-grid">
-                    <div class="tile"><h3><a href="../VariousSupportApps/Data Analyst Checklist/data-analyst-learning-hub.html">Data Analyst Checklist</a></h3><p>Roadmap to data analysis.</p><button onclick="downloadProject('Data Analyst Checklist')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Data Analyst Checklist/data-analyst-learning-hub.html">Data Analyst Checklist</a></h3><p>Your comprehensive roadmap to becoming a data analyst</p><button onclick="downloadProject('Data Analyst Checklist')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Data Science Checklist/datascience_portfolio_checklist.html">Data Science Checklist</a></h3><p>Interactive portfolio checklist with resource links</p><button onclick="downloadProject('Data Science Checklist')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/data-science-tracker/data-science-tracker.html">data-science-tracker</a></h3><p>Tracks progress in learning important concepts in Data Science</p><button onclick="downloadProject('data-science-tracker')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Data Cleaning/data-cleaning-guide.html">Data Cleaning</a></h3><p>Your Personal Learning & Progress Tracker</p><button onclick="downloadProject('Data Cleaning')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Data Engineer/data-engineer-guide.html">Data Engineer</a></h3><p>Your Interactive Guide to Mastering Data Engineering</p><button onclick="downloadProject('Data Engineer')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Exploratory Data Analysis (EDA)/eda-guide-app.html">Exploratory Data Analysis (EDA)</a></h3><p>Interactive learning path for intermediate data analysts</p><button onclick="downloadProject('Exploratory Data Analysis (EDA)')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Data Visualization/Viz Table Example.html">Data Visualization</a></h3><p>Learn about Data Visualization thru Infographics</p><button onclick="downloadProject('Data Visualization')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Database Type Selector/Database Type Selector.html">Database Type Selector</a></h3><p>Directory and recommender for choosing the right database.</p><button onclick="downloadProject('Database Type Selector')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/python_portfolio_projects/python_portfolio_projects.html">python_portfolio_projects</a></h3><p>List of good data projects for a professional portfolio.</p><button onclick="downloadProject('python_portfolio_projects')">Download</button></div>
                 </div>
             </div>
 
+            <div id="ML_Robotics" class="subtabcontent">
+                <div class="project-grid">
+                    <div class="tile"><h3><a href="../VariousSupportApps/Machine Learning Build Guide/ml-build-guide.html">Machine Learning Build Guide</a></h3><p>Track your ML project from concept to production</p><button onclick="downloadProject('Machine Learning Build Guide')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Machine Learning Roadmap/ml-build-guide.html">Machine Learning Roadmap</a></h3><p>Your roadmap to mastering ML - From Data to Deployment</p><button onclick="downloadProject('Machine Learning Roadmap')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Machine Learning Tutorial/ml-tutorial-guide.html">Machine Learning Tutorial</a></h3><p>Guide to ML Algorithms, Tools & Techniques</p><button onclick="downloadProject('Machine Learning Tutorial')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Neural Networks/neural-net-guide.html">Neural Networks</a></h3><p>Comprehensive Resource for Intermediate Practitioners</p><button onclick="downloadProject('Neural Networks')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Humanoid AI Guide/humanoid-robotics-guide_base-gemini.html">Humanoid AI Guide</a></h3><p>Interactive Learning Dashboard for Robotics Students</p><button onclick="downloadProject('Humanoid AI Guide')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Robotics/robotics-embodied-ai-app.html">Robotics</a></h3><p>Your Complete Guide to Building Intelligent Robots</p><button onclick="downloadProject('Robotics')">Download</button></div>
+                </div>
             </div>
+
+            <div id="Dev_Skills" class="subtabcontent">
+                <div class="project-grid">
+                    <div class="tile"><h3><a href="../VariousSupportApps/SQL GUIDE/sql-guide-app-gemini.html">SQL GUIDE</a></h3><p>Mastering SQL - from basics to advanced concepts</p><button onclick="downloadProject('SQL GUIDE')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/python_ecosystem_tracker/python_ecosystem_tracker.html">python_ecosystem_tracker</a></h3><p>Skills Every Developer Should Master</p><button onclick="downloadProject('python_ecosystem_tracker')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/sorting-complexity-app/sorting-complexity-app.html">sorting-complexity-app</a></h3><p>Master algorithm complexity with interactive visualizations</p><button onclick="downloadProject('sorting-complexity-app')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/ai-courses-tracker_v1/ai-courses-tracker.html">ai-courses-tracker_v1</a></h3><p>Track progress through courses on AI and Technology</p><button onclick="downloadProject('ai-courses-tracker_v1')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/ai-courses-tracker_v2/ai-course-tracker.html">ai-courses-tracker_v2</a></h3><p>Course tracker with certificate info and persistence.</p><button onclick="downloadProject('ai-courses-tracker_v2')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/tech-trends-2026/tech-trends-2026.html">tech-trends-2026</a></h3><p>Master the 8 Technologies That Will Define the Future</p><button onclick="downloadProject('tech-trends-2026')">Download</button></div>
+                </div>
+            </div>
+
+            <div id="Career_Misc" class="subtabcontent">
+                <div class="project-grid">
+                    <div class="tile"><h3><a href="../VariousSupportApps/6 More Things to Add to Certification/career_dev_guide.html">6 More Things to Add to Certification</a></h3><p>Your Interactive Career Development Guide</p><button onclick="downloadProject('6 More Things to Add to Certification')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/50 Websites To Find Unlimited Content/50 Websites To Find Unlimited Content.html">50 Websites To Find Unlimited Content</a></h3><p>Curated academic, scientific, historical, and business resources</p><button onclick="downloadProject('50 Websites To Find Unlimited Content')">Download</button></div>
+                    <div class="tile"><h3><a href="../VariousSupportApps/Cuddle_Buddy_Form/cuddle_buddy_form.html">Cuddle_Buddy_Form</a></h3><p>Official Cuddle Buddy Application - NCBA</p><button onclick="downloadProject('Cuddle_Buddy_Form')">Download</button></div>
+                </div>
+            </div>
+        </div>
 
         <div id="Python" class="tabcontent">
             <div class="project-grid">
-                <div class="tile"><h3><a href="https://mdmcelhaney2026.pythonanywhere.com/">PressAgent_Deployed</a></h3><p>Flask chatbot powered by Gemini.</p><button onclick="downloadProject('PressAgent_Deployed')">Download</button></div>
-                </div>
+                <div class="tile"><h3><a href="../VariousSupportApps/BladensburgWebApp/redirect_page.html" target="_blank">BladensburgWebApp</a></h3><p>An app for tracking students in a Church's children program</p><button onclick="downloadProject('BladensburgWebApp')">Download</button></div>
+                <div class="tile"><h3><a href="../VariousSupportApps/DuplicateFileFinder_Setup/Duplicate_File_Finder_User_Guide.html" target="_blank">DuplicateFileFinder_Setup</a></h3><p>Report media files duplicated in a single folder or between two folders.</p><button onclick="downloadProject('DuplicateFileFinder_Setup')">Download</button></div>
+                <div class="tile"><h3><a href="https://mdmcelhaney2026.pythonanywhere.com/" target="_blank">PressAgent_Deployed</a></h3><p>A Flask-based chatbot powered by Gemini AI serving as Marcus's digital brain.</p><button onclick="downloadProject('PressAgent_Deployed')">Download</button></div>
+                <div class="tile"><h3><a href="../VariousSupportApps/XMLs-to-PDFs_setup/XML_to_PDF_Converter_User_Manual.html" target="_blank">XMLs-to-PDFs_setup</a></h3><p>Convert a folder of *.xml files into *.pdf files.</p><button onclick="downloadProject('XMLs-to-PDFs_setup')">Download</button></div>
+                <div class="tile"><h3><a href="../VariousSupportApps/XVideoDownloader_v2.0_Setup/XVideoDownloader_v2.0_Setup.exe" target="_blank">XVideoDownloader_v2.0_Setup</a></h3><p>Scrapes bookmarked X.com posts, downloads videos, and unbookmarks them.</p><button onclick="downloadProject('XVideoDownloader_v2.0_Setup')">Download</button></div>
+            </div>
         </div>
 
         <div id="React" class="tabcontent">
             <div class="project-grid">
-                <div class="tile"><h3><a href="https://blogger-scraper.netlify.app/">Blogger-Scraper</a></h3><p>Web scrape Blogger blogs.</p><button onclick="downloadProject('Blogger-Scraper')">Download</button></div>
+                <div class="tile"><h3><a href="https://blogger-scraper.netlify.app/" target="_blank">Blogger-Scraper</a></h3><p>Web scrape Blogger blogs and download posts grouped by year.</p><button onclick="downloadProject('Blogger-Scraper')">Download</button></div>
             </div>
         </div>
 
         <div id="VBNet" class="tabcontent">
             <div class="project-grid">
-                <div class="tile"><h3>MediaArchiverVB_Setup</h3><p>Managing Media files locally.</p><button onclick="downloadProject('MediaArchiverVB_Setup')">Download</button></div>
+                <div class="tile"><h3>MediaArchiverVB_Setup</h3><p>The purpose of this program is for managing and organizing Media files locally.</p><button onclick="downloadProject('MediaArchiverVB_Setup')">Download</button></div>
             </div>
         </div>
     </div>
 </body>
 </html>
-        
-
-
-
-
-
 
 
 
