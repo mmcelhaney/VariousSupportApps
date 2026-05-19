@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trauma-Emotion Wheel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-color: #f5f5f7;
+      --card-bg: #ffffff;
+      --text-main: #222222;
+      --text-muted: #555555;
+      --border-color: #cccccc;
+      --primary-btn: #1976d2;
+      --primary-btn-hover: #1565c0;
+      --danger-btn: #f44336;
+      --danger-btn-hover: #d32f2f;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto 2rem auto;
+      border-radius: 8px;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    ul {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .label {
+      font-weight: 700;
+    }
+
+    .example-box {
+      background: var(--bg-color);
+      padding: 1rem;
+      border-left: 4px solid var(--primary-btn);
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary-btn);
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-clear {
+      background: var(--danger-btn);
+      color: #fff;
+    }
+
+    .btn-clear:hover {
+      background: var(--danger-btn-hover);
+    }
+
+    .btn-download {
+      background: var(--primary-btn);
+      color: #fff;
+    }
+
+    .btn-download:hover {
+      background: var(--primary-btn-hover);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Trauma-Emotion Wheel</h1>
+
+    <!-- Wheel image updated to match uploaded filename -->
+    <img src="1000057867.jpg"
+         alt="Regulation-Integrated Trauma-Informed Emotion Wheel Infographic" />
+
+    <!-- Trauma responses + brief explanations -->
+    <section class="section">
+      <h2>Core Trauma Survival Responses</h2>
+      <ul>
+        <li>
+          <span class="label">Fight:</span>
+          Activation and boundary defense. Shows up as irritation, resentment, or defensiveness when something feels threatening or disrespectful.
+        </li>
+        <li>
+          <span class="label">Flight:</span>
+          Urge to escape or outrun the situation. Shows up as worry, overwhelm, or urgency when things feel unsafe or unpredictable.
+        </li>
+        <li>
+          <span class="label">Freeze:</span>
+          Shutdown or immobilization. Shows up as emptiness, confusion, or paralysis when everything feels like “too much at once.”
+        </li>
+        <li>
+          <span class="label">Fawn:</span>
+          Appeasing to stay safe. Shows up as guilt, shame, or fear of rejection when you feel you must please others to keep connection.
+        </li>
+        <li>
+          <span class="label">Safe / Connected:</span>
+          Grounded, steady, and relational. Shows up as curiosity, openness, and a sense of support and presence.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Strategies + brief explanations -->
+    <section class="section">
+      <h2>Regulation Strategies (Outer Ring)</h2>
+      <ul>
+        <li>
+          <span class="label">Fight → Downshift (“Ground”):</span>
+          Use forward-fold grounding, weighted pressure, slow linear rocking, or bilateral tapping to reduce activation and help the body feel heavier and safer.
+        </li>
+        <li>
+          <span class="label">Flight → Stabilize (“Breathe”):</span>
+          Use slow head turns, visual anchoring, and paced breathing to slow scanning, orient to the room, and bring the nervous system back into the present.
+        </li>
+        <li>
+          <span class="label">Freeze → Re-Activate (“Move”):</span>
+          Use micro-movements, warmth and gentle pressure, and small rocking to bring the body out of immobility without overwhelming it.
+        </li>
+        <li>
+          <span class="label">Fawn → Boundary Reset (“Assert”):</span>
+          Use bilateral movement, grounding before responding, self-permission statements, and simple boundary scripts to reconnect with your own needs.
+        </li>
+        <li>
+          <span class="label">Safe / Connected → Reinforce (“Rest”):</span>
+          Use rhythmic rocking, creativity, relational connection, and rest to deepen the sense of safety and keep the system regulated.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Example script -->
+    <section class="section">
+      <h2>Example Self-Check Script</h2>
+      <div class="example-box">
+        <p>
+          <span class="label">Example:</span><br />
+          <em>
+            “Right now I notice I’m in a <strong>Fight</strong> response.<br />
+            The trigger was my boundary feeling crossed when someone spoke to me harshly.<br />
+            My body feels tight and activated, so I’m going to choose a <strong>Downshift</strong> action:
+            I’ll step away, plant my feet on the ground, take three slow breaths, and do a forward fold for 30 seconds.”
+          </em>
+        </p>
+      </div>
+      <p>You can adapt this script for any state:</p>
+      <div class="example-box">
+        <p>
+          <em>
+            “I notice I’m in a <strong>[Fight / Flight / Freeze / Fawn]</strong> response.<br />
+            The trigger was <strong>[what happened]</strong>.<br />
+            My body feels <strong>[sensations]</strong>, so I’m going to choose a <strong>[Downshift / Stabilize / Re-Activate / Boundary Reset / Reinforce]</strong> action:
+            <strong>[specific regulation step]</strong>.”
+          </em>
+        </p>
+      </div>
+    </section>
+
+    <!-- Editable text box + buttons -->
+    <section class="section">
+      <h2>Your Notes, Scripts, or Reflections</h2>
+      <p>Use this space to write your own scripts, track triggers, or plan regulation strategies.</p>
+      <textarea id="notesBox" aria-label="Notes and reflections" placeholder="Write your reflections, scripts, or observations here..."></textarea>
+      <div class="button-row">
+        <button class="btn-clear" id="clearBtn">Clear Text</button>
+        <button class="btn-download" id="downloadBtn">Download as .txt</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const notesBox = document.getElementById('notesBox');
+      const clearBtn = document.getElementById('clearBtn');
+      const downloadBtn = document.getElementById('downloadBtn');
+
+      // Clear button logic
+      clearBtn.addEventListener('click', () => {
+        if (notesBox.value.trim() !== '') {
+          if (confirm('Are you sure you want to clear all text? This cannot be undone.')) {
+            notesBox.value = '';
+            notesBox.focus();
+          }
+        }
+      });
+
+      // Download button logic
+      downloadBtn.addEventListener('click', () => {
+        const text = notesBox.value || '';
+        if (!text.trim()) {
+          alert('There is no text to download. Please write something first.');
+          return;
+        }
+        
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        // Generate a clean timestamp for the file name
+        const now = new Date();
+        const timestamp = now.toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        
+        a.href = url;
+        a.download = `trauma-emotion-wheel-notes-${timestamp}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 100);
+      });
+    });
+  </script>
+</body>
+</html>
