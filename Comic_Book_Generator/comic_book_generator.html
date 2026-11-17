@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comic Book Generator – From Script to Finished Book</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#e9eff3;--ink:#17203a;--gold:#d9981e;--teal:#1f7f84;--red:#c43f2e;--white:#fff;--muted:#46506b}
+@media (prefers-color-scheme:dark){:root{--paper:#121a2e;--ink:#eef2f7;--muted:#aab4cc;--white:#1b2542}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 "Atkinson Hyperlegible",system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:40px 22px 64px}
+h1,h2{font-family:Bangers,Impact,sans-serif;font-weight:400;letter-spacing:.03em;line-height:1.05;margin:0}
+h1{font-size:clamp(2.6rem,8vw,5rem);transform:rotate(-1.2deg);display:inline-block;background:var(--gold);color:#17203a;padding:.1em .35em;border:4px solid #17203a;box-shadow:8px 8px 0 #17203a}
+h2{font-size:2.1rem;margin:56px 0 14px}
+.lede{font-size:1.25rem;max-width:62ch;margin:30px 0 22px}
+.btn{display:inline-block;background:var(--red);color:#fff;text-decoration:none;font-weight:700;padding:.8em 1.3em;border:3px solid #17203a;box-shadow:5px 5px 0 #17203a}
+.btn:hover,.btn:focus-visible{transform:translate(2px,2px);box-shadow:3px 3px 0 #17203a;outline:none}
+.btn:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+figure{margin:0;border:4px solid var(--ink);background:var(--white);padding:10px;overflow-x:auto}
+figure svg{display:block;width:100%;min-width:760px;height:auto}
+figcaption{font-size:.95rem;color:var(--muted);padding:8px 4px 2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.card{background:var(--white);border:3px solid var(--ink);padding:16px 18px}
+.card h3{margin:0 0 6px;font-size:1.1rem}
+.card p{margin:0;color:var(--muted);font-size:.98rem}
+ul.specs{padding-left:1.2em;max-width:70ch}
+ul.specs li{margin:.35em 0}
+.sample{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:var(--white);border:3px solid var(--ink);padding:20px}
+.sample p{margin:0;flex:1 1 280px}
+a{color:var(--teal)}
+footer{margin-top:56px;font-size:.9rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1>Comic Book Generator</h1>
+<p class="lede">Turn a written chapter into a lettered, print-ready comic book. Paste in your manuscript and design bible, and the generator plans every page, draws it, letters the dialogue, and exports the finished book.</p>
+<a class="btn" href="sample_comic_book.jpg">View a sample comic book (JPG)</a>
+
+<h2>From script to comic book</h2>
+<figure>
+<svg viewBox="0 0 960 300" role="img" aria-labelledby="t d" xmlns="http://www.w3.org/2000/svg">
+<title id="t">Pipeline from comic script to comic book</title>
+<desc id="d">Five stages: manuscript and design bible, page-by-page JSON plan, AI page art with numbered blank balloons, automatic lettering, and export to PDF, CBZ or web strip.</desc>
+<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#17203a"/></marker></defs>
+<g font-family="Atkinson Hyperlegible,Arial,sans-serif" stroke="#17203a" stroke-width="3">
+<!-- 1 -->
+<rect x="8" y="30" width="162" height="190" fill="#fff"/>
+<rect x="30" y="52" width="118" height="14" fill="#d9981e" stroke="none"/>
+<g stroke="#46506b" stroke-width="2"><line x1="30" y1="86" x2="148" y2="86"/><line x1="30" y1="102" x2="148" y2="102"/><line x1="30" y1="118" x2="120" y2="118"/><line x1="30" y1="142" x2="148" y2="142"/><line x1="30" y1="158" x2="136" y2="158"/><line x1="30" y1="174" x2="148" y2="174"/></g>
+<!-- 2 -->
+<rect x="198" y="30" width="162" height="190" fill="#fff"/>
+<text x="216" y="70" font-size="15" fill="#17203a" stroke="none" font-family="Consolas,monospace">{ "page_01": {</text>
+<text x="226" y="92" font-size="15" fill="#1f7f84" stroke="none" font-family="Consolas,monospace">"panel_1": "…",</text>
+<text x="226" y="114" font-size="15" fill="#1f7f84" stroke="none" font-family="Consolas,monospace">"panel_2": "…",</text>
+<text x="226" y="136" font-size="15" fill="#c43f2e" stroke="none" font-family="Consolas,monospace">"1-1": "Wake up."</text>
+<text x="226" y="158" font-size="15" fill="#c43f2e" stroke="none" font-family="Consolas,monospace">"1-2": "Now."</text>
+<text x="216" y="180" font-size="15" fill="#17203a" stroke="none" font-family="Consolas,monospace">} }</text>
+<!-- 3 -->
+<rect x="388" y="30" width="162" height="190" fill="#fff"/>
+<rect x="400" y="42" width="138" height="78" fill="#1f7f84"/>
+<rect x="400" y="128" width="66" height="80" fill="#d9981e"/>
+<rect x="472" y="128" width="66" height="80" fill="#17203a"/>
+<ellipse cx="450" cy="72" rx="26" ry="16" fill="#fff"/><text x="450" y="78" font-size="16" font-weight="700" text-anchor="middle" fill="#17203a" stroke="none">1-1</text>
+<ellipse cx="433" cy="162" rx="24" ry="15" fill="#fff"/><text x="433" y="168" font-size="16" font-weight="700" text-anchor="middle" fill="#17203a" stroke="none">2-1</text>
+<!-- 4 -->
+<rect x="578" y="30" width="162" height="190" fill="#fff"/>
+<rect x="590" y="42" width="138" height="78" fill="#1f7f84"/>
+<rect x="590" y="128" width="66" height="80" fill="#d9981e"/>
+<rect x="662" y="128" width="66" height="80" fill="#17203a"/>
+<ellipse cx="640" cy="76" rx="42" ry="26" fill="#fff"/><text x="640" y="74" font-size="13" font-weight="700" text-anchor="middle" fill="#17203a" stroke="none">Wake up.</text><text x="640" y="90" font-size="13" text-anchor="middle" fill="#17203a" stroke="none">Now.</text>
+<ellipse cx="623" cy="166" rx="30" ry="20" fill="#fff"/><text x="623" y="171" font-size="12" font-weight="700" text-anchor="middle" fill="#17203a" stroke="none">Run!</text>
+<!-- 5 -->
+<g fill="#fff"><rect x="808" y="40" width="120" height="150" transform="rotate(6 868 115)"/><rect x="796" y="34" width="120" height="150" transform="rotate(-3 856 109)"/></g>
+<rect x="786" y="28" width="120" height="150" fill="#d9981e"/>
+<text x="846" y="112" font-family="Bangers,Impact,sans-serif" font-size="26" text-anchor="middle" fill="#17203a" stroke="none">ISSUE 1</text>
+<g font-size="13" font-weight="700" fill="#fff" stroke="none"><rect x="780" y="196" width="52" height="24" fill="#c43f2e" stroke-width="2" stroke="#17203a"/><text x="806" y="213" text-anchor="middle">PDF</text><rect x="838" y="196" width="52" height="24" fill="#1f7f84" stroke-width="2" stroke="#17203a"/><text x="864" y="213" text-anchor="middle">CBZ</text><rect x="896" y="196" width="52" height="24" fill="#17203a" stroke-width="2"/><text x="922" y="213" text-anchor="middle">Web</text></g>
+<!-- arrows -->
+<g marker-end="url(#ar)"><line x1="172" y1="125" x2="194" y2="125"/><line x1="362" y1="125" x2="384" y2="125"/><line x1="552" y1="125" x2="574" y2="125"/><line x1="742" y1="125" x2="764" y2="125"/></g>
+<!-- labels -->
+<g fill="#17203a" stroke="none" font-size="15" font-weight="700" text-anchor="middle">
+<text x="89" y="252">Script + design bible</text><text x="279" y="252">Page-by-page plan</text><text x="469" y="252">Page art, blank balloons</text><text x="659" y="252">Dialogue lettered in</text><text x="855" y="252" font-size="15">Finished book</text></g>
+<g fill="#46506b" stroke="none" font-size="13" text-anchor="middle">
+<text x="89" y="272">Chapter text in</text><text x="279" y="272">Balloons numbered 1-1, 1-2…</text><text x="469" y="272">Each balloon shows only its ID</text><text x="659" y="272">IDs found and replaced</text><text x="855" y="272">PDF, CBZ or web strip</text></g>
+</g>
+</svg>
+<figcaption>Each balloon gets an ID instead of text, so the artwork can be generated without garbled words. The dialogue is added afterwards, exactly as you wrote it.</figcaption>
+</figure>
+
+<h2>What you get</h2>
+<div class="grid">
+<div class="card"><h3>A production plan for every page</h3><p>An AI director splits your chapter into 11×17 portrait pages and writes a panel-by-panel art brief, keeping to your design bible's characters, wardrobe and look.</p></div>
+<div class="card"><h3>Consistent artwork</h3><p>Page art is generated with Google's Imagen model from those briefs, with your design bible included in every request.</p></div>
+<div class="card"><h3>Clean, accurate lettering</h3><p>Text recognition finds each numbered balloon, then draws a padded white box and wraps your exact dialogue inside it.</p></div>
+<div class="card"><h3>Export anywhere</h3><p>Compile pages into a PDF for print, a CBZ for comic readers, or one long vertical strip for the web. Convert an existing CBZ to PDF in one click.</p></div>
+</div>
+
+<h2>How it works</h2>
+<ul class="specs">
+<li><strong>Create Chapter:</strong> load your manuscript and design bible, and the generator produces every lettered page.</li>
+<li><strong>Compile Book:</strong> pick your finished pages, check the thumbnails, and export.</li>
+<li><strong>One launcher:</strong> a small window with Create Chapter, Compile Book and Quit opens each tool.</li>
+</ul>
+
+<h2>Requirements</h2>
+<ul class="specs">
+<li>Windows, macOS or Linux with Python 3 (a packaged Windows version is also supported)</li>
+<li>A Google Gemini API key for the page art</li>
+<li>Tesseract OCR installed, for finding the balloon IDs</li>
+<li>Python packages: PySide6, customtkinter, Pillow, python-dotenv, pydantic, google-genai</li>
+</ul>
+
+<h2>See the result</h2>
+<div class="sample">
+<p>Browse a finished sample page set produced by the generator, from script to lettered book.</p>
+<a class="btn" href="sample_comic_book.jpg">Open sample comic book (JPG)</a>
+</div>
+
+<footer>Place your sample image next to this file and name it <code>sample_comic_book.jpg</code>, or change the two links above to point to it.</footer>
+</main>
+</body>
+</html>
