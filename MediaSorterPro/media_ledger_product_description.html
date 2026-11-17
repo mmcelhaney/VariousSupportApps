@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media Ledger – AI-Assisted Photo &amp; Video Sorter</title>
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--text:#1b2230;--muted:#5b6475;--accent:#1f7a4d;--accent-soft:#e4f4ec;--border:#e1e5ec}
+@media (prefers-color-scheme:dark){:root{--bg:#12161d;--card:#1b212b;--text:#e8ecf2;--muted:#9aa5b8;--accent:#4cc38a;--accent-soft:#1a3328;--border:#2a3240}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header.hero{padding:72px 0 48px;text-align:center}
+.badge{display:inline-block;background:var(--accent-soft);color:var(--accent);font-weight:600;font-size:13px;padding:4px 12px;border-radius:999px}
+h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;margin:16px 0 12px}
+.lead{font-size:1.15rem;color:var(--muted);max-width:640px;margin:0 auto}
+h2{font-size:1.6rem;margin:56px 0 8px}
+.sub{color:var(--muted);margin:0 0 24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:12px}
+ol.steps li{counter-increment:s;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 16px 16px 60px;position:relative}
+ol.steps li::before{content:counter(s);position:absolute;left:16px;top:14px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps strong{display:block}
+.pipeline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.pipeline span{background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:6px 12px;font-weight:600;font-size:.9rem}
+.pipeline i{color:var(--muted);font-style:normal}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+td,th{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:.95rem}
+th{width:34%;color:var(--muted);font-weight:600}
+tr:last-child td,tr:last-child th{border-bottom:0}
+.scroll{overflow-x:auto}
+footer{margin:64px 0 40px;text-align:center;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <span class="badge">Windows desktop app</span>
+  <h1>Media Ledger</h1>
+  <p class="lead">Sort thousands of photos and videos into the right folders automatically. AI looks at what is in each file, so you review a grid of proposals instead of dragging files one by one.</p>
+</div></header>
+
+<main class="wrap">
+  <h2>Stop sorting by hand</h2>
+  <p class="sub">Camera rolls, downloads and chat exports pile up fast. Media Ledger learns your folder structure and proposes where every file belongs, then moves only what you approve.</p>
+  <div class="grid">
+    <div class="card"><h3>Understands your pictures</h3><p>Uses the CLIP vision-language model to classify images and video frames against your own folder names, with no training or tagging required.</p></div>
+    <div class="card"><h3>Matches by example</h3><p>Optionally point it at a folder-index HTML of thumbnails. Files that visually resemble a thumbnail are routed to that folder first.</p></div>
+    <div class="card"><h3>Knows filename patterns</h3><p>Screenshots, Pixel, WhatsApp, Snapchat, iOS and DSLR camera naming conventions are recognized as a dependable fallback.</p></div>
+    <div class="card"><h3>Skips duplicates</h3><p>Perceptual and full-file hashes are recorded in a local ledger, so media you have already processed is not offered again.</p></div>
+    <div class="card"><h3>Explains every decision</h3><p>Click any thumbnail for a diagnostic report: strategy used, confidence score, top three folder guesses and the prompt that matched.</p></div>
+    <div class="card"><h3>Private and local</h3><p>The model is downloaded once, then runs entirely on your PC. Your media is never uploaded anywhere.</p></div>
+  </div>
+
+  <h2>How it works</h2>
+  <p class="sub">Each file passes through three stages until one is confident enough to decide.</p>
+  <div class="pipeline"><span>1. Key HTML thumbnail match</span><i>→</i><span>2. AI semantic analysis</span><i>→</i><span>3. Filename patterns</span><i>→</i><span>Unassigned</span></div>
+  <br>
+  <ol class="steps">
+    <li><strong>Choose a source and a target</strong>Your target folder's subfolders become the categories. Pick a batch size to process a manageable set at a time.</li>
+    <li><strong>Scan &amp; Match Batch</strong>Files are hashed, checked against the ledger, and matched. Curated prompts are tried first, with a fallback prompt pass if confidence is low.</li>
+    <li><strong>Review the grid</strong>Thumbnails show the proposed folder. Select or unselect files, reassign any file from its predicted folders, or re-evaluate after changing settings.</li>
+    <li><strong>Move Selected Files</strong>Approved files are moved into place and recorded in the ledger for future runs.</li>
+  </ol>
+
+  <h2>Highlights</h2>
+  <p class="sub">Control over accuracy and speed.</p>
+  <div class="grid">
+    <div class="card"><h3>Adjustable confidence</h3><p>A Min Confidence slider (0–100%) decides how sure the AI must be before it proposes a folder.</p></div>
+    <div class="card"><h3>Fallback prompt prefix</h3><p>Add your own wording to steer folders that do not have a curated prompt.</p></div>
+    <div class="card"><h3>Folder Index Generator</h3><p>Built-in companion tool that creates the key HTML from your already-sorted folders.</p></div>
+    <div class="card"><h3>Memory friendly</h3><p>Free the model from RAM with one click; it reloads from the local copy on the next scan.</p></div>
+    <div class="card"><h3>Full-size preview</h3><p>Zoomable viewer for double-checking a file before it is moved.</p></div>
+    <div class="card"><h3>Crash logging</h3><p>Native crash details are written to a log file so problems can be diagnosed.</p></div>
+  </div>
+
+  <h2>Specifications</h2>
+  <div class="scroll"><table>
+    <tr><th>Supported media</th><td>PNG, JPG, JPEG, HEIC, MP4, MOV</td></tr>
+    <tr><th>AI model</th><td>OpenAI CLIP ViT-L/14 (about 1.7 GB, most accurate); can be switched to ViT-B/32 (about 600 MB) for lighter machines</td></tr>
+    <tr><th>Interface</th><td>Desktop GUI built with CustomTkinter</td></tr>
+    <tr><th>Storage</th><td>Local SQLite ledger of filenames, paths, hashes and run dates</td></tr>
+    <tr><th>Model location</th><td>Downloaded once to a folder you choose (such as a secondary drive), then loaded locally</td></tr>
+    <tr><th>Distribution</th><td>Runs as a Python script or as a packaged installed app</td></tr>
+  </table></div>
+</main>
+
+<footer class="wrap">Media Ledger · AI-assisted media sorting that runs on your own computer</footer>
+</body>
+</html>
