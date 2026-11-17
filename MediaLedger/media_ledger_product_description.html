@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media Ledger — Product Description</title>
+<style>
+:root{--paper:#f6f1e4;--ink:#1d2a2e;--rule:#cfc6ad;--muted:#5d6a68;--accent:#b4442b;--card:#fffdf6;
+--serif:Georgia,"Iowan Old Style","Palatino Linotype",serif;--mono:ui-monospace,"SF Mono",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{--paper:#171c1d;--ink:#ece6d3;--rule:#34403f;--muted:#97a3a0;--accent:#e08a6f;--card:#1e2526}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.65 var(--serif)}
+.wrap{max-width:860px;margin:0 auto;padding:56px 24px 72px}
+h1{font-size:clamp(2.6rem,7vw,4.4rem);line-height:1;margin:0 0 18px;letter-spacing:-.02em}
+h2{font-size:1.5rem;margin:56px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.lede{font-size:1.3rem;max-width:36em;margin:0 0 28px}
+.meta{font:14px var(--mono);color:var(--muted)}
+.entry{background:var(--card);border:1px solid var(--rule);border-left:6px solid var(--accent);padding:20px 24px;font:15px/1.7 var(--mono);margin:32px 0;overflow-x:auto}
+.entry b{font-family:var(--serif);font-size:1.15rem;display:block;margin-bottom:6px}
+.entry span{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;border:1px solid var(--rule);background:var(--card)}
+.grid div{padding:18px 20px;border:1px solid var(--rule);margin:-1px 0 0 -1px}
+.grid h3{margin:0 0 6px;font-size:1.05rem}
+.grid p{margin:0;font-size:.95rem;color:var(--muted);line-height:1.5}
+.flow{list-style:none;padding:0;margin:0}
+.flow li{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:12px 0;border-bottom:1px dashed var(--rule)}
+.flow strong{font-family:var(--mono);font-size:.85rem}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+td,th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tags span{border:1px solid var(--rule);padding:3px 11px;font-size:.9rem;background:var(--card)}
+@media (max-width:560px){.flow li{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="meta">Media Ledger · Windows desktop app · Python</p>
+  <h1>Your media folders, filed by what's in the picture.</h1>
+  <p class="lede">Media Ledger looks at a photo or video, compares it with the folders you already keep, and tells you which one it belongs in — and exactly why. It runs a CLIP vision model on your own machine, so nothing leaves your computer once the model is downloaded.</p>
+
+  <div class="entry" aria-label="Sample result">
+    <b>Proposed Target: Star Wars</b>
+    • Match Strategy: AI Semantic Analysis (curated prompts)<br>
+    • Confidence Score: <span>71.4% (threshold 10.0%)</span><br>
+    • Top 3: <span>Star Wars 71.4%, Star Trek 9.2%, Marvel 6.8%</span><br>
+    • Candidates considered: <span>23</span>
+    <br><span>Illustrative output in the app's diagnostic report format.</span>
+  </div>
+  <img src="ML Classification.JPG" alt="Screenshot of Media Ledger app showing a proposed target of Star Wars for a photo of Darth Vader, with a confidence score of 71.4% and the top three candidates listed." style="width:100%;max-width:300px;margin:0">
+  <img src="Classification_Result.JPG "  style="width:100%;max-width:300px;margin:0" alt="Screenshot of Media Ledger app showing a proposed target of Star Wars for a photo of Darth Vader, with a confidence score of 71.4% and the top three candidates listed.">
+
+  <h2>What it does</h2>
+  <p>Point Media Ledger at a root folder of category subfolders — Marvel, Memes, Star Trek, Screenshots, whatever you use — then pick a file. The app reads the folder names as your categories, scores the file against each one, and proposes a destination. A full diagnostic report explains the decision, so you can trust it or tune it instead of guessing.</p>
+
+  <h2>Features</h2>
+  <div class="grid">
+    <div><h3>Zero-shot sorting</h3><p>No training and no labeled examples. Your folder names become the categories, using OpenAI's CLIP ViT-Large/14 model.</p></div>
+    <div><h3>Curated prompts</h3><p>Built-in descriptions for 23 franchise and topic folders sharpen the match. Variants like Star_Wars, star-wars and Star Wars resolve to the same prompt.</p></div>
+    <div><h3>Two-pass matching</h3><p>If the curated pass falls below your threshold, the app retries with plain prefix-based prompts before giving up.</p></div>
+    <div><h3>Filename rules</h3><p>Folders defined by origin rather than content — Screenshots, Pixel, WhatsApp, Snapchat, iOS and DSLR camera, motion photos — are handled by filename patterns.</p></div>
+    <div><h3>Photos and video</h3><p>Reads PNG, JPG, JPEG, HEIC, MP4 and MOV. Videos are judged from a frame about 15% in; photos honor phone rotation.</p></div>
+    <div><h3>Explains itself</h3><p>Every result shows the strategy used, the prompt, the confidence, the top three candidates, and a clickable full-size preview.</p></div>
+  </div>
+
+  <h2>How a decision is made</h2>
+  <ol class="flow">
+    <li><strong>Read</strong><span>Image loaded, or a frame pulled from video.</span></li>
+    <li><strong>Score</strong><span>CLIP compares it against one prompt per content folder.</span></li>
+    <li><strong>Retry</strong><span>Below your confidence threshold, it tries fallback prompts.</span></li>
+    <li><strong>Fall back</strong><span>Still unsure? Filename conventions get a vote.</span></li>
+    <li><strong>Report</strong><span>You get a target, or "Unassigned" with the reason why.</span></li>
+  </ol>
+
+  <h2>Controls</h2>
+  <table>
+    <tr><th>Setting</th><th>What it changes</th></tr>
+    <tr><td>Minimum confidence</td><td>Slider from 0–100% (starts at 10%). Higher means fewer, surer matches.</td></tr>
+    <tr><td>Default prompt prefix</td><td>Wording used for folders without a curated prompt; starts as "a clear photo of".</td></tr>
+    <tr><td>Clear Memory &amp; Free RAM</td><td>Unloads the model when you're done.</td></tr>
+  </table>
+
+  <h2>Built to be dependable</h2>
+  <table>
+    <tr><td>Download once</td><td>The model (about 1.7 GB) is fetched only if a complete copy isn't already stored, then always loaded locally. A lighter ~600 MB model is a one-line switch.</td></tr>
+    <tr><td>Self-repairing</td><td>A corrupt or partial download is detected and re-fetched automatically.</td></tr>
+    <tr><td>Your drive, your choice</td><td>Model storage can live on any drive, with a warning when space runs low.</td></tr>
+    <tr><td>Plain-English errors</td><td>Load failures come with hints for low memory, old torch versions and missing packages.</td></tr>
+    <tr><td>Crash log</td><td>Hard crashes are written to a log file instead of vanishing. Packages cleanly with PyInstaller.</td></tr>
+  </table>
+
+  <h2>Folders it knows out of the box</h2>
+  <div class="tags">
+    <span>Marvel</span><span>DC</span><span>X-Men</span><span>Star Trek</span><span>Star Wars</span><span>Harry Potter</span><span>Lord of the Rings</span><span>Game of Thrones</span><span>The Matrix</span><span>Transformers</span><span>GI Joe</span><span>TMNT</span><span>Power Rangers</span><span>Voltron</span><span>He-Man</span><span>Pacific Rim</span><span>One-Punch Man</span><span>Memes</span><span>AI</span><span>Mashups</span><span>and more</span>
+  </div>
+
+  <h2>Good to know</h2>
+  <p>This version is a classification tester: it proposes a destination for one file at a time and shows its reasoning. It does not move or rename files. Built for Windows with Python, customtkinter, PyTorch and Hugging Face Transformers.</p>
+</main>
+</body>
+</html>
